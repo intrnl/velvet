@@ -1,0 +1,9 @@
+{
+	"type": "module",
+	"name": "@velvet/runtime",
+	"exports": {
+		".": "./index.js",
+		"./internal": "./internal/index.js",
+		"./store": "./store/index.js"
+	}
+}
