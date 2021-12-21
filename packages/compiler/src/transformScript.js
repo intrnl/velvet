@@ -234,7 +234,8 @@ export function transform_script (program) {
 				node.type === 'Identifier' &&
 				parent.type !== 'AssignmentExpression' &&
 				parent.type !== 'MemberExpression' &&
-				!(parent.type === 'VariableDeclarator' && key === 'id')
+				!(parent.type === 'VariableDeclarator' && key === 'id') &&
+				!(parent.type === 'Property' && key === 'key')
 			) {
 				let name = node.name;
 

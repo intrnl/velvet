@@ -18,10 +18,10 @@ value3(value3(__access) + 3);
 value4(value4(__access) + 4);
 
 console.log({
-	value1(__access): value1(__access),
-	value2(__access): value2(__access),
-	value3(__access): value3(__access),
-	value4(__access): value4(__access)
+	value1: value1(__access),
+	value2: value2(__access),
+	value3: value3(__access),
+	value4: value4(__access)
 });
 
 function increment() {
@@ -29,9 +29,9 @@ function increment() {
 	value4 += 4;
 
 	console.log({
-		value1(__access): value1(__access),
-		value2(__access): value2(__access),
-		value3(__access): value3(__access),
+		value1: value1(__access),
+		value2: value2(__access),
+		value3: value3(__access),
 		value4
 	});
 }"
@@ -44,19 +44,19 @@ let value3 = __prop(2, () => new Date());
 let value4 = __prop(3, () => value2(__access));
 
 console.log({
-	value1(__access): value1(__access),
-	value2(__access): value2(__access),
-	value3(__access): value3(__access),
-	value4(__access): value4(__access)
+	value1: value1(__access),
+	value2: value2(__access),
+	value3: value3(__access),
+	value4: value4(__access)
 });
 
 function increment() {
 	let value4 = 200;
 
 	console.log({
-		value1(__access): value1(__access),
-		value2(__access): value2(__access),
-		value3(__access): value3(__access),
+		value1: value1(__access),
+		value2: value2(__access),
+		value3: value3(__access),
 		value4
 	});
 }"
@@ -87,10 +87,10 @@ value3(value3(__access) + 3);
 value4(value4(__access) + 4);
 
 console.log({
-	value1(__access): value1(__access),
-	value2(__access): value2(__access),
-	value3(__access): value3(__access),
-	value4(__access): value4(__access)
+	value1: value1(__access),
+	value2: value2(__access),
+	value3: value3(__access),
+	value4: value4(__access)
 });
 
 function increment() {
@@ -98,9 +98,9 @@ function increment() {
 	value4 += 4;
 
 	console.log({
-		value1(__access): value1(__access),
-		value2(__access): value2(__access),
-		value3(__access): value3(__access),
+		value1: value1(__access),
+		value2: value2(__access),
+		value3: value3(__access),
 		value4
 	});
 }"
