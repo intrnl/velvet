@@ -269,7 +269,8 @@ export function transform_script (program) {
 						}
 						default: {
 							let getter = x`${identifier}(__access)`;
-							expression = x`${identifier}(${t.binary_expression(getter, right, node.operator.slice(0, -1))})`;
+							let operation = t.binary_expression(getter, right, node.operator.slice(0, -1));
+							expression = x`${identifier}(${operation})`;
 							break;
 						}
 					}
@@ -294,7 +295,8 @@ export function transform_script (program) {
 					}
 
 					let getter = x`${identifier}(__access)`;
-					let expression = x`${identifier}(${t.binary_expression(getter, t.literal(1), operator.slice(0, -1))})`;
+					let operation = t.binary_expression(getter, t.literal(1), operator.slice(0, -1));
+					let expression = x`${identifier}(${operation})`;
 
 					_is_transformed.add(identifier);
 					this.replace(expression);
@@ -312,10 +314,12 @@ export function transform_script (program) {
 	});
 
 	// - add bindings for props that are not refs
-	let is_bindings = [...props].filter(([local_name]) => !refs.has(local_name));
+	let is_bindings = [...props].filter(([local]) => !refs.has(local));
 
 	if (is_bindings.length) {
-		let expression = x`__bind({${is_bindings.map(([local_name, exported_name]) => p`${exported_name}: ${local_name}`)}})`;
+		let properties = is_bindings.map(([local, exported]) => p`${exported}: ${local}`);
+		let expression = x`__bind({${properties}})`;
+
 		program.body.push(t.expression_statement(expression));
 	}
 }
