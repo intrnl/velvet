@@ -236,6 +236,39 @@ describe('prop', () => {
 		transform_script(program);
 		expect(print(program)).toMatchSnapshot();
 	});
+
+	it('variable referencing unmutated ref', () => {
+		let program = parse(`
+			let value1 = 1;
+			let value2 = () => {};
+			export let value3 = value1;
+			export let value4 = value2;
+			export let value5 = value1 + value2;
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('variable referencing mutated ref', () => {
+		let program = parse(`
+			let value1 = 1;
+			let value2 = new Date();
+			export let value3 = value1;
+			export let value4 = value2;
+			export let value5 = value1 + value2;
+
+			value1 = 3;
+			value2 *= 4;
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
 });
 
 describe('store', () => {

@@ -6,6 +6,28 @@ let value2 = __prop(1, 100);
 let value3 = __prop(2, () => new Date());"
 `;
 
+exports[`prop variable referencing mutated ref 1`] = `
+"let value1 = __ref(1);
+let value2 = __ref(new Date());
+let value3 = __prop(0, () => value1(__access));
+let value4 = __prop(1, () => value2(__access));
+let value5 = __prop(2, () => value1(__access) + value2(__access));
+value1(3);
+value2(value2(__access) * 4);"
+`;
+
+exports[`prop variable referencing unmutated ref 1`] = `
+"let value1 = 1;
+
+let value2 = () => {
+	
+};
+
+let value3 = __prop(0, () => value1);
+let value4 = __prop(1, () => value2);
+let value5 = __prop(2, () => value1 + value2);"
+`;
+
 exports[`prop variables with mutation 1`] = `
 "console.log({ value1, value2, value3, value4 });
 let value1 = __prop(0);

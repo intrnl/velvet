@@ -208,7 +208,7 @@ export function transform_script (program) {
 					let prop = props.get(name);
 					let prop_idx = prop && props_idx.indexOf(prop);
 
-					let primitive = init && _is_primitive(init, refs);
+					let primitive = init && _is_primitive(init, is_computed && refs);
 
 					let initializer = init
 						? primitive
