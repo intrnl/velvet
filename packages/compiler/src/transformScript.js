@@ -393,6 +393,10 @@ export function transform_script (program) {
 }
 
 function _add_store_subscription (identifier, actual, is_ref) {
+	if (!actual) {
+		throw new Error(`tried to subscribe to a store without actual identifier`);
+	}
+
 	let actual_ident = t.identifier(actual);
 
 	let getter = is_ref
