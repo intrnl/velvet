@@ -75,6 +75,13 @@ let value2 = 100;
 let value3 = new Date();"
 `;
 
+exports[`ref: variable mutation with logical assignment operators 1`] = `
+"let value1 = __ref(100);
+value1(__access) ?? value1(200);
+value1(__access) || value1(300);
+value1(__access) && value1(300);"
+`;
+
 exports[`ref: variables with mutation 1`] = `
 "console.log({ value1, value2, value3, value4 });
 let value1 = __ref();

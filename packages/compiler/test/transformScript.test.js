@@ -82,6 +82,21 @@ it('ref: unmutated variable referencing mutated variable', () => {
 	expect(result).toMatchSnapshot();
 });
 
+it('ref: variable mutation with logical assignment operators', () => {
+	let program = parse(`
+		let value1 = 100;
+
+		value1 ??= 200;
+		value1 ||= 300;
+		value1 &&= 300;
+	`);
+
+	transform_script(program);
+
+	let result = print(program);
+	expect(result).toMatchSnapshot();
+});
+
 it('prop: unused properties', () => {
 	let program = parse(`
 		export let value1;

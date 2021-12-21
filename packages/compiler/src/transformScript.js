@@ -262,15 +262,22 @@ export function transform_script (program) {
 
 				if (refs.has(name) && current_scope.find_owner(name) === root_scope) {
 					let expression;
+					let operator = node.operator.slice(0, -1);
 
 					switch (node.operator) {
 						case '=': {
 							expression = x`${identifier}(${right})`;
 							break;
 						}
+						case '||=': case '&&=': case '??=': {
+							let getter = x`${identifier}(__access)`;
+							let setter = x`${identifier} = ${right}`;
+							expression = t.logical_expression(getter, setter, operator);
+							break;
+						}
 						default: {
 							let getter = x`${identifier}(__access)`;
-							let operation = t.binary_expression(getter, right, node.operator.slice(0, -1));
+							let operation = t.binary_expression(getter, right, operator);
 							expression = x`${identifier}(${operation})`;
 							break;
 						}

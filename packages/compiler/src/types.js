@@ -72,3 +72,18 @@ export function assignment_expression (left, right, operator) {
 		operator,
 	};
 }
+
+/**
+ * @param {import('estree').Expression} left
+ * @param {import('estree').Expression} right
+ * @param {import('estree').LogicalOperator} operator
+ * @returns {import('estree').LogicalExpression}
+ */
+export function logical_expression (left, right, operator) {
+	return {
+		type: 'LogicalExpression',
+		left,
+		right,
+		operator,
+	};
+}
