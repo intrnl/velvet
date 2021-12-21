@@ -1,6 +1,6 @@
 import { walk } from 'estree-walker';
 import { analyze } from 'periscopic';
-import { x, b, p } from 'code-red';
+import { x, p } from 'code-red';
 
 import * as t from './types.js';
 
@@ -383,14 +383,21 @@ export function transform_script (program) {
 function _add_store_subscription (identifier, actual, is_ref) {
 	let actual_ident = t.identifier(actual);
 
-	let getter = is_ref ? t.call_expression(actual_ident, [t.identifier('__access')]) : actual_ident;
+	let getter = is_ref
+		? t.call_expression(actual_ident, [t.identifier('__access')])
+		: actual_ident;
 
-	let statement = b`
-		let ${identifier} = __ref();
-		__cleanup(${getter}.subscribe(${identifier}));
-	`;
+	let decl = t.variable_declaration('let', [
+		t.variable_declarator(identifier, t.call_expression(t.identifier('__ref'))),
+	]);
 
-	let declaration = statement[0];
+	let expr = t.expression_statement(
+		t.call_expression(t.identifier('__cleanup'), [
+			t.call_expression(t.member_expression(getter, t.identifier('subscribe')), [
+				identifier,
+			]),
+		]),
+	);
 
 	let curr_node = identifier;
 
@@ -404,13 +411,13 @@ function _add_store_subscription (identifier, actual, is_ref) {
 		if (parent.type === 'Program') {
 			let body = parent.body;
 			let idx = body.indexOf(curr_node);
-			body.splice(idx, 0, ...statement);
+			body.splice(idx, 0, decl, expr);
 		}
 
 		curr_node = parent;
 	}
 
-	return { declaration, actual_ident };
+	return { declaration: decl, actual_ident };
 }
 
 /**

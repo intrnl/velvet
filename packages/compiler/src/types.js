@@ -21,6 +21,23 @@ export function literal (value) {
 }
 
 /**
+ * @param {import('estree').Expression | import('estree').Super} object
+ * @param {import('estree').Expression | import('estree').PrivateIdentifier} property
+ * @param {boolean} [computed]
+ * @param {boolean} [optional]
+ * @returns {import('estree').MemberExpression}
+ */
+export function member_expression (object, property, computed = false, optional = false) {
+	return {
+		type: 'MemberExpression',
+		object,
+		property,
+		computed,
+		optional,
+	};
+}
+
+/**
  * @param {import('estree').Expression} expression
  * @returns {import('estree').ExpressionStatement}
  */
@@ -78,11 +95,11 @@ export function logical_expression (left, right, operator) {
 
 /**
  * @param {import('estree').Expression | import('estree').Super} callee
- * @param {(import('estree').Expression | import('estree').SpreadElement)[]} args
+ * @param {(import('estree').Expression | import('estree').SpreadElement)[]} [args]
  * @param {boolean} [optional]
  * @returns {import('estree').SimpleCallExpression}
  */
-export function call_expression (callee, args, optional = false) {
+export function call_expression (callee, args = [], optional = false) {
 	return {
 		type: 'CallExpression',
 		callee,
