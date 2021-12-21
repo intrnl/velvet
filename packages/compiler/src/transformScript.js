@@ -21,7 +21,7 @@ export function transform_script (program) {
 
 	// - mark variables that have mutable operations
 	// - mark props
-	// - transform reactive, mark computed variables as mutable
+	// - transform reactive, mark computed variables
 	walk(program, {
 		/**
 		 * @param {import('estree').Node} node
