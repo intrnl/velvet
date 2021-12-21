@@ -19,6 +19,7 @@ export function transform_script (program) {
 
 	let _is_transformed = new WeakSet();
 
+	// - create node paths
 	// - mark variables that have mutable operations
 	// - mark props
 	// - transform reactive, mark computed variables
@@ -27,7 +28,9 @@ export function transform_script (program) {
 		 * @param {import('estree').Node} node
 		 * @param {import('estree').Node} parent
 		 */
-		enter (node) {
+		enter (node, parent) {
+			node.path ||= { parent };
+
 			if (map.has(node)) {
 				current_scope = map.get(node);
 			}
