@@ -208,7 +208,7 @@ export function transform_script (program) {
 					let prop = props.get(name);
 					let prop_idx = prop && props_idx.indexOf(prop);
 
-					let primitive = init && t.is_primitive(init);
+					let primitive = init && _is_primitive(init, refs);
 
 					let initializer = init
 						? primitive
@@ -410,3 +410,18 @@ function _add_store_subscription (identifier, actual, is_ref) {
 
 	return { declaration, actual_ident };
 }
+
+/**
+ * @param {import('estree').Expression} expression
+ * @param {Set<string>} [refs]
+ */
+function _is_primitive (expression, refs) {
+	return (
+		(expression.type === 'Literal' && !expression.regex) ||
+		(expression.type === 'TemplateLiteral') ||
+		(expression.type === 'UnaryExpression' && _is_primitive(expression.argument)) ||
+		(expression.type === 'BinaryExpression' && _is_primitive(expression.left) && _is_primitive(expression.right)) ||
+		(refs && expression.type === 'Identifier' && !refs.has(expression.name))
+	);
+}
+

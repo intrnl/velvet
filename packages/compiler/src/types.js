@@ -1,16 +1,4 @@
 /**
- * @param {import('estree').Expression} expression
- */
-export function is_primitive (expression) {
-	return (
-		(expression.type === 'Literal' && !expression.regex) ||
-		(expression.type === 'TemplateLiteral') ||
-		(expression.type === 'UnaryExpression' && is_primitive(expression.argument)) ||
-		(expression.type === 'BinaryExpression' && is_primitive(expression.left) && is_primitive(expression.right))
-	);
-}
-
-/**
  * @param {string} name
  * @returns {import('estree').Identifier}
  */
