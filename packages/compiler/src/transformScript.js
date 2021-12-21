@@ -238,6 +238,7 @@ export function transform_script (program) {
 			if (
 				node.type === 'Identifier' &&
 				node.name[0] === '$' &&
+				parent.type !== 'LabeledStatement' &&
 				parent.type !== 'AssignmentExpression' &&
 				!(parent.type === 'MemberExpression' && key !== 'object')
 			) {
