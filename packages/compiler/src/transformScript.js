@@ -277,6 +277,10 @@ export function transform_script (program) {
 				if (refs.has(name) && current_scope.find_owner(name) === root_scope) {
 					let expression = t.call_expression(node, [t.identifier('__access')]);
 
+					if (parent.type === 'Property') {
+						parent.shorthand = false;
+					}
+
 					_is_transformed.add(node);
 					this.replace(expression);
 				}
