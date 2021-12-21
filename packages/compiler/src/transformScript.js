@@ -1,7 +1,7 @@
 import { walk } from 'estree-walker';
 import { analyze } from 'periscopic';
 
-import * as t from './types.js';
+import * as t from './utils/types.js';
 
 
 export function transform_script (program) {
