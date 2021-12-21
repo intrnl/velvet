@@ -1,5 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`computed mutated variable referencing mutated ref member property 1`] = `
+"let value1 = __ref({ foo: 123 });
+let computed = __computed(() => value1(__access).foo);
+value1({ foo: 234 });
+computed(345);
+console.log(value1(__access), computed(__access));"
+`;
+
+exports[`computed mutated variable referencing unmutated ref member property 1`] = `
+"let value1 = { foo: 123 };
+let computed = __ref(value1.foo);
+computed(234);
+console.log(value1, computed(__access));"
+`;
+
 exports[`computed mutated variables 1`] = `
 "$: value1;
 let value2 = __ref(100);
@@ -14,6 +29,19 @@ exports[`computed mutating variable referencing unmutated ref 1`] = `
 let computed = __ref(value1);
 computed(200);
 console.log(value1, computed(__access));"
+`;
+
+exports[`computed unmutated variable referencing mutated ref member property 1`] = `
+"let value1 = __ref({ foo: 123 });
+let computed = __computed(() => value1(__access).foo);
+value1({ foo: 234 });
+console.log(value1(__access), computed);"
+`;
+
+exports[`computed unmutated variable referencing unmutated ref member property 1`] = `
+"let value1 = { foo: 123 };
+let computed = value1.foo;
+console.log(value1, computed);"
 `;
 
 exports[`computed unused variables 1`] = `

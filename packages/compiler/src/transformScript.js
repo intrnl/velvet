@@ -426,6 +426,7 @@ function _is_primitive (expression, refs) {
 		(expression.type === 'TemplateLiteral') ||
 		(expression.type === 'UnaryExpression' && _is_primitive(expression.argument, refs)) ||
 		(expression.type === 'BinaryExpression' && _is_primitive(expression.left, refs) && _is_primitive(expression.right, refs)) ||
+		(expression.type === 'MemberExpression' && _is_primitive(expression.object, refs)) ||
 		(expression.type === 'NewExpression' && _is_primitive(expression.callee, refs) && _is_primitive(expression.arguments)) ||
 		(expression.type === 'CallExpression' && _is_primitive(expression.callee) && _is_primitive(expression.arguments)) ||
 		(refs && expression.type === 'Identifier' && !refs.has(expression.name))

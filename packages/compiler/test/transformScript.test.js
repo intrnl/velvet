@@ -354,6 +354,69 @@ describe('computed', () => {
 		let result = print(program);
 		expect(result).toMatchSnapshot();
 	});
+
+	it('unmutated variable referencing unmutated ref member property', () => {
+		let program = parse(`
+			let value1 = { foo: 123 };
+			$: computed = value1.foo;
+
+			console.log(value1, computed);
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('mutated variable referencing unmutated ref member property', () => {
+		let program = parse(`
+			let value1 = { foo: 123 };
+			$: computed = value1.foo;
+
+			computed = 234;
+
+			console.log(value1, computed);
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('unmutated variable referencing mutated ref member property', () => {
+		let program = parse(`
+			let value1 = { foo: 123 };
+			$: computed = value1.foo;
+
+			value1 = { foo: 234 };
+
+			console.log(value1, computed);
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('mutated variable referencing mutated ref member property', () => {
+		let program = parse(`
+			let value1 = { foo: 123 };
+			$: computed = value1.foo;
+
+			value1 = { foo: 234 };
+			computed = 345;
+
+			console.log(value1, computed);
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
 });
 
 describe('store', () => {
