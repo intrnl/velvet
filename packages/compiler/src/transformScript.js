@@ -166,7 +166,7 @@ export function transform_script (program) {
 		 * @param {import('estree').Node} node
 		 * @param {import('estree').Node} parent
 		 */
-		enter (node, parent) {
+		enter (node, parent, key) {
 			if (map.has(node)) {
 				current_scope = map.get(node);
 			}
@@ -234,7 +234,7 @@ export function transform_script (program) {
 				node.type === 'Identifier' &&
 				parent.type !== 'AssignmentExpression' &&
 				parent.type !== 'MemberExpression' &&
-				parent.type !== 'VariableDeclarator'
+				!(parent.type === 'VariableDeclarator' && key === 'id')
 			) {
 				let name = node.name;
 
