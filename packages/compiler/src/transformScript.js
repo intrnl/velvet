@@ -100,7 +100,7 @@ export function transform_script (program) {
 
 			// transform reactive
 			if (node.type === 'LabeledStatement') {
-				// check if it's a computed value
+				// it's a computed value
 				if (
 					node.body.type === 'ExpressionStatement' &&
 					node.body.expression.type === 'AssignmentExpression' &&
@@ -121,7 +121,7 @@ export function transform_script (program) {
 					return;
 				}
 
-				// check if it's an effect
+				// it's an effect
 				let is_effect = false;
 
 				walk(node, {
@@ -148,6 +148,7 @@ export function transform_script (program) {
 
 					this.replace(t.expression_statement(expression));
 				}
+
 				return;
 			}
 		},
@@ -194,7 +195,7 @@ export function transform_script (program) {
 				// - __prop(index, () => value)
 				// - __prop(index, primitive)
 
-				// ref
+				// ref:
 				// - __ref(value)
 				// - __ref(primitive)
 
