@@ -185,6 +185,19 @@ export function transform_script (program) {
 				let is_prop = props.has(name);
 				let is_computed = computeds.has(name);
 
+				// computed:
+				// - __computed(() => value)
+				// - __ref(primitive)
+				// - primitive
+
+				// prop:
+				// - __prop(index, () => value)
+				// - __prop(index, primitive)
+
+				// ref
+				// - __ref(value)
+				// - __ref(primitive)
+
 				if ((is_mutable || is_prop || is_computed) && current_scope === root_scope) {
 					let prop = props.get(name);
 					let prop_idx = prop && props_idx.indexOf(prop);
