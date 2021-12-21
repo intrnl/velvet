@@ -43,6 +43,11 @@ export function property (key, value, computed = false) {
 		key,
 		value,
 		computed,
+		shorthand: (
+			key.type === 'Identifier' &&
+			value.type === 'Identifier' &&
+			key.name === value.name
+		),
 	};
 }
 
