@@ -258,6 +258,8 @@ class Computed {
 				trigger_effect(_this.d);
 			}
 		});
+
+		_this.run(access);
 	}
 
 	run (next, effect = true) {
