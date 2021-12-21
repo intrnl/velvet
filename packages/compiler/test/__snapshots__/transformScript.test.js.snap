@@ -1,0 +1,121 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`prop: unused properties 1`] = `
+"let value1 = __prop(0);
+let value2 = __prop(1, 100);
+let value3 = __prop(2, () => new Date());"
+`;
+
+exports[`prop: variables with mutation 1`] = `
+"console.log({ value1, value2, value3, value4 });
+let value1 = __prop(0);
+let value2 = __prop(1, 100);
+let value3 = __prop(2, () => new Date());
+let value4 = __prop(3, () => value2(__access));
+value1(value1(__access) + 1);
+value2(value2(__access) + 2);
+value3(value3(__access) + 3);
+value4(value4(__access) + 4);
+
+console.log({
+	value1(__access): value1(__access),
+	value2(__access): value2(__access),
+	value3(__access): value3(__access),
+	value4(__access): value4(__access)
+});
+
+function increment() {
+	let value4 = 200;
+	value4 += 4;
+
+	console.log({
+		value1(__access): value1(__access),
+		value2(__access): value2(__access),
+		value3(__access): value3(__access),
+		value4
+	});
+}"
+`;
+
+exports[`prop: variables with no mutation 1`] = `
+"let value1 = __prop(0);
+let value2 = __prop(1, 100);
+let value3 = __prop(2, () => new Date());
+let value4 = __prop(3, () => value2(__access));
+
+console.log({
+	value1(__access): value1(__access),
+	value2(__access): value2(__access),
+	value3(__access): value3(__access),
+	value4(__access): value4(__access)
+});
+
+function increment() {
+	let value4 = 200;
+
+	console.log({
+		value1(__access): value1(__access),
+		value2(__access): value2(__access),
+		value3(__access): value3(__access),
+		value4
+	});
+}"
+`;
+
+exports[`ref: unmutated variable referencing mutated variable 1`] = `
+"let value1 = __ref(100);
+let value2 = value1(__access);
+value1(200);
+console.log(value2);"
+`;
+
+exports[`ref: unused variables 1`] = `
+"let value1;
+let value2 = 100;
+let value3 = new Date();"
+`;
+
+exports[`ref: variables with mutation 1`] = `
+"console.log({ value1, value2, value3, value4 });
+let value1 = __ref();
+let value2 = __ref(100);
+let value3 = __ref(new Date());
+let value4 = __ref(value2(__access));
+value1(value1(__access) + 1);
+value2(value2(__access) + 2);
+value3(value3(__access) + 3);
+value4(value4(__access) + 4);
+
+console.log({
+	value1(__access): value1(__access),
+	value2(__access): value2(__access),
+	value3(__access): value3(__access),
+	value4(__access): value4(__access)
+});
+
+function increment() {
+	let value4 = 200;
+	value4 += 4;
+
+	console.log({
+		value1(__access): value1(__access),
+		value2(__access): value2(__access),
+		value3(__access): value3(__access),
+		value4
+	});
+}"
+`;
+
+exports[`ref: variables with no mutation 1`] = `
+"console.log({ value1, value2, value3, value4 });
+let value1;
+let value2 = 100;
+let value3 = new Date();
+let value4 = value2;
+console.log({ value1, value2, value3, value4 });
+
+function increment() {
+	let value4 = 200;
+	console.log({ value1, value2, value3, value4 });
+}"
+`;

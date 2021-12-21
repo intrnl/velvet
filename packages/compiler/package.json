@@ -1,6 +1,9 @@
 {
 	"type": "module",
 	"name": "@velvet/compiler",
+	"scripts": {
+		"test": "mocha --file test/utils/setup.js test/*.test.js"
+	},
 	"dependencies": {
 		"acorn": "^8.6.0",
 		"code-red": "^0.2.3",
@@ -10,6 +13,9 @@
 		"periscopic": "^3.0.4"
 	},
 	"devDependencies": {
-		"@types/estree": "^0.0.50"
+		"@types/estree": "^0.0.50",
+		"chai": "^4.3.4",
+		"mocha": "^9.1.3",
+		"mocha-chai-jest-snapshot": "^1.1.3"
 	}
 }
