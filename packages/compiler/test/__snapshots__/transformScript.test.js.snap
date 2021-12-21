@@ -73,6 +73,12 @@ state({ count: 0 });
 current_date(new Date());"
 `;
 
+exports[`ref: mutated variable mutating member property 1`] = `
+"let state = __ref({ count: 0 });
+state({ count: 1 });
+console.log(state(__access).count += 1);"
+`;
+
 exports[`ref: mutated variable, referencing unmutated variable 1`] = `
 "let value1 = 100;
 let value2 = __ref(value1);
@@ -85,6 +91,11 @@ exports[`ref: unmutated variable accessing member property 1`] = `
 let current_date = new Date();
 console.log(state.count);
 console.log(current_date.toISOString());"
+`;
+
+exports[`ref: unmutated variable mutating member property 1`] = `
+"let state = { count: 0 };
+state.count += 1;"
 `;
 
 exports[`ref: unmutated variable referencing mutated variable 1`] = `
