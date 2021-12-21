@@ -114,14 +114,14 @@ export function transform_script (program) {
 					let right = node.body.expression.right;
 
 					let name = identifier.name;
-					let expressions = b`let ${identifier} = ${right};`;
-
-					let expression = expressions[0];
+					let expression = t.variable_declaration('let', [
+						t.variable_declarator(identifier, right),
+					]);
 
 					computeds.add(name);
 					current_scope.add_declaration(expression);
 
-					this.replace(expressions[0]);
+					this.replace(expression);
 					return;
 				}
 

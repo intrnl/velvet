@@ -107,3 +107,29 @@ export function arrow_function_expression (params, body, async = false) {
 		generator: false,
 	};
 }
+
+/**
+ * @param {'var' | 'let' | 'cost'} kind
+ * @param {import('estree').VariableDeclarator[]} declarations
+ * @returns {import('estree').VariableDeclaration}
+ */
+export function variable_declaration (kind, declarations) {
+	return {
+		type: 'VariableDeclaration',
+		kind,
+		declarations,
+	};
+}
+
+/**
+ * @param {import('estree').Pattern} id
+ * @param {import('estree').Expression} [init]
+ * @returns {import('estree').VariableDeclarator}
+ */
+export function variable_declarator (id, init = null) {
+	return {
+		type: 'VariableDeclarator',
+		id,
+		init,
+	};
+}
