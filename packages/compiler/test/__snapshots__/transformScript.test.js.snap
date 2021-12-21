@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`prop: unused properties 1`] = `
+exports[`prop unused properties 1`] = `
 "let value1 = __prop(0);
 let value2 = __prop(1, 100);
 let value3 = __prop(2, () => new Date());"
 `;
 
-exports[`prop: variables with mutation 1`] = `
+exports[`prop variables with mutation 1`] = `
 "console.log({ value1, value2, value3, value4 });
 let value1 = __prop(0);
 let value2 = __prop(1, 100);
@@ -37,7 +37,7 @@ function increment() {
 }"
 `;
 
-exports[`prop: variables with no mutation 1`] = `
+exports[`prop variables with no mutation 1`] = `
 "let value1 = __prop(0);
 let value2 = __prop(1, 100);
 let value3 = __prop(2, () => new Date());
@@ -62,7 +62,7 @@ function increment() {
 }"
 `;
 
-exports[`ref: mutated variable accessing member property 1`] = `
+exports[`ref mutated variable accessing member property 1`] = `
 "console.log(state.count);
 console.log(current_date.toISOString());
 let state = __ref({ count: 0 });
@@ -73,52 +73,52 @@ state({ count: 0 });
 current_date(new Date());"
 `;
 
-exports[`ref: mutated variable mutating member property 1`] = `
+exports[`ref mutated variable mutating member property 1`] = `
 "let state = __ref({ count: 0 });
 state({ count: 1 });
 console.log(state(__access).count += 1);"
 `;
 
-exports[`ref: mutated variable, referencing unmutated variable 1`] = `
+exports[`ref mutated variable, referencing unmutated variable 1`] = `
 "let value1 = 100;
 let value2 = __ref(value1);
 value2(200);
 console.log(value1, value2(__access));"
 `;
 
-exports[`ref: unmutated variable accessing member property 1`] = `
+exports[`ref unmutated variable accessing member property 1`] = `
 "let state = { count: 0 };
 let current_date = new Date();
 console.log(state.count);
 console.log(current_date.toISOString());"
 `;
 
-exports[`ref: unmutated variable mutating member property 1`] = `
+exports[`ref unmutated variable mutating member property 1`] = `
 "let state = { count: 0 };
 state.count += 1;"
 `;
 
-exports[`ref: unmutated variable referencing mutated variable 1`] = `
+exports[`ref unmutated variable referencing mutated variable 1`] = `
 "let value1 = __ref(100);
 let value2 = value1(__access);
 value1(200);
 console.log(value1(__access), value2);"
 `;
 
-exports[`ref: unused variables 1`] = `
+exports[`ref unused variables 1`] = `
 "let value1;
 let value2 = 100;
 let value3 = new Date();"
 `;
 
-exports[`ref: variable mutation with logical assignment operators 1`] = `
+exports[`ref variable mutation with logical assignment operators 1`] = `
 "let value1 = __ref(100);
 value1(__access) ?? value1(200);
 value1(__access) || value1(300);
 value1(__access) && value1(300);"
 `;
 
-exports[`ref: variables with mutation 1`] = `
+exports[`ref variables with mutation 1`] = `
 "console.log({ value1, value2, value3, value4 });
 let value1 = __ref();
 let value2 = __ref(100);
@@ -149,7 +149,7 @@ function increment() {
 }"
 `;
 
-exports[`ref: variables with no mutation 1`] = `
+exports[`ref variables with no mutation 1`] = `
 "console.log({ value1, value2, value3, value4 });
 let value1;
 let value2 = 100;
@@ -163,7 +163,13 @@ function increment() {
 }"
 `;
 
-exports[`store: multiple store getter references 1`] = `
+exports[`store getter 1`] = `
+"let $store = __ref();
+__cleanup(store.subscribe($store));
+$store(__access);"
+`;
+
+exports[`store multiple getter references 1`] = `
 "let $value1 = __ref();
 __cleanup(value1.subscribe($value1));
 
@@ -176,7 +182,7 @@ __cleanup(value2.subscribe($value2));
 console.log($value2(__access));"
 `;
 
-exports[`store: multiple store setter references 1`] = `
+exports[`store multiple setter references 1`] = `
 "let $value1 = __ref();
 __cleanup(value1.subscribe($value1));
 
@@ -189,31 +195,25 @@ __cleanup(value2.subscribe($value2));
 $value2(2);"
 `;
 
-exports[`store: mutating member property 1`] = `
+exports[`store mutating member property 1`] = `
 "let $foo = __ref();
 __cleanup(foo.subscribe($foo));
 $foo(__access).bar = 123;"
 `;
 
-exports[`store: retrieving member property 1`] = `
+exports[`store retrieving member property 1`] = `
 "let $foo = __ref();
 __cleanup(foo.subscribe($foo));
 console.log($foo(__access).bar);"
 `;
 
-exports[`store: store getter 1`] = `
-"let $store = __ref();
-__cleanup(store.subscribe($store));
-$store(__access);"
-`;
-
-exports[`store: store setter 1`] = `
+exports[`store setter 1`] = `
 "let $store = __ref();
 __cleanup(store.subscribe($store));
 $store(123);"
 `;
 
-exports[`store: subscribing to a ref 1`] = `
+exports[`store subscribing to a ref 1`] = `
 "let value1 = __ref();
 value1(get_store());
 let $value1 = __ref();
