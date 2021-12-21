@@ -77,10 +77,10 @@ export function logical_expression (left, right, operator) {
 }
 
 /**
- * @returns {import('estree').SimpleCallExpression}
  * @param {import('estree').Expression | import('estree').Super} callee
  * @param {(import('estree').Expression | import('estree').SpreadElement)[]} args
  * @param {boolean} [optional]
+ * @returns {import('estree').SimpleCallExpression}
  */
 export function call_expression (callee, args, optional = false) {
 	return {
@@ -88,5 +88,22 @@ export function call_expression (callee, args, optional = false) {
 		callee,
 		arguments: args.filter((args) => !!args),
 		optional,
+	};
+}
+
+/**
+ * @param {import('estree').Pattern} params
+ * @param {import('estree').BlockStatement | import('estree').Expression} body
+ * @param {boolean} [async]
+ * @returns {import('estree').ArrowFunctionExpression}
+ */
+export function arrow_function_expression (params, body, async = false) {
+	return {
+		type: 'ArrowFunctionExpression',
+		params,
+		body,
+		async,
+		expression: body.type !== 'BlockStatement',
+		generator: false,
 	};
 }
