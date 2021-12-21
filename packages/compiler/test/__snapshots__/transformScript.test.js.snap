@@ -1,18 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`computed mutated variable referencing mutated ref member property 1`] = `
-"let value1 = __ref({ foo: 123 });
+"let value1 = __ref({
+  foo: 123
+});
 let computed = __computed(() => value1(__access).foo);
-value1({ foo: 234 });
+value1({
+  foo: 234
+});
 computed(345);
-console.log(value1(__access), computed(__access));"
+console.log(value1(__access), computed(__access));
+"
 `;
 
 exports[`computed mutated variable referencing unmutated ref member property 1`] = `
-"let value1 = { foo: 123 };
+"let value1 = {
+  foo: 123
+};
 let computed = __ref(value1.foo);
 computed(234);
-console.log(value1, computed(__access));"
+console.log(value1, computed(__access));
+"
 `;
 
 exports[`computed mutated variables 1`] = `
@@ -21,33 +29,44 @@ let value2 = __ref(100);
 let value3 = __ref(new Date());
 value1 = 1;
 value2(2);
-value3(3);"
+value3(3);
+"
 `;
 
 exports[`computed mutating variable referencing unmutated ref 1`] = `
 "let value1 = 100;
 let computed = __ref(value1);
 computed(200);
-console.log(value1, computed(__access));"
+console.log(value1, computed(__access));
+"
 `;
 
 exports[`computed unmutated variable referencing mutated ref member property 1`] = `
-"let value1 = __ref({ foo: 123 });
+"let value1 = __ref({
+  foo: 123
+});
 let computed = __computed(() => value1(__access).foo);
-value1({ foo: 234 });
-console.log(value1(__access), computed(__access));"
+value1({
+  foo: 234
+});
+console.log(value1(__access), computed(__access));
+"
 `;
 
 exports[`computed unmutated variable referencing unmutated ref member property 1`] = `
-"let value1 = { foo: 123 };
+"let value1 = {
+  foo: 123
+};
 let computed = value1.foo;
-console.log(value1, computed);"
+console.log(value1, computed);
+"
 `;
 
 exports[`computed unused variables 1`] = `
 "$: value1;
 let value2 = 100;
-let value3 = new Date();"
+let value3 = new Date();
+"
 `;
 
 exports[`computed variable referencing mutated ref 1`] = `
@@ -58,7 +77,8 @@ let computed2 = __computed(() => value2(__access));
 value1(200);
 value2(Date.now());
 console.log(value1(__access), computed1(__access));
-console.log(value2(__access), computed2(__access));"
+console.log(value2(__access), computed2(__access));
+"
 `;
 
 exports[`computed variable referencing unmutated ref 1`] = `
@@ -67,13 +87,15 @@ let value2 = new Date();
 let computed1 = value1 * 2;
 let computed2 = value2;
 console.log(value1, computed1);
-console.log(value2, computed2);"
+console.log(value2, computed2);
+"
 `;
 
 exports[`prop unused properties 1`] = `
 "let value1 = __prop(0);
 let value2 = __prop(1, 100);
-let value3 = __prop(2, () => new Date());"
+let value3 = __prop(2, () => new Date());
+"
 `;
 
 exports[`prop variable referencing mutated ref 1`] = `
@@ -83,23 +105,26 @@ let value3 = __prop(0, () => value1(__access));
 let value4 = __prop(1, () => value2(__access));
 let value5 = __prop(2, () => value1(__access) + value2(__access));
 value1(3);
-value2(value2(__access) * 4);"
+value2(value2(__access) * 4);
+"
 `;
 
 exports[`prop variable referencing unmutated ref 1`] = `
 "let value1 = 1;
-
-let value2 = () => {
-	
-};
-
+let value2 = () => {};
 let value3 = __prop(0, () => value1);
 let value4 = __prop(1, () => value2);
-let value5 = __prop(2, () => value1 + value2);"
+let value5 = __prop(2, () => value1 + value2);
+"
 `;
 
 exports[`prop variables with mutation 1`] = `
-"console.log({ value1, value2, value3, value4 });
+"console.log({
+  value1,
+  value2,
+  value3,
+  value4
+});
 let value1 = __prop(0);
 let value2 = __prop(1, 100);
 let value3 = __prop(2, () => new Date());
@@ -108,25 +133,23 @@ value1(value1(__access) + 1);
 value2(value2(__access) + 2);
 value3(value3(__access) + 3);
 value4(value4(__access) + 4);
-
 console.log({
-	value1: value1(__access),
-	value2: value2(__access),
-	value3: value3(__access),
-	value4: value4(__access)
+  value1: value1(__access),
+  value2: value2(__access),
+  value3: value3(__access),
+  value4: value4(__access)
 });
-
 function increment() {
-	let value4 = 200;
-	value4 += 4;
-
-	console.log({
-		value1: value1(__access),
-		value2: value2(__access),
-		value3: value3(__access),
-		value4
-	});
-}"
+  let value4 = 200;
+  value4 += 4;
+  console.log({
+    value1: value1(__access),
+    value2: value2(__access),
+    value3: value3(__access),
+    value4
+  });
+}
+"
 `;
 
 exports[`prop variables with no mutation 1`] = `
@@ -134,84 +157,107 @@ exports[`prop variables with no mutation 1`] = `
 let value2 = __prop(1, 100);
 let value3 = __prop(2, () => new Date());
 let value4 = __prop(3, () => value2(__access));
-
 console.log({
-	value1: value1(__access),
-	value2: value2(__access),
-	value3: value3(__access),
-	value4: value4(__access)
+  value1: value1(__access),
+  value2: value2(__access),
+  value3: value3(__access),
+  value4: value4(__access)
 });
-
 function increment() {
-	let value4 = 200;
-
-	console.log({
-		value1: value1(__access),
-		value2: value2(__access),
-		value3: value3(__access),
-		value4
-	});
-}"
+  let value4 = 200;
+  console.log({
+    value1: value1(__access),
+    value2: value2(__access),
+    value3: value3(__access),
+    value4
+  });
+}
+"
 `;
 
 exports[`ref mutated variable accessing member property 1`] = `
 "console.log(state.count);
 console.log(current_date.toISOString());
-let state = __ref({ count: 0 });
+let state = __ref({
+  count: 0
+});
 let current_date = __ref(new Date());
 console.log(state(__access).count);
 console.log(current_date(__access).toISOString());
-state({ count: 0 });
-current_date(new Date());"
+state({
+  count: 0
+});
+current_date(new Date());
+"
 `;
 
 exports[`ref mutated variable mutating member property 1`] = `
-"let state = __ref({ count: 0 });
-state({ count: 1 });
-console.log(state(__access).count += 1);"
+"let state = __ref({
+  count: 0
+});
+state({
+  count: 1
+});
+console.log(state(__access).count += 1);
+"
 `;
 
 exports[`ref mutated variable, referencing unmutated variable 1`] = `
 "let value1 = 100;
 let value2 = __ref(value1);
 value2(200);
-console.log(value1, value2(__access));"
+console.log(value1, value2(__access));
+"
 `;
 
 exports[`ref unmutated variable accessing member property 1`] = `
-"let state = { count: 0 };
+"let state = {
+  count: 0
+};
 let current_date = new Date();
 console.log(state.count);
-console.log(current_date.toISOString());"
+console.log(current_date.toISOString());
+"
 `;
 
 exports[`ref unmutated variable mutating member property 1`] = `
-"let state = { count: 0 };
-state.count += 1;"
+"let state = {
+  count: 0
+};
+state.count += 1;
+"
 `;
 
 exports[`ref unmutated variable referencing mutated variable 1`] = `
 "let value1 = __ref(100);
 let value2 = value1(__access);
 value1(200);
-console.log(value1(__access), value2);"
+console.log(value1(__access), value2);
+"
 `;
 
 exports[`ref unused variables 1`] = `
 "let value1;
 let value2 = 100;
-let value3 = new Date();"
+let value3 = new Date();
+"
 `;
 
 exports[`ref variable mutation with logical assignment operators 1`] = `
 "let value1 = __ref(100);
 value1(__access) ?? value1(200);
 value1(__access) || value1(300);
-value1(__access) && value1(300);"
+value1(__access) && value1(300);
+"
 `;
 
 exports[`ref variables with mutation 1`] = `
-"console.log({ value1, value2, value3, value4 });
+"console.log({
+  value1,
+  value2,
+  value3,
+  value4
+});
 let value1 = __ref();
 let value2 = __ref(100);
 let value3 = __ref(new Date());
@@ -220,89 +266,104 @@ value1(value1(__access) + 1);
 value2(value2(__access) + 2);
 value3(value3(__access) + 3);
 value4(value4(__access) + 4);
-
 console.log({
-	value1: value1(__access),
-	value2: value2(__access),
-	value3: value3(__access),
-	value4: value4(__access)
+  value1: value1(__access),
+  value2: value2(__access),
+  value3: value3(__access),
+  value4: value4(__access)
 });
-
 function increment() {
-	let value4 = 200;
-	value4 += 4;
-
-	console.log({
-		value1: value1(__access),
-		value2: value2(__access),
-		value3: value3(__access),
-		value4
-	});
-}"
+  let value4 = 200;
+  value4 += 4;
+  console.log({
+    value1: value1(__access),
+    value2: value2(__access),
+    value3: value3(__access),
+    value4
+  });
+}
+"
 `;
 
 exports[`ref variables with no mutation 1`] = `
-"console.log({ value1, value2, value3, value4 });
+"console.log({
+  value1,
+  value2,
+  value3,
+  value4
+});
 let value1;
 let value2 = 100;
 let value3 = new Date();
 let value4 = value2;
-console.log({ value1, value2, value3, value4 });
-
+console.log({
+  value1,
+  value2,
+  value3,
+  value4
+});
 function increment() {
-	let value4 = 200;
-	console.log({ value1, value2, value3, value4 });
-}"
+  let value4 = 200;
+  console.log({
+    value1,
+    value2,
+    value3,
+    value4
+  });
+}
+"
 `;
 
 exports[`store getter 1`] = `
 "let $store = __ref();
 __cleanup(store.subscribe($store));
-$store(__access);"
+$store(__access);
+"
 `;
 
 exports[`store multiple getter references 1`] = `
 "let $value1 = __ref();
 __cleanup(value1.subscribe($value1));
-
 function increment() {
-	console.log($value1(__access));
+  console.log($value1(__access));
 }
-
 let $value2 = __ref();
 __cleanup(value2.subscribe($value2));
-console.log($value2(__access));"
+console.log($value2(__access));
+"
 `;
 
 exports[`store multiple setter references 1`] = `
 "let $value1 = __ref();
 __cleanup(value1.subscribe($value1));
-
 function increment() {
-	$value1($value1(__access) + 1);
+  $value1($value1(__access) + 1);
 }
-
 let $value2 = __ref();
 __cleanup(value2.subscribe($value2));
-$value2(2);"
+$value2(2);
+"
 `;
 
 exports[`store mutating member property 1`] = `
 "let $foo = __ref();
 __cleanup(foo.subscribe($foo));
-$foo(__access).bar = 123;"
+$foo(__access).bar = 123;
+"
 `;
 
 exports[`store retrieving member property 1`] = `
 "let $foo = __ref();
 __cleanup(foo.subscribe($foo));
-console.log($foo(__access).bar);"
+console.log($foo(__access).bar);
+"
 `;
 
 exports[`store setter 1`] = `
 "let $store = __ref();
 __cleanup(store.subscribe($store));
-$store(123);"
+$store(123);
+"
 `;
 
 exports[`store subscribing to a ref 1`] = `
@@ -310,5 +371,6 @@ exports[`store subscribing to a ref 1`] = `
 value1(get_store());
 let $value1 = __ref();
 __cleanup(value1(__access).subscribe($value1));
-console.log($value1(__access));"
+console.log($value1(__access));
+"
 `;

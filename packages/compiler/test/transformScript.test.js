@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 
 import { transform_script } from '../src/transformScript.js';
-import { parse, print } from './utils/ast.js';
+import { parse, print } from '../src/utils/parse.js';
 
 
 describe('ref', () => {
