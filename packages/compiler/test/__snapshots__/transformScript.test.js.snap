@@ -90,7 +90,7 @@ exports[`prop variable referencing unmutated ref 1`] = `
 "let value1 = 1;
 
 let value2 = () => {
-
+	
 };
 
 let value3 = __prop(0, () => value1);
