@@ -271,6 +271,91 @@ describe('prop', () => {
 	});
 });
 
+describe('computed', () => {
+	it('unused variables', () => {
+		let program = parse(`
+			$: value1;
+			$: value2 = 100;
+			$: value3 = new Date();
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('mutated variables', () => {
+		let program = parse(`
+			$: value1;
+			$: value2 = 100;
+			$: value3 = new Date();
+
+			value1 = 1;
+			value2 = 2;
+			value3 = 3;
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('variable referencing unmutated ref', () => {
+		let program = parse(`
+			let value1 = 100;
+			let value2 = new Date();
+			$: computed1 = value1 * 2;
+			$: computed2 = value2;
+
+			console.log(value1, computed1);
+			console.log(value2, computed2);
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('variable referencing mutated ref', () => {
+		let program = parse(`
+			let value1 = 100;
+			let value2 = new Date();
+			$: computed1 = value1 * 2;
+			$: computed2 = value2;
+
+			value1 = 200;
+			value2 = Date.now();
+
+			console.log(value1, computed1);
+			console.log(value2, computed2);
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('mutating variable referencing unmutated ref', () => {
+		let program = parse(`
+			let value1 = 100;
+			$: computed = value1;
+
+			computed = 200;
+
+			console.log(value1, computed);
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
+});
+
 describe('store', () => {
 	it('getter', () => {
 		let program = parse(`
