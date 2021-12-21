@@ -192,7 +192,7 @@ export function transform_script (program) {
 					let primitive = init && t.is_primitive(init);
 
 					let initializer = init
-						? primitive || (!is_prop && !is_computed)
+						? primitive
 							? init
 							: x`() => ${init}`
 						: null;
@@ -202,7 +202,7 @@ export function transform_script (program) {
 						: prop
 							? x`__prop(${t.literal(prop_idx)}, ${initializer})`
 							: is_mutable
-								? x`__ref(${initializer})`
+								? x`__ref(${init})`
 								: init;
 
 					node.init = expression;
