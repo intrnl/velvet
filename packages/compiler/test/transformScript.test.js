@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 
 import { transform_script } from '../src/transformScript.js';
 import { parse, print } from '../src/utils/parse.js';
