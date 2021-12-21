@@ -35,14 +35,17 @@ export function literal (value) {
  * @param {import('estree').Expression | import('estree').PrivateIdentifier} key
  * @param {import('estree').Expression | import('estree').Pattern} value
  * @param {boolean} [computed]
+ * @param {'kind' | 'get' | 'set'} [kind]
  * @returns {import('estree').Property}
  */
-export function property (key, value, computed = false) {
+export function property (key, value, computed = false, kind = 'init') {
 	return {
 		type: 'Property',
 		key,
 		value,
+		kind,
 		computed,
+		method: kind !== 'init',
 		shorthand: (
 			key.type === 'Identifier' &&
 			value.type === 'Identifier' &&
