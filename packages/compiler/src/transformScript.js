@@ -481,6 +481,8 @@ export function finalize_imports (program, mod = 'velvet/internal') {
 			name = imported + '$' + (++count);
 		}
 
+		identifiers.add(name);
+
 		for (let identifier of set) {
 			identifier.name = name;
 		}
