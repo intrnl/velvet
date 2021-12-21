@@ -413,15 +413,21 @@ function _add_store_subscription (identifier, actual, is_ref) {
 }
 
 /**
- * @param {import('estree').Expression} expression
+ * @param {import('estree').Expression | import('estree').Expression[]} expression
  * @param {Set<string>} [refs]
  */
 function _is_primitive (expression, refs) {
+	if (Array.isArray(expression)) {
+		return expression.every((expr) => _is_primitive(expr, refs));
+	}
+
 	return (
 		(expression.type === 'Literal' && !expression.regex) ||
 		(expression.type === 'TemplateLiteral') ||
 		(expression.type === 'UnaryExpression' && _is_primitive(expression.argument, refs)) ||
 		(expression.type === 'BinaryExpression' && _is_primitive(expression.left, refs) && _is_primitive(expression.right, refs)) ||
+		(expression.type === 'NewExpression' && _is_primitive(expression.callee, refs) && _is_primitive(expression.arguments)) ||
+		(expression.type === 'CallExpression' && _is_primitive(expression.callee) && _is_primitive(expression.arguments)) ||
 		(refs && expression.type === 'Identifier' && !refs.has(expression.name))
 	);
 }

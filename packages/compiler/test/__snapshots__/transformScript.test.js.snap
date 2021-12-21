@@ -3,7 +3,7 @@
 exports[`computed mutated variables 1`] = `
 "$: value1;
 let value2 = __ref(100);
-let value3 = __computed(() => new Date());
+let value3 = __ref(new Date());
 value1 = 1;
 value2(2);
 value3(3);"
@@ -19,7 +19,7 @@ console.log(value1, computed(__access));"
 exports[`computed unused variables 1`] = `
 "$: value1;
 let value2 = 100;
-let value3 = __computed(() => new Date());"
+let value3 = new Date();"
 `;
 
 exports[`computed variable referencing mutated ref 1`] = `
