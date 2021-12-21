@@ -379,7 +379,7 @@ export function transform_script (program) {
 
 	if (is_bindings.length) {
 		let properties = is_bindings.map(([local, exported]) => (
-			t.property(t.identifier(local), t.identifier(exported))
+			t.property(t.identifier(exported), t.identifier(local))
 		));
 
 		let expression = t.expression_statement(
