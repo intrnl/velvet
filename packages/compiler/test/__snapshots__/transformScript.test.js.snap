@@ -91,6 +91,46 @@ console.log(value2, computed2);
 "
 `;
 
+exports[`effect references mutated refs 1`] = `
+"$: console.log(value1, value2);
+$: {
+  console.log(value1);
+  console.log(value2);
+}
+let value1 = __ref({
+  foo: 123
+});
+let value2 = __ref(123);
+value1({
+  foo: 234
+});
+value2(543);
+__effect(() => console.log(value1(__access), value2(__access)));
+__effect(() => {
+  console.log(value1(__access));
+  console.log(value2(__access));
+});
+"
+`;
+
+exports[`effect references unmutated refs 1`] = `
+"$: console.log(value1, value2);
+$: {
+  console.log(value1);
+  console.log(value2);
+}
+let value1 = {
+  foo: 123
+};
+let value2 = 123;
+$: console.log(value1, value2);
+$: {
+  console.log(value1);
+  console.log(value2);
+}
+"
+`;
+
 exports[`prop unused properties 1`] = `
 "let value1 = __prop(0);
 let value2 = __prop(1, 100);

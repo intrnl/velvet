@@ -419,6 +419,63 @@ describe('computed', () => {
 	});
 });
 
+describe('effect', () => {
+	it('references unmutated refs', () => {
+		let program = parse(`
+			$: console.log(value1, value2);
+
+			$: {
+				console.log(value1);
+				console.log(value2);
+			}
+
+			let value1 = { foo: 123 };
+			let value2 = 123;
+
+			$: console.log(value1, value2);
+
+			$: {
+				console.log(value1);
+				console.log(value2);
+			}
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('references mutated refs', () => {
+		let program = parse(`
+			$: console.log(value1, value2);
+
+			$: {
+				console.log(value1);
+				console.log(value2);
+			}
+
+			let value1 = { foo: 123 };
+			let value2 = 123;
+
+			value1 = { foo: 234 };
+			value2 = 543;
+
+			$: console.log(value1, value2);
+
+			$: {
+				console.log(value1);
+				console.log(value2);
+			}
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
+});
+
 describe('store', () => {
 	it('getter', () => {
 		let program = parse(`

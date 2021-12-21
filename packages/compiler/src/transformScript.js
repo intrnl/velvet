@@ -22,7 +22,7 @@ export function transform_script (program) {
 	// - create node paths
 	// - mark variables that have mutable operations
 	// - mark props
-	// - transform reactive, mark computed variables
+	// - transform computed variables
 	walk(program, {
 		/**
 		 * @param {import('estree').Node} node
@@ -101,58 +101,25 @@ export function transform_script (program) {
 				return;
 			}
 
-			// transform reactive
-			if (node.type === 'LabeledStatement') {
-				// it's a computed value
-				if (
-					node.body.type === 'ExpressionStatement' &&
-					node.body.expression.type === 'AssignmentExpression' &&
-					node.body.expression.left.type === 'Identifier'
-				) {
-					let identifier = node.body.expression.left;
-					let right = node.body.expression.right;
+			// transform computed value
+			if (
+				node.type === 'LabeledStatement' &&
+				node.body.type === 'ExpressionStatement' &&
+				node.body.expression.type === 'AssignmentExpression' &&
+				node.body.expression.left.type === 'Identifier'
+			) {
+				let identifier = node.body.expression.left;
+				let right = node.body.expression.right;
 
-					let name = identifier.name;
-					let expression = t.variable_declaration('let', [
-						t.variable_declarator(identifier, right),
-					]);
+				let name = identifier.name;
+				let expression = t.variable_declaration('let', [
+					t.variable_declarator(identifier, right),
+				]);
 
-					computeds.add(name);
-					current_scope.add_declaration(expression);
+				computeds.add(name);
+				current_scope.add_declaration(expression);
 
-					this.replace(expression);
-					return;
-				}
-
-				// it's an effect
-				let is_effect = false;
-
-				walk(node, {
-					/**
-					 * @param {import('estree').Node} node
-					 * @param {import('estree').Node} parent
-					 */
-					enter (node, parent) {
-						if (
-							node.type === 'Identifier' &&
-							refs.has(node.name) &&
-							parent.type !== 'ExpressionStatement'
-						) {
-							is_effect = true;
-						}
-					},
-				});
-
-				if (is_effect) {
-					let body = node.body;
-					let statement = body.type === 'ExpressionStatement' ? body.expression : body;
-
-					let effect = t.arrow_function_expression([], statement);
-					let expression = t.call_expression(t.identifier('__effect'), [effect]);
-
-					this.replace(t.expression_statement(expression));
-				}
-
+				this.replace(expression);
 				return;
 			}
 		},
@@ -166,6 +133,7 @@ export function transform_script (program) {
 
 	// - transform getters, setters, and declarators
 	// - transform store reactions
+	// - transform reactive statements
 	walk(program, {
 		/**
 		 * @param {import('estree').Node} node
@@ -359,6 +327,39 @@ export function transform_script (program) {
 
 					_is_transformed.add(identifier);
 					this.replace(expression);
+				}
+
+				return;
+			}
+
+			// transform reactive statements
+			if (node.type === 'LabeledStatement') {
+				let is_effect = false;
+
+				walk(node, {
+					/**
+					 * @param {import('estree').Node} node
+					 * @param {import('estree').Node} parent
+					 */
+					enter (node, parent) {
+						if (
+							node.type === 'Identifier' &&
+							refs.has(node.name) &&
+							parent.type !== 'ExpresionStatement'
+						) {
+							is_effect = true;
+						}
+					},
+				});
+
+				if (is_effect) {
+					let body = node.body;
+					let statement = body.type === 'ExpressionStatement' ? body.expression : body;
+
+					let effect = t.arrow_function_expression([], statement);
+					let expression = t.call_expression(t.identifier('__effect'), [effect]);
+
+					this.replace(t.expression_statement(expression));
 				}
 
 				return;
