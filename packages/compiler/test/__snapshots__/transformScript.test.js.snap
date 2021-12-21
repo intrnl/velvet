@@ -1,5 +1,39 @@
 // Vitest Snapshot v1
 
+exports[`bind > const and function exports 1`] = `
+"const magic = 420;
+let open = __prop(1, false);
+function toggle() {
+  open(!open(__access));
+}
+__bind({
+  magic,
+  toggle
+});
+"
+`;
+
+exports[`bind > only one specifier for a bind 1`] = `
+"const magic = 420;
+__bind({
+  MAGIC_NUMBER: magic
+});
+"
+`;
+
+exports[`bind > separate export specifier 1`] = `
+"const magic = 420;
+let open = __prop(0, false);
+function toggle() {
+  open(!open(__access));
+}
+__bind({
+  MAGIC_NUMBER: magic,
+  toggle
+});
+"
+`;
+
 exports[`computed > mutated variable referencing mutated ref member property 1`] = `
 "let value1 = __ref({
   foo: 123
@@ -164,6 +198,12 @@ foo: {
   console.log(value1);
   console.log(value2);
 }
+"
+`;
+
+exports[`prop > handles separate export specifier 1`] = `
+"let _count = __prop(0, 0);
+let foo = __prop(1, 1);
 "
 `;
 

@@ -269,6 +269,20 @@ describe('prop', () => {
 		let result = print(program);
 		expect(result).toMatchSnapshot();
 	});
+
+	it('handles separate export specifier', () => {
+		let program = parse(`
+			let _count = 0;
+			let foo = 1;
+
+			export { _count as count, foo };
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
 });
 
 describe('computed', () => {
@@ -588,5 +602,56 @@ describe('store', () => {
 
 		transform_script(program);
 		expect(print(program)).toMatchSnapshot();
+	});
+});
+
+describe('bind', () => {
+	it('const and function exports', () => {
+		let program = parse(`
+			export const magic = 420;
+
+			export let open = false;
+
+			export function toggle () {
+				open = !open;
+			}
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('separate export specifier', () => {
+		let program = parse(`
+			const magic = 420;
+
+			export let open = false;
+
+			function toggle () {
+				open = !open;
+			}
+
+			export { magic as MAGIC_NUMBER, toggle };
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('only one specifier for a bind', () => {
+		let program = parse(`
+			export const magic = 420;
+
+			export { magic as MAGIC_NUMBER };
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 });
