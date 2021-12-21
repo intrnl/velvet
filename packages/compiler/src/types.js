@@ -10,7 +10,7 @@ export function identifier (name) {
 }
 
 /**
- * @param {any} value
+ * @param {string | boolean | number} value
  * @returns {import('estree').SimpleLiteral}
  */
 export function literal (value) {
