@@ -420,8 +420,8 @@ function _is_primitive (expression, refs) {
 	return (
 		(expression.type === 'Literal' && !expression.regex) ||
 		(expression.type === 'TemplateLiteral') ||
-		(expression.type === 'UnaryExpression' && _is_primitive(expression.argument)) ||
-		(expression.type === 'BinaryExpression' && _is_primitive(expression.left) && _is_primitive(expression.right)) ||
+		(expression.type === 'UnaryExpression' && _is_primitive(expression.argument, refs)) ||
+		(expression.type === 'BinaryExpression' && _is_primitive(expression.left, refs) && _is_primitive(expression.right, refs)) ||
 		(refs && expression.type === 'Identifier' && !refs.has(expression.name))
 	);
 }
