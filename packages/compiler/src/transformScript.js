@@ -1,6 +1,5 @@
 import { walk } from 'estree-walker';
 import { analyze } from 'periscopic';
-import { x, p } from 'code-red';
 
 import * as t from './types.js';
 
@@ -373,10 +372,17 @@ export function transform_script (program) {
 	let is_bindings = [...props].filter(([local]) => !refs.has(local));
 
 	if (is_bindings.length) {
-		let properties = is_bindings.map(([local, exported]) => p`${exported}: ${local}`);
-		let expression = x`__bind({${properties}})`;
+		let properties = is_bindings.map(([local, exported]) => (
+			t.property(t.identifier(local), t.identifier(exported))
+		));
 
-		program.body.push(t.expression_statement(expression));
+		let expression = t.expression_statement(
+			t.call_expression(t.identifier('__bind'), [
+				t.object_expression(properties)
+			])
+		);
+
+		program.body.push(expression);
 	}
 }
 

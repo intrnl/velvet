@@ -21,6 +21,32 @@ export function literal (value) {
 }
 
 /**
+ * @type {(import('estree').Property | import('estree').SpreadElement)[]} [properties]
+ * @returns {import('estree').ObjectExpression}
+ */
+ export function object_expression (properties = []) {
+	return {
+		type: 'ObjectExpression',
+		properties: properties.filter((prop) => !!prop),
+	};
+}
+
+/**
+ * @param {import('estree').Expression | import('estree').PrivateIdentifier} key
+ * @param {import('estree').Expression | import('estree').Pattern} value
+ * @param {boolean} [computed]
+ * @returns {import('estree').Property}
+ */
+export function property (key, value, computed = false) {
+	return {
+		type: 'Property',
+		key,
+		value,
+		computed,
+	};
+}
+
+/**
  * @param {import('estree').Expression | import('estree').Super} object
  * @param {import('estree').Expression | import('estree').PrivateIdentifier} property
  * @param {boolean} [computed]
