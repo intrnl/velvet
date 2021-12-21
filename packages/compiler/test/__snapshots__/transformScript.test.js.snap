@@ -62,11 +62,18 @@ function increment() {
 }"
 `;
 
+exports[`ref: mutated variable, referencing unmutated variable 1`] = `
+"let value1 = 100;
+let value2 = __ref(value1);
+value2(200);
+console.log(value1, value2(__access));"
+`;
+
 exports[`ref: unmutated variable referencing mutated variable 1`] = `
 "let value1 = __ref(100);
 let value2 = value1(__access);
 value1(200);
-console.log(value2);"
+console.log(value1(__access), value2);"
 `;
 
 exports[`ref: unused variables 1`] = `

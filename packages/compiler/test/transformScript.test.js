@@ -73,7 +73,22 @@ it('ref: unmutated variable referencing mutated variable', () => {
 		let value2 = value1;
 
 		value1 = 200;
-		console.log(value2);
+		console.log(value1, value2);
+	`);
+
+	transform_script(program);
+
+	let result = print(program);
+	expect(result).toMatchSnapshot();
+});
+
+it('ref: mutated variable, referencing unmutated variable', () => {
+	let program = parse(`
+		let value1 = 100;
+		let value2 = value1;
+
+		value2 = 200;
+		console.log(value1, value2);
 	`);
 
 	transform_script(program);
