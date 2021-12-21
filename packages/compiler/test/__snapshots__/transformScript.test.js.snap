@@ -35,7 +35,7 @@ exports[`computed unmutated variable referencing mutated ref member property 1`]
 "let value1 = __ref({ foo: 123 });
 let computed = __computed(() => value1(__access).foo);
 value1({ foo: 234 });
-console.log(value1(__access), computed);"
+console.log(value1(__access), computed(__access));"
 `;
 
 exports[`computed unmutated variable referencing unmutated ref member property 1`] = `
@@ -57,8 +57,8 @@ let computed1 = __computed(() => value1(__access) * 2);
 let computed2 = __computed(() => value2(__access));
 value1(200);
 value2(Date.now());
-console.log(value1(__access), computed1);
-console.log(value2(__access), computed2);"
+console.log(value1(__access), computed1(__access));
+console.log(value2(__access), computed2(__access));"
 `;
 
 exports[`computed variable referencing unmutated ref 1`] = `
@@ -90,7 +90,7 @@ exports[`prop variable referencing unmutated ref 1`] = `
 "let value1 = 1;
 
 let value2 = () => {
-	
+
 };
 
 let value3 = __prop(0, () => value1);

@@ -226,7 +226,7 @@ export function transform_script (program) {
 
 					node.init = expression;
 
-					if (is_mutable || is_prop) {
+					if (is_mutable || is_prop || (is_computed && !primitive)) {
 						refs.add(name);
 					}
 				}
