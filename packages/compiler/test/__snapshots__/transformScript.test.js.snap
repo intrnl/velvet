@@ -5,11 +5,14 @@ exports[`computed mutated variable referencing mutated ref member property 1`] =
   foo: 123
 });
 let computed = __computed(() => value1(__access).foo);
+foo: unrelated = value1(__access).foo;
 value1({
   foo: 234
 });
 computed(345);
+unrelated = 123;
 console.log(value1(__access), computed(__access));
+console.log(unrelated);
 "
 `;
 
@@ -18,8 +21,11 @@ exports[`computed mutated variable referencing unmutated ref member property 1`]
   foo: 123
 };
 let computed = __ref(value1.foo);
+foo: unrelated = value1.foo;
 computed(234);
+unrelated = 345;
 console.log(value1, computed(__access));
+console.log(unrelated);
 "
 `;
 
@@ -27,17 +33,22 @@ exports[`computed mutated variables 1`] = `
 "$: value1;
 let value2 = __ref(100);
 let value3 = __ref(new Date());
+foo: unrelated = 2;
 value1 = 1;
 value2(2);
 value3(3);
+unrelated = 4;
 "
 `;
 
 exports[`computed mutating variable referencing unmutated ref 1`] = `
 "let value1 = 100;
 let computed = __ref(value1);
+foo: unrelated = value1;
 computed(200);
+unrelated = 300;
 console.log(value1, computed(__access));
+console.log(unrelated);
 "
 `;
 
@@ -46,10 +57,12 @@ exports[`computed unmutated variable referencing mutated ref member property 1`]
   foo: 123
 });
 let computed = __computed(() => value1(__access).foo);
+foo: unrelated = value1(__access).foo;
 value1({
   foo: 234
 });
 console.log(value1(__access), computed(__access));
+console.log(unrelated);
 "
 `;
 
@@ -58,7 +71,9 @@ exports[`computed unmutated variable referencing unmutated ref member property 1
   foo: 123
 };
 let computed = value1.foo;
+let unrelated = value1.foo;
 console.log(value1, computed);
+console.log(unrelated);
 "
 `;
 
@@ -66,6 +81,7 @@ exports[`computed unused variables 1`] = `
 "$: value1;
 let value2 = 100;
 let value3 = new Date();
+foo: unrelated = 3;
 "
 `;
 
@@ -74,10 +90,12 @@ exports[`computed variable referencing mutated ref 1`] = `
 let value2 = __ref(new Date());
 let computed1 = __computed(() => value1(__access) * 2);
 let computed2 = __computed(() => value2(__access));
+foo: unrelated = value1(__access) + value2(__access);
 value1(200);
 value2(Date.now());
 console.log(value1(__access), computed1(__access));
 console.log(value2(__access), computed2(__access));
+console.log(unrelated);
 "
 `;
 
@@ -86,13 +104,16 @@ exports[`computed variable referencing unmutated ref 1`] = `
 let value2 = new Date();
 let computed1 = value1 * 2;
 let computed2 = value2;
+foo: unrelated = value1 + value2;
 console.log(value1, computed1);
 console.log(value2, computed2);
+console.log(unrelated);
 "
 `;
 
 exports[`effect references mutated refs 1`] = `
 "$: console.log(value1, value2);
+foo: console.log(value1, value2);
 $: {
   console.log(value1);
   console.log(value2);
@@ -106,16 +127,26 @@ value1({
 });
 value2(543);
 __effect(() => console.log(value1(__access), value2(__access)));
+foo: console.log(value1(__access), value2(__access));
 __effect(() => {
   console.log(value1(__access));
   console.log(value2(__access));
 });
+foo: {
+  console.log(value1(__access));
+  console.log(value2(__access));
+}
 "
 `;
 
 exports[`effect references unmutated refs 1`] = `
 "$: console.log(value1, value2);
+foo: console.log(value1, value2);
 $: {
+  console.log(value1);
+  console.log(value2);
+}
+foo: {
   console.log(value1);
   console.log(value2);
 }
@@ -124,7 +155,12 @@ let value1 = {
 };
 let value2 = 123;
 $: console.log(value1, value2);
+foo: console.log(value1, value2);
 $: {
+  console.log(value1);
+  console.log(value2);
+}
+foo: {
   console.log(value1);
   console.log(value2);
 }

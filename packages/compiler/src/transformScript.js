@@ -104,6 +104,7 @@ export function transform_script (program) {
 			// transform computed value
 			if (
 				node.type === 'LabeledStatement' &&
+				node.label.name === '$' &&
 				node.body.type === 'ExpressionStatement' &&
 				node.body.expression.type === 'AssignmentExpression' &&
 				node.body.expression.left.type === 'Identifier'
@@ -333,7 +334,7 @@ export function transform_script (program) {
 			}
 
 			// transform reactive statements
-			if (node.type === 'LabeledStatement') {
+			if (node.type === 'LabeledStatement' && node.label.name === '$') {
 				let is_effect = false;
 
 				walk(node, {

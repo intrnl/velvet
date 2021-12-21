@@ -277,6 +277,7 @@ describe('computed', () => {
 			$: value1;
 			$: value2 = 100;
 			$: value3 = new Date();
+			foo: unrelated = 3;
 		`);
 
 		transform_script(program);
@@ -290,10 +291,12 @@ describe('computed', () => {
 			$: value1;
 			$: value2 = 100;
 			$: value3 = new Date();
+			foo: unrelated = 2;
 
 			value1 = 1;
 			value2 = 2;
 			value3 = 3;
+			unrelated = 4;
 		`);
 
 		transform_script(program);
@@ -308,9 +311,11 @@ describe('computed', () => {
 			let value2 = new Date();
 			$: computed1 = value1 * 2;
 			$: computed2 = value2;
+			foo: unrelated = value1 + value2;
 
 			console.log(value1, computed1);
 			console.log(value2, computed2);
+			console.log(unrelated);
 		`);
 
 		transform_script(program);
@@ -325,12 +330,14 @@ describe('computed', () => {
 			let value2 = new Date();
 			$: computed1 = value1 * 2;
 			$: computed2 = value2;
+			foo: unrelated = value1 + value2;
 
 			value1 = 200;
 			value2 = Date.now();
 
 			console.log(value1, computed1);
 			console.log(value2, computed2);
+			console.log(unrelated);
 		`);
 
 		transform_script(program);
@@ -343,10 +350,13 @@ describe('computed', () => {
 		let program = parse(`
 			let value1 = 100;
 			$: computed = value1;
+			foo: unrelated = value1;
 
 			computed = 200;
+			unrelated = 300;
 
 			console.log(value1, computed);
+			console.log(unrelated);
 		`);
 
 		transform_script(program);
@@ -359,8 +369,10 @@ describe('computed', () => {
 		let program = parse(`
 			let value1 = { foo: 123 };
 			$: computed = value1.foo;
+			$: unrelated = value1.foo;
 
 			console.log(value1, computed);
+			console.log(unrelated);
 		`);
 
 		transform_script(program);
@@ -373,10 +385,13 @@ describe('computed', () => {
 		let program = parse(`
 			let value1 = { foo: 123 };
 			$: computed = value1.foo;
+			foo: unrelated = value1.foo;
 
 			computed = 234;
+			unrelated = 345;
 
 			console.log(value1, computed);
+			console.log(unrelated);
 		`);
 
 		transform_script(program);
@@ -389,10 +404,12 @@ describe('computed', () => {
 		let program = parse(`
 			let value1 = { foo: 123 };
 			$: computed = value1.foo;
+			foo: unrelated = value1.foo;
 
 			value1 = { foo: 234 };
 
 			console.log(value1, computed);
+			console.log(unrelated);
 		`);
 
 		transform_script(program);
@@ -405,11 +422,14 @@ describe('computed', () => {
 		let program = parse(`
 			let value1 = { foo: 123 };
 			$: computed = value1.foo;
+			foo: unrelated = value1.foo;
 
 			value1 = { foo: 234 };
 			computed = 345;
+			unrelated = 123;
 
 			console.log(value1, computed);
+			console.log(unrelated);
 		`);
 
 		transform_script(program);
@@ -423,8 +443,14 @@ describe('effect', () => {
 	it('references unmutated refs', () => {
 		let program = parse(`
 			$: console.log(value1, value2);
+			foo: console.log(value1, value2);
 
 			$: {
+				console.log(value1);
+				console.log(value2);
+			}
+
+			foo: {
 				console.log(value1);
 				console.log(value2);
 			}
@@ -433,8 +459,14 @@ describe('effect', () => {
 			let value2 = 123;
 
 			$: console.log(value1, value2);
+			foo: console.log(value1, value2);
 
 			$: {
+				console.log(value1);
+				console.log(value2);
+			}
+
+			foo: {
 				console.log(value1);
 				console.log(value2);
 			}
@@ -449,6 +481,7 @@ describe('effect', () => {
 	it('references mutated refs', () => {
 		let program = parse(`
 			$: console.log(value1, value2);
+			foo: console.log(value1, value2);
 
 			$: {
 				console.log(value1);
@@ -462,8 +495,14 @@ describe('effect', () => {
 			value2 = 543;
 
 			$: console.log(value1, value2);
+			foo: console.log(value1, value2);
 
 			$: {
+				console.log(value1);
+				console.log(value2);
+			}
+
+			foo: {
 				console.log(value1);
 				console.log(value2);
 			}
