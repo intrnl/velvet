@@ -148,7 +148,8 @@ export function transform_script (program) {
 					let body = node.body;
 					let statement = body.type === 'ExpressionStatement' ? body.expression : body;
 
-					let expression = x`__effect(() => ${statement})`;
+					let effect = t.arrow_function_expression([], statement);
+					let expression = t.call_expression(t.identifier('__effect'), [effect]);
 
 					this.replace(t.expression_statement(expression));
 				}
@@ -213,7 +214,7 @@ export function transform_script (program) {
 					let initializer = init
 						? primitive
 							? init
-							: x`() => ${init}`
+							: t.arrow_function_expression([], init)
 						: null;
 
 					let expression = is_computed && !primitive
