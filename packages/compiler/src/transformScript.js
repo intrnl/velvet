@@ -233,9 +233,9 @@ export function transform_script (program) {
 			if (
 				node.type === 'Identifier' &&
 				parent.type !== 'AssignmentExpression' &&
-				parent.type !== 'MemberExpression' &&
-				!(parent.type === 'VariableDeclarator' && key === 'id') &&
-				!(parent.type === 'Property' && key === 'key')
+				!(parent.type === 'MemberExpression' && key !== 'object' && refs.has(node.name)) &&
+				!(parent.type === 'VariableDeclarator' && key !== 'init') &&
+				!(parent.type === 'Property' && key !== 'value')
 			) {
 				let name = node.name;
 

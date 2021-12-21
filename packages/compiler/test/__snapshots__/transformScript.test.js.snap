@@ -62,11 +62,29 @@ function increment() {
 }"
 `;
 
+exports[`ref: mutated variable accessing member property 1`] = `
+"console.log(state.count);
+console.log(current_date.toISOString());
+let state = __ref({ count: 0 });
+let current_date = __ref(new Date());
+console.log(state(__access).count);
+console.log(current_date(__access).toISOString());
+state({ count: 0 });
+current_date(new Date());"
+`;
+
 exports[`ref: mutated variable, referencing unmutated variable 1`] = `
 "let value1 = 100;
 let value2 = __ref(value1);
 value2(200);
 console.log(value1, value2(__access));"
+`;
+
+exports[`ref: unmutated variable accessing member property 1`] = `
+"let state = { count: 0 };
+let current_date = new Date();
+console.log(state.count);
+console.log(current_date.toISOString());"
 `;
 
 exports[`ref: unmutated variable referencing mutated variable 1`] = `

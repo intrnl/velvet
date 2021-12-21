@@ -112,6 +112,42 @@ it('ref: variable mutation with logical assignment operators', () => {
 	expect(result).toMatchSnapshot();
 });
 
+it('ref: unmutated variable accessing member property', () => {
+	let program = parse(`
+		let state = { count: 0 };
+		let current_date = new Date();
+
+		console.log(state.count);
+		console.log(current_date.toISOString());
+	`);
+
+	transform_script(program);
+
+	let result = print(program);
+	expect(result).toMatchSnapshot();
+});
+
+it('ref: mutated variable accessing member property', () => {
+	let program = parse(`
+		console.log(state.count);
+		console.log(current_date.toISOString());
+
+		let state = { count: 0 };
+		let current_date = new Date();
+
+		console.log(state.count);
+		console.log(current_date.toISOString());
+
+		state = { count: 0 };
+		current_date = new Date();
+	`);
+
+	transform_script(program);
+
+	let result = print(program);
+	expect(result).toMatchSnapshot();
+});
+
 it('prop: unused properties', () => {
 	let program = parse(`
 		export let value1;
