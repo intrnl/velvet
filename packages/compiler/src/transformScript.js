@@ -217,11 +217,11 @@ export function transform_script (program) {
 						: null;
 
 					let expression = is_computed && !primitive
-						? x`__computed(${initializer})`
+						? t.call_expression(t.identifier('__computed'), [initializer])
 						: prop
-							? x`__prop(${t.literal(prop_idx)}, ${initializer})`
+							? t.call_expression(t.identifier('__prop'), [t.literal(prop_idx), initializer])
 							: is_mutable
-								? x`__ref(${init})`
+								? t.call_expression(t.identifier('__ref'), [init])
 								: init;
 
 					node.init = expression;
@@ -275,7 +275,7 @@ export function transform_script (program) {
 				}
 
 				if (refs.has(name) && current_scope.find_owner(name) === root_scope) {
-					let expression = x`${node}(__access)`;
+					let expression = t.call_expression(node, [t.identifier('__access')]);
 
 					_is_transformed.add(node);
 					this.replace(expression);
@@ -313,19 +313,19 @@ export function transform_script (program) {
 
 					switch (node.operator) {
 						case '=': {
-							expression = x`${identifier}(${right})`;
+							expression = t.call_expression(identifier, [right]);
 							break;
 						}
 						case '||=': case '&&=': case '??=': {
-							let getter = x`${identifier}(__access)`;
-							let setter = x`${identifier} = ${right}`;
+							let getter = t.call_expression(identifier, [t.identifier('__access')]);
+							let setter = t.assignment_expression(identifier, right, '=');
 							expression = t.logical_expression(getter, setter, operator);
 							break;
 						}
 						default: {
-							let getter = x`${identifier}(__access)`;
+							let getter = t.call_expression(identifier, [t.identifier('__access')]);
 							let operation = t.binary_expression(getter, right, operator);
-							expression = x`${identifier}(${operation})`;
+							expression = t.call_expression(identifier, [operation]);
 							break;
 						}
 					}
@@ -349,9 +349,9 @@ export function transform_script (program) {
 						throw new Error('postfix update expressions are not supported');
 					}
 
-					let getter = x`${identifier}(__access)`;
+					let getter = t.call_expression(identifier, [t.identifier('__access')]);
 					let operation = t.binary_expression(getter, t.literal(1), operator.slice(0, -1));
-					let expression = x`${identifier}(${operation})`;
+					let expression = t.call_expression(identifier, [operation]);
 
 					_is_transformed.add(identifier);
 					this.replace(expression);
@@ -382,7 +382,7 @@ export function transform_script (program) {
 function _add_store_subscription (identifier, actual, is_ref) {
 	let actual_ident = t.identifier(actual);
 
-	let getter = is_ref ? x`${actual_ident}(__access)` : actual_ident;
+	let getter = is_ref ? t.call_expression(actual_ident, [t.identifier('__access')]) : actual_ident;
 
 	let statement = b`
 		let ${identifier} = __ref();

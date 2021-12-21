@@ -75,3 +75,18 @@ export function logical_expression (left, right, operator) {
 		operator,
 	};
 }
+
+/**
+ * @returns {import('estree').SimpleCallExpression}
+ * @param {import('estree').Expression | import('estree').Super} callee
+ * @param {(import('estree').Expression | import('estree').SpreadElement)[]} args
+ * @param {boolean} [optional]
+ */
+export function call_expression (callee, args, optional = false) {
+	return {
+		type: 'CallExpression',
+		callee,
+		arguments: args.filter((args) => !!args),
+		optional,
+	};
+}
