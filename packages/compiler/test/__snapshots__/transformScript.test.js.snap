@@ -162,3 +162,61 @@ function increment() {
 	console.log({ value1, value2, value3, value4 });
 }"
 `;
+
+exports[`store: multiple store getter references 1`] = `
+"let $value1 = __ref();
+__cleanup(value1.subscribe($value1));
+
+function increment() {
+	console.log($value1(__access));
+}
+
+let $value2 = __ref();
+__cleanup(value2.subscribe($value2));
+console.log($value2(__access));"
+`;
+
+exports[`store: multiple store setter references 1`] = `
+"let $value1 = __ref();
+__cleanup(value1.subscribe($value1));
+
+function increment() {
+	$value1($value1(__access) + 1);
+}
+
+let $value2 = __ref();
+__cleanup(value2.subscribe($value2));
+$value2(2);"
+`;
+
+exports[`store: mutating member property 1`] = `
+"let $foo = __ref();
+__cleanup(foo.subscribe($foo));
+$foo(__access).bar = 123;"
+`;
+
+exports[`store: retrieving member property 1`] = `
+"let $foo = __ref();
+__cleanup(foo.subscribe($foo));
+console.log($foo(__access).bar);"
+`;
+
+exports[`store: store getter 1`] = `
+"let $store = __ref();
+__cleanup(store.subscribe($store));
+$store(__access);"
+`;
+
+exports[`store: store setter 1`] = `
+"let $store = __ref();
+__cleanup(store.subscribe($store));
+$store(123);"
+`;
+
+exports[`store: subscribing to a ref 1`] = `
+"let value1 = __ref();
+value1(get_store());
+let $value1 = __ref();
+__cleanup(value1(__access).subscribe($value1));
+console.log($value1(__access));"
+`;

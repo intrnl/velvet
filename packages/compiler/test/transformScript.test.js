@@ -148,6 +148,33 @@ it('ref: mutated variable accessing member property', () => {
 	expect(result).toMatchSnapshot();
 });
 
+it('ref: unmutated variable mutating member property', () => {
+	let program = parse(`
+		let state = { count: 0 };
+
+		state.count += 1;
+	`);
+
+	transform_script(program);
+
+	let result = print(program);
+	expect(result).toMatchSnapshot();
+});
+
+it('ref: mutated variable mutating member property', () => {
+	let program = parse(`
+		let state = { count: 0 };
+
+		state = { count: 1 };
+		console.log(state.count += 1);
+	`);
+
+	transform_script(program);
+
+	let result = print(program);
+	expect(result).toMatchSnapshot();
+});
+
 it('prop: unused properties', () => {
 	let program = parse(`
 		export let value1;
@@ -202,6 +229,80 @@ it('prop: variables with mutation', () => {
 
 			console.log({ value1, value2, value3, value4 });
 		}
+	`);
+
+	transform_script(program);
+	expect(print(program)).toMatchSnapshot();
+});
+
+it('store: store getter', () => {
+	let program = parse(`
+		$store;
+	`);
+
+	transform_script(program);
+	expect(print(program)).toMatchSnapshot();
+});
+
+it('store: multiple store getter references', () => {
+	let program = parse(`
+		function increment () {
+			console.log($value1);
+		}
+
+		console.log($value2);
+	`);
+
+	transform_script(program);
+	expect(print(program)).toMatchSnapshot();
+});
+
+it('store: store setter', () => {
+	let program = parse(`
+		$store = 123;
+	`);
+
+	transform_script(program);
+	expect(print(program)).toMatchSnapshot();
+});
+
+it('store: multiple store setter references', () => {
+	let program = parse(`
+		function increment () {
+			$value1 += 1;
+		}
+
+		$value2 = 2;
+	`);
+
+	transform_script(program);
+	expect(print(program)).toMatchSnapshot();
+});
+
+it('store: subscribing to a ref', () => {
+	let program = parse(`
+		let value1;
+
+		value1 = get_store();
+		console.log($value1);
+	`);
+
+	transform_script(program);
+	expect(print(program)).toMatchSnapshot();
+});
+
+it('store: retrieving member property', () => {
+	let program = parse(`
+		console.log($foo.bar);
+	`);
+
+	transform_script(program);
+	expect(print(program)).toMatchSnapshot();
+});
+
+it('store: mutating member property', () => {
+	let program = parse(`
+		$foo.bar = 123;
 	`);
 
 	transform_script(program);

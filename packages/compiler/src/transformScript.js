@@ -16,6 +16,7 @@ export function transform_script (program) {
 	let computeds = new Set();
 	let props = new Map();
 	let props_idx = [];
+	let stores = new Set();
 
 	let _is_transformed = new WeakSet();
 
@@ -164,6 +165,7 @@ export function transform_script (program) {
 	});
 
 	// - transform getters, setters, and declarators
+	// - transform store reactions
 	walk(program, {
 		/**
 		 * @param {import('estree').Node} node
@@ -232,6 +234,31 @@ export function transform_script (program) {
 				return;
 			}
 
+			// transform store getters
+			if (
+				node.type === 'Identifier' &&
+				node.name[0] === '$' &&
+				parent.type !== 'AssignmentExpression' &&
+				!(parent.type === 'MemberExpression' && key !== 'object')
+			) {
+				let name = node.name;
+
+				let actual = node.name.slice(1);
+
+				if (!stores.has(actual)) {
+					let subscription = _add_store_subscription(
+						node,
+						actual,
+						refs.has(actual) && current_scope.find_owner(actual) === root_scope
+					);
+
+					root_scope.add_declaration(subscription.declaration);
+					_is_transformed.add(subscription.actual_ident);
+					stores.add(actual);
+					refs.add(name);
+				}
+			}
+
 			// transform getters
 			if (
 				node.type === 'Identifier' &&
@@ -262,6 +289,22 @@ export function transform_script (program) {
 				let right = node.right;
 
 				let name = identifier.name;
+
+				if (name[0] === '$') {
+					let actual = identifier.name.slice(1);
+
+					if (!stores.has(actual)) {
+						let subscription = _add_store_subscription(
+							identifier,
+							actual,
+							refs.has(actual) && current_scope.find_owner(actual) === root_scope,
+						);
+
+						root_scope.add_declaration(subscription.declaration);
+						stores.add(actual);
+						refs.add(name);
+					}
+				}
 
 				if (refs.has(name) && current_scope.find_owner(name) === root_scope) {
 					let expression;
@@ -333,4 +376,37 @@ export function transform_script (program) {
 
 		program.body.push(t.expression_statement(expression));
 	}
+}
+
+function _add_store_subscription (identifier, actual, is_ref) {
+	let actual_ident = t.identifier(actual);
+
+	let getter = is_ref ? x`${actual_ident}(__access)` : actual_ident;
+
+	let statement = b`
+		let ${identifier} = __ref();
+		__cleanup(${getter}.subscribe(${identifier}));
+	`;
+
+	let declaration = statement[0];
+
+	let curr_node = identifier;
+
+	while (curr_node) {
+		let parent = curr_node.path.parent;
+
+		if (!parent) {
+			break;
+		}
+
+		if (parent.type === 'Program') {
+			let body = parent.body;
+			let idx = body.indexOf(curr_node);
+			body.splice(idx, 0, ...statement);
+		}
+
+		curr_node = parent;
+	}
+
+	return { declaration, actual_ident };
 }
