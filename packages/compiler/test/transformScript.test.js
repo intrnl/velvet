@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { transform_script } from '../src/transformScript.js';
+import { transform_script, finalize_imports } from '../src/transformScript.js';
 import { parse, print } from '../src/utils/parse.js';
 
 
@@ -13,6 +13,8 @@ describe('ref', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
+
 		expect(print(program)).toMatchSnapshot();
 	});
 
@@ -35,6 +37,8 @@ describe('ref', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
+
 		expect(print(program)).toMatchSnapshot();
 	});
 
@@ -64,6 +68,8 @@ describe('ref', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
+
 		expect(print(program)).toMatchSnapshot();
 	});
 
@@ -77,6 +83,7 @@ describe('ref', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -92,6 +99,7 @@ describe('ref', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -107,6 +115,7 @@ describe('ref', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -122,6 +131,7 @@ describe('ref', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -143,6 +153,7 @@ describe('ref', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -156,6 +167,7 @@ describe('ref', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -170,6 +182,7 @@ describe('ref', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -185,6 +198,8 @@ describe('prop', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
+
 		expect(print(program)).toMatchSnapshot();
 	});
 
@@ -205,6 +220,8 @@ describe('prop', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
+
 		expect(print(program)).toMatchSnapshot();
 	});
 
@@ -234,6 +251,8 @@ describe('prop', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
+
 		expect(print(program)).toMatchSnapshot();
 	});
 
@@ -247,6 +266,7 @@ describe('prop', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -265,6 +285,7 @@ describe('prop', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -279,6 +300,7 @@ describe('prop', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -295,6 +317,7 @@ describe('computed', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -314,6 +337,7 @@ describe('computed', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -333,6 +357,7 @@ describe('computed', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -355,6 +380,7 @@ describe('computed', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -374,6 +400,7 @@ describe('computed', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -390,6 +417,7 @@ describe('computed', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -409,6 +437,7 @@ describe('computed', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -427,6 +456,7 @@ describe('computed', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -447,6 +477,7 @@ describe('computed', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -487,6 +518,7 @@ describe('effect', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -523,6 +555,7 @@ describe('effect', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -536,6 +569,8 @@ describe('store', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
+
 		expect(print(program)).toMatchSnapshot();
 	});
 
@@ -549,6 +584,8 @@ describe('store', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
+
 		expect(print(program)).toMatchSnapshot();
 	});
 
@@ -558,6 +595,8 @@ describe('store', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
+
 		expect(print(program)).toMatchSnapshot();
 	});
 
@@ -571,6 +610,8 @@ describe('store', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
+
 		expect(print(program)).toMatchSnapshot();
 	});
 
@@ -583,6 +624,8 @@ describe('store', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
+
 		expect(print(program)).toMatchSnapshot();
 	});
 
@@ -592,6 +635,8 @@ describe('store', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
+
 		expect(print(program)).toMatchSnapshot();
 	});
 
@@ -601,6 +646,8 @@ describe('store', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
+
 		expect(print(program)).toMatchSnapshot();
 	});
 });
@@ -618,6 +665,7 @@ describe('bind', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -637,6 +685,7 @@ describe('bind', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
@@ -650,6 +699,7 @@ describe('bind', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();

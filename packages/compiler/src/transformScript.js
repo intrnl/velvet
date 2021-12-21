@@ -186,11 +186,11 @@ export function transform_script (program) {
 						: null;
 
 					let expression = is_computed && !primitive
-						? t.call_expression(t.identifier('__computed'), [initializer])
+						? t.call_expression(t.identifier('@computed'), [initializer])
 						: prop
-							? t.call_expression(t.identifier('__prop'), [t.literal(prop_idx), initializer])
+							? t.call_expression(t.identifier('@prop'), [t.literal(prop_idx), initializer])
 							: is_mutable
-								? t.call_expression(t.identifier('__ref'), [init])
+								? t.call_expression(t.identifier('@ref'), [init])
 								: init;
 
 					node.init = expression;
@@ -244,7 +244,7 @@ export function transform_script (program) {
 				}
 
 				if (refs.has(name) && current_scope.find_owner(name) === root_scope) {
-					let expression = t.call_expression(node, [t.identifier('__access')]);
+					let expression = t.call_expression(node, [t.identifier('@access')]);
 
 					if (parent.type === 'Property') {
 						parent.shorthand = false;
@@ -290,13 +290,13 @@ export function transform_script (program) {
 							break;
 						}
 						case '||=': case '&&=': case '??=': {
-							let getter = t.call_expression(identifier, [t.identifier('__access')]);
+							let getter = t.call_expression(identifier, [t.identifier('@access')]);
 							let setter = t.assignment_expression(identifier, right, '=');
 							expression = t.logical_expression(getter, setter, operator);
 							break;
 						}
 						default: {
-							let getter = t.call_expression(identifier, [t.identifier('__access')]);
+							let getter = t.call_expression(identifier, [t.identifier('@access')]);
 							let operation = t.binary_expression(getter, right, operator);
 							expression = t.call_expression(identifier, [operation]);
 							break;
@@ -322,7 +322,7 @@ export function transform_script (program) {
 						throw new Error('postfix update expressions are not supported');
 					}
 
-					let getter = t.call_expression(identifier, [t.identifier('__access')]);
+					let getter = t.call_expression(identifier, [t.identifier('@access')]);
 					let operation = t.binary_expression(getter, t.literal(1), operator.slice(0, -1));
 					let expression = t.call_expression(identifier, [operation]);
 
@@ -358,7 +358,7 @@ export function transform_script (program) {
 					let statement = body.type === 'ExpressionStatement' ? body.expression : body;
 
 					let effect = t.arrow_function_expression([], statement);
-					let expression = t.call_expression(t.identifier('__effect'), [effect]);
+					let expression = t.call_expression(t.identifier('@effect'), [effect]);
 
 					this.replace(t.expression_statement(expression));
 				}
@@ -383,7 +383,7 @@ export function transform_script (program) {
 		));
 
 		let expression = t.expression_statement(
-			t.call_expression(t.identifier('__bind'), [
+			t.call_expression(t.identifier('@bind'), [
 				t.object_expression(properties)
 			])
 		);
@@ -400,15 +400,15 @@ function _add_store_subscription (identifier, actual, is_ref) {
 	let actual_ident = t.identifier(actual);
 
 	let getter = is_ref
-		? t.call_expression(actual_ident, [t.identifier('__access')])
+		? t.call_expression(actual_ident, [t.identifier('@access')])
 		: actual_ident;
 
 	let decl = t.variable_declaration('let', [
-		t.variable_declarator(identifier, t.call_expression(t.identifier('__ref'))),
+		t.variable_declarator(identifier, t.call_expression(t.identifier('@ref'))),
 	]);
 
 	let expr = t.expression_statement(
-		t.call_expression(t.identifier('__cleanup'), [
+		t.call_expression(t.identifier('@cleanup'), [
 			t.call_expression(t.member_expression(getter, t.identifier('subscribe')), [
 				identifier,
 			]),
@@ -434,6 +434,65 @@ function _add_store_subscription (identifier, actual, is_ref) {
 	}
 
 	return { declaration: decl, actual_ident };
+}
+
+export function finalize_imports (program, mod = 'velvet/internal') {
+	/** @type {Set<string>} */
+	let identifiers = new Set();
+	/** @type {Map<string, Set<import('estree').Identifier>>} */
+	let import_identifiers = new Map();
+
+	walk(program, {
+		/**
+		 * @param {import('estree').Node} node
+		 * @param {import('estree').Node} parent
+		 */
+		enter (node, parent, key) {
+			if (
+				node.type === 'Identifier' &&
+				!(parent.type === 'MemberExpression' && key !== 'object')
+			) {
+				let name = node.name;
+
+				identifiers.add(name);
+
+				if (name.startsWith('@')) {
+					name = name.slice(1);
+
+					let set = import_identifiers.get(name);
+
+					if (!set) {
+						import_identifiers.set(name, set = new Set());
+					}
+
+					set.add(node);
+				}
+			}
+		},
+	});
+
+	let import_specifiers = [];
+
+	for (let [imported, set] of import_identifiers) {
+		let name = imported;
+		let count = 0;
+
+		while (identifiers.has(name)) {
+			name = imported + '$' + (++count);
+		}
+
+		for (let identifier of set) {
+			identifier.name = name;
+		}
+
+		let spec = t.import_specifier(t.identifier(name), t.identifier(imported));
+		import_specifiers.push(spec);
+	}
+
+	if (import_specifiers.length) {
+		let import_decl = t.import_declaration(import_specifiers, t.literal(mod));
+		program.body.unshift(import_decl);
+	}
 }
 
 /**

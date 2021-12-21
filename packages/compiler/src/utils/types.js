@@ -184,3 +184,29 @@ export function variable_declarator (id, init = null) {
 		init,
 	};
 }
+
+/**
+ * @param {(import('estree').ImportSpecifier | import('estree').ImportDefaultSpecifier | import('estree').ImportNamespaceSpecifier)[]} specifiers
+ * @param {import('estree').Literal} source
+ * @returns {import('estree').ImportDeclaration}
+ */
+export function import_declaration (specifiers, source) {
+	return {
+		type: 'ImportDeclaration',
+		specifiers: specifiers.filter((specifier) => !!specifier),
+		source,
+	};
+}
+
+/**
+ * @param {import('estree').Identifier} local
+ * @param {import('estree').Identifier} imported
+ * @returns {import('estree').ImportSpecifier}
+ */
+export function import_specifier (local, imported) {
+	return {
+		type: 'ImportSpecifier',
+		local,
+		imported,
+	};
+}
