@@ -207,7 +207,25 @@ function _parse_expression (state) {
 			return;
 		}
 
-		throw p.error(state, 'unexpected usage of :else outside of #if');
+		if (statement.type === 'LoopStatement') {
+			if (statement.alternate) {
+				throw p.error(state, 'only one :else can be defined for #each');
+			}
+
+			p.eat_whitespace(state);
+
+			let block = t.fragment();
+
+			statement.alternate = block;
+
+			p.pop(state, 1);
+			p.push(state, block);
+
+			p.eat(state, '}', 'closing :else bracket');
+			return;
+		}
+
+		throw p.error(state, 'unexpected usage of :else outside of #if and #each');
 	}
 
 	let name = '';
@@ -306,3 +324,6 @@ function _is_expression_pattern (node) {
 		node.type === 'ArrayPattern' || node.type === 'ArrayExpression'
 	);
 }
+
+let result = parse_template('{#if foo}1{:else if bar}2{:else if baz}3{:else}4{/if}');
+console.dir(result, { depth: Infinity });
