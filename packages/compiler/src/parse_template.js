@@ -145,6 +145,10 @@ function _parse_expression (state) {
 		let statement = p.current(state, 1);
 		let expected;
 
+		if (!statement) {
+			throw p.error(state, 'unexpected logic block closing');
+		}
+
 		if (statement.type === 'ConditionalStatement') {
 			expected = 'if';
 
@@ -176,6 +180,10 @@ function _parse_expression (state) {
 	// intermediary logic
 	if (p.eat(state, ':else')) {
 		let statement = p.current(state, 1);
+
+		if (!statement) {
+			throw p.error(state, 'unexpected usage of :else outside of #if and #each');
+		}
 
 		if (statement.type === 'ConditionalStatement') {
 			let additional = p.eat_whitespace(state) && p.eat(state, 'if');
