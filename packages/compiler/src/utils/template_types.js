@@ -36,6 +36,7 @@ export function fragment (children = []) {
 /**
  * @typedef {(
  *   Fragment |
+ *   Element |
  *   ConditionalStatement |
  *   LoopStatement |
  * 	 AwaitStatement
