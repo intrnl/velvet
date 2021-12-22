@@ -147,6 +147,13 @@ function _parse_expression (state) {
 
 		if (statement.type === 'ConditionalStatement') {
 			expected = 'if';
+
+			// 0 = Fragment
+			// 1 = ConditionalStatement
+			// 2 = ConditionalStatement?
+			while (p.current(state, 1) === p.current(state, 2)?.alternate) {
+				p.pop(state, 1);
+			}
 		}
 		else if (statement.type === 'LoopStatement') {
 			expected = 'each';
@@ -164,6 +171,43 @@ function _parse_expression (state) {
 
 		p.pop(state, 2);
 		return;
+	}
+
+	// intermediary logic
+	if (p.eat(state, ':else')) {
+		let statement = p.current(state, 1);
+
+		if (statement.type === 'ConditionalStatement') {
+			let additional = p.eat_whitespace(state) && p.eat(state, 'if');
+
+			if (additional) {
+				p.eat_whitespace(state, true);
+
+				let test = _read_expression(state);
+				p.eat_whitespace(state);
+
+				let block = t.fragment();
+				let node = t.conditional_statement(test, block);
+
+				statement.alternate = node;
+
+				p.pop(state, 1);
+				p.push(state, node, block);
+			}
+			else {
+				let block = t.fragment();
+
+				statement.alternate = block;
+
+				p.pop(state, 1);
+				p.push(state, block);
+			}
+
+			p.eat(state, '}', 'closing :else bracket');
+			return;
+		}
+
+		throw p.error(state, 'unexpected usage of :else outside of #if');
 	}
 
 	let name = '';
