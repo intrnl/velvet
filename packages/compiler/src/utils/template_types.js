@@ -10,10 +10,10 @@ import { decode_character_references } from './html.js';
  */
 
 /**
- * @param {Array<Node>} children
+ * @param {Array<Node>} [children]
  * @returns {Fragment}
  */
-export function fragment (children) {
+export function fragment (children = []) {
 	return {
 		type: 'Fragment',
 		children: children.filter((child) => !!child),

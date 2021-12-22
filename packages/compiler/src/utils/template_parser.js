@@ -14,12 +14,7 @@ import * as t from './template_types.js';
  */
 export function create_state (content) {
 	/** @type {t.Fragment} */
-	let root = {
-		type: 'Fragment',
-		children: [],
-		start: null,
-		end: null,
-	};
+	let root = t.fragment();
 
 	/** @type {ParserState} */
 	let state = {
