@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 import { finalize_program, transform_script } from '../src/transformScript.js';
-import { parse, print } from '../src/utils/parse.js';
+import { parse, print } from '../src/utils/js_parse.js';
 
 
 describe('ref', () => {

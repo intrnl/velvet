@@ -16,7 +16,38 @@ export function parse (source) {
 		sourceType: 'module',
 	});
 
-	walk(program, {
+	reattach_comments(program);
+	return program;
+}
+
+export function parse_expression (source, position = 0) {
+	/** @type {import('estree').Comment[]} */
+	let comments = [];
+
+	let node = acorn.parseExpressionAt(source, position, {
+		onComment: comments,
+		ecmaVersion: 'latest',
+		sourceType: 'module',
+	});
+
+	reattach_comments(node, comments);
+	return node;
+}
+
+/**
+ * @param {import('estree').Node} ast
+ * @param {*} map
+ * @returns {string}
+ */
+export function print (ast, map) {
+	return generate(ast, {
+		comments: true,
+		sourceMap: map,
+	});
+}
+
+function reattach_comments (ast, comments) {
+	walk(ast, {
 		/** @param {import('estree').Node} node */
 		enter (node) {
 			/** @type {import('estree').Comment} */
@@ -39,19 +70,5 @@ export function parse (source) {
 				}
 			}
 		},
-	});
-
-	return program;
-}
-
-/**
- * @param {import('estree').Node} ast
- * @param {*} map
- * @returns {string}
- */
-export function print (ast, map) {
-	return generate(ast, {
-		comments: true,
-		sourceMap: map,
 	});
 }
