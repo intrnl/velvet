@@ -4,6 +4,9 @@ import { analyze } from 'periscopic';
 import * as t from './utils/types.js';
 
 
+/**
+ * @param {import('estree').Program} program
+ */
 export function transform_script (program) {
 	let { map, scope: root_scope } = analyze(program);
 
@@ -436,6 +439,10 @@ function _add_store_subscription (identifier, actual, is_ref) {
 	return { declaration: decl, actual_ident };
 }
 
+/**
+ * @param {import('estree').Program} program
+ * @param {string} [mod]
+ */
 export function finalize_imports (program, mod = 'velvet/internal') {
 	/** @type {Set<string>} */
 	let identifiers = new Set();
