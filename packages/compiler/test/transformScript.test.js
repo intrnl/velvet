@@ -677,7 +677,24 @@ describe('store', () => {
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
-	})
+	});
+
+	it('no affecting inner scope', () => {
+		let program = parse(`
+			function log () {
+				let $bar = 123;
+				console.log($bar, $foo);
+			}
+
+			console.log($foo);
+		`);
+
+		transform_script(program);
+		finalize_imports(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
 });
 
 describe('bind', () => {

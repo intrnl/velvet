@@ -239,7 +239,7 @@ export function transform_script (program) {
 
 				let actual = node.name.slice(1);
 
-				if (!stores.has(actual)) {
+				if (!stores.has(actual) && !current_scope.has(name)) {
 					let subscription = _add_store_subscription(
 						node,
 						actual,

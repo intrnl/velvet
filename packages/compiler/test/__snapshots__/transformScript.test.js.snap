@@ -501,6 +501,18 @@ $foo(access).bar = 123;
 "
 `;
 
+exports[`store > no affecting inner scope 1`] = `
+"import {ref, cleanup, access} from \\"velvet/internal\\";
+let $foo = ref();
+cleanup(foo.subscribe($foo));
+function log() {
+  let $bar = 123;
+  console.log($bar, $foo(access));
+}
+console.log($foo(access));
+"
+`;
+
 exports[`store > only alter single $ 1`] = `
 "import {ref, cleanup, access} from \\"velvet/internal\\";
 let $foo = ref();
