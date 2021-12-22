@@ -37,6 +37,23 @@ export function current (state, cursor = 1) {
 
 /**
  * @param {ParserState} state
+ * @param  {...t.StackableNode} nodes
+ */
+export function push (state, ...nodes) {
+	state.stack.push(...nodes);
+}
+
+/**
+ * @param {ParserState} state
+ * @param {number} [amount]
+ * @returns {t.StackableNode[]}
+ */
+export function pop (state, amount = 1) {
+	return state.stack.splice(state.stack.length - amount, amount);
+}
+
+/**
+ * @param {ParserState} state
  * @param {string} str
  * @returns {boolean}
  */

@@ -70,13 +70,39 @@ function _parse_expression (state) {
 
 	// opening logic block
 	if (p.eat(state, '#')) {
-		throw p.error(state, 'unimplemented');
-		return;
+		if (p.eat(state, 'if')) {
+			p.eat_whitespace(state, true);
+
+			let test = _read_expression(state);
+
+			let consequent = t.fragment();
+			let node = t.conditional_statement(test, consequent);
+
+			p.current(state).children.push(node);
+			p.push(state, node, consequent);
+			return;
+		}
+
+		throw p.error(state, 'unknown logic block opening');
 	}
 
 	// closing logic block
 	if (p.eat(state, '/')) {
-		throw p.error(state, 'unimplemented');
+		let statement = p.current(state, 2);
+		let expected;
+
+		if (statement.type === 'ConditionalStatement') {
+			expected = 'if';
+		}
+		else {
+			throw p.error(state, 'unexpected logic block closing');
+		}
+
+		p.eat(state, expected, true);
+		p.eat_whitespace(state);
+		p.eat(state, '}', `closing ${expected} bracket`);
+
+		p.pop(state, 2);
 		return;
 	}
 
