@@ -36,7 +36,7 @@ export function show (marker, expression) {
 	});
 }
 
-export function repeat (marker, block, expression) {
+export function each (marker, block, expression) {
 	// we can't make the scope instances ahead of time, a cleanup hook is required
 	// to clean up these detached scopes.
 
