@@ -177,6 +177,7 @@ export function conditional_statement (test, consequent, alternate = null) {
 /**
  * @typedef {object} LoopStatement
  * @property {'LoopStatement'} type
+ * @property {'iterable' | 'enumerable'} kind
  * @property {import('estree').Pattern} local
  * @property {import('estree').Expression} expression
  * @property {Fragment} body
@@ -186,15 +187,17 @@ export function conditional_statement (test, consequent, alternate = null) {
  */
 
 /**
+ * @param {'iterable' | 'enumerable'} kind
  * @param {import('estree').Expression} expression
  * @param {import('estree').Pattern} local
  * @param {Fragment} body
  * @param {Fragment} [alternate]
  * @returns {LoopStatement}
  */
-export function loop_statement (expression, local, body, alternate = null) {
+export function loop_statement (kind, expression, local, body, alternate = null) {
 	return {
 		type: 'LoopStatement',
+		kind,
 		expression,
 		local,
 		body,
