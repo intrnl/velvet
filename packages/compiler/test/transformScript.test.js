@@ -705,10 +705,7 @@ describe('bind', () => {
 			export { magic as MAGIC_NUMBER };
 		`);
 
-		transform_script(program);
-
-		let result = print(program);
-		expect(result).toMatchSnapshot();
+		expect(() => transform_script(program)).to.throw();
 	});
 });
 

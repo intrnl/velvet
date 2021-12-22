@@ -113,6 +113,10 @@ export function transform_script (program) {
 					let local_name = specifier.local.name;
 					let exported_name = specifier.exported.name;
 
+					if (props.has(local_name)) {
+						throw new Error('tried to export something that has already been exported');
+					}
+
 					props.set(local_name, exported_name);
 					props_idx.push(exported_name);
 				}

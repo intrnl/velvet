@@ -13,14 +13,6 @@ function toggle() {
 "
 `;
 
-exports[`bind > only one specifier for a bind 1`] = `
-"const magic = 420;
-@bind({
-  MAGIC_NUMBER: magic
-});
-"
-`;
-
 exports[`bind > separate export specifier 1`] = `
 "const magic = 420;
 let open = @prop(0, false);
