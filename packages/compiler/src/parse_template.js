@@ -202,6 +202,9 @@ function _parse_expression (state) {
 				p.pop(state, 1);
 				p.push(state, node, block);
 			}
+			else if (statement.alternate) {
+				throw p.error(state, 'only one :else can be defined');
+			}
 			else {
 				let block = t.fragment();
 
@@ -217,7 +220,7 @@ function _parse_expression (state) {
 
 		if (statement.type === 'LoopStatement') {
 			if (statement.alternate) {
-				throw p.error(state, 'only one :else can be defined for #each');
+				throw p.error(state, 'only one :else can be defined');
 			}
 
 			p.eat_whitespace(state);
