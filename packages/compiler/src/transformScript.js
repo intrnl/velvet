@@ -545,7 +545,7 @@ export function finalize_imports (program, mod = 'velvet/internal') {
 function _has_identifier_declared (node, filter) {
 	return (
 		(node.type === 'Identifier' && filter(node.name)) ||
-		(node.type === 'Property' && _has_identifier_declared(node.key, filter)) ||
+		(node.type === 'Property' && _has_identifier_declared(node.value, filter)) ||
 		(node.type === 'RestElement' && _has_identifier_declared(node.argument, filter)) ||
 		(node.type === 'ObjectPattern' && node.properties.some((prop) => _has_identifier_declared(prop, filter))) ||
 		(node.type === 'ArrayPattern' && node.elements.some((elem) => _has_identifier_declared(elem, filter)))
