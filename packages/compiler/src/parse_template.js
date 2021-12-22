@@ -88,7 +88,7 @@ function _parse_expression (state) {
 
 	// closing logic block
 	if (p.eat(state, '/')) {
-		let statement = p.current(state, 2);
+		let statement = p.current(state, 1);
 		let expected;
 
 		if (statement.type === 'ConditionalStatement') {

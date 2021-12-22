@@ -31,8 +31,8 @@ export function create_state (content) {
  * @param {number} [cursor]
  * @returns {t.StackableNode}
  */
-export function current (state, cursor = 1) {
-	return state.stack[state.stack.length - cursor];
+export function current (state, cursor = 0) {
+	return state.stack[state.stack.length - 1 - cursor];
 }
 
 /**
