@@ -397,7 +397,7 @@ function _parse_element (state) {
 	let start = state.index;
 	let parent = p.current(state);
 
-	p.eat(state, '<', 'opening tag bracket');
+	p.eat(state, '<', 'opening tag');
 
 	// comment
 	if (p.eat(state, '!--')) {
