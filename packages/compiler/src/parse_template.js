@@ -16,7 +16,13 @@ export function parse_template (content) {
 		throw p.error(state, 'unexpected end of input');
 	}
 
-	return p.current(state);
+	/** @type {t.Fragment} */
+	let root = p.current(state);
+
+	root.start = root.children[0]?.start || 0;
+	root.end = root.children[root.children.length - 1]?.end || 0;
+
+	return root;
 }
 
 /**
@@ -433,6 +439,3 @@ function _is_expression_pattern (node) {
 		node.type === 'ArrayPattern' || node.type === 'ArrayExpression'
 	);
 }
-
-let result = parse_template('{#if foo}1{:else if bar}2{:else if baz}3{:else}4{/if}');
-console.dir(result, { depth: Infinity });
