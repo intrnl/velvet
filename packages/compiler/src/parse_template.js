@@ -125,12 +125,26 @@ function _parse_expression (state) {
 			p.eat_whitespace(state);
 
 			let to_resolve = p.eat(state, 'then');
-			if (to_resolve) p.eat_whitespace(state);
+			let resolve_has_whitespace = to_resolve && p.eat_whitespace(state);
+
+			let local = null;
+
+			if (resolve_has_whitespace) {
+				local = _read_expression(state);
+
+				if (!_is_expression_pattern(local)) {
+					throw p.error(state, 'expected an assignment');
+				}
+
+				p.eat_whitespace(state);
+			}
 
 			p.eat(state, '}', 'closing #await bracket');
 
 			let block = t.fragment();
-			let node = t.await_statement(argument,!to_resolve ? block : null, to_resolve ? block : null);
+			let clause = t.await_clause(local, block);
+
+			let node = t.await_statement(argument, !to_resolve ? clause : null, to_resolve ? clause : null);
 
 			p.current(state).children.push(node);
 			p.push(state, node, block);
