@@ -209,18 +209,18 @@ export function loop_statement (kind, expression, local, body, alternate = null)
  * @typedef {object} AwaitStatement
  * @property {'AwaitStatement'} type
  * @property {import('estree').Expression} argument
- * @property {Fragment} [pending]
- * @property {Fragment} [resolved]
- * @property {Fragment} [rejected]
+ * @property {AwaitClause} [pending]
+ * @property {AwaitClause} [resolved]
+ * @property {AwaitClause} [rejected]
  * @property {number} [start]
  * @property {number} [end]
  */
 
 /**
  * @param {import('estree').Expression} argument
- * @param {Fragment} [pending]
- * @param {Fragment} [resolved]
- * @param {Fragment} [rejected]
+ * @param {AwaitClause} [pending]
+ * @param {AwaitClause} [resolved]
+ * @param {AwaitClause} [rejected]
  * @returns {AwaitStatement}
  */
 export function await_statement (argument, pending = null, resolved = null, rejected = null) {
@@ -230,5 +230,25 @@ export function await_statement (argument, pending = null, resolved = null, reje
 		pending,
 		resolved,
 		rejected,
+	};
+}
+
+/**
+ * @typedef {object} AwaitClause
+ * @property {'AwaitClause'} type
+ * @property {import('estree').Pattern} local
+ * @property {Fragment} body
+ */
+
+/**
+ * @param {import('estree').Pattern} local
+ * @param {Fragment} body
+ * @returns {AwaitClause}
+ */
+export function await_clause (local, body) {
+	return {
+		type: 'AwaitClause',
+		local,
+		body,
 	};
 }
