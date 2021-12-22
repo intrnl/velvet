@@ -167,6 +167,17 @@ export function keyed (marker, block, expression) {
 	});
 }
 
+export function component (marker, expression) {
+	let current = marker;
+
+	effect(() => {
+		let next = expression() || marker;
+
+		replace(next, current);
+		current = next;
+	});
+}
+
 
 function destroy_block (marker, end) {
 	remove_parts(marker.nextSibling, end);
