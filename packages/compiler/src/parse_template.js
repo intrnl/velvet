@@ -324,7 +324,7 @@ function _parse_expression (state) {
 			}
 
 			p.eat_whitespace(state);
-			p.eat_whitespace(state, '}', 'closing :then bracket');
+			p.eat(state, '}', 'closing :catch bracket');
 		}
 
 		let block = t.fragment();
