@@ -89,6 +89,7 @@ export function text (raw, data = decode_character_references(raw)) {
  * @property {'Element'} type
  * @property {string} name
  * @property {boolean} component
+ * @property {boolean} inline
  * @property {Array<Attribute>} attributes
  * @property {Array<Node>} children
  * @property {number} [start]
@@ -102,12 +103,16 @@ export function text (raw, data = decode_character_references(raw)) {
  * @returns {Element}
  */
 export function element (name, attributes = [], children = []) {
+	let inline = /^[A-Z]|^v:(?:self|component)$/.test(name);
+	let component = inline || /^[a-z]+-[a-z]+$/.test(name);
+
 	return {
 		type: 'Element',
 		name,
 		attributes,
 		children,
-		component: /^[A-Z]|^v:(?:self|component)$/.test(name),
+		inline,
+		component,
 	};
 }
 
