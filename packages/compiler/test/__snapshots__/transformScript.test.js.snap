@@ -1,13 +1,12 @@
 // Vitest Snapshot v1
 
 exports[`bind > const and function exports 1`] = `
-"import {prop, access, bind} from \\"velvet/internal\\";
-const magic = 420;
-let open = prop(1, false);
+"const magic = 420;
+let open = @prop(1, false);
 function toggle() {
-  open(!open(access));
+  open(!open(@access));
 }
-bind({
+@bind({
   magic,
   toggle
 });
@@ -15,22 +14,20 @@ bind({
 `;
 
 exports[`bind > only one specifier for a bind 1`] = `
-"import {bind} from \\"velvet/internal\\";
-const magic = 420;
-bind({
+"const magic = 420;
+@bind({
   MAGIC_NUMBER: magic
 });
 "
 `;
 
 exports[`bind > separate export specifier 1`] = `
-"import {prop, access, bind} from \\"velvet/internal\\";
-const magic = 420;
-let open = prop(0, false);
+"const magic = 420;
+let open = @prop(0, false);
 function toggle() {
-  open(!open(access));
+  open(!open(@access));
 }
-bind({
+@bind({
   MAGIC_NUMBER: magic,
   toggle
 });
@@ -38,41 +35,38 @@ bind({
 `;
 
 exports[`computed > mutated variable referencing mutated ref member property 1`] = `
-"import {ref, computed as computed$1, access} from \\"velvet/internal\\";
-let value1 = ref({
+"let value1 = @ref({
   foo: 123
 });
-let computed = computed$1(() => value1(access).foo);
-foo: unrelated = value1(access).foo;
+let computed = @computed(() => value1(@access).foo);
+foo: unrelated = value1(@access).foo;
 value1({
   foo: 234
 });
 computed(345);
 unrelated = 123;
-console.log(value1(access), computed(access));
+console.log(value1(@access), computed(@access));
 console.log(unrelated);
 "
 `;
 
 exports[`computed > mutated variable referencing unmutated ref member property 1`] = `
-"import {ref, access} from \\"velvet/internal\\";
-let value1 = {
+"let value1 = {
   foo: 123
 };
-let computed = ref(value1.foo);
+let computed = @ref(value1.foo);
 foo: unrelated = value1.foo;
 computed(234);
 unrelated = 345;
-console.log(value1, computed(access));
+console.log(value1, computed(@access));
 console.log(unrelated);
 "
 `;
 
 exports[`computed > mutated variables 1`] = `
-"import {ref} from \\"velvet/internal\\";
-$: value1;
-let value2 = ref(100);
-let value3 = ref(new Date());
+"$: value1;
+let value2 = @ref(100);
+let value3 = @ref(new Date());
 foo: unrelated = 2;
 value1 = 1;
 value2(2);
@@ -82,28 +76,26 @@ unrelated = 4;
 `;
 
 exports[`computed > mutating variable referencing unmutated ref 1`] = `
-"import {ref, access} from \\"velvet/internal\\";
-let value1 = 100;
-let computed = ref(value1);
+"let value1 = 100;
+let computed = @ref(value1);
 foo: unrelated = value1;
 computed(200);
 unrelated = 300;
-console.log(value1, computed(access));
+console.log(value1, computed(@access));
 console.log(unrelated);
 "
 `;
 
 exports[`computed > unmutated variable referencing mutated ref member property 1`] = `
-"import {ref, computed as computed$1, access} from \\"velvet/internal\\";
-let value1 = ref({
+"let value1 = @ref({
   foo: 123
 });
-let computed = computed$1(() => value1(access).foo);
-foo: unrelated = value1(access).foo;
+let computed = @computed(() => value1(@access).foo);
+foo: unrelated = value1(@access).foo;
 value1({
   foo: 234
 });
-console.log(value1(access), computed(access));
+console.log(value1(@access), computed(@access));
 console.log(unrelated);
 "
 `;
@@ -128,16 +120,15 @@ foo: unrelated = 3;
 `;
 
 exports[`computed > variable referencing mutated ref 1`] = `
-"import {ref, computed, access} from \\"velvet/internal\\";
-let value1 = ref(100);
-let value2 = ref(new Date());
-let computed1 = computed(() => value1(access) * 2);
-let computed2 = computed(() => value2(access));
-foo: unrelated = value1(access) + value2(access);
+"let value1 = @ref(100);
+let value2 = @ref(new Date());
+let computed1 = @computed(() => value1(@access) * 2);
+let computed2 = @computed(() => value2(@access));
+foo: unrelated = value1(@access) + value2(@access);
 value1(200);
 value2(Date.now());
-console.log(value1(access), computed1(access));
-console.log(value2(access), computed2(access));
+console.log(value1(@access), computed1(@access));
+console.log(value2(@access), computed2(@access));
 console.log(unrelated);
 "
 `;
@@ -155,30 +146,29 @@ console.log(unrelated);
 `;
 
 exports[`effect > references mutated refs 1`] = `
-"import {ref, effect, access} from \\"velvet/internal\\";
-$: console.log(value1, value2);
+"$: console.log(value1, value2);
 foo: console.log(value1, value2);
 $: {
   console.log(value1);
   console.log(value2);
 }
-let value1 = ref({
+let value1 = @ref({
   foo: 123
 });
-let value2 = ref(123);
+let value2 = @ref(123);
 value1({
   foo: 234
 });
 value2(543);
-effect(() => console.log(value1(access), value2(access)));
-foo: console.log(value1(access), value2(access));
-effect(() => {
-  console.log(value1(access));
-  console.log(value2(access));
+@effect(() => console.log(value1(@access), value2(@access)));
+foo: console.log(value1(@access), value2(@access));
+@effect(() => {
+  console.log(value1(@access));
+  console.log(value2(@access));
 });
 foo: {
-  console.log(value1(access));
-  console.log(value2(access));
+  console.log(value1(@access));
+  console.log(value2(@access));
 }
 "
 `;
@@ -212,71 +202,66 @@ foo: {
 `;
 
 exports[`prop > handles separate export specifier 1`] = `
-"import {prop} from \\"velvet/internal\\";
-let _count = prop(0, 0);
-let foo = prop(1, 1);
+"let _count = @prop(0, 0);
+let foo = @prop(1, 1);
 "
 `;
 
 exports[`prop > unused properties 1`] = `
-"import {prop} from \\"velvet/internal\\";
-let value1 = prop(0);
-let value2 = prop(1, 100);
-let value3 = prop(2, () => new Date());
+"let value1 = @prop(0);
+let value2 = @prop(1, 100);
+let value3 = @prop(2, () => new Date());
 "
 `;
 
 exports[`prop > variable referencing mutated ref 1`] = `
-"import {ref, prop, access} from \\"velvet/internal\\";
-let value1 = ref(1);
-let value2 = ref(new Date());
-let value3 = prop(0, () => value1(access));
-let value4 = prop(1, () => value2(access));
-let value5 = prop(2, () => value1(access) + value2(access));
+"let value1 = @ref(1);
+let value2 = @ref(new Date());
+let value3 = @prop(0, () => value1(@access));
+let value4 = @prop(1, () => value2(@access));
+let value5 = @prop(2, () => value1(@access) + value2(@access));
 value1(3);
-value2(value2(access) * 4);
+value2(value2(@access) * 4);
 "
 `;
 
 exports[`prop > variable referencing unmutated ref 1`] = `
-"import {prop} from \\"velvet/internal\\";
-let value1 = 1;
+"let value1 = 1;
 let value2 = () => {};
-let value3 = prop(0, () => value1);
-let value4 = prop(1, () => value2);
-let value5 = prop(2, () => value1 + value2);
+let value3 = @prop(0, () => value1);
+let value4 = @prop(1, () => value2);
+let value5 = @prop(2, () => value1 + value2);
 "
 `;
 
 exports[`prop > variables with mutation 1`] = `
-"import {prop, access} from \\"velvet/internal\\";
-console.log({
+"console.log({
   value1,
   value2,
   value3,
   value4
 });
-let value1 = prop(0);
-let value2 = prop(1, 100);
-let value3 = prop(2, () => new Date());
-let value4 = prop(3, () => value2(access));
-value1(value1(access) + 1);
-value2(value2(access) + 2);
-value3(value3(access) + 3);
-value4(value4(access) + 4);
+let value1 = @prop(0);
+let value2 = @prop(1, 100);
+let value3 = @prop(2, () => new Date());
+let value4 = @prop(3, () => value2(@access));
+value1(value1(@access) + 1);
+value2(value2(@access) + 2);
+value3(value3(@access) + 3);
+value4(value4(@access) + 4);
 console.log({
-  value1: value1(access),
-  value2: value2(access),
-  value3: value3(access),
-  value4: value4(access)
+  value1: value1(@access),
+  value2: value2(@access),
+  value3: value3(@access),
+  value4: value4(@access)
 });
 function increment() {
   let value4 = 200;
   value4 += 4;
   console.log({
-    value1: value1(access),
-    value2: value2(access),
-    value3: value3(access),
+    value1: value1(@access),
+    value2: value2(@access),
+    value3: value3(@access),
     value4
   });
 }
@@ -284,23 +269,22 @@ function increment() {
 `;
 
 exports[`prop > variables with no mutation 1`] = `
-"import {prop, access} from \\"velvet/internal\\";
-let value1 = prop(0);
-let value2 = prop(1, 100);
-let value3 = prop(2, () => new Date());
-let value4 = prop(3, () => value2(access));
+"let value1 = @prop(0);
+let value2 = @prop(1, 100);
+let value3 = @prop(2, () => new Date());
+let value4 = @prop(3, () => value2(@access));
 console.log({
-  value1: value1(access),
-  value2: value2(access),
-  value3: value3(access),
-  value4: value4(access)
+  value1: value1(@access),
+  value2: value2(@access),
+  value3: value3(@access),
+  value4: value4(@access)
 });
 function increment() {
   let value4 = 200;
   console.log({
-    value1: value1(access),
-    value2: value2(access),
-    value3: value3(access),
+    value1: value1(@access),
+    value2: value2(@access),
+    value3: value3(@access),
     value4
   });
 }
@@ -308,15 +292,14 @@ function increment() {
 `;
 
 exports[`ref > mutated variable accessing member property 1`] = `
-"import {ref, access} from \\"velvet/internal\\";
-console.log(state.count);
+"console.log(state.count);
 console.log(current_date.toISOString());
-let state = ref({
+let state = @ref({
   count: 0
 });
-let current_date = ref(new Date());
-console.log(state(access).count);
-console.log(current_date(access).toISOString());
+let current_date = @ref(new Date());
+console.log(state(@access).count);
+console.log(current_date(@access).toISOString());
 state({
   count: 0
 });
@@ -325,23 +308,21 @@ current_date(new Date());
 `;
 
 exports[`ref > mutated variable mutating member property 1`] = `
-"import {ref, access} from \\"velvet/internal\\";
-let state = ref({
+"let state = @ref({
   count: 0
 });
 state({
   count: 1
 });
-console.log(state(access).count += 1);
+console.log(state(@access).count += 1);
 "
 `;
 
 exports[`ref > mutated variable, referencing unmutated variable 1`] = `
-"import {ref, access} from \\"velvet/internal\\";
-let value1 = 100;
-let value2 = ref(value1);
+"let value1 = 100;
+let value2 = @ref(value1);
 value2(200);
-console.log(value1, value2(access));
+console.log(value1, value2(@access));
 "
 `;
 
@@ -364,11 +345,10 @@ state.count += 1;
 `;
 
 exports[`ref > unmutated variable referencing mutated variable 1`] = `
-"import {ref, access} from \\"velvet/internal\\";
-let value1 = ref(100);
-let value2 = value1(access);
+"let value1 = @ref(100);
+let value2 = value1(@access);
 value1(200);
-console.log(value1(access), value2);
+console.log(value1(@access), value2);
 "
 `;
 
@@ -380,43 +360,41 @@ let value3 = new Date();
 `;
 
 exports[`ref > variable mutation with logical assignment operators 1`] = `
-"import {ref, access} from \\"velvet/internal\\";
-let value1 = ref(100);
-value1(access) ?? value1(200);
-value1(access) || value1(300);
-value1(access) && value1(300);
+"let value1 = @ref(100);
+value1(@access) ?? value1(200);
+value1(@access) || value1(300);
+value1(@access) && value1(300);
 "
 `;
 
 exports[`ref > variables with mutation 1`] = `
-"import {ref, access} from \\"velvet/internal\\";
-console.log({
+"console.log({
   value1,
   value2,
   value3,
   value4
 });
-let value1 = ref();
-let value2 = ref(100);
-let value3 = ref(new Date());
-let value4 = ref(value2(access));
-value1(value1(access) + 1);
-value2(value2(access) + 2);
-value3(value3(access) + 3);
-value4(value4(access) + 4);
+let value1 = @ref();
+let value2 = @ref(100);
+let value3 = @ref(new Date());
+let value4 = @ref(value2(@access));
+value1(value1(@access) + 1);
+value2(value2(@access) + 2);
+value3(value3(@access) + 3);
+value4(value4(@access) + 4);
 console.log({
-  value1: value1(access),
-  value2: value2(access),
-  value3: value3(access),
-  value4: value4(access)
+  value1: value1(@access),
+  value2: value2(@access),
+  value3: value3(@access),
+  value4: value4(@access)
 });
 function increment() {
   let value4 = 200;
   value4 += 4;
   console.log({
-    value1: value1(access),
-    value2: value2(access),
-    value3: value3(access),
+    value1: value1(@access),
+    value2: value2(@access),
+    value3: value3(@access),
     value4
   });
 }
@@ -453,96 +431,86 @@ function increment() {
 `;
 
 exports[`reserved > can declare $$$ variables 1`] = `
-"import {prop} from \\"velvet/internal\\";
-let $$$foo = prop(0, 123);
+"let $$$foo = @prop(0, 123);
 let $$$bar = 333;
 "
 `;
 
 exports[`store > getter 1`] = `
-"import {ref, cleanup, access} from \\"velvet/internal\\";
-let $store = ref();
-cleanup(store.subscribe($store));
-$store(access);
+"let $store = @ref();
+@cleanup(store.subscribe($store));
+$store(@access);
 "
 `;
 
 exports[`store > multiple getter references 1`] = `
-"import {ref, cleanup, access} from \\"velvet/internal\\";
-let $value1 = ref();
-cleanup(value1.subscribe($value1));
+"let $value1 = @ref();
+@cleanup(value1.subscribe($value1));
 function increment() {
-  console.log($value1(access));
+  console.log($value1(@access));
 }
-let $value2 = ref();
-cleanup(value2.subscribe($value2));
-console.log($value2(access));
+let $value2 = @ref();
+@cleanup(value2.subscribe($value2));
+console.log($value2(@access));
 "
 `;
 
 exports[`store > multiple setter references 1`] = `
-"import {ref, cleanup, access} from \\"velvet/internal\\";
-let $value1 = ref();
-cleanup(value1.subscribe($value1));
+"let $value1 = @ref();
+@cleanup(value1.subscribe($value1));
 function increment() {
-  $value1($value1(access) + 1);
+  $value1($value1(@access) + 1);
 }
-let $value2 = ref();
-cleanup(value2.subscribe($value2));
+let $value2 = @ref();
+@cleanup(value2.subscribe($value2));
 $value2(2);
 "
 `;
 
 exports[`store > mutating member property 1`] = `
-"import {ref, cleanup, access} from \\"velvet/internal\\";
-let $foo = ref();
-cleanup(foo.subscribe($foo));
-$foo(access).bar = 123;
+"let $foo = @ref();
+@cleanup(foo.subscribe($foo));
+$foo(@access).bar = 123;
 "
 `;
 
 exports[`store > no affecting inner scope 1`] = `
-"import {ref, cleanup, access} from \\"velvet/internal\\";
-let $foo = ref();
-cleanup(foo.subscribe($foo));
+"let $foo = @ref();
+@cleanup(foo.subscribe($foo));
 function log() {
   let $bar = 123;
-  console.log($bar, $foo(access));
+  console.log($bar, $foo(@access));
 }
-console.log($foo(access));
+console.log($foo(@access));
 "
 `;
 
 exports[`store > only alter single $ 1`] = `
-"import {ref, cleanup, access} from \\"velvet/internal\\";
-let $foo = ref();
-cleanup(foo.subscribe($foo));
-console.log($foo(access), $$, $$$);
+"let $foo = @ref();
+@cleanup(foo.subscribe($foo));
+console.log($foo(@access), $$, $$$);
 "
 `;
 
 exports[`store > retrieving member property 1`] = `
-"import {ref, cleanup, access} from \\"velvet/internal\\";
-let $foo = ref();
-cleanup(foo.subscribe($foo));
-console.log($foo(access).bar);
+"let $foo = @ref();
+@cleanup(foo.subscribe($foo));
+console.log($foo(@access).bar);
 "
 `;
 
 exports[`store > setter 1`] = `
-"import {ref, cleanup} from \\"velvet/internal\\";
-let $store = ref();
-cleanup(store.subscribe($store));
+"let $store = @ref();
+@cleanup(store.subscribe($store));
 $store(123);
 "
 `;
 
 exports[`store > subscribing to a ref 1`] = `
-"import {ref, cleanup, access} from \\"velvet/internal\\";
-let value1 = ref();
+"let value1 = @ref();
 value1(get_store());
-let $value1 = ref();
-cleanup(value1(access).subscribe($value1));
-console.log($value1(access));
+let $value1 = @ref();
+@cleanup(value1(@access).subscribe($value1));
+console.log($value1(@access));
 "
 `;
