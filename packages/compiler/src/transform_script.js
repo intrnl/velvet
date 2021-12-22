@@ -490,6 +490,7 @@ export function finalize_program ({
 	/** @type {import('estree').Node[]} */
 	let hoisted_statements = [];
 
+	// wrap everything into a setup function
 	let setup_ident = t.identifier(_find_unique_identifier('setup', identifiers));
 
 	let setup_decl = t.function_declaration(setup_ident, [
@@ -510,6 +511,7 @@ export function finalize_program ({
 	program.body.push(setup_decl);
 	program.body.push(t.export_default_declaration(setup_call));
 
+	// find variables to hoist, and list of things to import from module
 	walk(program, {
 		/**
 		 * @param {import('estree').Node} node
@@ -564,10 +566,12 @@ export function finalize_program ({
 		},
 	});
 
+	// hoist!
 	if (hoisted_statements.length) {
 		program.body = [...hoisted_statements, ...program.body];
 	}
 
+	// create import declaration
 	let import_specifiers = [];
 
 	for (let [imported, set] of import_identifiers) {
