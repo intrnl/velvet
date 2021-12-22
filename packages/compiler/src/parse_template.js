@@ -115,6 +115,26 @@ function _parse_expression (state) {
 			return;
 		}
 
+		if (p.eat(state, 'await')) {
+			p.eat_whitespace(state, true);
+
+			let argument = _read_expression(state);
+
+			p.eat_whitespace(state);
+
+			let to_resolve = p.eat(state, 'then');
+			if (to_resolve) p.eat_whitespace(state);
+
+			p.eat(state, '}', 'closing await bracket');
+
+			let block = t.fragment();
+			let node = t.await_statement(argument,!to_resolve ? block : null, to_resolve ? block : null);
+
+			p.current(state).children.push(node);
+			p.push(state, node, body);
+			return;
+		}
+
 		throw p.error(state, 'unknown logic block opening');
 	}
 
@@ -128,6 +148,9 @@ function _parse_expression (state) {
 		}
 		else if (statement.type === 'LoopStatement') {
 			expected = 'each';
+		}
+		else if (statement.type === 'AwaitStatement') {
+			expected = 'await';
 		}
 		else {
 			throw p.error(state, 'unexpected logic block closing');
