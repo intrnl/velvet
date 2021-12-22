@@ -22,6 +22,7 @@ export function fragment (children = []) {
 
 /**
  * @typedef {(
+ *   Comment |
  *   Text |
  *   Element |
  *   Expression |
@@ -40,6 +41,25 @@ export function fragment (children = []) {
  * 	 AwaitStatement
  * )} StackableNode
  */
+
+/**
+ * @typedef {object} Comment
+ * @property {'Comment'} type
+ * @property {string} value
+ * @property {number} [start]
+ * @property {number} [end]
+ */
+
+/**
+ * @param {string} value
+ * @returns {Comment}
+ */
+export function comment (value) {
+	return {
+		type: 'Comment',
+		value,
+	};
+}
 
 /**
  * @typedef {object} Text
