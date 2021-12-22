@@ -133,7 +133,7 @@ function _parse_expression (state) {
 			let node = t.await_statement(argument,!to_resolve ? block : null, to_resolve ? block : null);
 
 			p.current(state).children.push(node);
-			p.push(state, node, body);
+			p.push(state, node, block);
 			return;
 		}
 
