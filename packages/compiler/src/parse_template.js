@@ -75,6 +75,9 @@ function _parse_expression (state) {
 
 			let test = _read_expression(state);
 
+			p.eat_whitespace(state);
+			p.eat('}', 'closing if bracket');
+
 			let consequent = t.fragment();
 			let node = t.conditional_statement(test, consequent);
 
@@ -98,7 +101,7 @@ function _parse_expression (state) {
 			throw p.error(state, 'unexpected logic block closing');
 		}
 
-		p.eat(state, expected, true);
+		p.eat(state, expected, `closing ${expected} block`);
 		p.eat_whitespace(state);
 		p.eat(state, '}', `closing ${expected} bracket`);
 
