@@ -289,6 +289,14 @@ describe('prop', () => {
 		let result = print(program);
 		expect(result).toMatchSnapshot();
 	});
+
+	it('throws on exporting default', () => {
+		let program = parse(`
+			export default 123;
+		`);
+
+		expect(() => transform_script(program)).to.throw();
+	});
 });
 
 describe('computed', () => {
