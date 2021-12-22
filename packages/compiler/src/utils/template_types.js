@@ -130,21 +130,21 @@ export function expression (expression) {
 /**
  * @typedef {object} NamedExpression
  * @property {'NamedExpression'} type
- * @property {string} name
+ * @property {import('estree').Identifier} id
  * @property {import('estree').Expression} [expression]
  * @property {number} [start]
  * @property {number} [end]
  */
 
 /**
- * @param {string} name
+ * @param {import('estree').Identifier} id
  * @param {import('estree').Expression} [expression]
  * @returns {NamedExpression}
  */
-export function named_expression (name, expression) {
+export function named_expression (id, expression) {
 	return {
 		type: 'NamedExpression',
-		name,
+		id,
 		expression,
 	};
 }

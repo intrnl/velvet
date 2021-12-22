@@ -344,22 +344,16 @@ function _parse_expression (state) {
 	}
 
 	// named expression
-	let name = '';
+	let id = null;
 
 	if (p.eat(state, '@')) {
-		for (; state.index < state.content.length; state.index++) {
-			let char = state.content[state.index];
+		id = _read_expression(state);
 
-			if (p.is_whitespace(char)) {
-				break;
-			}
-
-			name += char;
+		if (id.type !== 'Identifier') {
+			throw p.error(state, 'expected an identifier', id.start);
 		}
 
-		if (!name) {
-			throw p.error(state, 'expected a name for named expression');
-		}
+		p.eat_whitespace(state, true);
 	}
 
 	p.eat_whitespace(state);
@@ -368,8 +362,8 @@ function _parse_expression (state) {
 
 	p.eat(state, '}', 'closing expression bracket');
 
-	let node = name
-		? t.named_expression(name, expression)
+	let node = id
+		? t.named_expression(id, expression)
 		: t.expression(expression);
 
 	node.start = start;
