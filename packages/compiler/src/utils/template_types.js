@@ -86,6 +86,8 @@ export function text (raw, data = decode_character_references(raw)) {
 /**
  * @typedef {object} Element
  * @property {'Element'} type
+ * @property {string} name
+ * @property {boolean} component
  * @property {Array<Attribute>} attributes
  * @property {Array<Node>} children
  * @property {number} [start]
@@ -93,15 +95,18 @@ export function text (raw, data = decode_character_references(raw)) {
  */
 
 /**
+ * @param {string} name
  * @param {Array<Attribute>} [attributes]
  * @param {Array<Node>} [children]
  * @returns {Element}
  */
-export function element (attributes = [], children = []) {
+export function element (name, attributes = [], children = []) {
 	return {
 		type: 'Element',
+		name,
 		attributes,
 		children,
+		component: /^[A-Z]|^v:(?:self|component)$/.test(name),
 	};
 }
 
