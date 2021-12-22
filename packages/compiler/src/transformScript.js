@@ -601,15 +601,23 @@ function _find_unique_identifier (name, set) {
 }
 
 /**
- * @param {import('estree').Pattern | import('estree').Property} node
+ * @param {(
+ *   import('estree').Pattern |
+ *   import('estree').Property |
+ *   (import('estree').Pattern | import('estree').Property)[]
+ * )} node
  */
 function _has_identifier_declared (node, filter) {
+	if (Array.isArray(node)) {
+		return node.some((child) => _has_identifier_declared(child, filter));
+	}
+
 	return (
 		(node.type === 'Identifier' && filter(node.name)) ||
 		(node.type === 'Property' && _has_identifier_declared(node.value, filter)) ||
 		(node.type === 'RestElement' && _has_identifier_declared(node.argument, filter)) ||
-		(node.type === 'ObjectPattern' && node.properties.some((prop) => _has_identifier_declared(prop, filter))) ||
-		(node.type === 'ArrayPattern' && node.elements.some((elem) => _has_identifier_declared(elem, filter)))
+		(node.type === 'ObjectPattern' && _has_identifier_declared(node.properties, filter)) ||
+		(node.type === 'ArrayPattern' && _has_identifier_declared(node.elements, filter))
 	)
 }
 
