@@ -66,14 +66,14 @@ export function text (raw, data = decode_character_references(raw)) {
 /**
  * @typedef {object} Element
  * @property {'Element'} type
- * @property {Array<ElementAttribute>} attributes
+ * @property {Array<Attribute>} attributes
  * @property {Array<Node>} children
  * @property {number} [start]
  * @property {number} [end]
  */
 
 /**
- * @param {Array<ElementAttribute>} [attributes]
+ * @param {Array<Attribute>} [attributes]
  * @param {Array<Node>} [children]
  * @returns {Element}
  */
@@ -86,8 +86,8 @@ export function element (attributes = [], children = []) {
 }
 
 /**
- * @typedef {object} ElementAttribute
- * @typedef {'ElementAttribute'} type
+ * @typedef {object} Attribute
+ * @typedef {'Attribute'} type
  * @property {string} name
  * @property {Array<Text | Expression>} [value]
  * @property {number} [start]
@@ -97,13 +97,32 @@ export function element (attributes = [], children = []) {
 /**
  * @param {string} name
  * @param {Array<Text | Expression>} [value]
- * @returns {ElementAttribute}
+ * @returns {Attribute}
  */
-export function element_attribute (name, value = null) {
+export function attribute (name, value = null) {
 	return {
-		type: 'ElementAttribute',
+		type: 'Attribute',
 		name,
 		value,
+	};
+}
+
+/**
+ * @typedef {object} AttributeSpread
+ * @property {'AttributeSpread'} type
+ * @property {import('estree').Expression} expression
+ * @property {number} [start]
+ * @property {number} [end]
+ */
+
+/**
+ * @param {import('estree').Expression} expression
+ * @returns {AttributeSpread}
+ */
+export function attribute_spread (expression) {
+	return {
+		type: 'Attribute',
+		expression,
 	};
 }
 
