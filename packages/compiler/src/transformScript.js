@@ -44,8 +44,7 @@ export function transform_script (program) {
 				current_scope === root_scope &&
 				node.type === 'VariableDeclarator' &&
 				_has_identifier_declared(node.id, (name) => (
-					(name[0] === '$' && name[1] !== '$') ||
-					(name[0] === '$' && name[1] === '$' && name[2] !== '$')
+					name[0] === '$' && (name[1] !== '$' || (name[1] === '$' && name[2] !== '$'))
 				))
 			) {
 				throw new Error('$ and $$-prefixed variables are reserved and cannot be declared');
