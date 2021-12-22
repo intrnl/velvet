@@ -253,9 +253,93 @@ function _parse_expression (state) {
 		throw p.error(state, 'unexpected usage of :else outside of #if and #each');
 	}
 
-	let name = '';
+	if (p.eat(state, ':then')) {
+		let statement = p.current(state, 1);
+
+		if (statement?.type !== 'AwaitStatement') {
+			throw p.error(state, 'unexpected usage of :then outside of #await');
+		}
+
+		if (statement.resolved) {
+			throw p.error(state, 'only one :then can be defined');
+		}
+
+		if (statement.rejected) {
+			throw p.error(state, 'cannot have :then after :catch');
+		}
+
+		let has_whitespace = p.eat_whitespace(state);
+		let has_expression = !p.eat(state, '}');
+		let expression = null;
+
+		if (has_expression) {
+			if (!has_whitespace) {
+				throw p.error(state, 'expected whitespace');
+			}
+
+			expression = _read_expression(state);
+
+			if (!_is_expression_pattern(expression)) {
+				throw p.error(state, 'expected an assignment');
+			}
+
+			p.eat_whitespace(state);
+			p.eat(state, '}', 'closing :then bracket');
+		}
+
+		let block = t.fragment();
+		let node = t.await_clause(expression, block);
+
+		statement.resolved = node;
+
+		p.pop(state, 1);
+		p.push(state, block);
+		return;
+	}
+
+	if (p.eat(state, ':catch')) {
+		let statement = p.current(state, 1);
+
+		if (statement?.type !== 'AwaitStatement') {
+			throw p.error(state, 'unexpected usage of :catch outside of #await');
+		}
+
+		if (statement.rejected) {
+			throw p.error(state, 'only one :catch can be defined');
+		}
+
+		let has_whitespace = p.eat_whitespace(state);
+		let has_expression = !p.eat(state, '}');
+		let expression = null;
+
+		if (has_expression) {
+			if (!has_whitespace) {
+				throw p.error(state, 'expected whitespace');
+			}
+
+			expression = _read_expression(state);
+
+			if (!_is_expression_pattern(expression)) {
+				throw p.error(state, 'expected an assignment');
+			}
+
+			p.eat_whitespace(state);
+			p.eat_whitespace(state, '}', 'closing :then bracket');
+		}
+
+		let block = t.fragment();
+		let node = t.await_clause(expression, block);
+
+		statement.rejected = node;
+
+		p.pop(state, 1);
+		p.push(state, block);
+		return;
+	}
 
 	// named expression
+	let name = '';
+
 	if (p.eat(state, '@')) {
 		for (; state.index < state.content.length; state.index++) {
 			let char = state.content[state.index];
