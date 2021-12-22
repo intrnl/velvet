@@ -115,7 +115,7 @@ export function eat_whitespace (state, required) {
  * @param {RegExp} pattern
  * @returns {string | null}
  */
-export function eat_pattern_until (state, pattern) {
+export function eat_until (state, pattern) {
 	let start = state.index;
 	pattern.lastIndex = start;
 

@@ -401,7 +401,7 @@ function _parse_element (state) {
 
 	// comment
 	if (p.eat(state, '!--')) {
-		let data = p.eat_pattern_until(state, /-->/g);
+		let data = p.eat_until(state, /-->/g);
 		p.eat(state, '-->', 'closing comment');
 
 		let node = t.comment(data);
