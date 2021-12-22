@@ -86,6 +86,7 @@ function _parse_expression (state) {
 
 			let consequent = t.fragment();
 			let node = t.conditional_statement(test, consequent);
+			node.start = start;
 
 			p.current(state).children.push(node);
 			p.push(state, node, consequent);
@@ -117,6 +118,7 @@ function _parse_expression (state) {
 
 			let body = t.fragment();
 			let node = t.loop_statement(kind, expression, local, body);
+			node.start = start;
 
 			p.current(state).children.push(node);
 			p.push(state, node, body);
@@ -151,6 +153,7 @@ function _parse_expression (state) {
 			let clause = t.await_clause(local, block);
 
 			let node = t.await_statement(argument, !to_resolve ? block : null, to_resolve ? clause : null);
+			node.start = start;
 
 			p.current(state).children.push(node);
 			p.push(state, node, block);
@@ -163,6 +166,7 @@ function _parse_expression (state) {
 	// closing logic block
 	if (p.eat(state, '/')) {
 		let statement = p.current(state, 1);
+		let block = p.current(state);
 		let expected;
 
 		if (!statement) {
@@ -171,13 +175,6 @@ function _parse_expression (state) {
 
 		if (statement.type === 'ConditionalStatement') {
 			expected = 'if';
-
-			// 0 = Fragment
-			// 1 = ConditionalStatement
-			// 2 = ConditionalStatement?
-			while (p.current(state, 1) === p.current(state, 2)?.alternate) {
-				p.pop(state, 1);
-			}
 		}
 		else if (statement.type === 'LoopStatement') {
 			expected = 'each';
@@ -193,6 +190,22 @@ function _parse_expression (state) {
 		p.eat_whitespace(state);
 		p.eat(state, '}', `closing /${expected} bracket`);
 
+		block.start = block.children[0]?.start || statement.start;
+		block.end = block.children[block.children.length - 1]?.end || statement.start;
+		statement.end = state.index;
+
+		if (statement.type === 'ConditionalStatement') {
+			// 0 = Fragment
+			// 1 = ConditionalStatement
+			// 2 = ConditionalStatement?
+			while (p.current(state, 1) === p.current(state, 2)?.alternate) {
+				let statement = p.current(state, 2);
+				statement.end = state.index;
+
+				p.pop(state, 1);
+			}
+		}
+
 		p.pop(state, 2);
 		return;
 	}
@@ -200,10 +213,14 @@ function _parse_expression (state) {
 	// intermediary logic
 	if (p.eat(state, ':else')) {
 		let statement = p.current(state, 1);
+		let prev_block = p.current(state);
 
 		if (!statement) {
 			throw p.error(state, 'unexpected usage of :else outside of #if and #each');
 		}
+
+		prev_block.start = prev_block.children[0]?.start || statement.start;
+		prev_block.end = prev_block.children[prev_block.children.length - 1]?.end || statement.start;
 
 		if (statement.type === 'ConditionalStatement') {
 			let additional = p.eat_whitespace(state) && p.eat(state, 'if');
@@ -216,6 +233,7 @@ function _parse_expression (state) {
 
 				let block = t.fragment();
 				let node = t.conditional_statement(test, block);
+				node.start = start;
 
 				statement.alternate = node;
 
