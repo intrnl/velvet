@@ -16,7 +16,7 @@ export function parse (source) {
 		sourceType: 'module',
 	});
 
-	reattach_comments(program);
+	reattach_comments(program, comments);
 	return program;
 }
 
