@@ -376,7 +376,23 @@ function _parse_expression (state) {
  * @param {p.ParserState} state
  */
 function _parse_element (state) {
+	let start = state.index;
+	let parent = p.current(state);
+
 	p.eat(state, '<', 'opening tag bracket');
+
+	// comment
+	if (p.eat(state, '!--')) {
+		let data = p.eat_pattern_until(state, /-->/g);
+		p.eat(state, '-->', 'closing comment');
+
+		let node = t.comment(data);
+		node.start = start;
+		node.end = state.index;
+
+		parent.children.push(node);
+		return;
+	}
 
 	throw p.error(state, 'unimplemented');
 }

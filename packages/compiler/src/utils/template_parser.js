@@ -112,6 +112,26 @@ export function eat_whitespace (state, required) {
 
 /**
  * @param {ParserState} state
+ * @param {RegExp} pattern
+ * @returns {string | null}
+ */
+export function eat_pattern_until (state, pattern) {
+	let start = state.index;
+	pattern.lastIndex = start;
+
+	let match = pattern.exec(state.content);
+
+	if (match) {
+		state.index = match.index;
+		return state.content.slice(start, state.index);
+	}
+
+	state.index = state.content.length;
+	return state.content.slice(start);
+}
+
+/**
+ * @param {ParserState} state
  * @param {string} message
  * @returns {object}
  */
