@@ -487,8 +487,6 @@ export function finalize_imports (program, mod = 'velvet/internal') {
 			) {
 				let name = node.name;
 
-				identifiers.add(name);
-
 				if (name.startsWith('@')) {
 					name = name.slice(1);
 
@@ -499,6 +497,9 @@ export function finalize_imports (program, mod = 'velvet/internal') {
 					}
 
 					set.add(node);
+				}
+				else {
+					identifiers.add(name);
 				}
 			}
 		},
