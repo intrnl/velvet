@@ -2,7 +2,7 @@
 	"type": "module",
 	"name": "@velvet/compiler",
 	"scripts": {
-		"test": "mocha --file test/utils/setup.js test/*.test.js"
+		"test": "vitest"
 	},
 	"dependencies": {
 		"acorn": "^8.6.0",
