@@ -81,6 +81,10 @@ export function transform_script (program) {
 			}
 
 			// mark props
+			if (node.type === 'ExportDefaultDeclaration') {
+				throw new Error('export default is reserved for component');
+			}
+
 			if (node.type === 'ExportNamedDeclaration' && node.declaration) {
 				let declaration = node.declaration;
 
