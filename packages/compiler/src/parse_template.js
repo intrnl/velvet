@@ -98,7 +98,7 @@ function _parse_expression (state) {
 			let local = _read_expression(state);
 
 			if (!_is_expression_pattern(local)) {
-				throw p.error(state, 'expected an assignment');
+				throw p.error(state, 'expected an assignment', local.start);
 			}
 
 			p.eat_whitespace(state, true);
@@ -139,7 +139,7 @@ function _parse_expression (state) {
 				local = _read_expression(state);
 
 				if (!_is_expression_pattern(local)) {
-					throw p.error(state, 'expected an assignment');
+					throw p.error(state, 'expected an assignment', local.start);
 				}
 
 				p.eat_whitespace(state);
@@ -286,7 +286,7 @@ function _parse_expression (state) {
 			expression = _read_expression(state);
 
 			if (!_is_expression_pattern(expression)) {
-				throw p.error(state, 'expected an assignment');
+				throw p.error(state, 'expected an assignment', expression.start);
 			}
 
 			p.eat_whitespace(state);
@@ -326,7 +326,7 @@ function _parse_expression (state) {
 			expression = _read_expression(state);
 
 			if (!_is_expression_pattern(expression)) {
-				throw p.error(state, 'expected an assignment');
+				throw p.error(state, 'expected an assignment', expression.start);
 			}
 
 			p.eat_whitespace(state);
