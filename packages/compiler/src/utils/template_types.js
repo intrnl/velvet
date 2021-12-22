@@ -236,12 +236,12 @@ export function await_statement (argument, pending = null, resolved = null, reje
 /**
  * @typedef {object} AwaitClause
  * @property {'AwaitClause'} type
- * @property {import('estree').Pattern} local
+ * @property {import('estree').Pattern} [local]
  * @property {Fragment} body
  */
 
 /**
- * @param {import('estree').Pattern} local
+ * @param {import('estree').Pattern} [local]
  * @param {Fragment} body
  * @returns {AwaitClause}
  */
