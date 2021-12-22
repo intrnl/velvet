@@ -404,7 +404,7 @@ function _read_expression (state) {
 
 		let index = node.end;
 
-		for (; parens > 0; parens--) {
+		while (parens > 0) {
 			let char = state.content[index];
 
 			if (char === ')') {
