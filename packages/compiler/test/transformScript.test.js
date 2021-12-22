@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { transform_script } from '../src/transformScript.js';
+import { finalize_program, transform_script } from '../src/transformScript.js';
 import { parse, print } from '../src/utils/parse.js';
 
 
@@ -733,6 +733,23 @@ describe('reserved', () => {
 		`);
 
 		expect(() => transform_script(program)).to.not.throw();
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
+});
+
+describe('final', () => {
+	it('props test', () => {
+		let program = parse(`
+			export let count = -1;
+			let magic = 420;
+
+			export { magic as MAGIC };
+		`);
+
+		let { props_idx } = transform_script(program);
+		finalize_program({ program, props_idx });
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();

@@ -427,6 +427,8 @@ export function transform_script (program) {
 
 		program.body.push(expression);
 	}
+
+	return { mutables, refs, computeds, props, props_idx, stores };
 }
 
 function _add_store_subscription (identifier, actual, is_ref) {
@@ -473,15 +475,41 @@ function _add_store_subscription (identifier, actual, is_ref) {
 	return { declaration: decl, actual_ident };
 }
 
-/**
- * @param {import('estree').Program} program
- * @param {string} [mod]
- */
-export function finalize_imports (program, mod = 'velvet/internal') {
+export function finalize_program ({
+	program,
+
+	props_idx,
+
+	component_name = 'x-app',
+	mod = 'velvet/internal',
+}) {
 	/** @type {Set<string>} */
 	let identifiers = new Set();
 	/** @type {Map<string, Set<import('estree').Identifier>>} */
 	let import_identifiers = new Map();
+
+	/** @type {import('estree').Node[]} */
+	let hoisted_statements = [];
+
+	let setup_ident = t.identifier(_find_unique_identifier('setup', identifiers));
+
+	let setup_decl = t.function_declaration(setup_ident, [
+		t.identifier('$$root'),
+		t.identifier('$$host'),
+	], program.body.splice(0, program.body.length));
+
+	let props_decl = t.object_expression(
+		props_idx.map((name, idx) => t.property(t.identifier(name), t.literal(idx)))
+	);
+
+	let setup_call = t.call_expression(t.identifier('@define'), [
+		t.literal(component_name),
+		setup_ident,
+		props_decl,
+	]);
+
+	program.body.push(setup_decl);
+	program.body.push(t.export_default_declaration(setup_call));
 
 	walk(program, {
 		/**
@@ -509,21 +537,42 @@ export function finalize_imports (program, mod = 'velvet/internal') {
 				else {
 					identifiers.add(name);
 				}
+
+				return;
+			}
+
+			if (
+				node.type === 'VariableDeclarator' &&
+				_has_identifier_declared(node.id, (name) => name[0] === '%')
+			) {
+				/** @type {import('estree').VariableDeclaration} */
+				let parent_node = parent;
+				let kind = parent_node.kind;
+
+				let decl = t.variable_declaration(kind, [node]);
+
+				hoisted_statements.push(decl);
+				this.remove();
+			}
+		},
+		/**
+		 * @param {import('estree').Node} node
+		 */
+		leave (node) {
+			if (node.type === 'VariableDeclaration' && !node.declarations.length) {
+				this.remove();
 			}
 		},
 	});
 
+	if (hoisted_statements.length) {
+		program.body = [...hoisted_statements, ...program.body];
+	}
+
 	let import_specifiers = [];
 
 	for (let [imported, set] of import_identifiers) {
-		let name = imported;
-		let count = 0;
-
-		while (identifiers.has(name)) {
-			name = imported + '$' + (++count);
-		}
-
-		identifiers.add(name);
+		let name = _find_unique_identifier(imported, identifiers);
 
 		for (let identifier of set) {
 			identifier.name = name;
@@ -537,6 +586,19 @@ export function finalize_imports (program, mod = 'velvet/internal') {
 		let import_decl = t.import_declaration(import_specifiers, t.literal(mod));
 		program.body.unshift(import_decl);
 	}
+}
+
+function _find_unique_identifier (name, set) {
+	let local_name = name;
+	let count = 0;
+
+	while (set.has(local_name)) {
+		local_name = name + '$' + (++count);
+	}
+
+	set.add(local_name);
+
+	return local_name;
 }
 
 /**

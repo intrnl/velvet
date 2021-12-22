@@ -143,7 +143,37 @@ export function call_expression (callee, args = [], optional = false) {
 }
 
 /**
- * @param {import('estree').Pattern} params
+ * @param {import('estree').Statement[]} body
+ * @returns {import('estree').BlockStatement}
+ */
+export function block_statement (body) {
+	return {
+		type: 'BlockStatement',
+		body: body,
+	}
+}
+
+/**
+ * @param {import('estree').Identifier} id
+ * @param {import('estree').Pattern[]} params
+ * @param {import('estree').Statement[]} body
+ * @param {boolean} [async]
+ * @param {boolean} [generator]
+ * @returns {import('estree').FunctionDeclaration}
+ */
+export function function_declaration (id = null, params, body, async = false, generator = false) {
+	return {
+		type: 'FunctionDeclaration',
+		id,
+		params,
+		body: block_statement(body),
+		async,
+		generator,
+	};
+}
+
+/**
+ * @param {import('estree').Pattern[]} params
  * @param {import('estree').BlockStatement | import('estree').Expression} body
  * @param {boolean} [async]
  * @returns {import('estree').ArrowFunctionExpression}
@@ -208,5 +238,16 @@ export function import_specifier (local, imported) {
 		type: 'ImportSpecifier',
 		local,
 		imported,
+	};
+}
+
+/**
+ * @param {import('estree').Declaration | import('estree').Expression} declaration
+ * @returns {import('estree').ExportDefaultDeclaration}
+ */
+export function export_default_declaration (declaration) {
+	return {
+		type: 'ExportDefaultDeclaration',
+		declaration,
 	};
 }
