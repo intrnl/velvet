@@ -91,7 +91,9 @@ function _parse_expression (state) {
 
 			let local = _read_expression(state);
 
-			// @todo: is it okay to not check if local is a pattern?
+			if (!_is_expression_pattern(local)) {
+				throw p.error(state, 'expected an assignment');
+			}
 
 			p.eat_whitespace(state, true);
 
@@ -244,4 +246,19 @@ function _read_expression (state) {
 	catch (error) {
 		throw p.error(state, `JS parsing error: ${error.message}`);
 	}
+}
+
+/**
+ * @param {import('estree').Expression} node
+ * @returns {node is import('estree').Pattern}
+ */
+function _is_expression_pattern (node) {
+	// we're parsing things as an expression here, so we'll have to check for
+	// expression-equivalents of patterns.
+
+	return (
+		node.type === 'Identifier' ||
+		node.type === 'ObjectPattern' || node.type === 'ObjectExpression' ||
+		node.type === 'ArrayPattern' || node.type === 'ArrayExpression'
+	);
 }
