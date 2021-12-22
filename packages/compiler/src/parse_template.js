@@ -76,7 +76,7 @@ function _parse_expression (state) {
 			let test = _read_expression(state);
 
 			p.eat_whitespace(state);
-			p.eat('}', 'closing if bracket');
+			p.eat('}', 'closing #if bracket');
 
 			let consequent = t.fragment();
 			let node = t.conditional_statement(test, consequent);
@@ -105,7 +105,7 @@ function _parse_expression (state) {
 			let expression = _read_expression(state);
 
 			p.eat_whitespace(state);
-			p.eat(state, '}', 'closing each bracket');
+			p.eat(state, '}', 'closing #each bracket');
 
 			let kind = enumerable ? 'enumerable' : 'iterable';
 
@@ -127,7 +127,7 @@ function _parse_expression (state) {
 			let to_resolve = p.eat(state, 'then');
 			if (to_resolve) p.eat_whitespace(state);
 
-			p.eat(state, '}', 'closing await bracket');
+			p.eat(state, '}', 'closing #await bracket');
 
 			let block = t.fragment();
 			let node = t.await_statement(argument,!to_resolve ? block : null, to_resolve ? block : null);
@@ -158,9 +158,9 @@ function _parse_expression (state) {
 			throw p.error(state, 'unexpected logic block closing');
 		}
 
-		p.eat(state, expected, `closing ${expected} block`);
+		p.eat(state, expected, `closing /${expected} block`);
 		p.eat_whitespace(state);
-		p.eat(state, '}', `closing ${expected} bracket`);
+		p.eat(state, '}', `closing /${expected} bracket`);
 
 		p.pop(state, 2);
 		return;
