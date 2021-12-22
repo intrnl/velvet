@@ -209,7 +209,7 @@ export function loop_statement (kind, expression, local, body, alternate = null)
  * @typedef {object} AwaitStatement
  * @property {'AwaitStatement'} type
  * @property {import('estree').Expression} argument
- * @property {AwaitClause} [pending]
+ * @property {Fragment} [pending]
  * @property {AwaitClause} [resolved]
  * @property {AwaitClause} [rejected]
  * @property {number} [start]
@@ -218,7 +218,7 @@ export function loop_statement (kind, expression, local, body, alternate = null)
 
 /**
  * @param {import('estree').Expression} argument
- * @param {AwaitClause} [pending]
+ * @param {Fragment} [pending]
  * @param {AwaitClause} [resolved]
  * @param {AwaitClause} [rejected]
  * @returns {AwaitStatement}

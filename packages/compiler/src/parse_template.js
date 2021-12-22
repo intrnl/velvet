@@ -144,7 +144,7 @@ function _parse_expression (state) {
 			let block = t.fragment();
 			let clause = t.await_clause(local, block);
 
-			let node = t.await_statement(argument, !to_resolve ? clause : null, to_resolve ? clause : null);
+			let node = t.await_statement(argument, !to_resolve ? block : null, to_resolve ? clause : null);
 
 			p.current(state).children.push(node);
 			p.push(state, node, block);
