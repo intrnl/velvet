@@ -167,7 +167,7 @@ export function keyed (marker, block, expression) {
 	});
 }
 
-export function component (marker, expression) {
+export function dynamic (marker, expression) {
 	let current = marker;
 
 	effect(() => {
