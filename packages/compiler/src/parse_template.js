@@ -86,6 +86,35 @@ function _parse_expression (state) {
 			return;
 		}
 
+		if (p.eat(state, 'each')) {
+			p.eat_whitespace(state, true);
+
+			let local = _read_expression(state);
+
+			// @todo: is it okay to not check if local is a pattern?
+
+			p.eat_whitespace(state, true);
+
+			let enumerable = p.eat(state, 'in');
+			if (!enumerable) p.eat(state, 'of', 'either in or of');
+
+			p.eat_whitespace(state, true);
+
+			let expression = _read_expression(state);
+
+			p.eat_whitespace(state);
+			p.eat(state, '}', 'closing each bracket');
+
+			let kind = enumerable ? 'enumerable' : 'iterable';
+
+			let body = t.fragment();
+			let node = t.loop_statement(kind, expression, local, body);
+
+			p.current(state).children.push(node);
+			p.push(state, node, body);
+			return;
+		}
+
 		throw p.error(state, 'unknown logic block opening');
 	}
 
@@ -96,6 +125,9 @@ function _parse_expression (state) {
 
 		if (statement.type === 'ConditionalStatement') {
 			expected = 'if';
+		}
+		else if (statement.type === 'LoopStatement') {
+			expected = 'each';
 		}
 		else {
 			throw p.error(state, 'unexpected logic block closing');
