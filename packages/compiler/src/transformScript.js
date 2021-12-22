@@ -127,8 +127,13 @@ export function transform_script (program) {
 				return;
 			}
 		},
-		/** @param {import('estree').Node} node */
-		leave (node) {
+		/**
+		 * @param {import('estree').Node} node
+		 * @param {import('estree').Node} parent
+		 */
+		leave (node, parent) {
+			node.path ||= { parent };
+
 			if (map.has(node)) {
 				current_scope = current_scope.parent;
 			}
@@ -144,6 +149,8 @@ export function transform_script (program) {
 		 * @param {import('estree').Node} parent
 		 */
 		enter (node, parent, key) {
+			node.path ||= { parent };
+
 			if (map.has(node)) {
 				current_scope = map.get(node);
 			}
@@ -369,8 +376,13 @@ export function transform_script (program) {
 				return;
 			}
 		},
-		/** @param {import('estree').Node} node */
-		leave (node) {
+		/**
+		 * @param {import('estree').Node} node
+		 * @param {import('estree').Node} parent
+		 */
+		leave (node, parent) {
+			node.path ||= { parent };
+
 			if (map.has(node)) {
 				current_scope = current_scope.parent;
 			}
