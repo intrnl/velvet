@@ -76,7 +76,7 @@ function _parse_expression (state) {
 			let test = _read_expression(state);
 
 			p.eat_whitespace(state);
-			p.eat('}', 'closing #if bracket');
+			p.eat(state, '}', 'closing #if bracket');
 
 			let consequent = t.fragment();
 			let node = t.conditional_statement(test, consequent);
