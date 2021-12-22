@@ -452,6 +452,13 @@ function increment() {
 "
 `;
 
+exports[`reserved > can declare $$$ variables 1`] = `
+"import {prop} from \\"velvet/internal\\";
+let $$$foo = prop(0, 123);
+let $$$bar = 333;
+"
+`;
+
 exports[`store > getter 1`] = `
 "import {ref, cleanup, access} from \\"velvet/internal\\";
 let $store = ref();

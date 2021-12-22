@@ -659,6 +659,14 @@ describe('store', () => {
 		expect(() => transform_script(program)).to.throw();
 	});
 
+	it('throws on declaring $ variables', () => {
+		let program = parse(`
+			let $foo = 'bar';
+		`);
+
+		expect(() => transform_script(program)).to.throw();
+	});
+
 	it('only alter single $', () => {
 		let program = parse(`
 			console.log($foo, $$, $$$);
@@ -719,6 +727,29 @@ describe('bind', () => {
 		`);
 
 		transform_script(program);
+		finalize_imports(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
+});
+
+describe('reserved', () => {
+	it('throws on declaring $$', () => {
+		let program = parse(`
+			export let $$foo = 'bar';
+		`);
+
+		expect(() => transform_script(program)).to.throw();
+	});
+
+	it('can declare $$$ variables', () => {
+		let program = parse(`
+			export let $$$foo = 123;
+			let $$$bar = 333;
+		`);
+
+		expect(() => transform_script(program)).to.not.throw();
 		finalize_imports(program);
 
 		let result = print(program);

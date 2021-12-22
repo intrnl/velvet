@@ -23,6 +23,7 @@ export function transform_script (program) {
 	let _is_transformed = new WeakSet();
 
 	// - create node paths
+	// - throw on declaring $ and $$ variables
 	// - mark variables that have mutable operations
 	// - mark props
 	// - transform computed variables
@@ -36,6 +37,18 @@ export function transform_script (program) {
 
 			if (map.has(node)) {
 				current_scope = map.get(node);
+			}
+
+			// throw on declaring $ and $$ variables
+			if (
+				current_scope === root_scope &&
+				node.type === 'VariableDeclarator' &&
+				_has_identifier_declared(node.id, (name) => (
+					(name[0] === '$' && name[1] !== '$') ||
+					(name[0] === '$' && name[1] === '$' && name[2] !== '$')
+				))
+			) {
+				throw new Error('$ and $$-prefixed variables are reserved and cannot be declared');
 			}
 
 			// mark mutable variables
@@ -518,6 +531,19 @@ export function finalize_imports (program, mod = 'velvet/internal') {
 }
 
 /**
+ * @param {import('estree').Pattern | import('estree').Property} node
+ */
+function _has_identifier_declared (node, filter) {
+	return (
+		(node.type === 'Identifier' && filter(node.name)) ||
+		(node.type === 'Property' && _has_identifier_declared(node.key, filter)) ||
+		(node.type === 'RestElement' && _has_identifier_declared(node.argument, filter)) ||
+		(node.type === 'ObjectPattern' && node.properties.some((prop) => _has_identifier_declared(prop, filter))) ||
+		(node.type === 'ArrayPattern' && node.elements.some((elem) => _has_identifier_declared(elem, filter)))
+	)
+}
+
+/**
  * @param {import('estree').Expression | import('estree').Expression[]} expression
  * @param {Set<string>} [refs]
  */
@@ -537,4 +563,3 @@ function _is_primitive (expression, refs) {
 		(refs && expression.type === 'Identifier' && !refs.has(expression.name))
 	);
 }
-
