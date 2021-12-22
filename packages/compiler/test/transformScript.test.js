@@ -650,6 +650,26 @@ describe('store', () => {
 
 		expect(print(program)).toMatchSnapshot();
 	});
+
+	it('throws on lone $', () => {
+		let program = parse(`
+			console.log($);
+		`);
+
+		expect(() => transform_script(program)).to.throw();
+	});
+
+	it('only alter single $', () => {
+		let program = parse(`
+			console.log($foo, $$, $$$);
+		`);
+
+		transform_script(program);
+		finalize_imports(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	})
 });
 
 describe('bind', () => {

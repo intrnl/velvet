@@ -494,6 +494,14 @@ $foo(access).bar = 123;
 "
 `;
 
+exports[`store > only alter single $ 1`] = `
+"import {ref, cleanup, access} from \\"velvet/internal\\";
+let $foo = ref();
+cleanup(foo.subscribe($foo));
+console.log($foo(access), $$, $$$);
+"
+`;
+
 exports[`store > retrieving member property 1`] = `
 "import {ref, cleanup, access} from \\"velvet/internal\\";
 let $foo = ref();
