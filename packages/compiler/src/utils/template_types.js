@@ -91,7 +91,7 @@ export function text (value, decoded = decode_character_references(value)) {
  * @property {boolean} self_closing
  * @property {boolean} component
  * @property {boolean} inline
- * @property {Array<Attribute>} attributes
+ * @property {Array<Attribute | AttributeSpread>} attributes
  * @property {Array<Node>} children
  * @property {number} [start]
  * @property {number} [end]
@@ -100,7 +100,7 @@ export function text (value, decoded = decode_character_references(value)) {
 /**
  * @param {string} name
  * @param {boolean} self_closing
- * @param {Array<Attribute>} [attributes]
+ * @param {Array<Attribute | AttributeSpread>} [attributes]
  * @param {Array<Node>} [children]
  * @returns {Element}
  */
