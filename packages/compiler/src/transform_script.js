@@ -1,6 +1,6 @@
-import { walk } from 'estree-walker';
 import { analyze } from 'periscopic';
 
+import { walk } from './utils/walker.js';
 import * as t from './utils/js_types.js';
 
 
@@ -33,8 +33,6 @@ export function transform_script (program) {
 		 * @param {import('estree').Node} parent
 		 */
 		enter (node, parent) {
-			node.path = { parent };
-
 			if (map.has(node)) {
 				current_scope = map.get(node);
 			}
@@ -103,8 +101,7 @@ export function transform_script (program) {
 					props_idx.push(name);
 				}
 
-				this.replace(declaration);
-				return;
+				return declaration;
 			}
 
 			if (node.type === 'ExportNamedDeclaration' && node.specifiers.length) {
@@ -120,8 +117,7 @@ export function transform_script (program) {
 					props_idx.push(exported_name);
 				}
 
-				this.remove();
-				return;
+				return walk.remove;
 			}
 
 			// transform computed value
@@ -143,8 +139,7 @@ export function transform_script (program) {
 				computeds.add(name);
 				current_scope.add_declaration(expression);
 
-				this.replace(expression);
-				return;
+				return expression;
 			}
 		},
 		/**
@@ -152,8 +147,6 @@ export function transform_script (program) {
 		 * @param {import('estree').Node} parent
 		 */
 		leave (node, parent) {
-			node.path = { parent };
-
 			if (map.has(node)) {
 				current_scope = current_scope.parent;
 			}
@@ -169,8 +162,6 @@ export function transform_script (program) {
 		 * @param {import('estree').Node} parent
 		 */
 		enter (node, parent, key) {
-			node.path = { parent };
-
 			if (map.has(node)) {
 				current_scope = map.get(node);
 			}
@@ -282,7 +273,7 @@ export function transform_script (program) {
 					}
 
 					_is_transformed.add(node);
-					this.replace(expression);
+					return expression;
 				}
 
 				return;
@@ -335,7 +326,7 @@ export function transform_script (program) {
 					}
 
 					_is_transformed.add(identifier);
-					this.replace(expression);
+					return expression;
 				}
 
 				return;
@@ -358,7 +349,7 @@ export function transform_script (program) {
 					let expression = t.call_expression(identifier, [operation]);
 
 					_is_transformed.add(identifier);
-					this.replace(expression);
+					return expression;
 				}
 
 				return;
@@ -391,7 +382,7 @@ export function transform_script (program) {
 					let effect = t.arrow_function_expression([], statement);
 					let expression = t.call_expression(t.identifier('@effect'), [effect]);
 
-					this.replace(t.expression_statement(expression));
+					return t.expression_statement(expression);
 				}
 
 				return;
@@ -402,8 +393,6 @@ export function transform_script (program) {
 		 * @param {import('estree').Node} parent
 		 */
 		leave (node, parent) {
-			node.path = { parent };
-
 			if (map.has(node)) {
 				current_scope = current_scope.parent;
 			}
@@ -567,7 +556,7 @@ export function finalize_program ({
 				let decl = t.variable_declaration(kind, [node]);
 
 				hoisted_statements.push(decl);
-				this.remove();
+				return walk.remove;
 			}
 		},
 		/**
@@ -575,7 +564,7 @@ export function finalize_program ({
 		 */
 		leave (node) {
 			if (node.type === 'VariableDeclaration' && !node.declarations.length) {
-				this.remove();
+				return walk.remove;
 			}
 		},
 	});

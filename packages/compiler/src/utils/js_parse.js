@@ -1,6 +1,7 @@
 import * as acorn from 'acorn';
-import { walk } from 'estree-walker';
 import { generate } from 'astring';
+
+import { walk } from './walker.js';
 
 /**
  * @param {string} source
