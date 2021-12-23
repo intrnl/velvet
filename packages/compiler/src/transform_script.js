@@ -484,8 +484,11 @@ export function finalize_program ({
 }) {
 	/** @type {Set<string>} */
 	let identifiers = new Set();
+
 	/** @type {Map<string, Set<import('estree').Identifier>>} */
 	let import_identifiers = new Map();
+	/** @type {Map<string, Set<import('estree').Identifier>>} */
+	let hoisted_identifiers = new Map();
 
 	/** @type {import('estree').Node[]} */
 	let hoisted_statements = [];
@@ -524,13 +527,24 @@ export function finalize_program ({
 			) {
 				let name = node.name;
 
-				if (name.startsWith('@')) {
+				if (name[0] === '@') {
 					name = name.slice(1);
 
 					let set = import_identifiers.get(name);
 
 					if (!set) {
 						import_identifiers.set(name, set = new Set());
+					}
+
+					set.add(node);
+				}
+				else if (name[0] === '%') {
+					name = name.slice(1);
+
+					let set = hoisted_identifiers.get(name);
+
+					if (!set) {
+						hoisted_identifiers.set(name, set = new Set());
 					}
 
 					set.add(node);
@@ -569,6 +583,14 @@ export function finalize_program ({
 	// hoist!
 	if (hoisted_statements.length) {
 		program.body = [...hoisted_statements, ...program.body];
+	}
+
+	for (let [name, set] of hoisted_identifiers) {
+		let local = _find_unique_identifier(name, identifiers);
+
+		for (let identifier of set) {
+			identifier.name = local;
+		}
 	}
 
 	// create import declaration
