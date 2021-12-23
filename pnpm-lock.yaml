@@ -8,7 +8,6 @@ importers:
       acorn: ^8.6.0
       astring: ^1.8.1
       css-tree: ^2.0.4
-      estree-walker: ^3.0.0
       magic-string: ^0.25.7
       periscopic: ^3.0.4
       vite: ^2.7.5
@@ -17,7 +16,6 @@ importers:
       acorn: 8.6.0
       astring: 1.8.1
       css-tree: 2.0.4
-      estree-walker: 3.0.0
       magic-string: 0.25.7
       periscopic: 3.0.4
     devDependencies:
