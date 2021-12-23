@@ -72,3 +72,11 @@ export function get_parts (a, b) {
 export function on (node, type, listener, options) {
 	node.addEventListener(type, listener, options);
 }
+
+export function toggle (node, name, value) {
+	node.toggleAttribute(name, value);
+}
+
+export function attr (node, name, value) {
+	node.setAttribute(name, value);
+}
