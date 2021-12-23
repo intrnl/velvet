@@ -1,6 +1,7 @@
 import * as p from './utils/template_parser.js';
 import * as t from './utils/template_types.js';
 import * as j from './utils/js_parse.js';
+import { is_void, closing_tag_omitted } from './utils/html.js';
 
 
 export function parse_template (content) {
@@ -397,7 +398,7 @@ function _parse_element (state) {
 	let start = state.index;
 	let parent = p.current(state);
 
-	p.eat(state, '<', 'opening tag');
+	p.eat(state, '<', 'opening tag bracket');
 
 	// comment
 	if (p.eat(state, '!--')) {
@@ -412,7 +413,195 @@ function _parse_element (state) {
 		return;
 	}
 
-	throw p.error(state, 'unimplemented');
+	let is_closing = p.eat(state, '/');
+	let name = p.eat_until(state, /[\s>]/g);
+
+	if (name === 'v:self') {
+		// check for recursion
+		let legal = false;
+
+		for (let index = parser.stack.length; index >= 0; index--) {
+			let node = state.stack[index];
+
+			if (
+				(node.type === 'Element' && node.component) ||
+				node.type === 'ConditionalStatement' ||
+				node.type === 'LoopStatement'
+			) {
+				legal = true;
+				break;
+			}
+		}
+
+		if (!legal) {
+			throw p.error(state, 'v:self placement causes infinite recursion');
+		}
+	}
+	else if (name === 'v:component') {
+		// left blank
+	}
+	else if (name[0] === 'v' && name[1] === ':') {
+		throw p.error(state, 'unknown special element');
+	}
+
+	if (is_closing) {
+		if (is_void(name)) {
+			throw p.error(state, `${tag} is a void element and cannot have a closing tag or children`);
+		}
+
+		p.eat_whitespace(state);
+		p.eat(state, '>', 'closing tag bracket');
+
+		while (parent.name !== name) {
+			if (parent.type !== 'Element') {
+				let message = state._last_auto_closed?.name === name
+					? `</${name}> attempted to close <${name}> that were already closed by <${state._last_auto_closed.tag}>`
+					: `</${name}> attempted to close an element that was not open`;
+
+				throw p.error(state, message, start);
+			}
+
+			parent.end = start;
+			p.pop(state);
+
+			parent = p.current();
+		}
+
+		parent.end = state.index;
+		p.pop(state);
+
+		if (state._last_auto_closed && state.stack.length < state._last_auto_closed.depth) {
+			state._last_auto_closed = null;
+		}
+
+		return;
+	}
+	else if (closing_tag_omitted(parent.name, name)) {
+		parent.end = start;
+		p.pop(state);
+
+		state._last_auto_closed = {
+			name: parent.name,
+			tag: name,
+			depth: state.stack.length,
+		};
+	}
+
+	// attributes parsing
+	let attributes = [];
+	let attribute_names = new Set();
+
+	if (p.eat_whitespace(state)) {
+		while (state.content[state.index] !== '>') {
+			let start = state.index;
+
+			if (p.eat(state, '{')) {
+				p.eat_whitespace(state);
+				p.eat(state, '...', 'spread pattern');
+
+				let expression = _read_expression(state);
+
+				p.eat_whitespace(state);
+				p.eat(state, '}', 'closing spread bracket');
+
+				let node = t.attribute_spread(expression);
+				node.start = start;
+				node.end = state.index;
+
+				attributes.push(node);
+				continue;
+			}
+
+			let attr_name = p.eat_until(state, /[\s=\/>'"]/g);
+			let attr_value = null;
+
+			if (!attr_name) {
+				break;
+			}
+
+			if (attribute_names.has(attr_name)) {
+				throw p.error(state, `duplicate ${attr_name} attribute`, start);
+			}
+
+			let end = state.index;
+
+			p.eat_whitespace(state);
+
+			if (p.eat_pattern(state, /['"]/g)) {
+				throw p.error(state, 'expected attribute assignment');
+			}
+			if (p.eat(state, '=')) {
+				let value_start = state.index;
+				let quotation = p.eat_pattern(state, /['"]/g);
+
+				if (quotation) {
+					let end_pattern = quotation === '"' ? /"/g : /'/g;
+					let data = p.eat_until(state, end_pattern);
+					p.eat_pattern(state, end_pattern, 'closing quotation mark');
+
+					let node = t.text(data);
+					node.start = value_start;
+					node.end = state.index;
+
+					attr_value = node;
+				}
+				else if (p.eat(state, '{')) {
+					p.eat_whitespace(state);
+
+					let expression = _read_expression(state);
+
+					p.eat_whitespace(state);
+					p.eat(state, '}', 'closing expression bracket');
+
+					let node = t.expression(expression);
+					node.start = value_start;
+					node.end = state.index;
+
+					attr_value = node;
+				}
+				else {
+					throw p.error(state, 'expected quotation mark or an expression');
+				}
+
+				end = state.index;
+				p.eat_whitespace(state);
+			}
+
+			let node = t.attribute(attr_name, attr_value);
+			node.start = start;
+			node.end = end;
+
+			attributes.push(node);
+			attribute_names.add(attr_name);
+		}
+	}
+
+	let self_closing = p.eat(state, '/') || is_void(name);
+	p.eat(state, '>', 'closing tag bracket');
+
+	let node = t.element(name, attributes);
+	node.start = start;
+	node.end = state.index;
+
+	if (name === 'script' || name === 'style') {
+		// we shouldn't parse into script and style elements
+		let pattern = name === 'script' ? /<\/script\s*>/g : /<\/style\s*>/g;
+		let data = p.eat_until(state, pattern);
+
+		p.eat_pattern(state, pattern, `${name} closing tag`);
+
+		let text = t.text(data);
+		let node = t.element(name, [], [text]);
+
+		parent.children.push(node);
+		return;
+	}
+
+	parent.children.push(node);
+
+	if (!self_closing) {
+		p.push(state, node);
+	}
 }
 
 /**

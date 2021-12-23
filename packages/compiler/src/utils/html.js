@@ -76,6 +76,14 @@ function validate_code (code) {
 	return NUL;
 }
 
+const void_elements = new Set([
+	'area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input',
+	'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr',
+]);
+
+export function is_void (name) {
+	return void_elements.has(name);
+}
 
 const disallowed_contents = new Map([
 	['li', new Set(['li'])],

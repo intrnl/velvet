@@ -63,6 +63,23 @@ export function match (state, str) {
 
 /**
  * @param {ParserState} state
+ * @param {RegExp} pattern
+ * @returns {string | false}
+ */
+export function match_pattern (state, pattern) {
+	pattern.lastIndex = state.index;
+
+	let match = pattern.exec(state.content);
+
+	if (!match || match.index !== state.index) {
+		return false;
+	}
+
+	return match[0];
+}
+
+/**
+ * @param {ParserState} state
  * @param {string} str
  * @param {string | boolean} [required]
  * @returns {boolean}
@@ -108,6 +125,26 @@ export function eat_whitespace (state, required) {
 	}
 
 	return false;
+}
+
+/**
+ * @param {ParserState} state
+ * @param {RegExp} pattern
+ * @param {string} required
+ * @returns {string | false}
+ */
+export function eat_pattern (state, pattern, required) {
+	let result = match_pattern(state, pattern);
+
+	if (result) {
+		state.index += result.length;
+	}
+	else if (required) {
+		let message = `expected ${required}`;
+		throw error(state, message);
+	}
+
+	return result;
 }
 
 /**
