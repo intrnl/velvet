@@ -577,7 +577,7 @@ function _parse_element (state) {
 	let self_closing = p.eat(state, '/') || is_void(name);
 	p.eat(state, '>', 'closing tag bracket');
 
-	let node = t.element(name, attributes);
+	let node = t.element(name, self_closing, attributes);
 	node.start = start;
 	node.end = state.index;
 

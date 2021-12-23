@@ -88,6 +88,7 @@ export function text (value, decoded = decode_character_references(value)) {
  * @typedef {object} Element
  * @property {'Element'} type
  * @property {string} name
+ * @property {boolean} self_closing
  * @property {boolean} component
  * @property {boolean} inline
  * @property {Array<Attribute>} attributes
@@ -98,17 +99,19 @@ export function text (value, decoded = decode_character_references(value)) {
 
 /**
  * @param {string} name
+ * @param {boolean} self_closing
  * @param {Array<Attribute>} [attributes]
  * @param {Array<Node>} [children]
  * @returns {Element}
  */
-export function element (name, attributes = [], children = []) {
+export function element (name, self_closing, attributes = [], children = []) {
 	let inline = /^[A-Z]|^v:(?:self|component)$/.test(name);
 	let component = inline || /^[a-z]+-[a-z]+$/.test(name);
 
 	return {
 		type: 'Element',
 		name,
+		self_closing,
 		attributes,
 		children,
 		inline,
