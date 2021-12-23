@@ -32,7 +32,7 @@ export function transform_script (program) {
 		 * @param {import('estree').Node} node
 		 * @param {import('estree').Node} parent
 		 */
-		enter (node, parent) {
+		enter (node) {
 			if (map.has(node)) {
 				current_scope = map.get(node);
 			}
@@ -146,7 +146,7 @@ export function transform_script (program) {
 		 * @param {import('estree').Node} node
 		 * @param {import('estree').Node} parent
 		 */
-		leave (node, parent) {
+		leave (node) {
 			if (map.has(node)) {
 				current_scope = current_scope.parent;
 			}
@@ -392,7 +392,7 @@ export function transform_script (program) {
 		 * @param {import('estree').Node} node
 		 * @param {import('estree').Node} parent
 		 */
-		leave (node, parent) {
+		leave (node) {
 			if (map.has(node)) {
 				current_scope = current_scope.parent;
 			}
