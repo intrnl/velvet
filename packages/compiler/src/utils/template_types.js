@@ -160,6 +160,7 @@ export function attribute_spread (expression) {
 /**
  * @typedef {object} Expression
  * @property {'Expression'} type
+ * @property {import('estree').Identifier} [id]
  * @property {import('estree').Expression} expression
  * @property {number} [start]
  * @property {number} [end]
@@ -167,33 +168,12 @@ export function attribute_spread (expression) {
 
 /**
  * @param {import('estree').Expression} expression
+ * @param {import('estree').Identifier} [id]
  * @returns {Expression}
  */
-export function expression (expression) {
+export function expression (expression, id = null) {
 	return {
 		type: 'Expression',
-		expression,
-	};
-}
-
-
-/**
- * @typedef {object} NamedExpression
- * @property {'NamedExpression'} type
- * @property {import('estree').Identifier} id
- * @property {import('estree').Expression} [expression]
- * @property {number} [start]
- * @property {number} [end]
- */
-
-/**
- * @param {import('estree').Identifier} id
- * @param {import('estree').Expression} [expression]
- * @returns {NamedExpression}
- */
-export function named_expression (id, expression) {
-	return {
-		type: 'NamedExpression',
 		id,
 		expression,
 	};

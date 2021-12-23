@@ -381,9 +381,7 @@ function _parse_expression (state) {
 
 	p.eat(state, '}', 'closing expression bracket');
 
-	let node = id
-		? t.named_expression(id, expression)
-		: t.expression(expression);
+	let node = t.expression(expression, id);
 
 	node.start = start;
 	node.end = state.index;
