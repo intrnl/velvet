@@ -65,22 +65,22 @@ export function comment (value) {
 /**
  * @typedef {object} Text
  * @property {'Text'} type
- * @property {string} data
- * @property {string} raw
+ * @property {string} value
+ * @property {string} [decoded]
  * @property {number} [start]
  * @property {number} [end]
  */
 
 /**
- * @param {string} raw
- * @param {string} [data]
+ * @param {string} value
+ * @param {string} [decoded]
  * @returns {Text}
  */
-export function text (raw, data = decode_character_references(raw)) {
+export function text (value, decoded = decode_character_references(value)) {
 	return {
 		type: 'Text',
-		data,
-		raw,
+		value,
+		decoded,
 	};
 }
 
