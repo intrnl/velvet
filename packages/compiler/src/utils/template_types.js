@@ -120,14 +120,14 @@ export function element (name, attributes = [], children = []) {
  * @typedef {object} Attribute
  * @typedef {'Attribute'} type
  * @property {string} name
- * @property {Array<Text | Expression>} [value]
+ * @property {Text | Expression} [value]
  * @property {number} [start]
  * @property {number} [end]
  */
 
 /**
  * @param {string} name
- * @param {Array<Text | Expression>} [value]
+ * @param {Text | Expression} [value]
  * @returns {Attribute}
  */
 export function attribute (name, value = null) {
