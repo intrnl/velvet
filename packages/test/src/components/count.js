@@ -29,9 +29,9 @@ function $setup ($root, $host) {
 
 	//// TEMPLATE
 	let $fragment1 = __clone($template1);
-	let $marker1 = __traverse($fragment1, 0, 1);
-	let $child1 = __traverse($fragment1, 1, 1);
-	let $child2 = __traverse($fragment1, 1, 2);
+	let $marker1 = __traverse($fragment1, [0, 1]);
+	let $child1 = __traverse($fragment1, [1, 1]);
+	let $child2 = __traverse($fragment1, [1, 2]);
 
 	// {count}
 	__text($marker1, () => count(__access));

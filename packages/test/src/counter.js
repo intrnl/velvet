@@ -49,12 +49,12 @@ function $setup ($root, $host) {
 
 	/// TEMPLATE
 	let $fragment1 = __clone($template1);
-	let $marker1 = __traverse($fragment1, 0);
-	let $marker2 = __traverse($fragment1, 1, 1);
+	let $marker1 = __traverse($fragment1, [0]);
+	let $marker2 = __traverse($fragment1, [1, 1]);
 	let $child1 = new Count();
-	let $child2 = __traverse($fragment1, 2, 1);
-	let $child3 = __traverse($fragment1, 3, 1);
-	let $child4 = __traverse($fragment1, 3, 2);
+	let $child2 = __traverse($fragment1, [2, 1]);
+	let $child3 = __traverse($fragment1, [3, 1]);
+	let $child4 = __traverse($fragment1, [3, 2]);
 
 	// <Count />
 	__replace($child1, $marker1);

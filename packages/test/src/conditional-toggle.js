@@ -47,8 +47,8 @@ function $setup ($root, $host) {
 
 	/// TEMPLATE
 	let $fragment1 = __clone($template1);
-	let $marker1 = __traverse($fragment1, 1);
-	let $child1 = __traverse($fragment1, 0);
+	let $marker1 = __traverse($fragment1, [1]);
+	let $child1 = __traverse($fragment1, [0]);
 
 	// <button @click={toggle}>
 	__on($child1, 'click', toggle);
@@ -56,7 +56,7 @@ function $setup ($root, $host) {
 	// {#if show}
 	let $block1 = ($root) => {
 		let $fragment1 = __clone($template2);
-		let $marker1 = __traverse($fragment1, 3);
+		let $marker1 = __traverse($fragment1, [3]);
 
 		__after($fragment1, $root);
 		return $marker1;
@@ -65,7 +65,7 @@ function $setup ($root, $host) {
 	// {:else}
 	let $block2 = ($root) => {
 		let $fragment1 = __clone($template3);
-		let $marker1 = __traverse($fragment1, 3);
+		let $marker1 = __traverse($fragment1, [3]);
 
 		__after($fragment1, $root);
 		return $marker1;

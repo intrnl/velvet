@@ -13,7 +13,7 @@ export function clone (template) {
 }
 
 
-export function traverse (node, ...indices) {
+export function traverse (node, indices) {
 	let ref = node;
 
 	for (let index of indices) {
