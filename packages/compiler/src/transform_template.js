@@ -88,7 +88,21 @@ export function transform_template (template) {
 		},
 		leave (node, parent, key, index) {
 			if (node.type === 'Text' && parent.type !== 'Attribute') {
-				curr_block.html += node.value.replace(/\s+/g, ' ');
+				let value = node.value.replace(/\s+/g, ' ');
+
+				if (parent.type === 'Fragment') {
+					let first_node = index === 0;
+					let last_node = index === (parent.children.length - 1);
+
+					if (first_node) {
+						value = node.value.replace(/^\s+/g, '');
+					}
+					if (last_node) {
+						value = node.value.replace(/\s+$/g, '');
+					}
+				}
+
+				curr_block.html += value;
 				return;
 			}
 
