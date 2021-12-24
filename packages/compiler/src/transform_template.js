@@ -177,6 +177,8 @@ export function transform_template (template) {
 					}
 
 					if (attr_name[0] === '?') {
+						need_ident = true;
+
 						let name = t.literal(attr_name.slice(1));
 
 						let statements = b`
@@ -188,6 +190,8 @@ export function transform_template (template) {
 					}
 
 					if (attr_name[0] === '@') {
+						need_ident = true;
+
 						let name = t.literal(attr_name.slice(1));
 
 						let statements = b`
@@ -199,6 +203,8 @@ export function transform_template (template) {
 					}
 
 					if (attr_name[0] === ':') {
+						need_ident = true;
+
 						let name = attr_name.slice(1);
 
 						let binding = t.identifier('%bind' + (id_b++));
