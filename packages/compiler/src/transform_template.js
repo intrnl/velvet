@@ -104,18 +104,6 @@ export function transform_template (template) {
 			if (node.type === 'Text' && parent.type !== 'Attribute') {
 				let value = node.value.replace(/\s+/g, ' ');
 
-				if (parent.type === 'Fragment') {
-					let first_node = index === 0;
-					let last_node = index === (parent.children.length - 1);
-
-					if (first_node) {
-						value = node.value.replace(/^\s+/g, '');
-					}
-					if (last_node) {
-						value = node.value.replace(/\s+$/g, '');
-					}
-				}
-
 				curr_block.html += value;
 				return;
 			}
