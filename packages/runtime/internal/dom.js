@@ -24,8 +24,12 @@ export function traverse (node, indices) {
 }
 
 
-export function replace (node, ref) {
+export function replace (node, ref, adopt) {
 	ref.replaceWith(node);
+
+	if (adopt) {
+		node.append(...ref.childNodes);
+	}
 }
 
 export function append (node, ref) {
