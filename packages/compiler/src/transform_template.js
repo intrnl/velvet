@@ -406,7 +406,7 @@ export function transform_template (template) {
 				let block_ident = '%block' + blocks.indexOf(block);
 				let statement = t.block_statement(scope);
 
-				// @todo: need to somehow mark local as a ref by the script transformer
+				local.velvet = { ref: true };
 
 				let declarations = b`
 					let ${block_ident} = ($$root, ${local}) => ${statement};
