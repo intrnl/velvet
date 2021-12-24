@@ -39,7 +39,7 @@ export function fragment (children = []) {
  *   Element |
  *   ConditionalStatement |
  *   LoopStatement |
- * 	 AwaitStatement
+ *   AwaitStatement
  * )} StackableNode
  */
 
