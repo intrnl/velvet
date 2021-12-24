@@ -177,6 +177,33 @@ describe('ref', () => {
 		let result = print(program);
 		expect(result).toMatchSnapshot();
 	});
+
+	it('unmutated variable calling', () => {
+		let program = parse(`
+			let call = () => 1;
+
+			call();
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('mutated variable calling', () => {
+		let program = parse(`
+			let call = () => 1;
+
+			call = () => 2;
+			call();
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
 });
 
 describe('prop', () => {

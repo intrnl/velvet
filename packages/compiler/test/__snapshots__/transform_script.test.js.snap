@@ -312,6 +312,13 @@ current_date(new Date());
 "
 `;
 
+exports[`ref > mutated variable calling 1`] = `
+"let call = @ref(() => 1);
+call(() => 2);
+call(@access)();
+"
+`;
+
 exports[`ref > mutated variable mutating member property 1`] = `
 "let state = @ref({
   count: 0
@@ -338,6 +345,12 @@ exports[`ref > unmutated variable accessing member property 1`] = `
 let current_date = new Date();
 console.log(state.count);
 console.log(current_date.toISOString());
+"
+`;
+
+exports[`ref > unmutated variable calling 1`] = `
+"let call = () => 1;
+call();
 "
 `;
 
