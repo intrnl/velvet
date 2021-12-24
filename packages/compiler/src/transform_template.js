@@ -88,7 +88,7 @@ export function transform_template (template) {
 		},
 		leave (node, parent, key, index) {
 			if (node.type === 'Text' && parent.type !== 'Attribute') {
-				curr_block.html += node.value;
+				curr_block.html += node.value.replace(/\s+/g, ' ');
 				return;
 			}
 
