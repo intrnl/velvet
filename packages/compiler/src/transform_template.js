@@ -262,8 +262,10 @@ export function transform_template (template) {
 					let fragment_ident = t.identifier('%fragment' + blocks.indexOf(curr_block));
 					let indices = t.array_expression(curr_block.indices.map((index) => t.literal(index)));
 
+					let is_self = elem_name === 'v:self';
+
 					let declarations = b`
-						let ${ident} = new ${elem_name}();
+						let ${ident} = new ${is_self ? '$$host.constructor' : elem_name}();
 					`;
 
 					let statements = b`
