@@ -156,7 +156,7 @@ export function transform_template (template) {
 
 				let is_checkbox = (
 					elem_name === 'input' &&
-					node.attribute.some((attr) => attr.name === 'type' && attr.value?.value === 'checkbox')
+					node.attributes.some((attr) => attr.name === 'type' && attr.value?.value === 'checkbox')
 				);
 
 				for (let attribute of node.attributes) {
