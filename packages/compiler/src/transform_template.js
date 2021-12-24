@@ -29,22 +29,7 @@ export function transform_template (template) {
 				let is_selfclosing = node.self_closing;
 
 				if (is_inline) {
-					curr_block.html += `<!>`;
-
-					block_stack.push(curr_block);
-					blocks.push(curr_block = create_block());
-
-					if (node.children.length) {
-						let template_ident = '%template' + blocks.indexOf(curr_block);
-						let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
-
-						let statements = b`
-							let ${fragment_ident} = @clone(${template_ident});
-						`;
-
-						(curr_scope || program).push(...statements);
-					}
-
+					curr_block.html += `<div>`;
 					return;
 				}
 
@@ -75,7 +60,7 @@ export function transform_template (template) {
 					}
 				}
 
-				if (is_selfclosing) {
+				if (!is_inline && is_selfclosing) {
 					curr_block.html += ` />`;
 				}
 				else {
@@ -163,25 +148,14 @@ export function transform_template (template) {
 				let fragment_ident = t.identifier('%fragment' + blocks.indexOf(curr_block));
 				let need_ident = false;
 
+				let elem_name = node.name;
+				let is_inline = node.inline;
+				let is_selfclosing = node.self_closing;
+
 				let pending = [];
 
-				if (node.inline) {
-					let parent_block = block_stack[block_stack.length - 1];
-					let marker_ident = t.identifier('%marker' + (id_m++));
-
-					let fragment_ident = t.identifier('%fragment' + blocks.indexOf(parent_block));
-					let indices = t.array_expression(parent_block.indices.map((index) => t.literal(index)));
-
-					let declarations = b`
-						let ${marker_ident} = @traverse(${fragment_ident}, ${indices});
-						let ${ident} = new ${node.name}();
-					`;
-
-					pending.push(...declarations);
-				}
-
 				let is_checkbox = (
-					node.name === 'input' &&
+					elem_name === 'input' &&
 					node.attribute.some((attr) => attr.name === 'type' && attr.value?.value === 'checkbox')
 				);
 
@@ -273,7 +247,7 @@ export function transform_template (template) {
 					}
 				}
 
-				if (need_ident && !node.inline) {
+				if (need_ident && !is_inline) {
 					let indices = t.array_expression(curr_block.indices.map((index) => t.literal(index)));
 
 					let declarations = b`
@@ -282,34 +256,33 @@ export function transform_template (template) {
 
 					pending.unshift(...declarations);
 				}
+				else if (is_inline) {
+					let marker_ident = t.identifier('%marker' + (id_m++));
 
-				(curr_scope || program).push(...pending);
+					let fragment_ident = t.identifier('%fragment' + blocks.indexOf(curr_block));
+					let indices = t.array_expression(curr_block.indices.map((index) => t.literal(index)));
 
-				if (node.inline) {
-					let prev_block = curr_block;
-					curr_block = block_stack.pop();
-
-					if (!node.children.length) {
-						return;
-					}
-
-					let template_ident = '%template' + blocks.indexOf(prev_block);
-					let fragment_ident = '%fragment' + blocks.indexOf(prev_block);
-					let html = t.literal(prev_block.html);
-
-					let statements = b`
-						let ${'%' + template_ident} = @html(${html});
-						@append(${fragment_ident}, ${ident});
+					let declarations = b`
+						let ${ident} = new ${elem_name}();
 					`;
 
-					(curr_scope || program).push(...statements);
-					return;
+					let statements = b`
+						let ${marker_ident} = @traverse(${fragment_ident}, ${indices});
+						@replace(${ident}, ${marker_ident}, true);
+					`;
+
+					pending.unshift(...declarations);
+					pending.push(...statements);
 				}
 
+				(curr_scope || program).push(...pending);
 				curr_block.indices.pop();
 
-				if (!node.selfclosing) {
-					curr_block.html += `</${node.name}>`;
+				if (is_inline) {
+					curr_block.html += `</div>`;
+				}
+				else if (!is_selfclosing) {
+					curr_block.html += `</${elem_name}>`;
 				}
 			}
 
