@@ -66,7 +66,7 @@ export function comment (value) {
  * @typedef {object} Text
  * @property {'Text'} type
  * @property {string} value
- * @property {string} [decoded]
+ * @property {string} decoded
  * @property {number} [start]
  * @property {number} [end]
  */
