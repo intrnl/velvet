@@ -30,9 +30,18 @@ export function transform_template (template) {
 
 				if (is_inline) {
 					curr_block.html += `<!>`;
+
 					block_stack.push(curr_block);
 					blocks.push(curr_block = create_block());
 
+					let template_ident = '%template' + blocks.indexOf(curr_block);
+					let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
+
+					let statements = b`
+						let ${fragment_ident} = @clone(${template_ident});
+					`;
+
+					(curr_scope || program).push(...statements);
 					return;
 				}
 
@@ -190,10 +199,10 @@ export function transform_template (template) {
 						continue;
 					}
 
-					if (attr_name[0] === '?') {
+					if (attr_name[0] === '?' || (node.inline && !attr_value)) {
 						need_ident = true;
 
-						let name = t.literal(attr_name.slice(1));
+						let name = t.literal(attr_name.slice(attr_name[0] === '?' ? 1 : 0));
 
 						let statements = b`
 							$: @toggle(${ident}, ${name}, ${value_expr});
@@ -241,7 +250,7 @@ export function transform_template (template) {
 						continue;
 					}
 
-					if (attr_value && attr_value.type !== 'Text') {
+					if (node.inline || attr_value && attr_value.type !== 'Text') {
 						let name = t.literal(attr_name);
 
 						let statements = b`
@@ -266,10 +275,13 @@ export function transform_template (template) {
 				(curr_scope || program).push(...pending);
 
 				if (node.inline) {
-					let fragment_ident = t.identifier('%fragment' + blocks.indexOf(curr_block));
+					let template_ident = '%template' + blocks.indexOf(curr_block);
+					let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
+					let html = t.literal(curr_block.html);
 					curr_block = block_stack.pop();
 
 					let statements = b`
+						let ${'%' + template_ident} = @html(${html});
 						@append(${fragment_ident}, ${ident});
 					`;
 
