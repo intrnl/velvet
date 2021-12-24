@@ -17,7 +17,7 @@ export function parse (source) {
 		sourceType: 'module',
 	});
 
-	reattach_comments(program, comments);
+	reattach_comments(program, comments, source);
 	return program;
 }
 
@@ -31,7 +31,7 @@ export function parse_expression (source, position = 0) {
 		sourceType: 'module',
 	});
 
-	reattach_comments(node, comments);
+	reattach_comments(node, comments, source);
 	return node;
 }
 
@@ -47,7 +47,7 @@ export function print (ast, map) {
 	});
 }
 
-function reattach_comments (ast, comments) {
+function reattach_comments (ast, comments, source) {
 	walk(ast, {
 		/** @param {import('estree').Node} node */
 		enter (node) {
