@@ -420,8 +420,37 @@ export function transform_template (template) {
 			}
 
 			if (node.type === 'LoopStatement') {
+				curr_block.html += '<!>';
 
+				let block = fragment_to_block.get(node.body);
+				let scope = fragment_to_scope.get(node.body);
 
+				let local = node.local;
+				let expression = node.expression;
+
+				let block_ident = t.identifier('%block' + blocks.indexOf(block));
+				let statement = t.block_statement(scope);
+
+				// @todo: need to somehow mark local as a ref by the script transformer
+
+				let declarations = b`
+					let ${block_ident} = ($$root, ${local}) => ${statement};
+				`;
+
+				program.push(...declarations);
+
+				let fragment_ident = t.identifier('%fragment' + blocks.indexOf(curr_block));
+				let marker_ident = t.identifier('%marker' + (id_m++));
+
+				let indices = t.array_expression([...curr_block.indices, index].map((idx) => t.literal(idx)));
+				let enumerable = t.literal(node.kind === 'enumerable');
+
+				let statements = b`
+					let ${marker_ident} = @traverse(${fragment_ident}, ${indices});
+					@each(${marker_ident}, ${block_ident}, ${expression}, ${enumerable});
+				`;
+
+				(curr_scope || program).push(...statements);
 				return;
 			}
 
