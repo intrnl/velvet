@@ -156,7 +156,7 @@ export function transform_template (template) {
 
 				let is_checkbox = (
 					elem_name === 'input' &&
-					node.attributes.some((attr) => attr.name === 'type' && attr.value?.value === 'checkbox')
+					node.attributes.some((attr) => attr.name === 'type' && attr.value?.decoded === 'checkbox')
 				);
 
 				for (let attribute of node.attributes) {
@@ -165,7 +165,7 @@ export function transform_template (template) {
 
 					let value_expr = attr_value
 						? attr_value.type === 'Text'
-							? t.literal(attr_value.value)
+							? t.literal(attr_value.decoded)
 							: attr_value.expression
 						: t.literal(true);
 
