@@ -726,6 +726,14 @@ describe('reserved', () => {
 		expect(() => transform_script(program)).to.throw();
 	});
 
+	it('throws on reassigning $$', () => {
+		let program = parse(`
+			$$root = null;
+		`);
+
+		expect(() => transform_script(program)).to.throw();
+	});
+
 	it('can declare $$$ variables', () => {
 		let program = parse(`
 			export let $$$foo = 123;

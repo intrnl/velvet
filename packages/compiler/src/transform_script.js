@@ -70,12 +70,12 @@ export function transform_script (program) {
 				let left = node.left;
 				let name = left.name;
 
+				if (name[0] === '$' && name[1] === '$' && name[2] !== '$') {
+					throw new Error('tried reassignment to reserved variable');
+				}
+
 				if (current_scope.find_owner(name) === root_scope) {
 					mutables.add(name);
-
-					if (name[0] === '$' && name[1] === '$' && name[2] !== '$') {
-						throw new Error('tried reassignment to reserved variable');
-					}
 				}
 
 				return;
