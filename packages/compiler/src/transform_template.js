@@ -95,6 +95,22 @@ export function transform_template (template) {
 			if (node.type === 'Expression') {
 				let expression = node.expression;
 
+				if (node.id) {
+					let id_name = node.id.name;
+
+					if (id_name === 'log') {
+						let statements = b`
+							$: console.log(${expression});
+						`;
+
+						(curr_scope || program).push(...statements);
+						return;
+					}
+					else {
+						throw new Error(`unknown named expression: @${id_name}`);
+					}
+				}
+
 				curr_block.html += `<!>`;
 
 				let statements = b`
