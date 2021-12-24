@@ -92,7 +92,7 @@ export function transform_template (template) {
 				return;
 			}
 
-			if (node.type === 'Expression') {
+			if (node.type === 'Expression' && parent.type !== 'Attribute') {
 				let expression = node.expression;
 
 				if (node.id) {
@@ -110,6 +110,10 @@ export function transform_template (template) {
 						throw new Error(`unknown named expression: @${id_name}`);
 					}
 				}
+
+				let fragment_ident = t.identifier('%fragment' + blocks.indexOf(curr_block));
+				let marker_ident = t.identifier('%marker' + (id_m++));
+				let indices = t.array_expression([...curr_block.indices, index].map((idx) => t.literal(idx)));
 
 				curr_block.html += `<!>`;
 
