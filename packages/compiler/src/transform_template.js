@@ -22,6 +22,26 @@ export function transform_template (template) {
 
 	walk(template, {
 		enter (node, parent, key, index) {
+			if (node.type === 'Text' && parent.type === 'Fragment') {
+				let is_first = index === 0;
+				let is_last = index === (parent.children.length - 1);
+
+				node.value = node.value.replace(/\s+/g, ' ');
+
+				if (is_first) {
+					node.value = node.value.replace(/^\s+/g, '');
+				}
+				if (is_last) {
+					node.value = node.value.replace(/\s+$/g, '');
+				}
+
+				if (!node.value) {
+					return walk.remove;
+				}
+
+				return;
+			}
+
 			if (node.type === 'Element') {
 				curr_block.indices.push(index);
 				let elem_name = node.name;
@@ -102,9 +122,7 @@ export function transform_template (template) {
 		},
 		leave (node, parent, key, index) {
 			if (node.type === 'Text' && parent.type !== 'Attribute') {
-				let value = node.value.replace(/\s+/g, ' ');
-
-				curr_block.html += value;
+				curr_block.html += node.value;
 				return;
 			}
 
