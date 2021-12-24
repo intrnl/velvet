@@ -303,7 +303,7 @@ export function transform_template (template) {
 					let fragment_ident = t.identifier('%fragment' + blocks.indexOf(curr_block));
 					let marker_ident = t.identifier('%marker' + (id_m++));
 
-					let indices = t.array_expression([...curr_block.indices, index].map((idx) => t.literal(index)));
+					let indices = t.array_expression([...curr_block.indices, index].map((idx) => t.literal(idx)));
 
 					let array = [];
 					let curr = node;
