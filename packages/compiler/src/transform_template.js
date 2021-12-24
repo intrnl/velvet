@@ -199,7 +199,7 @@ export function transform_template (template) {
 						continue;
 					}
 
-					let is_toggle = attr[0] === '?';
+					let is_toggle = attr_name[0] === '?';
 
 					if (is_toggle || (node.inline && !attr_value)) {
 						need_ident = true;
