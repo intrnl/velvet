@@ -34,14 +34,17 @@ export function transform_template (template) {
 					block_stack.push(curr_block);
 					blocks.push(curr_block = create_block());
 
-					let template_ident = '%template' + blocks.indexOf(curr_block);
-					let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
+					if (node.children.length) {
+						let template_ident = '%template' + blocks.indexOf(curr_block);
+						let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
 
-					let statements = b`
-						let ${fragment_ident} = @clone(${template_ident});
-					`;
+						let statements = b`
+							let ${fragment_ident} = @clone(${template_ident});
+						`;
 
-					(curr_scope || program).push(...statements);
+						(curr_scope || program).push(...statements);
+					}
+
 					return;
 				}
 
@@ -63,6 +66,8 @@ export function transform_template (template) {
 					}
 
 					curr_block.html += ` ${attr_name}`;
+
+					let value = attr_value && attr_value.value;
 
 					if (value) {
 						let value = attr_value.value.replaceAll('"', '&quot');
@@ -277,10 +282,16 @@ export function transform_template (template) {
 				(curr_scope || program).push(...pending);
 
 				if (node.inline) {
-					let template_ident = '%template' + blocks.indexOf(curr_block);
-					let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
-					let html = t.literal(curr_block.html);
+					let prev_block = curr_block;
 					curr_block = block_stack.pop();
+
+					if (!node.children.length) {
+						return;
+					}
+
+					let template_ident = '%template' + blocks.indexOf(prev_block);
+					let fragment_ident = '%fragment' + blocks.indexOf(prev_block);
+					let html = t.literal(prev_block.html);
 
 					let statements = b`
 						let ${'%' + template_ident} = @html(${html});
