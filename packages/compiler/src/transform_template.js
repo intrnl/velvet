@@ -128,8 +128,8 @@ export function transform_template (template) {
 					}
 				}
 
-				let fragment_ident = t.identifier('%fragment' + blocks.indexOf(curr_block));
-				let marker_ident = t.identifier('%marker' + (id_m++));
+				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
+				let marker_ident = '%marker' + (id_m++);
 				let indices = t.array_expression([...curr_block.indices, index].map((idx) => t.literal(idx)));
 
 				curr_block.html += `<!>`;
@@ -144,8 +144,8 @@ export function transform_template (template) {
 			}
 
 			if (node.type === 'Element') {
-				let ident = t.identifier('%child' + (id_c++));
-				let fragment_ident = t.identifier('%fragment' + blocks.indexOf(curr_block));
+				let ident = '%child' + (id_c++);
+				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
 				let need_ident = false;
 
 				let elem_name = node.name;
@@ -215,7 +215,7 @@ export function transform_template (template) {
 
 						let name = attr_name.slice(1);
 
-						let binding = t.identifier('%bind' + (id_b++));
+						let binding = '%bind' + (id_b++);
 
 						let name_lit = t.literal(attr_name.slice(1));
 						let event = t.literal(node.component ? `update:${name}` : `input`);
@@ -257,9 +257,9 @@ export function transform_template (template) {
 					pending.unshift(...declarations);
 				}
 				else if (is_inline) {
-					let marker_ident = t.identifier('%marker' + (id_m++));
+					let marker_ident = '%marker' + (id_m++);
 
-					let fragment_ident = t.identifier('%fragment' + blocks.indexOf(curr_block));
+					let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
 					let indices = t.array_expression(curr_block.indices.map((index) => t.literal(index)));
 
 					let is_self = elem_name === 'v:self';
@@ -302,7 +302,7 @@ export function transform_template (template) {
 				(curr_scope || program).unshift(...template_declarations);
 
 				if (parent) {
-					let end_ident = t.identifier('%marker' + (id_m++));
+					let end_ident = '%marker' + (id_m++);
 					let end_index = t.array_expression([t.literal(node.children.length)]);
 
 					let statements = b`
@@ -332,7 +332,7 @@ export function transform_template (template) {
 				let alternate_block = fragment_to_block.get(node.alternate);
 
 				if (consequent_block) {
-					let block_ident = t.identifier('%block' + blocks.indexOf(consequent_block));
+					let block_ident = '%block' + blocks.indexOf(consequent_block);
 					let scope = fragment_to_scope.get(node.consequent);
 					let statement = t.block_statement(scope);
 
@@ -344,7 +344,7 @@ export function transform_template (template) {
 				}
 
 				if (alternate_block) {
-					let block_ident = t.identifier('%block' + blocks.indexOf(alternate_block));
+					let block_ident = '%block' + blocks.indexOf(alternate_block);
 					let scope = fragment_to_scope.get(node.alternate);
 					let statement = t.block_statement(scope);
 
@@ -358,8 +358,8 @@ export function transform_template (template) {
 				if (parent.type !== 'ConditionalStatement') {
 					curr_block.html += '<!>';
 
-					let fragment_ident = t.identifier('%fragment' + blocks.indexOf(curr_block));
-					let marker_ident = t.identifier('%marker' + (id_m++));
+					let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
+					let marker_ident = '%marker' + (id_m++);
 
 					let indices = t.array_expression([...curr_block.indices, index].map((idx) => t.literal(idx)));
 
@@ -373,11 +373,11 @@ export function transform_template (template) {
 
 					let test = array.reduceRight((prev, next) => {
 						let consequent_block = fragment_to_block.get(next.consequent);
-						let consequent_ident = t.identifier('%block' + blocks.indexOf(consequent_block));
+						let consequent_ident = '%block' + blocks.indexOf(consequent_block);
 
 						let alternate_block = fragment_to_block.get(next.alternate);
 						let alternate_ident = alternate_block
-							? t.identifier('%block' + blocks.indexOf(alternate_block))
+							? '%block' + blocks.indexOf(alternate_block)
 							: t.literal(null);
 
 						return x`${next.test} ? ${consequent_ident} : ${prev || alternate_ident}`;
@@ -403,7 +403,7 @@ export function transform_template (template) {
 				let local = node.local;
 				let expression = node.expression;
 
-				let block_ident = t.identifier('%block' + blocks.indexOf(block));
+				let block_ident = '%block' + blocks.indexOf(block);
 				let statement = t.block_statement(scope);
 
 				// @todo: need to somehow mark local as a ref by the script transformer
@@ -414,8 +414,8 @@ export function transform_template (template) {
 
 				program.push(...declarations);
 
-				let fragment_ident = t.identifier('%fragment' + blocks.indexOf(curr_block));
-				let marker_ident = t.identifier('%marker' + (id_m++));
+				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
+				let marker_ident = '%marker' + (id_m++);
 
 				let indices = t.array_expression([...curr_block.indices, index].map((idx) => t.literal(idx)));
 				let enumerable = t.literal(node.kind === 'enumerable');
