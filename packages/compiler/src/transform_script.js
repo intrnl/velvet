@@ -72,6 +72,10 @@ export function transform_script (program) {
 
 				if (current_scope.find_owner(name) === root_scope) {
 					mutables.add(name);
+
+					if (name[0] === '$' && name[1] === '$' && name[2] !== '$') {
+						throw new Error('tried reassignment to reserved variable');
+					}
 				}
 
 				return;
@@ -286,7 +290,7 @@ export function transform_script (program) {
 
 				let name = identifier.name;
 
-				if (name[0] === '$') {
+				if (name[0] === '$' && name[1] !== '$') {
 					let actual = identifier.name.slice(1);
 
 					if (!stores.has(actual)) {
