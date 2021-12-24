@@ -418,7 +418,7 @@ function _parse_element (state) {
 		// check for recursion
 		let legal = false;
 
-		for (let index = parser.stack.length; index >= 0; index--) {
+		for (let index = state.stack.length - 1; index >= 0; index--) {
 			let node = state.stack[index];
 
 			if (
