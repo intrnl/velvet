@@ -211,7 +211,7 @@ export function conditional_statement (test, consequent, alternate = null) {
  * @typedef {object} LoopStatement
  * @property {'LoopStatement'} type
  * @property {'iterable' | 'enumerable'} kind
- * @property {import('estree').Pattern} local
+ * @property {import('estree').Identifier} local
  * @property {import('estree').Expression} expression
  * @property {Fragment} body
  * @property {Fragment} [alternate]
@@ -269,12 +269,12 @@ export function await_statement (argument, pending = null, resolved = null, reje
 /**
  * @typedef {object} AwaitClause
  * @property {'AwaitClause'} type
- * @property {import('estree').Pattern} [local]
+ * @property {import('estree').Identifier} [local]
  * @property {Fragment} body
  */
 
 /**
- * @param {import('estree').Pattern} [local]
+ * @param {import('estree').Identifier} [local]
  * @param {Fragment} body
  * @returns {AwaitClause}
  */

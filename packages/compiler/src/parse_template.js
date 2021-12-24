@@ -99,7 +99,7 @@ function _parse_expression (state) {
 
 			let local = _read_expression(state);
 
-			if (!_is_expression_pattern(local)) {
+			if (!_is_identifier(local)) {
 				throw p.error(state, 'expected an assignment', local.start);
 			}
 
@@ -141,7 +141,7 @@ function _parse_expression (state) {
 			if (resolve_has_whitespace) {
 				local = _read_expression(state);
 
-				if (!_is_expression_pattern(local)) {
+				if (!_is_identifier(local)) {
 					throw p.error(state, 'expected an assignment', local.start);
 				}
 
@@ -304,7 +304,7 @@ function _parse_expression (state) {
 
 			expression = _read_expression(state);
 
-			if (!_is_expression_pattern(expression)) {
+			if (!_is_identifier(expression)) {
 				throw p.error(state, 'expected an assignment', expression.start);
 			}
 
@@ -344,7 +344,7 @@ function _parse_expression (state) {
 
 			expression = _read_expression(state);
 
-			if (!_is_expression_pattern(expression)) {
+			if (!_is_identifier(expression)) {
 				throw p.error(state, 'expected an assignment', expression.start);
 			}
 
@@ -642,15 +642,8 @@ function _read_expression (state) {
 
 /**
  * @param {import('estree').Expression} node
- * @returns {node is import('estree').Pattern}
+ * @returns {node is import('estree').Identifier}
  */
-function _is_expression_pattern (node) {
-	// we're parsing things as an expression here, so we'll have to check for
-	// expression-equivalents of patterns.
-
-	return (
-		node.type === 'Identifier' ||
-		node.type === 'ObjectPattern' || node.type === 'ObjectExpression' ||
-		node.type === 'ArrayPattern' || node.type === 'ArrayExpression'
-	);
+function _is_identifier (node) {
+	return node.type === 'Identifier';
 }
