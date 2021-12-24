@@ -199,10 +199,12 @@ export function transform_template (template) {
 						continue;
 					}
 
-					if (attr_name[0] === '?' || (node.inline && !attr_value)) {
+					let is_toggle = attr[0] === '?';
+
+					if (is_toggle || (node.inline && !attr_value)) {
 						need_ident = true;
 
-						let name = t.literal(attr_name.slice(attr_name[0] === '?' ? 1 : 0));
+						let name = t.literal(attr_name.slice(is_toggle ? 1 : 0));
 
 						let statements = b`
 							$: @toggle(${ident}, ${name}, ${value_expr});
