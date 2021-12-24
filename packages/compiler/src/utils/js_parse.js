@@ -51,6 +51,10 @@ function reattach_comments (ast, comments, source) {
 	walk(ast, {
 		/** @param {import('estree').Node} node */
 		enter (node) {
+			if (node.type === 'Line' || node.type === 'Block') {
+				return;
+			}
+
 			/** @type {import('estree').Comment} */
 			let comment;
 			let leading_comments = node.leadingComments ||= [];
@@ -61,6 +65,10 @@ function reattach_comments (ast, comments, source) {
 		},
 		/** @param {import('estree').Node} node */
 		leave (node) {
+			if (node.type === 'Line' || node.type === 'Block') {
+				return;
+			}
+
 			let trailing_comments = node.trailingComments ||= [];
 
 			if (comments[0]) {
