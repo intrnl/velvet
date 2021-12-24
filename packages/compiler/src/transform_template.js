@@ -22,21 +22,6 @@ export function transform_template (template) {
 
 	walk(template, {
 		enter (node, parent, key, index) {
-			if (node.type === 'Fragment') {
-				block_stack.push(curr_block);
-				blocks.push(curr_block = create_block());
-				fragment_to_block.set(node, curr_block);
-
-				// we shouldn't push a new scope for root fragment
-				if (parent) {
-					scope_stack.push(curr_scope);
-					curr_scope = [];
-					fragment_to_scope.set(node, curr_scope);
-				}
-
-				return;
-			}
-
 			if (node.type === 'Element') {
 				curr_block.indices.push(index);
 				let elem_name = node.name;
@@ -85,125 +70,23 @@ export function transform_template (template) {
 
 				return;
 			}
+
+			if (node.type === 'Fragment') {
+				block_stack.push(curr_block);
+				blocks.push(curr_block = create_block());
+				fragment_to_block.set(node, curr_block);
+
+				// we shouldn't push a new scope for root fragment
+				if (parent) {
+					scope_stack.push(curr_scope);
+					curr_scope = [];
+					fragment_to_scope.set(node, curr_scope);
+				}
+
+				return;
+			}
 		},
 		leave (node, parent, key, index) {
-			if (node.type === 'Fragment') {
-				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
-				let template_ident = '%template' + blocks.indexOf(curr_block);
-
-				let html = t.literal(curr_block.html + (parent ? '<!>' : ''));
-
-				let template_declarations = b`
-					let ${'%' + template_ident} = @html(${html});
-					let ${fragment_ident} = @clone(${template_ident});
-				`;
-
-				(curr_scope || program).unshift(...template_declarations);
-
-				if (parent) {
-					let end_ident = t.identifier('%marker' + (id_m++));
-					let end_index = t.array_expression([t.literal(node.children.length)]);
-
-					let statements = b`
-						let ${end_ident} = @traverse(${fragment_ident}, ${end_index});
-						@after(${fragment_ident}, $$root);
-						return ${end_ident};
-					`;
-
-					curr_scope.push(...statements);
-					curr_scope = scope_stack.pop();
-				}
-				else {
-					let statements = b`
-						@append(${fragment_ident}, $$root);
-					`;
-
-					(curr_scope || program).push(...statements);
-				}
-
-				curr_block = block_stack.pop();
-
-				return;
-			}
-
-			if (node.type === 'ConditionalStatement') {
-				let consequent_block = fragment_to_block.get(node.consequent);
-				let alternate_block = fragment_to_block.get(node.alternate);
-
-				if (consequent_block) {
-					let block_ident = t.identifier('%block' + blocks.indexOf(consequent_block));
-					let scope = fragment_to_scope.get(node.consequent);
-					let statement = t.block_statement(scope);
-
-					let declarations = b`
-						let ${block_ident} = ($$root) => ${statement};
-					`;
-
-					program.push(...declarations);
-				}
-
-				if (alternate_block) {
-					let block_ident = t.identifier('%block' + blocks.indexOf(alternate_block));
-					let scope = fragment_to_scope.get(node.alternate);
-					let statement = t.block_statement(scope);
-
-					let declarations = b`
-						let ${block_ident} = ($$root) => ${statement};
-					`;
-
-					program.push(...declarations);
-				}
-
-				if (parent.type !== 'ConditionalStatement') {
-					curr_block.html += '<!>';
-
-					let fragment_ident = t.identifier('%fragment' + blocks.indexOf(curr_block));
-					let marker_ident = t.identifier('%marker' + (id_m++));
-
-					let indices = t.array_expression([...curr_block.indices, index].map((idx) => t.literal(index)));
-
-					let array = [];
-					let curr = node;
-
-					while (curr?.type === 'ConditionalStatement') {
-						array.push(curr);
-						curr = curr.alternate;
-					}
-
-					let test = array.reduceRight((prev, next) => {
-						let consequent_block = fragment_to_block.get(next.consequent);
-						let consequent_ident = t.identifier('%block' + blocks.indexOf(consequent_block));
-
-						let alternate_block = fragment_to_block.get(next.alternate);
-						let alternate_ident = alternate_block
-							? t.identifier('%block' + blocks.indexOf(alternate_block))
-							: t.literal(null);
-
-						return x`${next.test} ? ${consequent_ident} : ${prev || alternate_ident}`;
-					}, null);
-
-					let statements = b`
-						let ${marker_ident} = @traverse(${fragment_ident}, ${indices});
-						@show(${marker_ident}, () => ${test});
-					`;
-
-					(curr_scope || program).push(...statements);
-				}
-
-				return;
-			}
-
-			if (node.type === 'LoopStatement') {
-
-
-				return;
-			}
-
-			if (node.type === 'AwaitStatement') {
-
-				return;
-			}
-
 			if (node.type === 'Text' && parent.type !== 'Attribute') {
 				curr_block.html += node.value;
 				return;
@@ -345,6 +228,123 @@ export function transform_template (template) {
 				if (!node.selfclosing) {
 					curr_block.html += `</${node.name}>`;
 				}
+			}
+
+			if (node.type === 'Fragment') {
+				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
+				let template_ident = '%template' + blocks.indexOf(curr_block);
+
+				let html = t.literal(curr_block.html + (parent ? '<!>' : ''));
+
+				let template_declarations = b`
+					let ${'%' + template_ident} = @html(${html});
+					let ${fragment_ident} = @clone(${template_ident});
+				`;
+
+				(curr_scope || program).unshift(...template_declarations);
+
+				if (parent) {
+					let end_ident = t.identifier('%marker' + (id_m++));
+					let end_index = t.array_expression([t.literal(node.children.length)]);
+
+					let statements = b`
+						let ${end_ident} = @traverse(${fragment_ident}, ${end_index});
+						@after(${fragment_ident}, $$root);
+						return ${end_ident};
+					`;
+
+					curr_scope.push(...statements);
+					curr_scope = scope_stack.pop();
+				}
+				else {
+					let statements = b`
+						@append(${fragment_ident}, $$root);
+					`;
+
+					(curr_scope || program).push(...statements);
+				}
+
+				curr_block = block_stack.pop();
+
+				return;
+			}
+
+			if (node.type === 'ConditionalStatement') {
+				let consequent_block = fragment_to_block.get(node.consequent);
+				let alternate_block = fragment_to_block.get(node.alternate);
+
+				if (consequent_block) {
+					let block_ident = t.identifier('%block' + blocks.indexOf(consequent_block));
+					let scope = fragment_to_scope.get(node.consequent);
+					let statement = t.block_statement(scope);
+
+					let declarations = b`
+						let ${block_ident} = ($$root) => ${statement};
+					`;
+
+					program.push(...declarations);
+				}
+
+				if (alternate_block) {
+					let block_ident = t.identifier('%block' + blocks.indexOf(alternate_block));
+					let scope = fragment_to_scope.get(node.alternate);
+					let statement = t.block_statement(scope);
+
+					let declarations = b`
+						let ${block_ident} = ($$root) => ${statement};
+					`;
+
+					program.push(...declarations);
+				}
+
+				if (parent.type !== 'ConditionalStatement') {
+					curr_block.html += '<!>';
+
+					let fragment_ident = t.identifier('%fragment' + blocks.indexOf(curr_block));
+					let marker_ident = t.identifier('%marker' + (id_m++));
+
+					let indices = t.array_expression([...curr_block.indices, index].map((idx) => t.literal(index)));
+
+					let array = [];
+					let curr = node;
+
+					while (curr?.type === 'ConditionalStatement') {
+						array.push(curr);
+						curr = curr.alternate;
+					}
+
+					let test = array.reduceRight((prev, next) => {
+						let consequent_block = fragment_to_block.get(next.consequent);
+						let consequent_ident = t.identifier('%block' + blocks.indexOf(consequent_block));
+
+						let alternate_block = fragment_to_block.get(next.alternate);
+						let alternate_ident = alternate_block
+							? t.identifier('%block' + blocks.indexOf(alternate_block))
+							: t.literal(null);
+
+						return x`${next.test} ? ${consequent_ident} : ${prev || alternate_ident}`;
+					}, null);
+
+					let statements = b`
+						let ${marker_ident} = @traverse(${fragment_ident}, ${indices});
+						@show(${marker_ident}, () => ${test});
+					`;
+
+					(curr_scope || program).push(...statements);
+				}
+
+				return;
+			}
+
+			if (node.type === 'LoopStatement') {
+
+
+				return;
+			}
+
+			if (node.type === 'AwaitStatement') {
+
+				return;
 			}
 		},
 	});
