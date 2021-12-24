@@ -528,7 +528,7 @@ export function finalize_program ({
 					set.add(node);
 				}
 				else if (name[0] === '%') {
-					name = name.slice(1);
+					name = name.slice(name[1] === '%' ? 2 : 1);
 
 					let set = hoisted_identifiers.get(name);
 
@@ -544,10 +544,15 @@ export function finalize_program ({
 
 				return;
 			}
-
+		},
+		/**
+		 * @param {import('estree').Node} node
+		 * @param {import('estree').Node} parent
+		 */
+		leave (node, parent) {
 			if (
 				node.type === 'VariableDeclarator' &&
-				_has_identifier_declared(node.id, (name) => name[0] === '%')
+				_has_identifier_declared(node.id, (name) => name[0] === '%' && name[1] === '%')
 			) {
 				/** @type {import('estree').VariableDeclaration} */
 				let parent_node = parent;
@@ -558,11 +563,7 @@ export function finalize_program ({
 				hoisted_statements.push(decl);
 				return walk.remove;
 			}
-		},
-		/**
-		 * @param {import('estree').Node} node
-		 */
-		leave (node) {
+
 			if (node.type === 'VariableDeclaration' && !node.declarations.length) {
 				return walk.remove;
 			}

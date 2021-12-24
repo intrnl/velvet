@@ -1,4 +1,16 @@
 /**
+ * @param {(import('estree').Statement | import('estree').ModuleDeclaration)[]} body
+ * @returns {import('estree').Program}
+ */
+export function program (body = []) {
+	return {
+		type: 'Program',
+		sourceType: 'module',
+		body: body.filter((statement) => !!statement),
+	};
+}
+
+/**
  * @param {string} name
  * @returns {import('estree').Identifier}
  */
@@ -10,13 +22,24 @@ export function identifier (name) {
 }
 
 /**
- * @param {string | boolean | number} value
+ * @param {string | boolean | number | null} value
  * @returns {import('estree').SimpleLiteral}
  */
 export function literal (value) {
 	return {
 		type: 'Literal',
 		value: value,
+	};
+}
+
+/**
+ * @param {Array<import('estree').Expression | import('estree').SpreadElement | null>} elements
+ * @return {import('estree').ArrayExpression}
+ */
+export function array_expression (elements = []) {
+	return {
+		type: 'ArrayExpression',
+		elements: elements.filter((element) => !!element),
 	};
 }
 
@@ -79,6 +102,19 @@ export function expression_statement (expression) {
 	return {
 		type: 'ExpressionStatement',
 		expression,
+	};
+}
+
+/**
+ * @param {import('estree').Identifier} label
+ * @param {import('estree').Statement} body
+ * @returns {import('estree').LabeledStatement}
+ */
+export function labeled_statement (label, body) {
+	return {
+		type: 'LabeledStatement',
+		label,
+		body,
 	};
 }
 
