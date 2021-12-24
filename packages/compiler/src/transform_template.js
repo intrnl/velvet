@@ -92,6 +92,20 @@ export function transform_template (template) {
 				return;
 			}
 
+			if (node.type === 'Expression') {
+				let expression = node.expression;
+
+				curr_block.html += `<!>`;
+
+				let statements = b`
+					let ${marker_ident} = @traverse(${fragment_ident}, ${indices});
+					@text(${marker_ident}, () => ${expression});
+				`;
+
+				(curr_scope || program).push(...statements);
+				return;
+			}
+
 			if (node.type === 'Element') {
 				let ident = t.identifier('%child' + (id_c++));
 				let fragment_ident = t.identifier('%fragment' + blocks.indexOf(curr_block));
