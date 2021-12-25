@@ -258,9 +258,7 @@ export function transform_script (program) {
 
 					node.init = expression;
 
-					if (expression !== init) {
-						(identifier.velvet ||= {}).ref = true;
-					}
+					(identifier.velvet ||= {}).ref = expression !== init;
 				}
 
 				return;
