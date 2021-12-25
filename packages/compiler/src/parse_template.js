@@ -532,7 +532,7 @@ function _parse_element (state) {
 				if (quotation) {
 					let end_pattern = quotation === '"' ? /"/g : /'/g;
 					let data = p.eat_until(state, end_pattern);
-					p.eat_pattern(state, end_pattern, 'closing quotation mark');
+					p.eat(state, quotation, 'closing quotation mark');
 
 					let node = t.text(data);
 					node.start = value_start;
