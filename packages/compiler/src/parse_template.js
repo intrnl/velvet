@@ -134,7 +134,7 @@ function _parse_expression (state) {
 
 			let local = null;
 
-			if (to_resolve || to_reject || p.match(state, '}')) {
+			if ((to_resolve || to_reject) && !p.match(state, '}')) {
 				local = _read_expression(state);
 
 				if (!_is_identifier(local)) {
