@@ -113,7 +113,8 @@ export function transform_template (template) {
 				let expression = node.expression;
 
 				if (node.id) {
-					let id_name = node.id.name;
+					let id = node.id;
+					let id_name = id.name;
 
 					if (id_name === 'log') {
 						let statements = b`
@@ -124,7 +125,11 @@ export function transform_template (template) {
 						return;
 					}
 					else {
-						throw new Error(`unknown named expression: @${id_name}`);
+						throw {
+							message: `unknown named expression: @${id_name}`,
+							start: id.start,
+							end: id.end,
+						};
 					}
 				}
 
