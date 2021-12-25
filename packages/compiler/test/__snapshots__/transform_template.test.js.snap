@@ -1,6 +1,51 @@
 // Vitest Snapshot v1
 
 exports[`attribute > dynamic 1`] = `
+{
+  "children": [
+    {
+      "attributes": [
+        {
+          "end": 22,
+          "name": "class",
+          "start": 5,
+          "type": "Attribute",
+          "value": {
+            "end": 22,
+            "expression": Node {
+              "comments": [],
+              "end": 21,
+              "name": "className",
+              "path": {
+                "parent": undefined,
+              },
+              "start": 12,
+              "trailingComments": [],
+              "type": "Identifier",
+            },
+            "id": null,
+            "start": 11,
+            "type": "Expression",
+          },
+        },
+      ],
+      "children": [],
+      "component": false,
+      "end": 29,
+      "inline": false,
+      "name": "div",
+      "self_closing": false,
+      "start": 0,
+      "type": "Element",
+    },
+  ],
+  "end": 29,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`attribute > dynamic 2`] = `
 "let %%template0 = @html(\\"<div></div>\\");
 let %fragment0 = @clone(%template0);
 $: @attr(%child0, \\"class\\", className);
@@ -9,6 +54,51 @@ $: @attr(%child0, \\"class\\", className);
 `;
 
 exports[`attribute > dynamic boolean 1`] = `
+{
+  "children": [
+    {
+      "attributes": [
+        {
+          "end": 33,
+          "name": "?readonly",
+          "start": 10,
+          "type": "Attribute",
+          "value": {
+            "end": 33,
+            "expression": Node {
+              "comments": [],
+              "end": 32,
+              "name": "is_readonly",
+              "path": {
+                "parent": undefined,
+              },
+              "start": 21,
+              "trailingComments": [],
+              "type": "Identifier",
+            },
+            "id": null,
+            "start": 20,
+            "type": "Expression",
+          },
+        },
+      ],
+      "children": [],
+      "component": false,
+      "end": 45,
+      "inline": false,
+      "name": "textarea",
+      "self_closing": false,
+      "start": 0,
+      "type": "Element",
+    },
+  ],
+  "end": 45,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`attribute > dynamic boolean 2`] = `
 "let %%template0 = @html(\\"<textarea></textarea>\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
@@ -18,6 +108,41 @@ $: @toggle(%child0, \\"readonly\\", is_readonly);
 `;
 
 exports[`attribute > static 1`] = `
+{
+  "children": [
+    {
+      "attributes": [
+        {
+          "end": 16,
+          "name": "class",
+          "start": 5,
+          "type": "Attribute",
+          "value": {
+            "decoded": "foo",
+            "end": 16,
+            "start": 11,
+            "type": "Text",
+            "value": "foo",
+          },
+        },
+      ],
+      "children": [],
+      "component": false,
+      "end": 23,
+      "inline": false,
+      "name": "div",
+      "self_closing": false,
+      "start": 0,
+      "type": "Element",
+    },
+  ],
+  "end": 23,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`attribute > static 2`] = `
 "let %%template0 = @html(\\"<div class=\\\\\\"foo\\\\\\"></div>\\");
 let %fragment0 = @clone(%template0);
 @append(%fragment0, $$root);
@@ -25,6 +150,35 @@ let %fragment0 = @clone(%template0);
 `;
 
 exports[`attribute > static boolean 1`] = `
+{
+  "children": [
+    {
+      "attributes": [
+        {
+          "end": 18,
+          "name": "readonly",
+          "start": 10,
+          "type": "Attribute",
+          "value": null,
+        },
+      ],
+      "children": [],
+      "component": false,
+      "end": 30,
+      "inline": false,
+      "name": "textarea",
+      "self_closing": false,
+      "start": 0,
+      "type": "Element",
+    },
+  ],
+  "end": 30,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`attribute > static boolean 2`] = `
 "let %%template0 = @html(\\"<textarea readonly></textarea>\\");
 let %fragment0 = @clone(%template0);
 @append(%fragment0, $$root);
@@ -32,6 +186,41 @@ let %fragment0 = @clone(%template0);
 `;
 
 exports[`attribute > static unquoted 1`] = `
+{
+  "children": [
+    {
+      "attributes": [
+        {
+          "end": 14,
+          "name": "class",
+          "start": 5,
+          "type": "Attribute",
+          "value": {
+            "decoded": "foo",
+            "end": 14,
+            "start": 11,
+            "type": "Text",
+            "value": "foo",
+          },
+        },
+      ],
+      "children": [],
+      "component": false,
+      "end": 21,
+      "inline": false,
+      "name": "div",
+      "self_closing": false,
+      "start": 0,
+      "type": "Element",
+    },
+  ],
+  "end": 21,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`attribute > static unquoted 2`] = `
 "let %%template0 = @html(\\"<div class=\\\\\\"foo\\\\\\"></div>\\");
 let %fragment0 = @clone(%template0);
 @append(%fragment0, $$root);
@@ -39,6 +228,47 @@ let %fragment0 = @clone(%template0);
 `;
 
 exports[`component > v:self on a custom element 1`] = `
+{
+  "children": [
+    {
+      "attributes": [],
+      "children": [
+        {
+          "attributes": [],
+          "children": [
+            {
+              "decoded": "hello world!",
+              "end": 27,
+              "start": 15,
+              "type": "Text",
+              "value": "hello world!",
+            },
+          ],
+          "component": true,
+          "end": 36,
+          "inline": true,
+          "name": "v:self",
+          "self_closing": false,
+          "start": 7,
+          "type": "Element",
+        },
+      ],
+      "component": true,
+      "end": 44,
+      "inline": false,
+      "name": "x-app",
+      "self_closing": false,
+      "start": 0,
+      "type": "Element",
+    },
+  ],
+  "end": 44,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`component > v:self on a custom element 2`] = `
 "let %%template0 = @html(\\"<x-app><div>hello world!</div></x-app>\\");
 let %fragment0 = @clone(%template0);
 let %child0 = new $$host.constructor();
@@ -49,6 +279,59 @@ let %marker0 = @traverse(%fragment0, [0, 0]);
 `;
 
 exports[`expression > component 1`] = `
+{
+  "children": [
+    {
+      "attributes": [],
+      "children": [
+        {
+          "decoded": "hello ",
+          "end": 12,
+          "start": 6,
+          "type": "Text",
+          "value": "hello ",
+        },
+        {
+          "end": 18,
+          "expression": Node {
+            "comments": [],
+            "end": 17,
+            "name": "name",
+            "path": {
+              "parent": undefined,
+            },
+            "start": 13,
+            "trailingComments": [],
+            "type": "Identifier",
+          },
+          "id": null,
+          "start": 12,
+          "type": "Expression",
+        },
+        {
+          "decoded": "!",
+          "end": 19,
+          "start": 18,
+          "type": "Text",
+          "value": "!",
+        },
+      ],
+      "component": true,
+      "end": 26,
+      "inline": true,
+      "name": "Main",
+      "self_closing": false,
+      "start": 0,
+      "type": "Element",
+    },
+  ],
+  "end": 26,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`expression > component 2`] = `
 "let %%template0 = @html(\\"<div>hello <!>!</div>\\");
 let %fragment0 = @clone(%template0);
 let %marker0 = @traverse(%fragment0, [0, 1]);
@@ -61,6 +344,59 @@ let %marker1 = @traverse(%fragment0, [0]);
 `;
 
 exports[`expression > custom element 1`] = `
+{
+  "children": [
+    {
+      "attributes": [],
+      "children": [
+        {
+          "decoded": "hello ",
+          "end": 13,
+          "start": 7,
+          "type": "Text",
+          "value": "hello ",
+        },
+        {
+          "end": 19,
+          "expression": Node {
+            "comments": [],
+            "end": 18,
+            "name": "name",
+            "path": {
+              "parent": undefined,
+            },
+            "start": 14,
+            "trailingComments": [],
+            "type": "Identifier",
+          },
+          "id": null,
+          "start": 13,
+          "type": "Expression",
+        },
+        {
+          "decoded": "!",
+          "end": 20,
+          "start": 19,
+          "type": "Text",
+          "value": "!",
+        },
+      ],
+      "component": true,
+      "end": 28,
+      "inline": false,
+      "name": "x-app",
+      "self_closing": false,
+      "start": 0,
+      "type": "Element",
+    },
+  ],
+  "end": 28,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`expression > custom element 2`] = `
 "let %%template0 = @html(\\"<x-app>hello <!>!</x-app>\\");
 let %fragment0 = @clone(%template0);
 let %marker0 = @traverse(%fragment0, [0, 1]);

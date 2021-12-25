@@ -10,6 +10,8 @@ describe('attribute', () => {
 		let template = `<div class='foo'></div>`;
 
 		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -19,6 +21,8 @@ describe('attribute', () => {
 		let template = `<div class=foo></div>`;
 
 		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -28,6 +32,8 @@ describe('attribute', () => {
 		let template = `<div class={className}></div>`;
 
 		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -37,6 +43,8 @@ describe('attribute', () => {
 		let template = `<textarea readonly></textarea>`;
 
 		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -46,6 +54,8 @@ describe('attribute', () => {
 		let template = `<textarea ?readonly={is_readonly}></textarea>`;
 
 		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -57,6 +67,8 @@ describe('component', () => {
 		let template = `<x-app><v:self>hello world!</v:self></x-app>`;
 
 		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -68,6 +80,8 @@ describe('expression', () => {
 		let template = `<x-app>hello {name}!</x-app>`;
 
 		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -77,6 +91,8 @@ describe('expression', () => {
 		let template = `<Main>hello {name}!</Main>`;
 
 		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
