@@ -217,7 +217,7 @@ export function function_declaration (id = null, params, body, async = false, ge
 export function arrow_function_expression (params, body, async = false) {
 	return {
 		type: 'ArrowFunctionExpression',
-		params,
+		params: params.filter((param) => !!param),
 		body,
 		async,
 		expression: body.type !== 'BlockStatement',
