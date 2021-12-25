@@ -324,6 +324,27 @@ describe('prop', () => {
 
 		expect(() => transform_script(program)).to.throw();
 	});
+
+	it('throws on one variable exported twice', () => {
+		let program = parse(`
+			let foo = 123;
+
+			export { foo as bar, foo as baz };
+		`);
+
+		expect(() => transform_script(program)).to.throw();
+	});
+
+	it('throws on two variable exported to one name', () => {
+		let program = `
+			let foo = 1;
+			let bar = 2;
+
+			export { foo as baz, bar as baz };
+		`;
+
+		expect(() => parse(program)).to.throw();
+	});
 });
 
 describe('computed', () => {
