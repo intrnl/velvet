@@ -38,6 +38,7 @@ export function is_reference (node, parent) {
 
 			// disregard the `foo` in `foo = bar` but keep it in `bar = foo`
 			// case 'AssignmentExpression': return node === parent.right;
+			// case 'UpdateExpression': return node === parent.argument;
 
 			// disregard the `foo` in `(foo) => bar` but keep it in `(bar) => foo`
 			case 'ArrowFunctionExpression': return node === parent.body;
