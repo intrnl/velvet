@@ -172,11 +172,11 @@ export function eat_until (state, pattern) {
  * @param {string} message
  * @returns {object}
  */
-export function error (state, message, index = state.index) {
+export function error (state, message, start = state.index) {
 	return {
 		name: 'ParserError',
 		message,
-		index,
+		start,
 	};
 }
 
