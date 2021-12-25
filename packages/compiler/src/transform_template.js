@@ -406,7 +406,7 @@ export function transform_template (template) {
 				let scope = fragment_to_scope.get(node.body);
 
 				let local = node.local;
-				let expression = node.expression;
+				let expression = x`() => ${node.expression}`;
 
 				let block_ident = '%block' + blocks.indexOf(block);
 				let statement = t.block_statement(scope);

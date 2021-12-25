@@ -943,3 +943,167 @@ let %marker0 = @traverse(%fragment0, [0, 1]);
 @append(%fragment0, $$root);
 "
 `;
+
+exports[`loop logic > iteration 1`] = `
+{
+  "children": [
+    {
+      "alternate": null,
+      "body": {
+        "children": [
+          {
+            "attributes": [],
+            "children": [
+              {
+                "end": 42,
+                "expression": Node {
+                  "comments": [],
+                  "computed": false,
+                  "end": 41,
+                  "object": Node {
+                    "comments": [],
+                    "end": 35,
+                    "name": "person",
+                    "path": {
+                      "parent": [Circular],
+                    },
+                    "start": 29,
+                    "trailingComments": [],
+                    "type": "Identifier",
+                  },
+                  "optional": false,
+                  "path": {
+                    "parent": undefined,
+                  },
+                  "property": Node {
+                    "comments": [],
+                    "end": 41,
+                    "name": "first",
+                    "path": {
+                      "parent": [Circular],
+                    },
+                    "start": 36,
+                    "trailingComments": [],
+                    "type": "Identifier",
+                  },
+                  "start": 29,
+                  "trailingComments": [],
+                  "type": "MemberExpression",
+                },
+                "id": null,
+                "start": 28,
+                "type": "Expression",
+              },
+              {
+                "decoded": " - ",
+                "end": 45,
+                "start": 42,
+                "type": "Text",
+                "value": " - ",
+              },
+              {
+                "end": 58,
+                "expression": Node {
+                  "comments": [],
+                  "computed": false,
+                  "end": 57,
+                  "object": Node {
+                    "comments": [],
+                    "end": 52,
+                    "name": "person",
+                    "path": {
+                      "parent": [Circular],
+                    },
+                    "start": 46,
+                    "trailingComments": [],
+                    "type": "Identifier",
+                  },
+                  "optional": false,
+                  "path": {
+                    "parent": undefined,
+                  },
+                  "property": Node {
+                    "comments": [],
+                    "end": 57,
+                    "name": "last",
+                    "path": {
+                      "parent": [Circular],
+                    },
+                    "start": 53,
+                    "trailingComments": [],
+                    "type": "Identifier",
+                  },
+                  "start": 46,
+                  "trailingComments": [],
+                  "type": "MemberExpression",
+                },
+                "id": null,
+                "start": 45,
+                "type": "Expression",
+              },
+            ],
+            "component": false,
+            "end": 64,
+            "inline": false,
+            "name": "div",
+            "self_closing": false,
+            "start": 23,
+            "type": "Element",
+          },
+        ],
+        "end": 64,
+        "start": 23,
+        "type": "Fragment",
+      },
+      "end": 71,
+      "expression": Node {
+        "comments": [],
+        "end": 22,
+        "name": "array",
+        "path": {
+          "parent": undefined,
+        },
+        "start": 17,
+        "trailingComments": [],
+        "type": "Identifier",
+      },
+      "local": Node {
+        "comments": [],
+        "end": 13,
+        "name": "person",
+        "path": {
+          "parent": undefined,
+        },
+        "start": 7,
+        "trailingComments": [],
+        "type": "Identifier",
+      },
+      "start": 0,
+      "type": "LoopStatement",
+    },
+  ],
+  "end": 71,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`loop logic > iteration 2`] = `
+"let %%template0 = @html(\\"<!>\\");
+let %fragment0 = @clone(%template0);
+let %block1 = ($$root, person) => {
+  let %%template1 = @html(\\"<div><!> - <!></div><!>\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [0, 0]);
+  @text(%marker0, () => person.first);
+  let %marker1 = @traverse(%fragment1, [0, 2]);
+  @text(%marker1, () => person.last);
+  let %marker2 = @traverse(%fragment1, [1]);
+  @after(%fragment1, $$root);
+  return %marker2;
+};
+let %marker3 = @traverse(%fragment0, [0]);
+@each(%marker3, %block1, () => array);
+@append(%fragment0, $$root);
+"
+`;

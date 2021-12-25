@@ -177,3 +177,16 @@ describe('conditional logic', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 });
+
+describe('loop logic', () => {
+	it('iteration', () => {
+		let template = `{#each person of array}<div>{person.first} - {person.last}</div>{/each}`;
+
+		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+});
