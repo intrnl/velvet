@@ -7,6 +7,7 @@ export let curr_track_depth = 0;
 
 export let curr_scope = null;
 export let curr_effect = null;
+let active_effects = new Set();
 
 let max_track_bits = 30;
 export let access = Symbol();
@@ -151,8 +152,13 @@ class Effect {
 
 		let deps = _this.d;
 
+		if (active_effects.has(_this)) {
+			return;
+		}
+
 		try {
 			curr_effect = _this;
+			active_effects.add(_this);
 
 			curr_track_bit = 1 << ++curr_track_depth;
 
@@ -190,6 +196,7 @@ class Effect {
 
 			curr_track_bit = 1 << --curr_track_depth;
 			curr_effect = prev_effect;
+			active_effects.delete(_this);
 		}
 	}
 
@@ -215,22 +222,20 @@ class Ref {
 		this.v = value;
 	}
 
-	run (next, effect = true) {
+	run (next) {
 		let _this = this;
 		let deps = _this.d;
 		let prev = _this.v;
 
 		if (next === access) {
-			if (effect) {
-				track_effect(deps);
-			}
+			track_effect(deps);
 
 			return _this.v;
 		}
 		else {
 			_this.v = next;
 
-			if (effect && changed(prev, next)) {
+			if (changed(prev, next)) {
 				trigger_effect(deps);
 			}
 
@@ -262,15 +267,13 @@ class Computed {
 		_this.run(access);
 	}
 
-	run (next, effect = true) {
+	run (next) {
 		let _this = this;
 		let deps = _this.d;
 		let prev = _this.v;
 
 		if (next === access) {
-			if (effect) {
-				track_effect(deps);
-			}
+			track_effect(deps);
 
 			if (_this.r) {
 				_this.r = false;
@@ -283,7 +286,7 @@ class Computed {
 			_this.r = false;
 			_this.v = next;
 
-			if (effect && changed(prev, next)) {
+			if (changed(prev, next)) {
 				trigger_effect(deps);
 			}
 
