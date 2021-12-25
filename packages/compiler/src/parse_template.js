@@ -97,10 +97,10 @@ function _parse_expression (state) {
 		if (p.eat(state, 'each')) {
 			p.eat_whitespace(state, true);
 
-			let local = _read_expression(state);
+			let local = p.eat_identifier(state);
 
-			if (!_is_identifier(local)) {
-				throw p.error(state, 'expected an assignment', local.start);
+			if (!local) {
+				throw p.error(state, 'expected an identifier');
 			}
 
 			p.eat_whitespace(state, true);
@@ -135,10 +135,10 @@ function _parse_expression (state) {
 			let local = null;
 
 			if ((to_resolve || to_reject) && !p.match(state, '}')) {
-				local = _read_expression(state);
+				local = p.eat_identifier(state);
 
-				if (!_is_identifier(local)) {
-					throw p.error(state, 'expected an assignment', local.start);
+				if (!local) {
+					throw p.error(state, 'expected an identifier');
 				}
 
 				p.eat_whitespace(state);
@@ -298,10 +298,10 @@ function _parse_expression (state) {
 				throw p.error(state, 'expected whitespace');
 			}
 
-			expression = _read_expression(state);
+			expression = p.eat_identifier(state);
 
-			if (!_is_identifier(expression)) {
-				throw p.error(state, 'expected an assignment', expression.start);
+			if (!expression) {
+				throw p.error(state, 'expected an identifier');
 			}
 
 			p.eat_whitespace(state);
@@ -338,10 +338,10 @@ function _parse_expression (state) {
 				throw p.error(state, 'expected whitespace');
 			}
 
-			expression = _read_expression(state);
+			expression = p.eat_identifier(state);
 
-			if (!_is_identifier(expression)) {
-				throw p.error(state, 'expected an assignment', expression.start);
+			if (!expression) {
+				throw p.error(state, 'expected an identifier');
 			}
 
 			p.eat_whitespace(state);
@@ -362,10 +362,10 @@ function _parse_expression (state) {
 	let id = null;
 
 	if (p.eat(state, '@')) {
-		id = _read_expression(state);
+		id = p.eat_identifier(state);
 
-		if (id.type !== 'Identifier') {
-			throw p.error(state, 'expected an identifier', id.start);
+		if (!id) {
+			throw p.error(state, 'expected an identifier');
 		}
 
 		p.eat_whitespace(state, true);
@@ -641,12 +641,4 @@ function _read_expression (state) {
 	catch (error) {
 		throw p.error(state, `JS parsing error: ${error.message}`);
 	}
-}
-
-/**
- * @param {import('estree').Expression} node
- * @returns {node is import('estree').Identifier}
- */
-function _is_identifier (node) {
-	return node.type === 'Identifier';
 }

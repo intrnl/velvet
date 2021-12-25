@@ -1,11 +1,13 @@
-import * as t from './template_types.js';
+import { isIdentifierStart, isIdentifierChar } from 'acorn';
+import * as t from './js_types.js';
+import * as tt from './template_types.js';
 
 
 /**
  * @typedef {object} ParserState
  * @property {string} content
  * @property {number} index
- * @property {t.StackableNode[]} stack
+ * @property {tt.StackableNode[]} stack
  */
 
 /**
@@ -13,8 +15,8 @@ import * as t from './template_types.js';
  * @returns {ParserState}
  */
 export function create_state (content) {
-	/** @type {t.Fragment} */
-	let root = t.fragment();
+	/** @type {tt.Fragment} */
+	let root = tt.fragment();
 
 	/** @type {ParserState} */
 	let state = {
@@ -29,7 +31,7 @@ export function create_state (content) {
 /**
  * @param {ParserState} state
  * @param {number} [cursor]
- * @returns {t.StackableNode}
+ * @returns {tt.StackableNode}
  */
 export function current (state, cursor = 0) {
 	return state.stack[state.stack.length - 1 - cursor];
@@ -37,7 +39,7 @@ export function current (state, cursor = 0) {
 
 /**
  * @param {ParserState} state
- * @param  {...t.StackableNode} nodes
+ * @param  {...tt.StackableNode} nodes
  */
 export function push (state, ...nodes) {
 	state.stack.push(...nodes);
@@ -46,7 +48,7 @@ export function push (state, ...nodes) {
 /**
  * @param {ParserState} state
  * @param {number} [amount]
- * @returns {t.StackableNode[]}
+ * @returns {tt.StackableNode[]}
  */
 export function pop (state, amount = 1) {
 	return state.stack.splice(state.stack.length - amount, amount);
@@ -129,6 +131,32 @@ export function eat_whitespace (state, required) {
 
 /**
  * @param {ParserState} state
+ */
+export function eat_identifier (state) {
+	let index = state.index;
+	let start = get_char_code(state.content, index);
+
+	if (!isIdentifierStart(start, true)) {
+		return null;
+	}
+
+	index += start <= 0xffff ? 1 : 2;
+
+	while (index < state.content.length) {
+		let code = get_char_code(state.content, index);
+
+		if (!isIdentifierChar(code, true)) {
+			break;
+		}
+
+		index += code <= 0xffff ? 1 : 2;
+	}
+
+	return t.identifier(state.content.slice(state.index, state.index = index));
+}
+
+/**
+ * @param {ParserState} state
  * @param {RegExp} pattern
  * @param {string} required
  * @returns {string | false}
@@ -186,4 +214,15 @@ export function error (state, message, start = state.index) {
  */
 export function is_whitespace (char) {
 	return char === ' ' || char === '\n' || char === '\r' || char === '\t';
+}
+
+function get_char_code (str, index) {
+	const code = str.charCodeAt(index);
+
+	if (code <= 0xd7ff || code >= 0xe000) {
+		return code;
+	}
+
+	const next = str.charCodeAt(index + 1);
+	return (code << 10) + next - 0x35fdc00;
 }
