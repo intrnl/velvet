@@ -77,6 +77,15 @@ describe('attribute', () => {
 
 		expect(print(program)).toMatchSnapshot();
 	});
+
+	it('ref', () => {
+		let template = `<input #ref={input}>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
 });
 
 describe('component', () => {

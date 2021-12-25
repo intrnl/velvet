@@ -184,6 +184,17 @@ export function transform_template (template) {
 							: attr_value.expression
 						: t.literal(true);
 
+					if (attr_name === '#ref') {
+						need_ident = true;
+
+						let statements = b`
+							$: ${value_expr} = ${ident};
+						`;
+
+						pending.push(...statements);
+						continue;
+					}
+
 					if (attr_name[0] === '.') {
 						need_ident = true;
 

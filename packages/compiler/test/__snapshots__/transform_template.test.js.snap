@@ -44,6 +44,15 @@ $: %child0[\\"value\\"] = true;
 "
 `;
 
+exports[`attribute > ref 1`] = `
+"let %%template0 = @html(\\"<input />\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+$: input = %child0;
+@append(%fragment0, $$root);
+"
+`;
+
 exports[`attribute > static 1`] = `
 "let %%template0 = @html(\\"<div class=\\\\\\"foo\\\\\\"></div>\\");
 let %fragment0 = @clone(%template0);
