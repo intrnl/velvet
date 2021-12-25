@@ -107,6 +107,98 @@ $: @toggle(%child0, \\"readonly\\", is_readonly);
 "
 `;
 
+exports[`attribute > property 1`] = `
+{
+  "children": [
+    {
+      "attributes": [
+        {
+          "end": 21,
+          "name": ".value",
+          "start": 7,
+          "type": "Attribute",
+          "value": {
+            "end": 21,
+            "expression": Node {
+              "comments": [],
+              "end": 20,
+              "name": "value",
+              "path": {
+                "parent": undefined,
+              },
+              "start": 15,
+              "trailingComments": [],
+              "type": "Identifier",
+            },
+            "id": null,
+            "start": 14,
+            "type": "Expression",
+          },
+        },
+      ],
+      "children": [],
+      "component": false,
+      "end": 22,
+      "inline": false,
+      "name": "input",
+      "self_closing": true,
+      "start": 0,
+      "type": "Element",
+    },
+  ],
+  "end": 22,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`attribute > property 2`] = `
+"let %%template0 = @html(\\"<input />\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+$: %child0[\\"value\\"] = value;
+@append(%fragment0, $$root);
+"
+`;
+
+exports[`attribute > property no value 1`] = `
+{
+  "children": [
+    {
+      "attributes": [
+        {
+          "end": 13,
+          "name": ".value",
+          "start": 7,
+          "type": "Attribute",
+          "value": null,
+        },
+      ],
+      "children": [],
+      "component": false,
+      "end": 14,
+      "inline": false,
+      "name": "input",
+      "self_closing": true,
+      "start": 0,
+      "type": "Element",
+    },
+  ],
+  "end": 14,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`attribute > property no value 2`] = `
+"let %%template0 = @html(\\"<input />\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+$: %child0[\\"value\\"] = true;
+@append(%fragment0, $$root);
+"
+`;
+
 exports[`attribute > static 1`] = `
 {
   "children": [
