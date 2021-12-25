@@ -113,6 +113,14 @@ function inject_placeholders (node, values) {
 			delete node.start;
 			delete node.end;
 
+			if (node.type === 'Line' || node.type === 'Block') {
+				node.value = node.value.replace(unique_regex, (match, index) => (
+					values[+index] || match
+				));
+
+				return;
+			}
+
 			if (node.type === 'Identifier') {
 				unique_regex.lastIndex = 0;
 				let match = unique_regex.exec(node.name);
