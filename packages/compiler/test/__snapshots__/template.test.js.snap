@@ -107,6 +107,44 @@ $: @toggle(%child0, \\"readonly\\", is_readonly);
 "
 `;
 
+exports[`attribute > dynamic boolean no value 1`] = `
+{
+  "children": [
+    {
+      "attributes": [
+        {
+          "end": 19,
+          "name": "?readonly",
+          "start": 10,
+          "type": "Attribute",
+          "value": null,
+        },
+      ],
+      "children": [],
+      "component": false,
+      "end": 31,
+      "inline": false,
+      "name": "textarea",
+      "self_closing": false,
+      "start": 0,
+      "type": "Element",
+    },
+  ],
+  "end": 31,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`attribute > dynamic boolean no value 2`] = `
+"let %%template0 = @html(\\"<textarea></textarea>\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+$: @toggle(%child0, \\"readonly\\", true);
+@append(%fragment0, $$root);
+"
+`;
+
 exports[`attribute > property 1`] = `
 {
   "children": [

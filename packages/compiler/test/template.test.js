@@ -61,6 +61,17 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
+	it('dynamic boolean no value', () => {
+		let template = `<textarea ?readonly></textarea>`;
+
+		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
 	it('property', () => {
 		let template = `<input .value={value}>`;
 
