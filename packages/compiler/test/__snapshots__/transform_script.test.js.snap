@@ -232,7 +232,8 @@ value2(value2(@access) * 4);
 
 exports[`prop > variable referencing unmutated ref 1`] = `
 "let value1 = 1;
-let value2 = () => {};
+let value2 = () => {
+};
 let value3 = @prop(0, () => value1);
 let value4 = @prop(1, () => value2);
 let value5 = @prop(2, () => value1 + value2);
