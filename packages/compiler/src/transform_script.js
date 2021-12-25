@@ -19,7 +19,7 @@ export function transform_script (program) {
 		 * @param {import('estree').Node} node
 		 * @param {import('estree').Node} parent
 		 */
-		enter (node, parent, key, index) {
+		enter (node, parent) {
 			if (map.has(node)) {
 				curr_scope = map.get(node);
 			}
@@ -32,7 +32,11 @@ export function transform_script (program) {
 					name[0] === '$' && (name[1] !== '$' || (name[1] === '$' && name[2] !== '$'))
 				))
 			) {
-				throw new Error('$ and $$-prefixed variables are reserved and cannot be declared');
+				throw {
+					message: '$ and $$-prefixed variables are reserved and cannot be declared',
+					start: node.start,
+					end: node.end,
+				};
 			}
 
 			// mark mutable variables
@@ -41,7 +45,11 @@ export function transform_script (program) {
 				let name = left.name;
 
 				if (name[0] === '$' && name[1] === '$' && name[2] !== '$') {
-					throw new Error('tried reassignment to $$ reserved variables');
+					throw {
+						message: 'tried reassignment to $$-prefixed variables',
+						start: node.start,
+						end: node.end,
+					};
 				}
 
 				let own_scope = curr_scope.find_owner(name);
@@ -63,7 +71,11 @@ export function transform_script (program) {
 
 				if (own_scope === root_scope) {
 					if (!prefix) {
-						throw new Error('postfix update expressions are not supported');
+						throw {
+							message: 'postfix update expressions are not supported for refs',
+							start: node.start,
+							end: node.end,
+						};
 					}
 
 					let ident = own_scope.declarations.get(name);
@@ -75,7 +87,11 @@ export function transform_script (program) {
 
 			// mark props
 			if (node.type === 'ExportDefaultDeclaration') {
-				throw new Error('export default is reserved for component');
+				throw {
+					message: 'export default is reserved for component definition',
+					start: node.start,
+					end: node.end,
+				};
 			}
 
 			if (node.type === 'ExportNamedDeclaration' && node.declaration) {
@@ -106,7 +122,11 @@ export function transform_script (program) {
 					let exported_name = specifier.exported.name;
 
 					if (props.has(local_name)) {
-						throw new Error('tried to export something that has already been exported');
+						throw {
+							message: 'tried to export something that has already been exported',
+							start: specifier.start,
+							end: specifier.end,
+						};
 					}
 
 					props.set(local_name, exported_name);
@@ -145,8 +165,13 @@ export function transform_script (program) {
 				if (name[0] !== '$' || name[1] === '$' || curr_scope.has(name)) {
 					return;
 				}
+
 				if (name.length === 1) {
-					throw new Error('no singular $ reference');
+					throw {
+						message: 'no singular $ reference',
+						start: node.start,
+						end: node.end,
+					};
 				}
 
 				let actual = name.slice(1);
@@ -203,7 +228,7 @@ export function transform_script (program) {
 		 * @param {import('estree').Node} node
 		 * @param {import('estree').Node} parent
 		 */
-		enter (node, parent, key, index) {
+		enter (node, parent) {
 			if (map.has(node)) {
 				curr_scope = map.get(node);
 			}
