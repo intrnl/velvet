@@ -278,6 +278,415 @@ let %marker0 = @traverse(%fragment0, [0, 0]);
 "
 `;
 
+exports[`conditional logic > consequent 1`] = `
+{
+  "children": [
+    {
+      "alternate": null,
+      "consequent": {
+        "children": [
+          {
+            "attributes": [],
+            "children": [
+              {
+                "decoded": "foo!",
+                "end": 18,
+                "start": 14,
+                "type": "Text",
+                "value": "foo!",
+              },
+            ],
+            "component": false,
+            "end": 24,
+            "inline": false,
+            "name": "div",
+            "self_closing": false,
+            "start": 9,
+            "type": "Element",
+          },
+        ],
+        "end": 24,
+        "start": 9,
+        "type": "Fragment",
+      },
+      "end": 29,
+      "start": 0,
+      "test": Node {
+        "comments": [],
+        "end": 8,
+        "name": "foo",
+        "path": {
+          "parent": undefined,
+        },
+        "start": 5,
+        "trailingComments": [],
+        "type": "Identifier",
+      },
+      "type": "ConditionalStatement",
+    },
+  ],
+  "end": 29,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`conditional logic > consequent 2`] = `
+"let %%template0 = @html(\\"<!>\\");
+let %fragment0 = @clone(%template0);
+let %block1 = $$root => {
+  let %%template1 = @html(\\"<div>foo!</div><!>\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [1]);
+  @after(%fragment1, $$root);
+  return %marker0;
+};
+let %marker1 = @traverse(%fragment0, [0]);
+@show(%marker1, () => foo ? %block1 : null);
+@append(%fragment0, $$root);
+"
+`;
+
+exports[`conditional logic > consequent and alternate 1`] = `
+{
+  "children": [
+    {
+      "alternate": {
+        "children": [
+          {
+            "attributes": [],
+            "children": [
+              {
+                "decoded": "bar!",
+                "end": 40,
+                "start": 36,
+                "type": "Text",
+                "value": "bar!",
+              },
+            ],
+            "component": false,
+            "end": 46,
+            "inline": false,
+            "name": "div",
+            "self_closing": false,
+            "start": 31,
+            "type": "Element",
+          },
+        ],
+        "end": 46,
+        "start": 31,
+        "type": "Fragment",
+      },
+      "consequent": {
+        "children": [
+          {
+            "attributes": [],
+            "children": [
+              {
+                "decoded": "foo!",
+                "end": 18,
+                "start": 14,
+                "type": "Text",
+                "value": "foo!",
+              },
+            ],
+            "component": false,
+            "end": 24,
+            "inline": false,
+            "name": "div",
+            "self_closing": false,
+            "start": 9,
+            "type": "Element",
+          },
+        ],
+        "end": 24,
+        "start": 9,
+        "type": "Fragment",
+      },
+      "end": 51,
+      "start": 0,
+      "test": Node {
+        "comments": [],
+        "end": 8,
+        "name": "foo",
+        "path": {
+          "parent": undefined,
+        },
+        "start": 5,
+        "trailingComments": [],
+        "type": "Identifier",
+      },
+      "type": "ConditionalStatement",
+    },
+  ],
+  "end": 51,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`conditional logic > consequent and alternate 2`] = `
+"let %%template0 = @html(\\"<!>\\");
+let %fragment0 = @clone(%template0);
+let %block1 = $$root => {
+  let %%template1 = @html(\\"<div>foo!</div><!>\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [1]);
+  @after(%fragment1, $$root);
+  return %marker0;
+};
+let %block2 = $$root => {
+  let %%template2 = @html(\\"<div>bar!</div><!>\\");
+  let %fragment2 = @clone(%template2);
+  let %marker1 = @traverse(%fragment2, [1]);
+  @after(%fragment2, $$root);
+  return %marker1;
+};
+let %marker2 = @traverse(%fragment0, [0]);
+@show(%marker2, () => foo ? %block1 : %block2);
+@append(%fragment0, $$root);
+"
+`;
+
+exports[`conditional logic > consequent and alternate test 1`] = `
+{
+  "children": [
+    {
+      "alternate": {
+        "alternate": null,
+        "consequent": {
+          "children": [
+            {
+              "attributes": [],
+              "children": [
+                {
+                  "decoded": "bar!",
+                  "end": 47,
+                  "start": 43,
+                  "type": "Text",
+                  "value": "bar!",
+                },
+              ],
+              "component": false,
+              "end": 53,
+              "inline": false,
+              "name": "div",
+              "self_closing": false,
+              "start": 38,
+              "type": "Element",
+            },
+          ],
+          "end": 53,
+          "start": 38,
+          "type": "Fragment",
+        },
+        "end": 58,
+        "start": 24,
+        "test": Node {
+          "comments": [],
+          "end": 37,
+          "name": "bar",
+          "path": {
+            "parent": undefined,
+          },
+          "start": 34,
+          "trailingComments": [],
+          "type": "Identifier",
+        },
+        "type": "ConditionalStatement",
+      },
+      "consequent": {
+        "children": [
+          {
+            "attributes": [],
+            "children": [
+              {
+                "decoded": "foo!",
+                "end": 18,
+                "start": 14,
+                "type": "Text",
+                "value": "foo!",
+              },
+            ],
+            "component": false,
+            "end": 24,
+            "inline": false,
+            "name": "div",
+            "self_closing": false,
+            "start": 9,
+            "type": "Element",
+          },
+        ],
+        "end": 24,
+        "start": 9,
+        "type": "Fragment",
+      },
+      "end": 58,
+      "start": 0,
+      "test": Node {
+        "comments": [],
+        "end": 8,
+        "name": "foo",
+        "path": {
+          "parent": undefined,
+        },
+        "start": 5,
+        "trailingComments": [],
+        "type": "Identifier",
+      },
+      "type": "ConditionalStatement",
+    },
+  ],
+  "end": 58,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`conditional logic > consequent and alternate test 2`] = `
+"let %%template0 = @html(\\"<!>\\");
+let %fragment0 = @clone(%template0);
+let %block2 = $$root => {
+  let %%template2 = @html(\\"<div>bar!</div><!>\\");
+  let %fragment2 = @clone(%template2);
+  let %marker1 = @traverse(%fragment2, [1]);
+  @after(%fragment2, $$root);
+  return %marker1;
+};
+let %block1 = $$root => {
+  let %%template1 = @html(\\"<div>foo!</div><!>\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [1]);
+  @after(%fragment1, $$root);
+  return %marker0;
+};
+let %marker2 = @traverse(%fragment0, [0]);
+@show(%marker2, () => foo ? %block1 : bar ? %block2 : null);
+@append(%fragment0, $$root);
+"
+`;
+
+exports[`conditional logic > nested consequent 1`] = `
+{
+  "children": [
+    {
+      "alternate": null,
+      "consequent": {
+        "children": [
+          {
+            "attributes": [],
+            "children": [
+              {
+                "decoded": "foo!",
+                "end": 18,
+                "start": 14,
+                "type": "Text",
+                "value": "foo!",
+              },
+            ],
+            "component": false,
+            "end": 24,
+            "inline": false,
+            "name": "div",
+            "self_closing": false,
+            "start": 9,
+            "type": "Element",
+          },
+          {
+            "alternate": null,
+            "consequent": {
+              "children": [
+                {
+                  "attributes": [],
+                  "children": [
+                    {
+                      "decoded": "bar!",
+                      "end": 42,
+                      "start": 38,
+                      "type": "Text",
+                      "value": "bar!",
+                    },
+                  ],
+                  "component": false,
+                  "end": 48,
+                  "inline": false,
+                  "name": "div",
+                  "self_closing": false,
+                  "start": 33,
+                  "type": "Element",
+                },
+              ],
+              "end": 48,
+              "start": 33,
+              "type": "Fragment",
+            },
+            "end": 53,
+            "start": 24,
+            "test": Node {
+              "comments": [],
+              "end": 32,
+              "name": "bar",
+              "path": {
+                "parent": undefined,
+              },
+              "start": 29,
+              "trailingComments": [],
+              "type": "Identifier",
+            },
+            "type": "ConditionalStatement",
+          },
+        ],
+        "end": 53,
+        "start": 9,
+        "type": "Fragment",
+      },
+      "end": 58,
+      "start": 0,
+      "test": Node {
+        "comments": [],
+        "end": 8,
+        "name": "foo",
+        "path": {
+          "parent": undefined,
+        },
+        "start": 5,
+        "trailingComments": [],
+        "type": "Identifier",
+      },
+      "type": "ConditionalStatement",
+    },
+  ],
+  "end": 58,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`conditional logic > nested consequent 2`] = `
+"let %%template0 = @html(\\"<!>\\");
+let %fragment0 = @clone(%template0);
+let %block2 = $$root => {
+  let %%template2 = @html(\\"<div>bar!</div><!>\\");
+  let %fragment2 = @clone(%template2);
+  let %marker0 = @traverse(%fragment2, [1]);
+  @after(%fragment2, $$root);
+  return %marker0;
+};
+let %block1 = $$root => {
+  let %%template1 = @html(\\"<div>foo!</div><!><!>\\");
+  let %fragment1 = @clone(%template1);
+  let %marker1 = @traverse(%fragment1, [1]);
+  @show(%marker1, () => bar ? %block2 : null);
+  let %marker2 = @traverse(%fragment1, [2]);
+  @after(%fragment1, $$root);
+  return %marker2;
+};
+let %marker3 = @traverse(%fragment0, [0]);
+@show(%marker3, () => foo ? %block1 : null);
+@append(%fragment0, $$root);
+"
+`;
+
 exports[`expression > component 1`] = `
 {
   "children": [

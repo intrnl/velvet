@@ -98,3 +98,49 @@ describe('expression', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 });
+
+describe('conditional logic', () => {
+	it('consequent', () => {
+		let template = `{#if foo}<div>foo!</div>{/if}`;
+
+		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('consequent and alternate', () => {
+		let template = `{#if foo}<div>foo!</div>{:else}<div>bar!</div>{/if}`;
+
+		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('consequent and alternate test', () => {
+		let template = `{#if foo}<div>foo!</div>{:else if bar}<div>bar!</div>{/if}`;
+
+		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('nested consequent', () => {
+		let template = `{#if foo}<div>foo!</div>{#if bar}<div>bar!</div>{/if}{/if}`;
+
+		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+});
