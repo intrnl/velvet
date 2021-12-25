@@ -10,8 +10,6 @@ describe('attribute', () => {
 		let template = `<div class='foo'></div>`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -21,8 +19,6 @@ describe('attribute', () => {
 		let template = `<div class=foo></div>`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -32,8 +28,6 @@ describe('attribute', () => {
 		let template = `<div class={className}></div>`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -43,8 +37,6 @@ describe('attribute', () => {
 		let template = `<textarea readonly></textarea>`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -54,8 +46,6 @@ describe('attribute', () => {
 		let template = `<textarea ?readonly={is_readonly}></textarea>`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -65,8 +55,6 @@ describe('attribute', () => {
 		let template = `<textarea ?readonly></textarea>`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -76,8 +64,6 @@ describe('attribute', () => {
 		let template = `<input .value={value}>`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -87,8 +73,6 @@ describe('attribute', () => {
 		let template = `<input .value>`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -100,8 +84,6 @@ describe('component', () => {
 		let template = `<x-app><v:self>hello world!</v:self></x-app>`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -113,8 +95,6 @@ describe('expression', () => {
 		let template = `<x-app>hello {name}!</x-app>`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -124,8 +104,6 @@ describe('expression', () => {
 		let template = `<Main>hello {name}!</Main>`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -137,8 +115,6 @@ describe('conditional logic', () => {
 		let template = `{#if foo}<div>foo!</div>{/if}`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -148,8 +124,6 @@ describe('conditional logic', () => {
 		let template = `{#if foo}<div>foo!</div>{:else}<div>bar!</div>{/if}`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -159,8 +133,6 @@ describe('conditional logic', () => {
 		let template = `{#if foo}<div>foo!</div>{:else if bar}<div>bar!</div>{/if}`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -170,8 +142,6 @@ describe('conditional logic', () => {
 		let template = `{#if foo}<div>foo!</div>{#if bar}<div>bar!</div>{/if}{/if}`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -183,8 +153,6 @@ describe('loop logic', () => {
 		let template = `{#each person of array}<div>{person.first} - {person.last}</div>{/each}`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -196,8 +164,6 @@ describe('await logic', () => {
 		let template = `{#await promise}pending{/await}`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -207,8 +173,6 @@ describe('await logic', () => {
 		let template = `{#await promise then}resolved{/await}`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -218,8 +182,6 @@ describe('await logic', () => {
 		let template = `{#await promise then result}the number is {result.value}{/await}`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -229,8 +191,6 @@ describe('await logic', () => {
 		let template = `{#await promise catch}rejected{/await}`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -240,8 +200,6 @@ describe('await logic', () => {
 		let template = `{#await promise catch error}error: {error.message}{/await}`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -251,8 +209,6 @@ describe('await logic', () => {
 		let template = `{#await promise}pending{:then}resolved{/await}`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -262,8 +218,6 @@ describe('await logic', () => {
 		let template = `{#await promise}pending{:then name}hello, {name}!{/await}`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -273,8 +227,6 @@ describe('await logic', () => {
 		let template = `{#await promise}pending{:catch}rejected{/await}`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
@@ -284,8 +236,6 @@ describe('await logic', () => {
 		let template = `{#await promise}pending{:catch error}uh, oh! <pre>{error.message}</pre>{/await}`;
 
 		let fragment = parse_template(template);
-		expect(fragment).toMatchSnapshot();
-
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();

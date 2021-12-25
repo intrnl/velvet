@@ -1,51 +1,6 @@
 // Vitest Snapshot v1
 
 exports[`attribute > dynamic 1`] = `
-{
-  "children": [
-    {
-      "attributes": [
-        {
-          "end": 22,
-          "name": "class",
-          "start": 5,
-          "type": "Attribute",
-          "value": {
-            "end": 22,
-            "expression": Node {
-              "comments": [],
-              "end": 21,
-              "name": "className",
-              "path": {
-                "parent": undefined,
-              },
-              "start": 12,
-              "trailingComments": [],
-              "type": "Identifier",
-            },
-            "id": null,
-            "start": 11,
-            "type": "Expression",
-          },
-        },
-      ],
-      "children": [],
-      "component": false,
-      "end": 29,
-      "inline": false,
-      "name": "div",
-      "self_closing": false,
-      "start": 0,
-      "type": "Element",
-    },
-  ],
-  "end": 29,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`attribute > dynamic 2`] = `
 "let %%template0 = @html(\\"<div></div>\\");
 let %fragment0 = @clone(%template0);
 $: @attr(%child0, \\"class\\", className);
@@ -54,51 +9,6 @@ $: @attr(%child0, \\"class\\", className);
 `;
 
 exports[`attribute > dynamic boolean 1`] = `
-{
-  "children": [
-    {
-      "attributes": [
-        {
-          "end": 33,
-          "name": "?readonly",
-          "start": 10,
-          "type": "Attribute",
-          "value": {
-            "end": 33,
-            "expression": Node {
-              "comments": [],
-              "end": 32,
-              "name": "is_readonly",
-              "path": {
-                "parent": undefined,
-              },
-              "start": 21,
-              "trailingComments": [],
-              "type": "Identifier",
-            },
-            "id": null,
-            "start": 20,
-            "type": "Expression",
-          },
-        },
-      ],
-      "children": [],
-      "component": false,
-      "end": 45,
-      "inline": false,
-      "name": "textarea",
-      "self_closing": false,
-      "start": 0,
-      "type": "Element",
-    },
-  ],
-  "end": 45,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`attribute > dynamic boolean 2`] = `
 "let %%template0 = @html(\\"<textarea></textarea>\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
@@ -108,35 +18,6 @@ $: @toggle(%child0, \\"readonly\\", is_readonly);
 `;
 
 exports[`attribute > dynamic boolean no value 1`] = `
-{
-  "children": [
-    {
-      "attributes": [
-        {
-          "end": 19,
-          "name": "?readonly",
-          "start": 10,
-          "type": "Attribute",
-          "value": null,
-        },
-      ],
-      "children": [],
-      "component": false,
-      "end": 31,
-      "inline": false,
-      "name": "textarea",
-      "self_closing": false,
-      "start": 0,
-      "type": "Element",
-    },
-  ],
-  "end": 31,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`attribute > dynamic boolean no value 2`] = `
 "let %%template0 = @html(\\"<textarea></textarea>\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
@@ -146,51 +27,6 @@ $: @toggle(%child0, \\"readonly\\", true);
 `;
 
 exports[`attribute > property 1`] = `
-{
-  "children": [
-    {
-      "attributes": [
-        {
-          "end": 21,
-          "name": ".value",
-          "start": 7,
-          "type": "Attribute",
-          "value": {
-            "end": 21,
-            "expression": Node {
-              "comments": [],
-              "end": 20,
-              "name": "value",
-              "path": {
-                "parent": undefined,
-              },
-              "start": 15,
-              "trailingComments": [],
-              "type": "Identifier",
-            },
-            "id": null,
-            "start": 14,
-            "type": "Expression",
-          },
-        },
-      ],
-      "children": [],
-      "component": false,
-      "end": 22,
-      "inline": false,
-      "name": "input",
-      "self_closing": true,
-      "start": 0,
-      "type": "Element",
-    },
-  ],
-  "end": 22,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`attribute > property 2`] = `
 "let %%template0 = @html(\\"<input />\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
@@ -200,35 +36,6 @@ $: %child0[\\"value\\"] = value;
 `;
 
 exports[`attribute > property no value 1`] = `
-{
-  "children": [
-    {
-      "attributes": [
-        {
-          "end": 13,
-          "name": ".value",
-          "start": 7,
-          "type": "Attribute",
-          "value": null,
-        },
-      ],
-      "children": [],
-      "component": false,
-      "end": 14,
-      "inline": false,
-      "name": "input",
-      "self_closing": true,
-      "start": 0,
-      "type": "Element",
-    },
-  ],
-  "end": 14,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`attribute > property no value 2`] = `
 "let %%template0 = @html(\\"<input />\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
@@ -238,41 +45,6 @@ $: %child0[\\"value\\"] = true;
 `;
 
 exports[`attribute > static 1`] = `
-{
-  "children": [
-    {
-      "attributes": [
-        {
-          "end": 16,
-          "name": "class",
-          "start": 5,
-          "type": "Attribute",
-          "value": {
-            "decoded": "foo",
-            "end": 16,
-            "start": 11,
-            "type": "Text",
-            "value": "foo",
-          },
-        },
-      ],
-      "children": [],
-      "component": false,
-      "end": 23,
-      "inline": false,
-      "name": "div",
-      "self_closing": false,
-      "start": 0,
-      "type": "Element",
-    },
-  ],
-  "end": 23,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`attribute > static 2`] = `
 "let %%template0 = @html(\\"<div class=\\\\\\"foo\\\\\\"></div>\\");
 let %fragment0 = @clone(%template0);
 @append(%fragment0, $$root);
@@ -280,35 +52,6 @@ let %fragment0 = @clone(%template0);
 `;
 
 exports[`attribute > static boolean 1`] = `
-{
-  "children": [
-    {
-      "attributes": [
-        {
-          "end": 18,
-          "name": "readonly",
-          "start": 10,
-          "type": "Attribute",
-          "value": null,
-        },
-      ],
-      "children": [],
-      "component": false,
-      "end": 30,
-      "inline": false,
-      "name": "textarea",
-      "self_closing": false,
-      "start": 0,
-      "type": "Element",
-    },
-  ],
-  "end": 30,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`attribute > static boolean 2`] = `
 "let %%template0 = @html(\\"<textarea readonly></textarea>\\");
 let %fragment0 = @clone(%template0);
 @append(%fragment0, $$root);
@@ -316,41 +59,6 @@ let %fragment0 = @clone(%template0);
 `;
 
 exports[`attribute > static unquoted 1`] = `
-{
-  "children": [
-    {
-      "attributes": [
-        {
-          "end": 14,
-          "name": "class",
-          "start": 5,
-          "type": "Attribute",
-          "value": {
-            "decoded": "foo",
-            "end": 14,
-            "start": 11,
-            "type": "Text",
-            "value": "foo",
-          },
-        },
-      ],
-      "children": [],
-      "component": false,
-      "end": 21,
-      "inline": false,
-      "name": "div",
-      "self_closing": false,
-      "start": 0,
-      "type": "Element",
-    },
-  ],
-  "end": 21,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`attribute > static unquoted 2`] = `
 "let %%template0 = @html(\\"<div class=\\\\\\"foo\\\\\\"></div>\\");
 let %fragment0 = @clone(%template0);
 @append(%fragment0, $$root);
@@ -358,48 +66,6 @@ let %fragment0 = @clone(%template0);
 `;
 
 exports[`await logic > pending 1`] = `
-{
-  "children": [
-    {
-      "argument": Node {
-        "comments": [],
-        "end": 15,
-        "name": "promise",
-        "path": {
-          "parent": undefined,
-        },
-        "start": 8,
-        "trailingComments": [],
-        "type": "Identifier",
-      },
-      "end": 31,
-      "pending": {
-        "children": [
-          {
-            "decoded": "pending",
-            "end": 23,
-            "start": 16,
-            "type": "Text",
-            "value": "pending",
-          },
-        ],
-        "end": 23,
-        "start": 16,
-        "type": "Fragment",
-      },
-      "rejected": null,
-      "resolved": null,
-      "start": 0,
-      "type": "AwaitStatement",
-    },
-  ],
-  "end": 31,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`await logic > pending 2`] = `
 "let %%template0 = @html(\\"\\");
 let %fragment0 = @clone(%template0);
 let %block1 = $$root => {
@@ -416,63 +82,6 @@ let %marker1 = @traverse(%fragment0, [0]);
 `;
 
 exports[`await logic > pending and rejected 1`] = `
-{
-  "children": [
-    {
-      "argument": Node {
-        "comments": [],
-        "end": 15,
-        "name": "promise",
-        "path": {
-          "parent": undefined,
-        },
-        "start": 8,
-        "trailingComments": [],
-        "type": "Identifier",
-      },
-      "end": 47,
-      "pending": {
-        "children": [
-          {
-            "decoded": "pending",
-            "end": 23,
-            "start": 16,
-            "type": "Text",
-            "value": "pending",
-          },
-        ],
-        "type": "Fragment",
-      },
-      "rejected": {
-        "body": {
-          "children": [
-            {
-              "decoded": "rejected",
-              "end": 39,
-              "start": 31,
-              "type": "Text",
-              "value": "rejected",
-            },
-          ],
-          "end": 39,
-          "start": 31,
-          "type": "Fragment",
-        },
-        "local": null,
-        "type": "AwaitClause",
-      },
-      "resolved": null,
-      "start": 0,
-      "type": "AwaitStatement",
-    },
-  ],
-  "end": 47,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`await logic > pending and rejected 2`] = `
 "let %%template0 = @html(\\"\\");
 let %fragment0 = @clone(%template0);
 let %block1 = $$root => {
@@ -496,125 +105,6 @@ let %marker2 = @traverse(%fragment0, [0]);
 `;
 
 exports[`await logic > pending and rejected with local 1`] = `
-{
-  "children": [
-    {
-      "argument": Node {
-        "comments": [],
-        "end": 15,
-        "name": "promise",
-        "path": {
-          "parent": undefined,
-        },
-        "start": 8,
-        "trailingComments": [],
-        "type": "Identifier",
-      },
-      "end": 79,
-      "pending": {
-        "children": [
-          {
-            "decoded": "pending",
-            "end": 23,
-            "start": 16,
-            "type": "Text",
-            "value": "pending",
-          },
-        ],
-        "type": "Fragment",
-      },
-      "rejected": {
-        "body": {
-          "children": [
-            {
-              "decoded": "uh, oh! ",
-              "end": 45,
-              "start": 37,
-              "type": "Text",
-              "value": "uh, oh! ",
-            },
-            {
-              "attributes": [],
-              "children": [
-                {
-                  "end": 65,
-                  "expression": Node {
-                    "comments": [],
-                    "computed": false,
-                    "end": 64,
-                    "object": Node {
-                      "comments": [],
-                      "end": 56,
-                      "name": "error",
-                      "path": {
-                        "parent": [Circular],
-                      },
-                      "start": 51,
-                      "trailingComments": [],
-                      "type": "Identifier",
-                    },
-                    "optional": false,
-                    "path": {
-                      "parent": undefined,
-                    },
-                    "property": Node {
-                      "comments": [],
-                      "end": 64,
-                      "name": "message",
-                      "path": {
-                        "parent": [Circular],
-                      },
-                      "start": 57,
-                      "trailingComments": [],
-                      "type": "Identifier",
-                    },
-                    "start": 51,
-                    "trailingComments": [],
-                    "type": "MemberExpression",
-                  },
-                  "id": null,
-                  "start": 50,
-                  "type": "Expression",
-                },
-              ],
-              "component": false,
-              "end": 71,
-              "inline": false,
-              "name": "pre",
-              "self_closing": false,
-              "start": 45,
-              "type": "Element",
-            },
-          ],
-          "end": 71,
-          "start": 37,
-          "type": "Fragment",
-        },
-        "local": Node {
-          "comments": [],
-          "end": 36,
-          "name": "error",
-          "path": {
-            "parent": undefined,
-          },
-          "start": 31,
-          "trailingComments": [],
-          "type": "Identifier",
-        },
-        "type": "AwaitClause",
-      },
-      "resolved": null,
-      "start": 0,
-      "type": "AwaitStatement",
-    },
-  ],
-  "end": 79,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`await logic > pending and rejected with local 2`] = `
 "let %%template0 = @html(\\"\\");
 let %fragment0 = @clone(%template0);
 let %block1 = $$root => {
@@ -640,63 +130,6 @@ let %marker3 = @traverse(%fragment0, [0]);
 `;
 
 exports[`await logic > pending and resolved 1`] = `
-{
-  "children": [
-    {
-      "argument": Node {
-        "comments": [],
-        "end": 15,
-        "name": "promise",
-        "path": {
-          "parent": undefined,
-        },
-        "start": 8,
-        "trailingComments": [],
-        "type": "Identifier",
-      },
-      "end": 46,
-      "pending": {
-        "children": [
-          {
-            "decoded": "pending",
-            "end": 23,
-            "start": 16,
-            "type": "Text",
-            "value": "pending",
-          },
-        ],
-        "type": "Fragment",
-      },
-      "rejected": null,
-      "resolved": {
-        "body": {
-          "children": [
-            {
-              "decoded": "resolved",
-              "end": 38,
-              "start": 30,
-              "type": "Text",
-              "value": "resolved",
-            },
-          ],
-          "end": 38,
-          "start": 30,
-          "type": "Fragment",
-        },
-        "local": null,
-        "type": "AwaitClause",
-      },
-      "start": 0,
-      "type": "AwaitStatement",
-    },
-  ],
-  "end": 46,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`await logic > pending and resolved 2`] = `
 "let %%template0 = @html(\\"\\");
 let %fragment0 = @clone(%template0);
 let %block1 = $$root => {
@@ -720,97 +153,6 @@ let %marker2 = @traverse(%fragment0, [0]);
 `;
 
 exports[`await logic > pending and resolved with local 1`] = `
-{
-  "children": [
-    {
-      "argument": Node {
-        "comments": [],
-        "end": 15,
-        "name": "promise",
-        "path": {
-          "parent": undefined,
-        },
-        "start": 8,
-        "trailingComments": [],
-        "type": "Identifier",
-      },
-      "end": 57,
-      "pending": {
-        "children": [
-          {
-            "decoded": "pending",
-            "end": 23,
-            "start": 16,
-            "type": "Text",
-            "value": "pending",
-          },
-        ],
-        "type": "Fragment",
-      },
-      "rejected": null,
-      "resolved": {
-        "body": {
-          "children": [
-            {
-              "decoded": "hello, ",
-              "end": 42,
-              "start": 35,
-              "type": "Text",
-              "value": "hello, ",
-            },
-            {
-              "end": 48,
-              "expression": Node {
-                "comments": [],
-                "end": 47,
-                "name": "name",
-                "path": {
-                  "parent": undefined,
-                },
-                "start": 43,
-                "trailingComments": [],
-                "type": "Identifier",
-              },
-              "id": null,
-              "start": 42,
-              "type": "Expression",
-            },
-            {
-              "decoded": "!",
-              "end": 49,
-              "start": 48,
-              "type": "Text",
-              "value": "!",
-            },
-          ],
-          "end": 49,
-          "start": 35,
-          "type": "Fragment",
-        },
-        "local": Node {
-          "comments": [],
-          "end": 34,
-          "name": "name",
-          "path": {
-            "parent": undefined,
-          },
-          "start": 30,
-          "trailingComments": [],
-          "type": "Identifier",
-        },
-        "type": "AwaitClause",
-      },
-      "start": 0,
-      "type": "AwaitStatement",
-    },
-  ],
-  "end": 57,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`await logic > pending and resolved with local 2`] = `
 "let %%template0 = @html(\\"\\");
 let %fragment0 = @clone(%template0);
 let %block1 = $$root => {
@@ -836,52 +178,6 @@ let %marker3 = @traverse(%fragment0, [0]);
 `;
 
 exports[`await logic > rejected 1`] = `
-{
-  "children": [
-    {
-      "argument": Node {
-        "comments": [],
-        "end": 15,
-        "name": "promise",
-        "path": {
-          "parent": undefined,
-        },
-        "start": 8,
-        "trailingComments": [],
-        "type": "Identifier",
-      },
-      "end": 38,
-      "pending": null,
-      "rejected": {
-        "body": {
-          "children": [
-            {
-              "decoded": "rejected",
-              "end": 30,
-              "start": 22,
-              "type": "Text",
-              "value": "rejected",
-            },
-          ],
-          "end": 30,
-          "start": 22,
-          "type": "Fragment",
-        },
-        "local": null,
-        "type": "AwaitClause",
-      },
-      "resolved": null,
-      "start": 0,
-      "type": "AwaitStatement",
-    },
-  ],
-  "end": 38,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`await logic > rejected 2`] = `
 "let %%template0 = @html(\\"\\");
 let %fragment0 = @clone(%template0);
 let %block1 = $$root => {
@@ -898,102 +194,6 @@ let %marker1 = @traverse(%fragment0, [0]);
 `;
 
 exports[`await logic > rejected with local 1`] = `
-{
-  "children": [
-    {
-      "argument": Node {
-        "comments": [],
-        "end": 15,
-        "name": "promise",
-        "path": {
-          "parent": undefined,
-        },
-        "start": 8,
-        "trailingComments": [],
-        "type": "Identifier",
-      },
-      "end": 58,
-      "pending": null,
-      "rejected": {
-        "body": {
-          "children": [
-            {
-              "decoded": "error: ",
-              "end": 35,
-              "start": 28,
-              "type": "Text",
-              "value": "error: ",
-            },
-            {
-              "end": 50,
-              "expression": Node {
-                "comments": [],
-                "computed": false,
-                "end": 49,
-                "object": Node {
-                  "comments": [],
-                  "end": 41,
-                  "name": "error",
-                  "path": {
-                    "parent": [Circular],
-                  },
-                  "start": 36,
-                  "trailingComments": [],
-                  "type": "Identifier",
-                },
-                "optional": false,
-                "path": {
-                  "parent": undefined,
-                },
-                "property": Node {
-                  "comments": [],
-                  "end": 49,
-                  "name": "message",
-                  "path": {
-                    "parent": [Circular],
-                  },
-                  "start": 42,
-                  "trailingComments": [],
-                  "type": "Identifier",
-                },
-                "start": 36,
-                "trailingComments": [],
-                "type": "MemberExpression",
-              },
-              "id": null,
-              "start": 35,
-              "type": "Expression",
-            },
-          ],
-          "end": 50,
-          "start": 28,
-          "type": "Fragment",
-        },
-        "local": Node {
-          "comments": [],
-          "end": 27,
-          "name": "error",
-          "path": {
-            "parent": undefined,
-          },
-          "start": 22,
-          "trailingComments": [],
-          "type": "Identifier",
-        },
-        "type": "AwaitClause",
-      },
-      "resolved": null,
-      "start": 0,
-      "type": "AwaitStatement",
-    },
-  ],
-  "end": 58,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`await logic > rejected with local 2`] = `
 "let %%template0 = @html(\\"\\");
 let %fragment0 = @clone(%template0);
 let %block1 = ($$root, error) => {
@@ -1012,52 +212,6 @@ let %marker2 = @traverse(%fragment0, [0]);
 `;
 
 exports[`await logic > resolved 1`] = `
-{
-  "children": [
-    {
-      "argument": Node {
-        "comments": [],
-        "end": 15,
-        "name": "promise",
-        "path": {
-          "parent": undefined,
-        },
-        "start": 8,
-        "trailingComments": [],
-        "type": "Identifier",
-      },
-      "end": 37,
-      "pending": null,
-      "rejected": null,
-      "resolved": {
-        "body": {
-          "children": [
-            {
-              "decoded": "resolved",
-              "end": 29,
-              "start": 21,
-              "type": "Text",
-              "value": "resolved",
-            },
-          ],
-          "end": 29,
-          "start": 21,
-          "type": "Fragment",
-        },
-        "local": null,
-        "type": "AwaitClause",
-      },
-      "start": 0,
-      "type": "AwaitStatement",
-    },
-  ],
-  "end": 37,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`await logic > resolved 2`] = `
 "let %%template0 = @html(\\"\\");
 let %fragment0 = @clone(%template0);
 let %block1 = $$root => {
@@ -1074,102 +228,6 @@ let %marker1 = @traverse(%fragment0, [0]);
 `;
 
 exports[`await logic > resolved with local 1`] = `
-{
-  "children": [
-    {
-      "argument": Node {
-        "comments": [],
-        "end": 15,
-        "name": "promise",
-        "path": {
-          "parent": undefined,
-        },
-        "start": 8,
-        "trailingComments": [],
-        "type": "Identifier",
-      },
-      "end": 64,
-      "pending": null,
-      "rejected": null,
-      "resolved": {
-        "body": {
-          "children": [
-            {
-              "decoded": "the number is ",
-              "end": 42,
-              "start": 28,
-              "type": "Text",
-              "value": "the number is ",
-            },
-            {
-              "end": 56,
-              "expression": Node {
-                "comments": [],
-                "computed": false,
-                "end": 55,
-                "object": Node {
-                  "comments": [],
-                  "end": 49,
-                  "name": "result",
-                  "path": {
-                    "parent": [Circular],
-                  },
-                  "start": 43,
-                  "trailingComments": [],
-                  "type": "Identifier",
-                },
-                "optional": false,
-                "path": {
-                  "parent": undefined,
-                },
-                "property": Node {
-                  "comments": [],
-                  "end": 55,
-                  "name": "value",
-                  "path": {
-                    "parent": [Circular],
-                  },
-                  "start": 50,
-                  "trailingComments": [],
-                  "type": "Identifier",
-                },
-                "start": 43,
-                "trailingComments": [],
-                "type": "MemberExpression",
-              },
-              "id": null,
-              "start": 42,
-              "type": "Expression",
-            },
-          ],
-          "end": 56,
-          "start": 28,
-          "type": "Fragment",
-        },
-        "local": Node {
-          "comments": [],
-          "end": 27,
-          "name": "result",
-          "path": {
-            "parent": undefined,
-          },
-          "start": 21,
-          "trailingComments": [],
-          "type": "Identifier",
-        },
-        "type": "AwaitClause",
-      },
-      "start": 0,
-      "type": "AwaitStatement",
-    },
-  ],
-  "end": 64,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`await logic > resolved with local 2`] = `
 "let %%template0 = @html(\\"\\");
 let %fragment0 = @clone(%template0);
 let %block1 = ($$root, result) => {
@@ -1188,47 +246,6 @@ let %marker2 = @traverse(%fragment0, [0]);
 `;
 
 exports[`component > v:self on a custom element 1`] = `
-{
-  "children": [
-    {
-      "attributes": [],
-      "children": [
-        {
-          "attributes": [],
-          "children": [
-            {
-              "decoded": "hello world!",
-              "end": 27,
-              "start": 15,
-              "type": "Text",
-              "value": "hello world!",
-            },
-          ],
-          "component": true,
-          "end": 36,
-          "inline": true,
-          "name": "v:self",
-          "self_closing": false,
-          "start": 7,
-          "type": "Element",
-        },
-      ],
-      "component": true,
-      "end": 44,
-      "inline": false,
-      "name": "x-app",
-      "self_closing": false,
-      "start": 0,
-      "type": "Element",
-    },
-  ],
-  "end": 44,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`component > v:self on a custom element 2`] = `
 "let %%template0 = @html(\\"<x-app><div>hello world!</div></x-app>\\");
 let %fragment0 = @clone(%template0);
 let %child0 = new $$host.constructor();
@@ -1239,59 +256,6 @@ let %marker0 = @traverse(%fragment0, [0, 0]);
 `;
 
 exports[`conditional logic > consequent 1`] = `
-{
-  "children": [
-    {
-      "alternate": null,
-      "consequent": {
-        "children": [
-          {
-            "attributes": [],
-            "children": [
-              {
-                "decoded": "foo!",
-                "end": 18,
-                "start": 14,
-                "type": "Text",
-                "value": "foo!",
-              },
-            ],
-            "component": false,
-            "end": 24,
-            "inline": false,
-            "name": "div",
-            "self_closing": false,
-            "start": 9,
-            "type": "Element",
-          },
-        ],
-        "end": 24,
-        "start": 9,
-        "type": "Fragment",
-      },
-      "end": 29,
-      "start": 0,
-      "test": Node {
-        "comments": [],
-        "end": 8,
-        "name": "foo",
-        "path": {
-          "parent": undefined,
-        },
-        "start": 5,
-        "trailingComments": [],
-        "type": "Identifier",
-      },
-      "type": "ConditionalStatement",
-    },
-  ],
-  "end": 29,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`conditional logic > consequent 2`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
 let %block1 = $$root => {
@@ -1308,84 +272,6 @@ let %marker1 = @traverse(%fragment0, [0]);
 `;
 
 exports[`conditional logic > consequent and alternate 1`] = `
-{
-  "children": [
-    {
-      "alternate": {
-        "children": [
-          {
-            "attributes": [],
-            "children": [
-              {
-                "decoded": "bar!",
-                "end": 40,
-                "start": 36,
-                "type": "Text",
-                "value": "bar!",
-              },
-            ],
-            "component": false,
-            "end": 46,
-            "inline": false,
-            "name": "div",
-            "self_closing": false,
-            "start": 31,
-            "type": "Element",
-          },
-        ],
-        "end": 46,
-        "start": 31,
-        "type": "Fragment",
-      },
-      "consequent": {
-        "children": [
-          {
-            "attributes": [],
-            "children": [
-              {
-                "decoded": "foo!",
-                "end": 18,
-                "start": 14,
-                "type": "Text",
-                "value": "foo!",
-              },
-            ],
-            "component": false,
-            "end": 24,
-            "inline": false,
-            "name": "div",
-            "self_closing": false,
-            "start": 9,
-            "type": "Element",
-          },
-        ],
-        "end": 24,
-        "start": 9,
-        "type": "Fragment",
-      },
-      "end": 51,
-      "start": 0,
-      "test": Node {
-        "comments": [],
-        "end": 8,
-        "name": "foo",
-        "path": {
-          "parent": undefined,
-        },
-        "start": 5,
-        "trailingComments": [],
-        "type": "Identifier",
-      },
-      "type": "ConditionalStatement",
-    },
-  ],
-  "end": 51,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`conditional logic > consequent and alternate 2`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
 let %block1 = $$root => {
@@ -1409,101 +295,6 @@ let %marker2 = @traverse(%fragment0, [0]);
 `;
 
 exports[`conditional logic > consequent and alternate test 1`] = `
-{
-  "children": [
-    {
-      "alternate": {
-        "alternate": null,
-        "consequent": {
-          "children": [
-            {
-              "attributes": [],
-              "children": [
-                {
-                  "decoded": "bar!",
-                  "end": 47,
-                  "start": 43,
-                  "type": "Text",
-                  "value": "bar!",
-                },
-              ],
-              "component": false,
-              "end": 53,
-              "inline": false,
-              "name": "div",
-              "self_closing": false,
-              "start": 38,
-              "type": "Element",
-            },
-          ],
-          "end": 53,
-          "start": 38,
-          "type": "Fragment",
-        },
-        "end": 58,
-        "start": 24,
-        "test": Node {
-          "comments": [],
-          "end": 37,
-          "name": "bar",
-          "path": {
-            "parent": undefined,
-          },
-          "start": 34,
-          "trailingComments": [],
-          "type": "Identifier",
-        },
-        "type": "ConditionalStatement",
-      },
-      "consequent": {
-        "children": [
-          {
-            "attributes": [],
-            "children": [
-              {
-                "decoded": "foo!",
-                "end": 18,
-                "start": 14,
-                "type": "Text",
-                "value": "foo!",
-              },
-            ],
-            "component": false,
-            "end": 24,
-            "inline": false,
-            "name": "div",
-            "self_closing": false,
-            "start": 9,
-            "type": "Element",
-          },
-        ],
-        "end": 24,
-        "start": 9,
-        "type": "Fragment",
-      },
-      "end": 58,
-      "start": 0,
-      "test": Node {
-        "comments": [],
-        "end": 8,
-        "name": "foo",
-        "path": {
-          "parent": undefined,
-        },
-        "start": 5,
-        "trailingComments": [],
-        "type": "Identifier",
-      },
-      "type": "ConditionalStatement",
-    },
-  ],
-  "end": 58,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`conditional logic > consequent and alternate test 2`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
 let %block2 = $$root => {
@@ -1527,102 +318,6 @@ let %marker2 = @traverse(%fragment0, [0]);
 `;
 
 exports[`conditional logic > nested consequent 1`] = `
-{
-  "children": [
-    {
-      "alternate": null,
-      "consequent": {
-        "children": [
-          {
-            "attributes": [],
-            "children": [
-              {
-                "decoded": "foo!",
-                "end": 18,
-                "start": 14,
-                "type": "Text",
-                "value": "foo!",
-              },
-            ],
-            "component": false,
-            "end": 24,
-            "inline": false,
-            "name": "div",
-            "self_closing": false,
-            "start": 9,
-            "type": "Element",
-          },
-          {
-            "alternate": null,
-            "consequent": {
-              "children": [
-                {
-                  "attributes": [],
-                  "children": [
-                    {
-                      "decoded": "bar!",
-                      "end": 42,
-                      "start": 38,
-                      "type": "Text",
-                      "value": "bar!",
-                    },
-                  ],
-                  "component": false,
-                  "end": 48,
-                  "inline": false,
-                  "name": "div",
-                  "self_closing": false,
-                  "start": 33,
-                  "type": "Element",
-                },
-              ],
-              "end": 48,
-              "start": 33,
-              "type": "Fragment",
-            },
-            "end": 53,
-            "start": 24,
-            "test": Node {
-              "comments": [],
-              "end": 32,
-              "name": "bar",
-              "path": {
-                "parent": undefined,
-              },
-              "start": 29,
-              "trailingComments": [],
-              "type": "Identifier",
-            },
-            "type": "ConditionalStatement",
-          },
-        ],
-        "end": 53,
-        "start": 9,
-        "type": "Fragment",
-      },
-      "end": 58,
-      "start": 0,
-      "test": Node {
-        "comments": [],
-        "end": 8,
-        "name": "foo",
-        "path": {
-          "parent": undefined,
-        },
-        "start": 5,
-        "trailingComments": [],
-        "type": "Identifier",
-      },
-      "type": "ConditionalStatement",
-    },
-  ],
-  "end": 58,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`conditional logic > nested consequent 2`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
 let %block2 = $$root => {
@@ -1648,59 +343,6 @@ let %marker3 = @traverse(%fragment0, [0]);
 `;
 
 exports[`expression > component 1`] = `
-{
-  "children": [
-    {
-      "attributes": [],
-      "children": [
-        {
-          "decoded": "hello ",
-          "end": 12,
-          "start": 6,
-          "type": "Text",
-          "value": "hello ",
-        },
-        {
-          "end": 18,
-          "expression": Node {
-            "comments": [],
-            "end": 17,
-            "name": "name",
-            "path": {
-              "parent": undefined,
-            },
-            "start": 13,
-            "trailingComments": [],
-            "type": "Identifier",
-          },
-          "id": null,
-          "start": 12,
-          "type": "Expression",
-        },
-        {
-          "decoded": "!",
-          "end": 19,
-          "start": 18,
-          "type": "Text",
-          "value": "!",
-        },
-      ],
-      "component": true,
-      "end": 26,
-      "inline": true,
-      "name": "Main",
-      "self_closing": false,
-      "start": 0,
-      "type": "Element",
-    },
-  ],
-  "end": 26,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`expression > component 2`] = `
 "let %%template0 = @html(\\"<div>hello <!>!</div>\\");
 let %fragment0 = @clone(%template0);
 let %marker0 = @traverse(%fragment0, [0, 1]);
@@ -1713,59 +355,6 @@ let %marker1 = @traverse(%fragment0, [0]);
 `;
 
 exports[`expression > custom element 1`] = `
-{
-  "children": [
-    {
-      "attributes": [],
-      "children": [
-        {
-          "decoded": "hello ",
-          "end": 13,
-          "start": 7,
-          "type": "Text",
-          "value": "hello ",
-        },
-        {
-          "end": 19,
-          "expression": Node {
-            "comments": [],
-            "end": 18,
-            "name": "name",
-            "path": {
-              "parent": undefined,
-            },
-            "start": 14,
-            "trailingComments": [],
-            "type": "Identifier",
-          },
-          "id": null,
-          "start": 13,
-          "type": "Expression",
-        },
-        {
-          "decoded": "!",
-          "end": 20,
-          "start": 19,
-          "type": "Text",
-          "value": "!",
-        },
-      ],
-      "component": true,
-      "end": 28,
-      "inline": false,
-      "name": "x-app",
-      "self_closing": false,
-      "start": 0,
-      "type": "Element",
-    },
-  ],
-  "end": 28,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`expression > custom element 2`] = `
 "let %%template0 = @html(\\"<x-app>hello <!>!</x-app>\\");
 let %fragment0 = @clone(%template0);
 let %marker0 = @traverse(%fragment0, [0, 1]);
@@ -1775,150 +364,6 @@ let %marker0 = @traverse(%fragment0, [0, 1]);
 `;
 
 exports[`loop logic > iteration 1`] = `
-{
-  "children": [
-    {
-      "alternate": null,
-      "body": {
-        "children": [
-          {
-            "attributes": [],
-            "children": [
-              {
-                "end": 42,
-                "expression": Node {
-                  "comments": [],
-                  "computed": false,
-                  "end": 41,
-                  "object": Node {
-                    "comments": [],
-                    "end": 35,
-                    "name": "person",
-                    "path": {
-                      "parent": [Circular],
-                    },
-                    "start": 29,
-                    "trailingComments": [],
-                    "type": "Identifier",
-                  },
-                  "optional": false,
-                  "path": {
-                    "parent": undefined,
-                  },
-                  "property": Node {
-                    "comments": [],
-                    "end": 41,
-                    "name": "first",
-                    "path": {
-                      "parent": [Circular],
-                    },
-                    "start": 36,
-                    "trailingComments": [],
-                    "type": "Identifier",
-                  },
-                  "start": 29,
-                  "trailingComments": [],
-                  "type": "MemberExpression",
-                },
-                "id": null,
-                "start": 28,
-                "type": "Expression",
-              },
-              {
-                "decoded": " - ",
-                "end": 45,
-                "start": 42,
-                "type": "Text",
-                "value": " - ",
-              },
-              {
-                "end": 58,
-                "expression": Node {
-                  "comments": [],
-                  "computed": false,
-                  "end": 57,
-                  "object": Node {
-                    "comments": [],
-                    "end": 52,
-                    "name": "person",
-                    "path": {
-                      "parent": [Circular],
-                    },
-                    "start": 46,
-                    "trailingComments": [],
-                    "type": "Identifier",
-                  },
-                  "optional": false,
-                  "path": {
-                    "parent": undefined,
-                  },
-                  "property": Node {
-                    "comments": [],
-                    "end": 57,
-                    "name": "last",
-                    "path": {
-                      "parent": [Circular],
-                    },
-                    "start": 53,
-                    "trailingComments": [],
-                    "type": "Identifier",
-                  },
-                  "start": 46,
-                  "trailingComments": [],
-                  "type": "MemberExpression",
-                },
-                "id": null,
-                "start": 45,
-                "type": "Expression",
-              },
-            ],
-            "component": false,
-            "end": 64,
-            "inline": false,
-            "name": "div",
-            "self_closing": false,
-            "start": 23,
-            "type": "Element",
-          },
-        ],
-        "end": 64,
-        "start": 23,
-        "type": "Fragment",
-      },
-      "end": 71,
-      "expression": Node {
-        "comments": [],
-        "end": 22,
-        "name": "array",
-        "path": {
-          "parent": undefined,
-        },
-        "start": 17,
-        "trailingComments": [],
-        "type": "Identifier",
-      },
-      "local": Node {
-        "comments": [],
-        "end": 13,
-        "name": "person",
-        "path": {
-          "parent": undefined,
-        },
-        "start": 7,
-        "trailingComments": [],
-        "type": "Identifier",
-      },
-      "start": 0,
-      "type": "LoopStatement",
-    },
-  ],
-  "end": 71,
-  "start": 0,
-  "type": "Fragment",
-}
-`;
-
-exports[`loop logic > iteration 2`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
 let %block1 = ($$root, person) => {
