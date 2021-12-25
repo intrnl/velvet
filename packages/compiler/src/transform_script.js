@@ -319,7 +319,7 @@ export function transform_script (program) {
 			}
 
 			// transform setters
-			if (node.type === 'AssignmentExpression' && is_reference(node.left, node)) {
+			if (node.type === 'AssignmentExpression' && node.left.type === 'Identifier') {
 				let identifier = node.left;
 				let right = node.right;
 
