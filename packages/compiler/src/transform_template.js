@@ -434,6 +434,8 @@ export function transform_template (template) {
 			}
 
 			if (node.type === 'AwaitStatement') {
+				curr_block.html += '<!>';
+
 				let pending_ident = t.literal(null);
 				let resolved_ident = t.literal(null);
 				let rejected_ident = t.literal(null);
