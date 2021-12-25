@@ -423,11 +423,10 @@ export function transform_template (template) {
 				let marker_ident = '%marker' + (id_m++);
 
 				let indices = t.array_expression([...curr_block.indices, index].map((idx) => t.literal(idx)));
-				let enumerable = t.literal(node.kind === 'enumerable');
 
 				let statements = b`
 					let ${marker_ident} = @traverse(${fragment_ident}, ${indices});
-					@each(${marker_ident}, ${block_ident}, ${expression}, ${enumerable});
+					@each(${marker_ident}, ${block_ident}, ${expression});
 				`;
 
 				(curr_scope || program).push(...statements);

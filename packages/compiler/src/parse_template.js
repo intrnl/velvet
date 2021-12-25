@@ -104,10 +104,7 @@ function _parse_expression (state) {
 			}
 
 			p.eat_whitespace(state, true);
-
-			let enumerable = p.eat(state, 'in');
-			if (!enumerable) p.eat(state, 'of', 'either in or of');
-
+			p.eat(state, 'of', true);
 			p.eat_whitespace(state, true);
 
 			let expression = _read_expression(state);
@@ -115,10 +112,8 @@ function _parse_expression (state) {
 			p.eat_whitespace(state);
 			p.eat(state, '}', 'closing #each bracket');
 
-			let kind = enumerable ? 'enumerable' : 'iterable';
-
 			let body = t.fragment();
-			let node = t.loop_statement(kind, expression, local, body);
+			let node = t.loop_statement(expression, local, body);
 			node.start = start;
 
 			p.current(state).children.push(node);

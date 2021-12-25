@@ -36,7 +36,7 @@ export function show (marker, expression) {
 	});
 }
 
-export function each (marker, block, expression, enumeration) {
+export function each (marker, block, expression) {
 	// we can't make the scope instances ahead of time, a cleanup hook is required
 	// to clean up these detached scopes.
 
@@ -46,10 +46,6 @@ export function each (marker, block, expression, enumeration) {
 	effect(() => {
 		let items = expression();
 		let index = 0;
-
-		if (enumeration) {
-			items = Object.keys(expression);
-		}
 
 		for (; index < items.length; index++) {
 			if (parts[index]) {
