@@ -60,7 +60,7 @@ function reattach_comments (ast, comments, source) {
 
 			/** @type {import('estree').Comment} */
 			let comment;
-			let leading_comments = node.leadingComments ||= [];
+			let leading_comments = node.comments ||= [];
 
 			while ((comment = comments[0]) && comment.start < node.start) {
 				leading_comments.push(comments.shift());
