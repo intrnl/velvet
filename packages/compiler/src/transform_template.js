@@ -416,18 +416,23 @@ export function transform_template (template) {
 				let scope = fragment_to_scope.get(node.body);
 
 				let local = node.local;
+				let local_index = node.index;
 				let expression = x`() => ${node.expression}`;
 
-				let block_ident = '%block' + blocks.indexOf(block);
+				let block_ident = t.identifier('%block' + blocks.indexOf(block));
 				let statement = t.block_statement(scope);
 
 				local.velvet = { ref: true };
 
-				let declarations = b`
-					let ${block_ident} = ($$root, ${local}) => ${statement};
-				`;
+				let declaration = t.variable_declaration('let', [
+					t.variable_declarator(block_ident, t.arrow_function_expression([
+						t.identifier('$$root'),
+						local,
+						local_index,
+					], statement)),
+				]);
 
-				program.push(...declarations);
+				program.push(declaration);
 
 				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
 				let marker_ident = '%marker' + (id_m++);

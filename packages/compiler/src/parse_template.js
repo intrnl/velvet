@@ -97,9 +97,34 @@ function _parse_expression (state) {
 		if (p.eat(state, 'each')) {
 			p.eat_whitespace(state, true);
 
-			let local = p.eat_identifier(state);
+			let local = _read_expression(state);
+			let local_index = null;
 
-			if (!local) {
+			if (local.type === 'Identifier') {
+				// do nothing
+			}
+			else if (local.type === 'SequenceExpression') {
+				let expressions = local.expressions;
+
+				for (let index = 0; index < expressions.length; index++) {
+					let expression = expressions[index];
+
+					if (index === 0) {
+						local = expression;
+					}
+					else if (index === 1) {
+						local_index = expression;
+					}
+					else {
+						throw p.error(state, 'there can only be value and index', expression.start);
+					}
+
+					if (expression.type !== 'Identifier') {
+						throw p.error(state, 'expected an identifier', expression.start);
+					}
+				}
+			}
+			else {
 				throw p.error(state, 'expected an identifier');
 			}
 
@@ -113,7 +138,7 @@ function _parse_expression (state) {
 			p.eat(state, '}', 'closing #each bracket');
 
 			let body = t.fragment();
-			let node = t.loop_statement(expression, local, body);
+			let node = t.loop_statement(expression, local, local_index, body);
 			node.start = start;
 
 			p.current(state).children.push(node);
@@ -589,6 +614,7 @@ function _parse_element (state) {
 
 /**
  * @param {p.ParserState} state
+ * @returns {import('estree').Expression}
  */
 function _read_expression (state) {
 	try {

@@ -212,24 +212,26 @@ export function conditional_statement (test, consequent, alternate = null) {
  * @property {'LoopStatement'} type
  * @property {'iterable' | 'enumerable'} kind
  * @property {import('estree').Identifier} local
+ * @property {import('estree').Identifier} [index]
  * @property {import('estree').Expression} expression
  * @property {Fragment} body
- * @property {Fragment} [alternate]
  * @property {number} [start]
  * @property {number} [end]
  */
 
 /**
  * @param {import('estree').Expression} expression
- * @param {import('estree').Pattern} local
+ * @param {import('estree').Identifier} local
+ * @param {import('estree').Identifier} index
  * @param {Fragment} body
  * @returns {LoopStatement}
  */
-export function loop_statement (expression, local, body) {
+export function loop_statement (expression, local, index, body) {
 	return {
 		type: 'LoopStatement',
-		expression,
 		local,
+		index,
+		expression,
 		body,
 	};
 }

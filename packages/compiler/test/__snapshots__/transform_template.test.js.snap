@@ -409,6 +409,26 @@ $: console.log([foo, bar, baz])
 "
 `;
 
+exports[`loop logic > index 1`] = `
+"let %%template0 = @html(\\"<!>\\");
+let %fragment0 = @clone(%template0);
+let %block1 = ($$root, person, index) => {
+  let %%template1 = @html(\\"<div><!> - <!></div><!>\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [0, 0]);
+  @text(%marker0, () => index);
+  let %marker1 = @traverse(%fragment1, [0, 2]);
+  @text(%marker1, () => person.name);
+  let %marker2 = @traverse(%fragment1, [1]);
+  @after(%fragment1, $$root);
+  return %marker2;
+};
+let %marker3 = @traverse(%fragment0, [0]);
+@each(%marker3, %block1, () => array);
+@append(%fragment0, $$root);
+"
+`;
+
 exports[`loop logic > iteration 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);

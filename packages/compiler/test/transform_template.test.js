@@ -195,6 +195,15 @@ describe('loop logic', () => {
 
 		expect(print(program)).toMatchSnapshot();
 	});
+
+	it('index', () => {
+		let template = `{#each person, index of array}<div>{index} - {person.name}</div>{/each}`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
 });
 
 describe('await logic', () => {
