@@ -129,11 +129,12 @@ function _parse_expression (state) {
 			p.eat_whitespace(state);
 
 			let to_resolve = p.eat(state, 'then');
-			let resolve_has_whitespace = to_resolve && p.eat_whitespace(state);
+			let to_reject = !to_resolve && p.eat(state, 'catch');
+			p.eat_whitespace(state);
 
 			let local = null;
 
-			if (resolve_has_whitespace) {
+			if (to_resolve || to_reject || p.match(state, '}')) {
 				local = _read_expression(state);
 
 				if (!_is_identifier(local)) {
@@ -148,7 +149,7 @@ function _parse_expression (state) {
 			let block = t.fragment();
 			let clause = t.await_clause(local, block);
 
-			let node = t.await_statement(argument, !to_resolve ? block : null, to_resolve ? clause : null);
+			let node = t.await_statement(argument, !to_resolve ? block : null, to_resolve ? clause : null, to_reject ? clause : null);
 			node.start = start;
 
 			p.current(state).children.push(node);
