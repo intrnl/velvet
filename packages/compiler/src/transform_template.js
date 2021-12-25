@@ -434,7 +434,86 @@ export function transform_template (template) {
 			}
 
 			if (node.type === 'AwaitStatement') {
+				let pending_ident = t.literal(null);
+				let resolved_ident = t.literal(null);
+				let rejected_ident = t.literal(null);
 
+				if (node.pending) {
+					let fragment = node.pending;
+					let block = fragment_to_block.get(fragment);
+					let scope = fragment_to_scope.get(fragment);
+
+					pending_ident = t.identifier('%block' + blocks.indexOf(block));
+					let statement = t.block_statement(scope);
+
+					let decl = t.variable_declaration('let', [
+						t.variable_declarator(pending_ident, t.arrow_function_expression([
+							t.identifier('$$root'),
+						], statement)),
+					]);
+
+					program.push(decl);
+				}
+
+				if (node.resolved) {
+					let local = node.resolved.local;
+					let fragment = node.resolved.body;
+
+					let block = fragment_to_block.get(fragment);
+					let scope = fragment_to_scope.get(fragment);
+
+					resolved_ident = t.identifier('%block' + blocks.indexOf(block));
+					let statement = t.block_statement(scope);
+
+					if (local) {
+						local.velvet = { ref: true };
+					}
+
+					let decl = t.variable_declaration('let', [
+						t.variable_declarator(resolved_ident, t.arrow_function_expression([
+							t.identifier('$$root'),
+							local,
+						], statement)),
+					]);
+
+					program.push(decl);
+				}
+
+				if (node.rejected) {
+					let local = node.rejected.local;
+					let fragment = node.rejected.body;
+
+					let block = fragment_to_block.get(fragment);
+					let scope = fragment_to_scope.get(fragment);
+
+					rejected_ident = t.identifier('%block' + blocks.indexOf(block));
+					let statement = t.block_statement(scope);
+
+					if (local) {
+						local.velvet = { ref: true };
+					}
+
+					let decl = t.variable_declaration('let', [
+						t.variable_declarator(rejected_ident, t.arrow_function_expression([
+							t.identifier('$$root'),
+							local,
+						], statement)),
+					]);
+
+					program.push(decl);
+				}
+
+				let argument = node.argument;
+				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
+				let marker_ident = '%marker' + (id_m++);
+				let indices = t.array_expression([...curr_block.indices, index].map((idx) => t.literal(idx)));
+
+				let statements = b`
+					let ${marker_ident} = @traverse(${fragment_ident}, ${indices});
+					@promise(${marker_ident}, ${pending_ident}, ${resolved_ident}, ${rejected_ident}, ${argument});
+				`;
+
+				(curr_scope || program).push(...statements);
 				return;
 			}
 		},

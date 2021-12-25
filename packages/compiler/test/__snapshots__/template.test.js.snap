@@ -357,6 +357,836 @@ let %fragment0 = @clone(%template0);
 "
 `;
 
+exports[`await logic > pending 1`] = `
+{
+  "children": [
+    {
+      "argument": Node {
+        "comments": [],
+        "end": 15,
+        "name": "promise",
+        "path": {
+          "parent": undefined,
+        },
+        "start": 8,
+        "trailingComments": [],
+        "type": "Identifier",
+      },
+      "end": 31,
+      "pending": {
+        "children": [
+          {
+            "decoded": "pending",
+            "end": 23,
+            "start": 16,
+            "type": "Text",
+            "value": "pending",
+          },
+        ],
+        "end": 23,
+        "start": 16,
+        "type": "Fragment",
+      },
+      "rejected": null,
+      "resolved": null,
+      "start": 0,
+      "type": "AwaitStatement",
+    },
+  ],
+  "end": 31,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`await logic > pending 2`] = `
+"let %%template0 = @html(\\"\\");
+let %fragment0 = @clone(%template0);
+let %block1 = $$root => {
+  let %%template1 = @html(\\"pending<!>\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [1]);
+  @after(%fragment1, $$root);
+  return %marker0;
+};
+let %marker1 = @traverse(%fragment0, [0]);
+@promise(%marker1, %block1, null, null, promise);
+@append(%fragment0, $$root);
+"
+`;
+
+exports[`await logic > pending and rejected 1`] = `
+{
+  "children": [
+    {
+      "argument": Node {
+        "comments": [],
+        "end": 15,
+        "name": "promise",
+        "path": {
+          "parent": undefined,
+        },
+        "start": 8,
+        "trailingComments": [],
+        "type": "Identifier",
+      },
+      "end": 47,
+      "pending": {
+        "children": [
+          {
+            "decoded": "pending",
+            "end": 23,
+            "start": 16,
+            "type": "Text",
+            "value": "pending",
+          },
+        ],
+        "type": "Fragment",
+      },
+      "rejected": {
+        "body": {
+          "children": [
+            {
+              "decoded": "rejected",
+              "end": 39,
+              "start": 31,
+              "type": "Text",
+              "value": "rejected",
+            },
+          ],
+          "end": 39,
+          "start": 31,
+          "type": "Fragment",
+        },
+        "local": null,
+        "type": "AwaitClause",
+      },
+      "resolved": null,
+      "start": 0,
+      "type": "AwaitStatement",
+    },
+  ],
+  "end": 47,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`await logic > pending and rejected 2`] = `
+"let %%template0 = @html(\\"\\");
+let %fragment0 = @clone(%template0);
+let %block1 = $$root => {
+  let %%template1 = @html(\\"pending<!>\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [1]);
+  @after(%fragment1, $$root);
+  return %marker0;
+};
+let %block2 = $$root => {
+  let %%template2 = @html(\\"rejected<!>\\");
+  let %fragment2 = @clone(%template2);
+  let %marker1 = @traverse(%fragment2, [1]);
+  @after(%fragment2, $$root);
+  return %marker1;
+};
+let %marker2 = @traverse(%fragment0, [0]);
+@promise(%marker2, %block1, null, %block2, promise);
+@append(%fragment0, $$root);
+"
+`;
+
+exports[`await logic > pending and rejected with local 1`] = `
+{
+  "children": [
+    {
+      "argument": Node {
+        "comments": [],
+        "end": 15,
+        "name": "promise",
+        "path": {
+          "parent": undefined,
+        },
+        "start": 8,
+        "trailingComments": [],
+        "type": "Identifier",
+      },
+      "end": 79,
+      "pending": {
+        "children": [
+          {
+            "decoded": "pending",
+            "end": 23,
+            "start": 16,
+            "type": "Text",
+            "value": "pending",
+          },
+        ],
+        "type": "Fragment",
+      },
+      "rejected": {
+        "body": {
+          "children": [
+            {
+              "decoded": "uh, oh! ",
+              "end": 45,
+              "start": 37,
+              "type": "Text",
+              "value": "uh, oh! ",
+            },
+            {
+              "attributes": [],
+              "children": [
+                {
+                  "end": 65,
+                  "expression": Node {
+                    "comments": [],
+                    "computed": false,
+                    "end": 64,
+                    "object": Node {
+                      "comments": [],
+                      "end": 56,
+                      "name": "error",
+                      "path": {
+                        "parent": [Circular],
+                      },
+                      "start": 51,
+                      "trailingComments": [],
+                      "type": "Identifier",
+                    },
+                    "optional": false,
+                    "path": {
+                      "parent": undefined,
+                    },
+                    "property": Node {
+                      "comments": [],
+                      "end": 64,
+                      "name": "message",
+                      "path": {
+                        "parent": [Circular],
+                      },
+                      "start": 57,
+                      "trailingComments": [],
+                      "type": "Identifier",
+                    },
+                    "start": 51,
+                    "trailingComments": [],
+                    "type": "MemberExpression",
+                  },
+                  "id": null,
+                  "start": 50,
+                  "type": "Expression",
+                },
+              ],
+              "component": false,
+              "end": 71,
+              "inline": false,
+              "name": "pre",
+              "self_closing": false,
+              "start": 45,
+              "type": "Element",
+            },
+          ],
+          "end": 71,
+          "start": 37,
+          "type": "Fragment",
+        },
+        "local": Node {
+          "comments": [],
+          "end": 36,
+          "name": "error",
+          "path": {
+            "parent": undefined,
+          },
+          "start": 31,
+          "trailingComments": [],
+          "type": "Identifier",
+        },
+        "type": "AwaitClause",
+      },
+      "resolved": null,
+      "start": 0,
+      "type": "AwaitStatement",
+    },
+  ],
+  "end": 79,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`await logic > pending and rejected with local 2`] = `
+"let %%template0 = @html(\\"\\");
+let %fragment0 = @clone(%template0);
+let %block1 = $$root => {
+  let %%template1 = @html(\\"pending<!>\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [1]);
+  @after(%fragment1, $$root);
+  return %marker0;
+};
+let %block2 = ($$root, error) => {
+  let %%template2 = @html(\\"uh, oh! <pre><!></pre><!>\\");
+  let %fragment2 = @clone(%template2);
+  let %marker1 = @traverse(%fragment2, [1, 0]);
+  @text(%marker1, () => error.message);
+  let %marker2 = @traverse(%fragment2, [2]);
+  @after(%fragment2, $$root);
+  return %marker2;
+};
+let %marker3 = @traverse(%fragment0, [0]);
+@promise(%marker3, %block1, null, %block2, promise);
+@append(%fragment0, $$root);
+"
+`;
+
+exports[`await logic > pending and resolved 1`] = `
+{
+  "children": [
+    {
+      "argument": Node {
+        "comments": [],
+        "end": 15,
+        "name": "promise",
+        "path": {
+          "parent": undefined,
+        },
+        "start": 8,
+        "trailingComments": [],
+        "type": "Identifier",
+      },
+      "end": 46,
+      "pending": {
+        "children": [
+          {
+            "decoded": "pending",
+            "end": 23,
+            "start": 16,
+            "type": "Text",
+            "value": "pending",
+          },
+        ],
+        "type": "Fragment",
+      },
+      "rejected": null,
+      "resolved": {
+        "body": {
+          "children": [
+            {
+              "decoded": "resolved",
+              "end": 38,
+              "start": 30,
+              "type": "Text",
+              "value": "resolved",
+            },
+          ],
+          "end": 38,
+          "start": 30,
+          "type": "Fragment",
+        },
+        "local": null,
+        "type": "AwaitClause",
+      },
+      "start": 0,
+      "type": "AwaitStatement",
+    },
+  ],
+  "end": 46,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`await logic > pending and resolved 2`] = `
+"let %%template0 = @html(\\"\\");
+let %fragment0 = @clone(%template0);
+let %block1 = $$root => {
+  let %%template1 = @html(\\"pending<!>\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [1]);
+  @after(%fragment1, $$root);
+  return %marker0;
+};
+let %block2 = $$root => {
+  let %%template2 = @html(\\"resolved<!>\\");
+  let %fragment2 = @clone(%template2);
+  let %marker1 = @traverse(%fragment2, [1]);
+  @after(%fragment2, $$root);
+  return %marker1;
+};
+let %marker2 = @traverse(%fragment0, [0]);
+@promise(%marker2, %block1, %block2, null, promise);
+@append(%fragment0, $$root);
+"
+`;
+
+exports[`await logic > pending and resolved with local 1`] = `
+{
+  "children": [
+    {
+      "argument": Node {
+        "comments": [],
+        "end": 15,
+        "name": "promise",
+        "path": {
+          "parent": undefined,
+        },
+        "start": 8,
+        "trailingComments": [],
+        "type": "Identifier",
+      },
+      "end": 57,
+      "pending": {
+        "children": [
+          {
+            "decoded": "pending",
+            "end": 23,
+            "start": 16,
+            "type": "Text",
+            "value": "pending",
+          },
+        ],
+        "type": "Fragment",
+      },
+      "rejected": null,
+      "resolved": {
+        "body": {
+          "children": [
+            {
+              "decoded": "hello, ",
+              "end": 42,
+              "start": 35,
+              "type": "Text",
+              "value": "hello, ",
+            },
+            {
+              "end": 48,
+              "expression": Node {
+                "comments": [],
+                "end": 47,
+                "name": "name",
+                "path": {
+                  "parent": undefined,
+                },
+                "start": 43,
+                "trailingComments": [],
+                "type": "Identifier",
+              },
+              "id": null,
+              "start": 42,
+              "type": "Expression",
+            },
+            {
+              "decoded": "!",
+              "end": 49,
+              "start": 48,
+              "type": "Text",
+              "value": "!",
+            },
+          ],
+          "end": 49,
+          "start": 35,
+          "type": "Fragment",
+        },
+        "local": Node {
+          "comments": [],
+          "end": 34,
+          "name": "name",
+          "path": {
+            "parent": undefined,
+          },
+          "start": 30,
+          "trailingComments": [],
+          "type": "Identifier",
+        },
+        "type": "AwaitClause",
+      },
+      "start": 0,
+      "type": "AwaitStatement",
+    },
+  ],
+  "end": 57,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`await logic > pending and resolved with local 2`] = `
+"let %%template0 = @html(\\"\\");
+let %fragment0 = @clone(%template0);
+let %block1 = $$root => {
+  let %%template1 = @html(\\"pending<!>\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [1]);
+  @after(%fragment1, $$root);
+  return %marker0;
+};
+let %block2 = ($$root, name) => {
+  let %%template2 = @html(\\"hello, <!>!<!>\\");
+  let %fragment2 = @clone(%template2);
+  let %marker1 = @traverse(%fragment2, [1]);
+  @text(%marker1, () => name);
+  let %marker2 = @traverse(%fragment2, [3]);
+  @after(%fragment2, $$root);
+  return %marker2;
+};
+let %marker3 = @traverse(%fragment0, [0]);
+@promise(%marker3, %block1, %block2, null, promise);
+@append(%fragment0, $$root);
+"
+`;
+
+exports[`await logic > rejected 1`] = `
+{
+  "children": [
+    {
+      "argument": Node {
+        "comments": [],
+        "end": 15,
+        "name": "promise",
+        "path": {
+          "parent": undefined,
+        },
+        "start": 8,
+        "trailingComments": [],
+        "type": "Identifier",
+      },
+      "end": 38,
+      "pending": null,
+      "rejected": {
+        "body": {
+          "children": [
+            {
+              "decoded": "rejected",
+              "end": 30,
+              "start": 22,
+              "type": "Text",
+              "value": "rejected",
+            },
+          ],
+          "end": 30,
+          "start": 22,
+          "type": "Fragment",
+        },
+        "local": null,
+        "type": "AwaitClause",
+      },
+      "resolved": null,
+      "start": 0,
+      "type": "AwaitStatement",
+    },
+  ],
+  "end": 38,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`await logic > rejected 2`] = `
+"let %%template0 = @html(\\"\\");
+let %fragment0 = @clone(%template0);
+let %block1 = $$root => {
+  let %%template1 = @html(\\"rejected<!>\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [1]);
+  @after(%fragment1, $$root);
+  return %marker0;
+};
+let %marker1 = @traverse(%fragment0, [0]);
+@promise(%marker1, null, null, %block1, promise);
+@append(%fragment0, $$root);
+"
+`;
+
+exports[`await logic > rejected with local 1`] = `
+{
+  "children": [
+    {
+      "argument": Node {
+        "comments": [],
+        "end": 15,
+        "name": "promise",
+        "path": {
+          "parent": undefined,
+        },
+        "start": 8,
+        "trailingComments": [],
+        "type": "Identifier",
+      },
+      "end": 58,
+      "pending": null,
+      "rejected": {
+        "body": {
+          "children": [
+            {
+              "decoded": "error: ",
+              "end": 35,
+              "start": 28,
+              "type": "Text",
+              "value": "error: ",
+            },
+            {
+              "end": 50,
+              "expression": Node {
+                "comments": [],
+                "computed": false,
+                "end": 49,
+                "object": Node {
+                  "comments": [],
+                  "end": 41,
+                  "name": "error",
+                  "path": {
+                    "parent": [Circular],
+                  },
+                  "start": 36,
+                  "trailingComments": [],
+                  "type": "Identifier",
+                },
+                "optional": false,
+                "path": {
+                  "parent": undefined,
+                },
+                "property": Node {
+                  "comments": [],
+                  "end": 49,
+                  "name": "message",
+                  "path": {
+                    "parent": [Circular],
+                  },
+                  "start": 42,
+                  "trailingComments": [],
+                  "type": "Identifier",
+                },
+                "start": 36,
+                "trailingComments": [],
+                "type": "MemberExpression",
+              },
+              "id": null,
+              "start": 35,
+              "type": "Expression",
+            },
+          ],
+          "end": 50,
+          "start": 28,
+          "type": "Fragment",
+        },
+        "local": Node {
+          "comments": [],
+          "end": 27,
+          "name": "error",
+          "path": {
+            "parent": undefined,
+          },
+          "start": 22,
+          "trailingComments": [],
+          "type": "Identifier",
+        },
+        "type": "AwaitClause",
+      },
+      "resolved": null,
+      "start": 0,
+      "type": "AwaitStatement",
+    },
+  ],
+  "end": 58,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`await logic > rejected with local 2`] = `
+"let %%template0 = @html(\\"\\");
+let %fragment0 = @clone(%template0);
+let %block1 = ($$root, error) => {
+  let %%template1 = @html(\\"error: <!><!>\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [1]);
+  @text(%marker0, () => error.message);
+  let %marker1 = @traverse(%fragment1, [2]);
+  @after(%fragment1, $$root);
+  return %marker1;
+};
+let %marker2 = @traverse(%fragment0, [0]);
+@promise(%marker2, null, null, %block1, promise);
+@append(%fragment0, $$root);
+"
+`;
+
+exports[`await logic > resolved 1`] = `
+{
+  "children": [
+    {
+      "argument": Node {
+        "comments": [],
+        "end": 15,
+        "name": "promise",
+        "path": {
+          "parent": undefined,
+        },
+        "start": 8,
+        "trailingComments": [],
+        "type": "Identifier",
+      },
+      "end": 37,
+      "pending": null,
+      "rejected": null,
+      "resolved": {
+        "body": {
+          "children": [
+            {
+              "decoded": "resolved",
+              "end": 29,
+              "start": 21,
+              "type": "Text",
+              "value": "resolved",
+            },
+          ],
+          "end": 29,
+          "start": 21,
+          "type": "Fragment",
+        },
+        "local": null,
+        "type": "AwaitClause",
+      },
+      "start": 0,
+      "type": "AwaitStatement",
+    },
+  ],
+  "end": 37,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`await logic > resolved 2`] = `
+"let %%template0 = @html(\\"\\");
+let %fragment0 = @clone(%template0);
+let %block1 = $$root => {
+  let %%template1 = @html(\\"resolved<!>\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [1]);
+  @after(%fragment1, $$root);
+  return %marker0;
+};
+let %marker1 = @traverse(%fragment0, [0]);
+@promise(%marker1, null, %block1, null, promise);
+@append(%fragment0, $$root);
+"
+`;
+
+exports[`await logic > resolved with local 1`] = `
+{
+  "children": [
+    {
+      "argument": Node {
+        "comments": [],
+        "end": 15,
+        "name": "promise",
+        "path": {
+          "parent": undefined,
+        },
+        "start": 8,
+        "trailingComments": [],
+        "type": "Identifier",
+      },
+      "end": 64,
+      "pending": null,
+      "rejected": null,
+      "resolved": {
+        "body": {
+          "children": [
+            {
+              "decoded": "the number is ",
+              "end": 42,
+              "start": 28,
+              "type": "Text",
+              "value": "the number is ",
+            },
+            {
+              "end": 56,
+              "expression": Node {
+                "comments": [],
+                "computed": false,
+                "end": 55,
+                "object": Node {
+                  "comments": [],
+                  "end": 49,
+                  "name": "result",
+                  "path": {
+                    "parent": [Circular],
+                  },
+                  "start": 43,
+                  "trailingComments": [],
+                  "type": "Identifier",
+                },
+                "optional": false,
+                "path": {
+                  "parent": undefined,
+                },
+                "property": Node {
+                  "comments": [],
+                  "end": 55,
+                  "name": "value",
+                  "path": {
+                    "parent": [Circular],
+                  },
+                  "start": 50,
+                  "trailingComments": [],
+                  "type": "Identifier",
+                },
+                "start": 43,
+                "trailingComments": [],
+                "type": "MemberExpression",
+              },
+              "id": null,
+              "start": 42,
+              "type": "Expression",
+            },
+          ],
+          "end": 56,
+          "start": 28,
+          "type": "Fragment",
+        },
+        "local": Node {
+          "comments": [],
+          "end": 27,
+          "name": "result",
+          "path": {
+            "parent": undefined,
+          },
+          "start": 21,
+          "trailingComments": [],
+          "type": "Identifier",
+        },
+        "type": "AwaitClause",
+      },
+      "start": 0,
+      "type": "AwaitStatement",
+    },
+  ],
+  "end": 64,
+  "start": 0,
+  "type": "Fragment",
+}
+`;
+
+exports[`await logic > resolved with local 2`] = `
+"let %%template0 = @html(\\"\\");
+let %fragment0 = @clone(%template0);
+let %block1 = ($$root, result) => {
+  let %%template1 = @html(\\"the number is <!><!>\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [1]);
+  @text(%marker0, () => result.value);
+  let %marker1 = @traverse(%fragment1, [2]);
+  @after(%fragment1, $$root);
+  return %marker1;
+};
+let %marker2 = @traverse(%fragment0, [0]);
+@promise(%marker2, null, %block1, null, promise);
+@append(%fragment0, $$root);
+"
+`;
+
 exports[`component > v:self on a custom element 1`] = `
 {
   "children": [

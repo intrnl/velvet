@@ -190,3 +190,104 @@ describe('loop logic', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 });
+
+describe('await logic', () => {
+	it('pending', () => {
+		let template = `{#await promise}pending{/await}`;
+
+		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('resolved', () => {
+		let template = `{#await promise then}resolved{/await}`;
+
+		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('resolved with local', () => {
+		let template = `{#await promise then result}the number is {result.value}{/await}`;
+
+		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('rejected', () => {
+		let template = `{#await promise catch}rejected{/await}`;
+
+		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('rejected with local', () => {
+		let template = `{#await promise catch error}error: {error.message}{/await}`;
+
+		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('pending and resolved', () => {
+		let template = `{#await promise}pending{:then}resolved{/await}`;
+
+		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('pending and resolved with local', () => {
+		let template = `{#await promise}pending{:then name}hello, {name}!{/await}`;
+
+		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('pending and rejected', () => {
+		let template = `{#await promise}pending{:catch}rejected{/await}`;
+
+		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('pending and rejected with local', () => {
+		let template = `{#await promise}pending{:catch error}uh, oh! <pre>{error.message}</pre>{/await}`;
+
+		let fragment = parse_template(template);
+		expect(fragment).toMatchSnapshot();
+
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+});
