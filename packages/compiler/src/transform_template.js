@@ -117,11 +117,21 @@ export function transform_template (template) {
 					let id_name = id.name;
 
 					if (id_name === 'log') {
-						let statements = b`
-							$: console.log(${expression});
-						`;
+						let params;
 
-						(curr_scope || program).push(...statements);
+						if (expression.type === 'SequenceExpression') {
+							params = expression.expressions;
+						}
+						else {
+							params = [expression];
+						}
+
+						let statement = t.labeled_statement(t.identifier('$'), t.call_expression(
+							t.member_expression(t.identifier('console'), t.identifier('log')),
+							params
+						));
+
+						(curr_scope || program).push(statement);
 						return;
 					}
 					else {

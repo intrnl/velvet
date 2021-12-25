@@ -363,6 +363,52 @@ let %marker0 = @traverse(%fragment0, [0, 1]);
 "
 `;
 
+exports[`log expression > in conditional 1`] = `
+"let %%template0 = @html(\\"<!>\\");
+let %fragment0 = @clone(%template0);
+let %block1 = $$root => {
+  let %%template1 = @html(\\"<!>\\");
+  let %fragment1 = @clone(%template1);
+  $: console.log($$root, foo)
+  let %marker0 = @traverse(%fragment1, [1]);
+  @after(%fragment1, $$root);
+  return %marker0;
+};
+let %marker1 = @traverse(%fragment0, [0]);
+@show(%marker1, () => foo ? %block1 : null);
+@append(%fragment0, $$root);
+"
+`;
+
+exports[`log expression > multiple 1`] = `
+"let %%template0 = @html(\\"\\");
+let %fragment0 = @clone(%template0);
+$: console.log(foo, bar, baz)
+@append(%fragment0, $$root);
+"
+`;
+
+exports[`log expression > single 1`] = `
+"let %%template0 = @html(\\"\\");
+let %fragment0 = @clone(%template0);
+$: console.log(foo)
+@append(%fragment0, $$root);
+"
+`;
+
+exports[`log expression > values 1`] = `
+"let %%template0 = @html(\\" \\");
+let %fragment0 = @clone(%template0);
+$: console.log('test', {
+  foo,
+  baz,
+  baz
+})
+$: console.log([foo, bar, baz])
+@append(%fragment0, $$root);
+"
+`;
+
 exports[`loop logic > iteration 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);

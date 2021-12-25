@@ -110,6 +110,44 @@ describe('expression', () => {
 	});
 });
 
+describe('log expression', () => {
+	it('single', () => {
+		let template = `{@log foo}`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('multiple', () => {
+		let template = `{@log foo, bar, baz}`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('values', () => {
+		let template = `{@log 'test', { foo, baz, baz }} {@log [foo, bar, baz]}`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('in conditional', () => {
+		let template = `{#if foo}{@log $$root, foo}{/if}`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+});
+
 describe('conditional logic', () => {
 	it('consequent', () => {
 		let template = `{#if foo}<div>foo!</div>{/if}`;
