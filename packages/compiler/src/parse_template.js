@@ -253,25 +253,7 @@ function _parse_expression (state) {
 			return;
 		}
 
-		if (statement.type === 'LoopStatement') {
-			if (statement.alternate) {
-				throw p.error(state, 'only one :else can be defined');
-			}
-
-			p.eat_whitespace(state);
-
-			let block = t.fragment();
-
-			statement.alternate = block;
-
-			p.pop(state, 1);
-			p.push(state, block);
-
-			p.eat(state, '}', 'closing :else bracket');
-			return;
-		}
-
-		throw p.error(state, 'unexpected usage of :else outside of #if and #each');
+		throw p.error(state, 'unexpected usage of :else outside of #if');
 	}
 
 	if (p.eat(state, ':then')) {

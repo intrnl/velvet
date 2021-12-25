@@ -223,16 +223,14 @@ export function conditional_statement (test, consequent, alternate = null) {
  * @param {import('estree').Expression} expression
  * @param {import('estree').Pattern} local
  * @param {Fragment} body
- * @param {Fragment} [alternate]
  * @returns {LoopStatement}
  */
-export function loop_statement (expression, local, body, alternate = null) {
+export function loop_statement (expression, local, body) {
 	return {
 		type: 'LoopStatement',
 		expression,
 		local,
 		body,
-		alternate,
 	};
 }
 
