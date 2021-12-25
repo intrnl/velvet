@@ -31,6 +31,13 @@ let %fragment0 = @clone(%template0);
 "
 `;
 
+exports[`attribute > static unquoted 1`] = `
+"let %%template0 = @html(\\"<div class=\\\\\\"foo\\\\\\"></div>\\");
+let %fragment0 = @clone(%template0);
+@append(%fragment0, $$root);
+"
+`;
+
 exports[`component > v:self on a custom element 1`] = `
 "let %%template0 = @html(\\"<x-app><div>hello world!</div></x-app>\\");
 let %fragment0 = @clone(%template0);

@@ -15,6 +15,15 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
+	it('static unquoted', () => {
+		let template = `<div class=foo></div>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
 	it('dynamic', () => {
 		let template = `<div class={className}></div>`;
 

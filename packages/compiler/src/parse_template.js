@@ -528,6 +528,7 @@ function _parse_element (state) {
 			if (p.eat_pattern(state, /['"]/g)) {
 				throw p.error(state, 'expected attribute assignment');
 			}
+
 			if (p.eat(state, '=')) {
 				let value_start = state.index;
 				let quotation = p.eat_pattern(state, /['"]/g);
@@ -558,7 +559,13 @@ function _parse_element (state) {
 					attr_value = node;
 				}
 				else {
-					throw p.error(state, 'expected quotation mark or an expression');
+					let data = p.eat_until(state, /[\s=\/>'"]/g);
+
+					let node = t.text(data);
+					node.start = value_start;
+					node.end = state.index;
+
+					attr_value = node;
 				}
 
 				end = state.index;
