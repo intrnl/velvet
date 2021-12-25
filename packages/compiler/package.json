@@ -8,8 +8,7 @@
 		"acorn": "^8.6.0",
 		"astring": "^1.8.1",
 		"css-tree": "^2.0.4",
-		"magic-string": "^0.25.7",
-		"periscopic": "^3.0.4"
+		"magic-string": "^0.25.7"
 	},
 	"devDependencies": {
 		"@types/estree": "^0.0.50",

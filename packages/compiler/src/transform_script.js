@@ -1,28 +1,15 @@
-import { analyze } from 'periscopic';
-
 import { walk } from './utils/walker.js';
+import { analyze, is_reference } from './utils/js_utils.js';
 import * as t from './utils/js_types.js';
 
 
-/**
- * @param {import('estree').Program} program
- */
 export function transform_script (program) {
 	let { map, scope: root_scope } = analyze(program);
+	let curr_scope = root_scope;
 
-	let current_scope = root_scope;
-
-	let mutables = new Set();
-
-	let refs = new Set();
-	let computeds = new Set();
 	let props = new Map();
 	let props_idx = [];
-	let stores = new Set();
 
-	let _is_transformed = new WeakSet();
-
-	// - create node paths
 	// - throw on declaring $ and $$ variables
 	// - mark variables that have mutable operations
 	// - mark props
@@ -32,14 +19,14 @@ export function transform_script (program) {
 		 * @param {import('estree').Node} node
 		 * @param {import('estree').Node} parent
 		 */
-		enter (node) {
+		enter (node, parent, key, index) {
 			if (map.has(node)) {
-				current_scope = map.get(node);
+				curr_scope = map.get(node);
 			}
 
 			// throw on declaring $ and $$ variables
 			if (
-				current_scope === root_scope &&
+				curr_scope === root_scope &&
 				node.type === 'VariableDeclarator' &&
 				_has_identifier_declared(node.id, (name) => (
 					name[0] === '$' && (name[1] !== '$' || (name[1] === '$' && name[2] !== '$'))
@@ -49,33 +36,38 @@ export function transform_script (program) {
 			}
 
 			// mark mutable variables
-			if (node.type === 'UpdateExpression' && node.argument.type === 'Identifier') {
-				let identifier = node.argument;
-				let prefix = node.prefix;
-
-				let name = identifier.name;
-
-				if (current_scope.find_owner(name) == root_scope) {
-					if (!prefix) {
-						throw new Error('postfix update expressions are not supported');
-					}
-
-					mutables.add(name);
-				}
-
-				return;
-			}
-
 			if (node.type === 'AssignmentExpression' && node.left.type === 'Identifier') {
 				let left = node.left;
 				let name = left.name;
 
 				if (name[0] === '$' && name[1] === '$' && name[2] !== '$') {
-					throw new Error('tried reassignment to reserved variable');
+					throw new Error('tried reassignment to $$ reserved variables');
 				}
 
-				if (current_scope.find_owner(name) === root_scope) {
-					mutables.add(name);
+				let own_scope = curr_scope.find_owner(name);
+
+				if (own_scope === root_scope) {
+					let ident = own_scope.declarations.get(name);
+					(ident.velvet ||= {}).mutable = true;
+				}
+
+				return;
+			}
+
+			if (node.type === 'UpdateExpression' && node.argument.type === 'Identifier') {
+				let identifier = node.argument;
+				let prefix = node.prefix;
+
+				let name = identifier.name;
+				let own_scope = curr_scope.find_owner(name);
+
+				if (own_scope === root_scope) {
+					if (!prefix) {
+						throw new Error('postfix update expressions are not supported');
+					}
+
+					let ident = own_scope.declarations.get(name);
+					(ident.velvet ||= {}).mutable = true;
 				}
 
 				return;
@@ -124,8 +116,9 @@ export function transform_script (program) {
 				return walk.remove;
 			}
 
-			// transform computed value
+			// transform computed variables
 			if (
+				curr_scope === root_scope &&
 				node.type === 'LabeledStatement' &&
 				node.label.name === '$' &&
 				node.body.type === 'ExpressionStatement' &&
@@ -135,43 +128,89 @@ export function transform_script (program) {
 				let identifier = node.body.expression.left;
 				let right = node.body.expression.right;
 
-				let name = identifier.name;
 				let expression = t.variable_declaration('let', [
 					t.variable_declarator(identifier, right),
 				]);
 
-				computeds.add(name);
-				current_scope.add_declaration(expression);
+				(identifier.velvet ||= {}).computed = true;
+				curr_scope.add_declaration(expression);
 
 				return expression;
 			}
+
+			// transform stores
+			if (is_reference(node, parent)) {
+				let name = node.name;
+
+				if (name[0] !== '$' || name[1] === '$' || curr_scope.has(name)) {
+					return;
+				}
+				if (name.length === 1) {
+					throw new Error('no singular $ reference');
+				}
+
+				let actual = name.slice(1);
+				let actual_ident = t.identifier(actual);
+				let ident = t.identifier(name);
+
+				let decl = t.variable_declaration('let', [
+					t.variable_declarator(ident),
+				]);
+
+				let expr = t.expression_statement(
+					t.call_expression(t.identifier('@cleanup'), [
+						t.call_expression(t.member_expression(actual_ident, t.identifier('subscribe')), [
+							ident,
+						]),
+					]),
+				);
+
+				(ident.velvet ||= {}).mutable = true;
+				ident.velvet.transformed = true;
+
+				let curr_node = node;
+
+				while (curr_node) {
+					let parent = curr_node.path.parent;
+
+					if (!parent) {
+						break;
+					}
+
+					if (parent.type === 'Program') {
+						let body = parent.body;
+						let idx = body.indexOf(curr_node);
+						body.splice(idx, 0, decl, expr);
+						break;
+					}
+
+					curr_node = parent;
+				}
+
+				root_scope.add_declaration(decl);
+				return;
+			}
 		},
-		/**
-		 * @param {import('estree').Node} node
-		 * @param {import('estree').Node} parent
-		 */
 		leave (node) {
 			if (map.has(node)) {
-				current_scope = current_scope.parent;
+				curr_scope = curr_scope.parent;
 			}
 		},
 	});
 
-	// - transform getters, setters, and declarators
-	// - transform store reactions
-	// - transform reactive statements
 	walk(program, {
 		/**
 		 * @param {import('estree').Node} node
 		 * @param {import('estree').Node} parent
 		 */
-		enter (node, parent, key) {
+		enter (node, parent, key, index) {
 			if (map.has(node)) {
-				current_scope = map.get(node);
+				curr_scope = map.get(node);
 			}
 
 			// transform refs and props
 			if (
+				curr_scope === root_scope &&
 				node.type === 'VariableDeclarator' &&
 				node.id.type === 'Identifier' &&
 				(parent.kind === 'let' || parent.kind === 'var')
@@ -181,9 +220,9 @@ export function transform_script (program) {
 
 				let name = identifier.name;
 
-				let is_mutable = mutables.has(name);
-				let is_prop = props.has(name);
-				let is_computed = computeds.has(name);
+				let is_mutable = identifier.velvet?.mutable;
+				let is_computed = identifier.velvet?.computed;
+				let prop = props.get(name);
 
 				// computed:
 				// - __computed(() => value)
@@ -198,11 +237,10 @@ export function transform_script (program) {
 				// - __ref(value)
 				// - __ref(primitive)
 
-				if ((is_mutable || is_prop || is_computed) && current_scope === root_scope) {
-					let prop = props.get(name);
+				if (is_mutable || is_computed || prop) {
 					let prop_idx = prop && props_idx.indexOf(prop);
 
-					let primitive = init && _is_primitive(init, is_computed && refs);
+					let primitive = init && _is_primitive(init, is_computed && curr_scope);
 
 					let initializer = init
 						? primitive
@@ -220,63 +258,37 @@ export function transform_script (program) {
 
 					node.init = expression;
 
-					if (is_mutable || is_prop || (is_computed && !primitive)) {
-						refs.add(name);
+					if (expression !== init) {
+						(identifier.velvet ||= {}).ref = true;
 					}
 				}
 
 				return;
 			}
 
-			// transform store getters
-			if (
-				node.type === 'Identifier' &&
-				node.name[0] === '$' &&
-				node.name[1] !== '$' &&
-				parent.type !== 'LabeledStatement' &&
-				parent.type !== 'AssignmentExpression' &&
-				!(parent.type === 'MemberExpression' && key !== 'object')
-			) {
-				let name = node.name;
-
-				let actual = node.name.slice(1);
-
-				if (!stores.has(actual) && !current_scope.has(name)) {
-					let subscription = _add_store_subscription(
-						node,
-						actual,
-						refs.has(actual) && current_scope.find_owner(actual) === root_scope
-					);
-
-					root_scope.add_declaration(subscription.declaration);
-					_is_transformed.add(subscription.actual_ident);
-					stores.add(actual);
-					refs.add(name);
-				}
-			}
-
 			// transform getters
-			if (
-				node.type === 'Identifier' &&
-				parent.type !== 'AssignmentExpression' &&
-				!(parent.type === 'MemberExpression' && key !== 'object' && refs.has(node.name)) &&
-				!(parent.type === 'VariableDeclarator' && key !== 'init') &&
-				!(parent.type === 'Property' && key !== 'value')
-			) {
+			if (is_reference(node, parent)) {
 				let name = node.name;
 
-				if (_is_transformed.has(node)) {
+				if (node.velvet?.transformed) {
 					return;
 				}
 
-				if (refs.has(name) && current_scope.find_owner(name) === root_scope) {
+				if (parent.type === 'AssignmentExpression' && parent.left === node) {
+					return;
+				}
+
+				let own_scope = curr_scope.find_owner(name);
+				let ident = own_scope && own_scope.declarations.get(name);
+
+				if (ident && ident.velvet?.ref) {
 					let expression = t.call_expression(node, [t.identifier('@access')]);
 
 					if (parent.type === 'Property') {
 						parent.shorthand = false;
 					}
 
-					_is_transformed.add(node);
+					(node.velvet ||= {}).transformed = true;
 					return expression;
 				}
 
@@ -284,29 +296,16 @@ export function transform_script (program) {
 			}
 
 			// transform setters
-			if (node.type === 'AssignmentExpression' && node.left.type === 'Identifier') {
+			if (node.type === 'AssignmentExpression' && is_reference(node.left, node)) {
 				let identifier = node.left;
 				let right = node.right;
 
 				let name = identifier.name;
 
-				if (name[0] === '$' && name[1] !== '$') {
-					let actual = identifier.name.slice(1);
+				let own_scope = curr_scope.find_owner(name);
+				let ident = own_scope && own_scope.declarations.get(name);
 
-					if (!stores.has(actual)) {
-						let subscription = _add_store_subscription(
-							identifier,
-							actual,
-							refs.has(actual) && current_scope.find_owner(actual) === root_scope,
-						);
-
-						root_scope.add_declaration(subscription.declaration);
-						stores.add(actual);
-						refs.add(name);
-					}
-				}
-
-				if (refs.has(name) && current_scope.find_owner(name) === root_scope) {
+				if (ident && ident.velvet?.ref) {
 					let expression;
 					let operator = node.operator.slice(0, -1);
 
@@ -329,30 +328,7 @@ export function transform_script (program) {
 						}
 					}
 
-					_is_transformed.add(identifier);
-					return expression;
-				}
-
-				return;
-			}
-
-			if (node.type === 'UpdateExpression' && node.argument.type === 'Identifier') {
-				let identifier = node.argument;
-				let operator = node.operator;
-				let prefix = node.prefix;
-
-				let name = identifier.name;
-
-				if (refs.has(name) && current_scope.find_owner(name) === root_scope) {
-					if (!prefix) {
-						throw new Error('postfix update expressions are not supported');
-					}
-
-					let getter = t.call_expression(identifier, [t.identifier('@access')]);
-					let operation = t.binary_expression(getter, t.literal(1), operator.slice(0, -1));
-					let expression = t.call_expression(identifier, [operation]);
-
-					_is_transformed.add(identifier);
+					(identifier.velvet ||= {}).transformed = true;
 					return expression;
 				}
 
@@ -369,12 +345,18 @@ export function transform_script (program) {
 					 * @param {import('estree').Node} parent
 					 */
 					enter (node, parent) {
-						if (
-							node.type === 'Identifier' &&
-							refs.has(node.name) &&
-							parent.type !== 'ExpresionStatement'
-						) {
-							is_effect = true;
+						if (is_reference(node, parent)) {
+							let name = node.name;
+							let own_scope = curr_scope.find_owner(name);
+							let ident = own_scope && own_scope.declarations.get(name);
+
+							if (ident && ident.velvet?.ref) {
+								is_effect = true;
+							}
+						}
+
+						if (is_effect) {
+							return walk.skip;
 						}
 					},
 				});
@@ -392,19 +374,18 @@ export function transform_script (program) {
 				return;
 			}
 		},
-		/**
-		 * @param {import('estree').Node} node
-		 * @param {import('estree').Node} parent
-		 */
 		leave (node) {
 			if (map.has(node)) {
-				current_scope = current_scope.parent;
+				curr_scope = curr_scope.parent;
 			}
 		},
 	});
 
 	// - add bindings for props that are not refs
-	let is_bindings = [...props].filter(([local]) => !refs.has(local));
+	let is_bindings = [...props].filter(([local]) => {
+		let ident = root_scope.declarations.get(local);
+		return !ident?.velvet?.ref;
+	});
 
 	if (is_bindings.length) {
 		let properties = is_bindings.map(([local, exported]) => (
@@ -420,52 +401,9 @@ export function transform_script (program) {
 		program.body.push(expression);
 	}
 
-	return { mutables, refs, computeds, props, props_idx, stores };
+	return { props, props_idx };
 }
 
-function _add_store_subscription (identifier, actual, is_ref) {
-	if (!actual) {
-		throw new Error(`tried to subscribe to a store without actual identifier`);
-	}
-
-	let actual_ident = t.identifier(actual);
-
-	let getter = is_ref
-		? t.call_expression(actual_ident, [t.identifier('@access')])
-		: actual_ident;
-
-	let decl = t.variable_declaration('let', [
-		t.variable_declarator(identifier, t.call_expression(t.identifier('@ref'))),
-	]);
-
-	let expr = t.expression_statement(
-		t.call_expression(t.identifier('@cleanup'), [
-			t.call_expression(t.member_expression(getter, t.identifier('subscribe')), [
-				identifier,
-			]),
-		]),
-	);
-
-	let curr_node = identifier;
-
-	while (curr_node) {
-		let parent = curr_node.path.parent;
-
-		if (!parent) {
-			break;
-		}
-
-		if (parent.type === 'Program') {
-			let body = parent.body;
-			let idx = body.indexOf(curr_node);
-			body.splice(idx, 0, decl, expr);
-		}
-
-		curr_node = parent;
-	}
-
-	return { declaration: decl, actual_ident };
-}
 
 export function finalize_program ({
 	program,
@@ -607,6 +545,7 @@ export function finalize_program ({
 	}
 }
 
+
 function _find_unique_identifier (name, set) {
 	let local_name = name;
 	let count = 0;
@@ -643,21 +582,33 @@ function _has_identifier_declared (node, filter) {
 
 /**
  * @param {import('estree').Expression | import('estree').Expression[]} expression
- * @param {Set<string>} [refs]
  */
-function _is_primitive (expression, refs) {
+function _is_primitive (expression, scope) {
 	if (Array.isArray(expression)) {
-		return expression.every((expr) => _is_primitive(expr, refs));
+		return expression.every((expr) => _is_primitive(expr, scope));
+	}
+
+	if (scope && expression.type === 'Identifier') {
+		let name = expression.name;
+		let own_scope = scope.find_owner(name);
+
+		if (!own_scope) {
+			return true;
+		}
+
+		let id = own_scope.declarations.get(name);
+
+		return !id.velvet?.ref;
 	}
 
 	return (
 		(expression.type === 'Literal' && !expression.regex) ||
 		(expression.type === 'TemplateLiteral') ||
-		(expression.type === 'UnaryExpression' && _is_primitive(expression.argument, refs)) ||
-		(expression.type === 'BinaryExpression' && _is_primitive(expression.left, refs) && _is_primitive(expression.right, refs)) ||
-		(expression.type === 'MemberExpression' && _is_primitive(expression.object, refs)) ||
-		(expression.type === 'NewExpression' && _is_primitive(expression.callee, refs) && _is_primitive(expression.arguments)) ||
-		(expression.type === 'CallExpression' && _is_primitive(expression.callee) && _is_primitive(expression.arguments)) ||
-		(refs && expression.type === 'Identifier' && !refs.has(expression.name))
+		(expression.type === 'UnaryExpression' && _is_primitive(expression.argument, scope)) ||
+		(expression.type === 'BinaryExpression' && _is_primitive(expression.left, scope) && _is_primitive(expression.right, scope)) ||
+		(expression.type === 'MemberExpression' && _is_primitive(expression.object, scope)) ||
+		(expression.type === 'NewExpression' && _is_primitive(expression.callee, scope) && _is_primitive(expression.arguments, scope)) ||
+		(expression.type === 'CallExpression' && _is_primitive(expression.callee, scope) && _is_primitive(expression.arguments, scope))
 	);
 }
+
