@@ -57,7 +57,7 @@ function $setup ($root, $host) {
 	let $child4 = __traverse($fragment1, [3, 2]);
 
 	// <Count />
-	__replace($child1, $marker1);
+	__replace($marker1, $child1);
 
 	// <Count .count={value} />
 	__effect(() => $child1.count = value(__access));

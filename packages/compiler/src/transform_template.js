@@ -296,7 +296,7 @@ export function transform_template (template) {
 
 					let statements = b`
 						let ${marker_ident} = @traverse(${fragment_ident}, ${indices});
-						@replace(${ident}, ${marker_ident}, true);
+						@replace(${marker_ident}, ${ident}, true);
 					`;
 
 					pending.unshift(...declarations);

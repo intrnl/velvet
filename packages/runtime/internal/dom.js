@@ -24,7 +24,7 @@ export function traverse (node, indices) {
 }
 
 
-export function replace (node, ref, adopt) {
+export function replace (ref, node, adopt) {
 	ref.replaceWith(node);
 
 	if (adopt) {

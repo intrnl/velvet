@@ -259,7 +259,7 @@ exports[`component > v:self on a custom element 1`] = `
 let %fragment0 = @clone(%template0);
 let %child0 = new $$host.constructor();
 let %marker0 = @traverse(%fragment0, [0, 0]);
-@replace(%child0, %marker0, true);
+@replace(%marker0, %child0, true);
 @append(%fragment0, $$root);
 "
 `;
@@ -358,7 +358,7 @@ let %marker0 = @traverse(%fragment0, [0, 1]);
 @text(%marker0, () => name);
 let %child0 = new Main();
 let %marker1 = @traverse(%fragment0, [0]);
-@replace(%child0, %marker1, true);
+@replace(%marker1, %child0, true);
 @append(%fragment0, $$root);
 "
 `;
