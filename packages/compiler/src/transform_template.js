@@ -1,20 +1,20 @@
 import { walk } from './utils/walker.js';
-import { b, x, print } from './utils/js_parse.js';
+import { b, x } from './utils/js_parse.js';
 import * as t from './utils/js_types.js';
 
 
 export function transform_template (template) {
 	let blocks = [];
 
+	let program = [];
+
 	let block_stack = [];
 	let scope_stack = [];
 	let curr_block;
-	let curr_scope;
+	let curr_scope = program;
 
 	let fragment_to_block = new Map();
 	let fragment_to_scope = new Map();
-
-	let program = [];
 
 	let id_c = 0;
 	let id_m = 0;
@@ -131,7 +131,7 @@ export function transform_template (template) {
 							params
 						));
 
-						(curr_scope || program).push(statement);
+						curr_scope.push(statement);
 						return;
 					}
 					else {
@@ -154,7 +154,7 @@ export function transform_template (template) {
 					@text(${marker_ident}, () => ${expression});
 				`;
 
-				(curr_scope || program).push(...statements);
+				curr_scope.push(...statements);
 				return;
 			}
 
@@ -303,7 +303,7 @@ export function transform_template (template) {
 					pending.push(...statements);
 				}
 
-				(curr_scope || program).push(...pending);
+				curr_scope.push(...pending);
 				curr_block.indices.pop();
 
 				if (is_inline) {
@@ -325,7 +325,7 @@ export function transform_template (template) {
 					let ${fragment_ident} = @clone(${template_ident});
 				`;
 
-				(curr_scope || program).unshift(...template_declarations);
+				curr_scope.unshift(...template_declarations);
 
 				if (parent) {
 					let end_ident = '%marker' + (id_m++);
@@ -345,7 +345,7 @@ export function transform_template (template) {
 						@append(${fragment_ident}, $$root);
 					`;
 
-					(curr_scope || program).push(...statements);
+					curr_scope.push(...statements);
 				}
 
 				curr_block = block_stack.pop();
@@ -414,7 +414,7 @@ export function transform_template (template) {
 						@show(${marker_ident}, () => ${test});
 					`;
 
-					(curr_scope || program).push(...statements);
+					curr_scope.push(...statements);
 				}
 
 				return;
@@ -455,7 +455,7 @@ export function transform_template (template) {
 					@each(${marker_ident}, ${block_ident}, ${expression});
 				`;
 
-				(curr_scope || program).push(...statements);
+				curr_scope.push(...statements);
 				return;
 			}
 
@@ -541,7 +541,7 @@ export function transform_template (template) {
 					@promise(${marker_ident}, ${pending_ident}, ${resolved_ident}, ${rejected_ident}, ${argument});
 				`;
 
-				(curr_scope || program).push(...statements);
+				curr_scope.push(...statements);
 				return;
 			}
 		},
