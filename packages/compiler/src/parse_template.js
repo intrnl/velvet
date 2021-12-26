@@ -535,7 +535,7 @@ function _parse_element (state) {
 			}
 
 			if (attribute_names.has(attr_name)) {
-				throw p.error(state, `duplicate ${attr_name} attribute`, start);
+				throw p.error(state, `duplicate ${attr_name} attribute`, start, state.index);
 			}
 
 			let end = state.index;
