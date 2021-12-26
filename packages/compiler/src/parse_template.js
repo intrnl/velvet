@@ -116,16 +116,30 @@ function _parse_expression (state) {
 						local_index = expression;
 					}
 					else {
-						throw p.error(state, 'there can only be value and index', expression.start);
+						let last = expressions[expressions.length - 1];
+
+						throw {
+							message: 'there can only be value and index',
+							start: expression.start,
+							end: last.end,
+						};
 					}
 
 					if (expression.type !== 'Identifier') {
-						throw p.error(state, 'expected an identifier', expression.start);
+						throw {
+							message: 'expected an identifier',
+							start: expression.start,
+							end: expression.end,
+						};
 					}
 				}
 			}
 			else {
-				throw p.error(state, 'expected an identifier');
+				throw {
+					message: 'expected an identifier',
+					start: local?.start || state.index,
+					end: local?.end || state.index,
+				};
 			}
 
 			p.eat_whitespace(state, true);
