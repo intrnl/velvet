@@ -4,7 +4,7 @@ import { replace, remove_parts } from './dom.js';
 
 export function text (marker, expression) {
 	let node = document.createTextNode('');
-	replace(node, marker);
+	replace(marker, node);
 
 	effect(() => node.data = expression());
 }
