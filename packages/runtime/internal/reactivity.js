@@ -1,5 +1,6 @@
 // Stripped out version of @vue/reactivity, not intended for public usage.
 import { changed } from './utils.js';
+import { Symbol, Set } from './globals.js';
 
 
 export let curr_track_bit = 1;

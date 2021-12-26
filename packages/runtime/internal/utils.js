@@ -1,3 +1,6 @@
+import { Object } from './globals.js';
+
+
 let RE_CAMELIZE = /-(\w)/g;
 let RE_HYPHENATE = /\B([A-Z])/g;
 
