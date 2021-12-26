@@ -192,7 +192,7 @@ function _parse_expression (state) {
 				argument,
 				!to_resolve && !to_reject ? block : null,
 				to_resolve ? clause : null,
-				to_reject ? clause : null
+				to_reject ? clause : null,
 			);
 
 			node.start = start;
