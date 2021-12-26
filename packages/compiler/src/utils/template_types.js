@@ -155,7 +155,7 @@ export function attribute (name, value = null) {
  */
 export function attribute_spread (expression) {
 	return {
-		type: 'Attribute',
+		type: 'AttributeSpread',
 		expression,
 	};
 }
