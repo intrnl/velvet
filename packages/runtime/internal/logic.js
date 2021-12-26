@@ -167,14 +167,23 @@ export function keyed (marker, block, expression) {
 	});
 }
 
-export function dynamic (marker, expression) {
-	let current = marker;
+export function dynamic (marker, block, expression) {
+	let host = marker;
+	let instance = scope();
+
+	let current;
 
 	effect(() => {
-		let next = expression() || marker;
+		let next = expression();
 
-		replace(next, current);
+		if (next === current) {
+			return;
+		}
+
 		current = next;
+		instance.clear();
+
+		replace(host, host = next ? instance.run(() => block(next)) : marker);
 	});
 }
 
