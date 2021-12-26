@@ -1,5 +1,5 @@
 import { ref, scope, access } from './reactivity.js';
-import { hyphenate, camelize } from './utils.js';
+import { hyphenate, camelize, assign } from './utils.js';
 import { Symbol, Object } from './globals.js';
 
 // props are assigned its default values only when it's uncontrolled, so the
@@ -146,5 +146,5 @@ export function event_dispatcher () {
 }
 
 export function bind (obj) {
-	Object.assign(curr_host, obj);
+	assign(curr_host, obj);
 }

@@ -1,4 +1,4 @@
-import { noop, changed } from '../internal/utils.js';
+import { noop, is } from '../internal/utils.js';
 
 
 export function writable (value, notifier) {
@@ -31,7 +31,7 @@ class Writable {
 	set (next) {
 		let _this = this;
 
-		if (changed(_this.v, next)) {
+		if (!is(_this.v, next)) {
 			_this.v = next;
 
 			if (_this.u) {

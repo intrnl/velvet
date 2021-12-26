@@ -15,6 +15,5 @@ export function hyphenate (str) {
 	return str.replace(RE_HYPHENATE, '-$1').toLowerCase();
 }
 
-export function changed (prev, next) {
-	return !Object.is(prev, next);
-}
+export let is = Object.is;
+export let assign = Object.assign;

@@ -1,5 +1,5 @@
 // Stripped out version of @vue/reactivity, not intended for public usage.
-import { changed } from './utils.js';
+import { is } from './utils.js';
 import { Symbol, Set } from './globals.js';
 
 
@@ -236,7 +236,7 @@ class Ref {
 		else {
 			_this.v = next;
 
-			if (changed(prev, next)) {
+			if (!is(prev, next)) {
 				trigger_effect(deps);
 			}
 
@@ -287,7 +287,7 @@ class Computed {
 			_this.r = false;
 			_this.v = next;
 
-			if (changed(prev, next)) {
+			if (!is(prev, next)) {
 				trigger_effect(deps);
 			}
 
