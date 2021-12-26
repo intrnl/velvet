@@ -523,6 +523,8 @@ function _parse_element (state) {
 				node.start = start;
 				node.end = state.index;
 
+				p.eat_whitespace(state);
+
 				attributes.push(node);
 				continue;
 			}
