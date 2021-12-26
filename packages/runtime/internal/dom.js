@@ -32,11 +32,11 @@ export function replace (ref, node, adopt) {
 	}
 }
 
-export function append (node, ref) {
+export function append (ref, node) {
 	ref.append(node);
 }
 
-export function after (node, ref) {
+export function after (ref, node) {
 	ref.after(node);
 }
 

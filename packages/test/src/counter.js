@@ -76,7 +76,7 @@ function $setup ($root, $host) {
 	// <button @click={decrement}>
 	__on($child4, 'click', decrement);
 
-	__append($fragment1, $root);
+	__append($root, $fragment1);
 }
 
 export default __define('x-app', $setup, {});

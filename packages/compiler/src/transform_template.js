@@ -333,7 +333,7 @@ export function transform_template (template) {
 
 					let statements = b`
 						let ${end_ident} = @traverse(${fragment_ident}, ${end_index});
-						@after(${fragment_ident}, $$root);
+						@after($$root, ${fragment_ident});
 						return ${end_ident};
 					`;
 
@@ -342,7 +342,7 @@ export function transform_template (template) {
 				}
 				else {
 					let statements = b`
-						@append(${fragment_ident}, $$root);
+						@append($$root, ${fragment_ident});
 					`;
 
 					curr_scope.push(...statements);

@@ -42,7 +42,7 @@ function $setup ($root, $host) {
 	// <button @click={decrement}>
 	__on($child2, 'click', decrement);
 
-	__append($fragment1, $root);
+	__append($root, $fragment1);
 }
 
 export default __define('x-count', $setup, { count: 0 });

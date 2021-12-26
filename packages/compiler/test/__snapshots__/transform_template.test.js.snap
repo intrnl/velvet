@@ -4,7 +4,7 @@ exports[`attribute > dynamic 1`] = `
 "let %%template0 = @html(\\"<div></div>\\");
 let %fragment0 = @clone(%template0);
 $: @attr(%child0, \\"class\\", className);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -13,7 +13,7 @@ exports[`attribute > dynamic boolean 1`] = `
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
 $: @toggle(%child0, \\"readonly\\", is_readonly);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -22,7 +22,7 @@ exports[`attribute > dynamic boolean no value 1`] = `
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
 $: @toggle(%child0, \\"readonly\\", true);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -31,7 +31,7 @@ exports[`attribute > property 1`] = `
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
 $: %child0[\\"value\\"] = value;
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -40,7 +40,7 @@ exports[`attribute > property no value 1`] = `
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
 $: %child0[\\"value\\"] = true;
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -49,28 +49,28 @@ exports[`attribute > ref 1`] = `
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
 $: input = %child0;
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
 exports[`attribute > static 1`] = `
 "let %%template0 = @html(\\"<div class=\\\\\\"foo\\\\\\"></div>\\");
 let %fragment0 = @clone(%template0);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
 exports[`attribute > static boolean 1`] = `
 "let %%template0 = @html(\\"<textarea readonly></textarea>\\");
 let %fragment0 = @clone(%template0);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
 exports[`attribute > static unquoted 1`] = `
 "let %%template0 = @html(\\"<div class=\\\\\\"foo\\\\\\"></div>\\");
 let %fragment0 = @clone(%template0);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -81,12 +81,12 @@ let %block1 = $$root => {
   let %%template1 = @html(\\"pending<!>\\");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [1]);
-  @after(%fragment1, $$root);
+  @after($$root, %fragment1);
   return %marker0;
 };
 let %marker1 = @traverse(%fragment0, [0]);
 @promise(%marker1, %block1, null, null, promise);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -97,19 +97,19 @@ let %block1 = $$root => {
   let %%template1 = @html(\\"pending<!>\\");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [1]);
-  @after(%fragment1, $$root);
+  @after($$root, %fragment1);
   return %marker0;
 };
 let %block2 = $$root => {
   let %%template2 = @html(\\"rejected<!>\\");
   let %fragment2 = @clone(%template2);
   let %marker1 = @traverse(%fragment2, [1]);
-  @after(%fragment2, $$root);
+  @after($$root, %fragment2);
   return %marker1;
 };
 let %marker2 = @traverse(%fragment0, [0]);
 @promise(%marker2, %block1, null, %block2, promise);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -120,7 +120,7 @@ let %block1 = $$root => {
   let %%template1 = @html(\\"pending<!>\\");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [1]);
-  @after(%fragment1, $$root);
+  @after($$root, %fragment1);
   return %marker0;
 };
 let %block2 = ($$root, error) => {
@@ -129,12 +129,12 @@ let %block2 = ($$root, error) => {
   let %marker1 = @traverse(%fragment2, [1, 0]);
   @text(%marker1, () => error.message);
   let %marker2 = @traverse(%fragment2, [2]);
-  @after(%fragment2, $$root);
+  @after($$root, %fragment2);
   return %marker2;
 };
 let %marker3 = @traverse(%fragment0, [0]);
 @promise(%marker3, %block1, null, %block2, promise);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -145,19 +145,19 @@ let %block1 = $$root => {
   let %%template1 = @html(\\"pending<!>\\");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [1]);
-  @after(%fragment1, $$root);
+  @after($$root, %fragment1);
   return %marker0;
 };
 let %block2 = $$root => {
   let %%template2 = @html(\\"resolved<!>\\");
   let %fragment2 = @clone(%template2);
   let %marker1 = @traverse(%fragment2, [1]);
-  @after(%fragment2, $$root);
+  @after($$root, %fragment2);
   return %marker1;
 };
 let %marker2 = @traverse(%fragment0, [0]);
 @promise(%marker2, %block1, %block2, null, promise);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -168,7 +168,7 @@ let %block1 = $$root => {
   let %%template1 = @html(\\"pending<!>\\");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [1]);
-  @after(%fragment1, $$root);
+  @after($$root, %fragment1);
   return %marker0;
 };
 let %block2 = ($$root, name) => {
@@ -177,12 +177,12 @@ let %block2 = ($$root, name) => {
   let %marker1 = @traverse(%fragment2, [1]);
   @text(%marker1, () => name);
   let %marker2 = @traverse(%fragment2, [3]);
-  @after(%fragment2, $$root);
+  @after($$root, %fragment2);
   return %marker2;
 };
 let %marker3 = @traverse(%fragment0, [0]);
 @promise(%marker3, %block1, %block2, null, promise);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -193,12 +193,12 @@ let %block1 = $$root => {
   let %%template1 = @html(\\"rejected<!>\\");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [1]);
-  @after(%fragment1, $$root);
+  @after($$root, %fragment1);
   return %marker0;
 };
 let %marker1 = @traverse(%fragment0, [0]);
 @promise(%marker1, null, null, %block1, promise);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -211,12 +211,12 @@ let %block1 = ($$root, error) => {
   let %marker0 = @traverse(%fragment1, [1]);
   @text(%marker0, () => error.message);
   let %marker1 = @traverse(%fragment1, [2]);
-  @after(%fragment1, $$root);
+  @after($$root, %fragment1);
   return %marker1;
 };
 let %marker2 = @traverse(%fragment0, [0]);
 @promise(%marker2, null, null, %block1, promise);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -227,12 +227,12 @@ let %block1 = $$root => {
   let %%template1 = @html(\\"resolved<!>\\");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [1]);
-  @after(%fragment1, $$root);
+  @after($$root, %fragment1);
   return %marker0;
 };
 let %marker1 = @traverse(%fragment0, [0]);
 @promise(%marker1, null, %block1, null, promise);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -245,12 +245,12 @@ let %block1 = ($$root, result) => {
   let %marker0 = @traverse(%fragment1, [1]);
   @text(%marker0, () => result.value);
   let %marker1 = @traverse(%fragment1, [2]);
-  @after(%fragment1, $$root);
+  @after($$root, %fragment1);
   return %marker1;
 };
 let %marker2 = @traverse(%fragment0, [0]);
 @promise(%marker2, null, %block1, null, promise);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -260,7 +260,7 @@ let %fragment0 = @clone(%template0);
 let %child0 = new $$host.constructor();
 let %marker0 = @traverse(%fragment0, [0, 0]);
 @replace(%marker0, %child0, true);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -271,12 +271,12 @@ let %block1 = $$root => {
   let %%template1 = @html(\\"<div>foo!</div><!>\\");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [1]);
-  @after(%fragment1, $$root);
+  @after($$root, %fragment1);
   return %marker0;
 };
 let %marker1 = @traverse(%fragment0, [0]);
 @show(%marker1, () => foo ? %block1 : null);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -287,19 +287,19 @@ let %block1 = $$root => {
   let %%template1 = @html(\\"<div>foo!</div><!>\\");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [1]);
-  @after(%fragment1, $$root);
+  @after($$root, %fragment1);
   return %marker0;
 };
 let %block2 = $$root => {
   let %%template2 = @html(\\"<div>bar!</div><!>\\");
   let %fragment2 = @clone(%template2);
   let %marker1 = @traverse(%fragment2, [1]);
-  @after(%fragment2, $$root);
+  @after($$root, %fragment2);
   return %marker1;
 };
 let %marker2 = @traverse(%fragment0, [0]);
 @show(%marker2, () => foo ? %block1 : %block2);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -310,19 +310,19 @@ let %block2 = $$root => {
   let %%template2 = @html(\\"<div>bar!</div><!>\\");
   let %fragment2 = @clone(%template2);
   let %marker1 = @traverse(%fragment2, [1]);
-  @after(%fragment2, $$root);
+  @after($$root, %fragment2);
   return %marker1;
 };
 let %block1 = $$root => {
   let %%template1 = @html(\\"<div>foo!</div><!>\\");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [1]);
-  @after(%fragment1, $$root);
+  @after($$root, %fragment1);
   return %marker0;
 };
 let %marker2 = @traverse(%fragment0, [0]);
 @show(%marker2, () => foo ? %block1 : bar ? %block2 : null);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -333,7 +333,7 @@ let %block2 = $$root => {
   let %%template2 = @html(\\"<div>bar!</div><!>\\");
   let %fragment2 = @clone(%template2);
   let %marker0 = @traverse(%fragment2, [1]);
-  @after(%fragment2, $$root);
+  @after($$root, %fragment2);
   return %marker0;
 };
 let %block1 = $$root => {
@@ -342,12 +342,12 @@ let %block1 = $$root => {
   let %marker1 = @traverse(%fragment1, [1]);
   @show(%marker1, () => bar ? %block2 : null);
   let %marker2 = @traverse(%fragment1, [2]);
-  @after(%fragment1, $$root);
+  @after($$root, %fragment1);
   return %marker2;
 };
 let %marker3 = @traverse(%fragment0, [0]);
 @show(%marker3, () => foo ? %block1 : null);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -359,7 +359,7 @@ let %marker0 = @traverse(%fragment0, [0, 1]);
 let %child0 = new Main();
 let %marker1 = @traverse(%fragment0, [0]);
 @replace(%marker1, %child0, true);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -368,7 +368,7 @@ exports[`expression > custom element 1`] = `
 let %fragment0 = @clone(%template0);
 let %marker0 = @traverse(%fragment0, [0, 1]);
 @text(%marker0, () => name);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -380,12 +380,12 @@ let %block1 = $$root => {
   let %fragment1 = @clone(%template1);
   $: console.log($$root, foo)
   let %marker0 = @traverse(%fragment1, [1]);
-  @after(%fragment1, $$root);
+  @after($$root, %fragment1);
   return %marker0;
 };
 let %marker1 = @traverse(%fragment0, [0]);
 @show(%marker1, () => foo ? %block1 : null);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -393,7 +393,7 @@ exports[`log expression > multiple 1`] = `
 "let %%template0 = @html(\\"\\");
 let %fragment0 = @clone(%template0);
 $: console.log(foo, bar, baz)
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -401,7 +401,7 @@ exports[`log expression > single 1`] = `
 "let %%template0 = @html(\\"\\");
 let %fragment0 = @clone(%template0);
 $: console.log(foo)
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -414,7 +414,7 @@ $: console.log('test', {
   baz
 })
 $: console.log([foo, bar, baz])
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -429,12 +429,12 @@ let %block1 = ($$root, person, index) => {
   let %marker1 = @traverse(%fragment1, [0, 2]);
   @text(%marker1, () => person.name);
   let %marker2 = @traverse(%fragment1, [1]);
-  @after(%fragment1, $$root);
+  @after($$root, %fragment1);
   return %marker2;
 };
 let %marker3 = @traverse(%fragment0, [0]);
 @each(%marker3, %block1, () => array);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;
 
@@ -449,11 +449,11 @@ let %block1 = ($$root, person) => {
   let %marker1 = @traverse(%fragment1, [0, 2]);
   @text(%marker1, () => person.last);
   let %marker2 = @traverse(%fragment1, [1]);
-  @after(%fragment1, $$root);
+  @after($$root, %fragment1);
   return %marker2;
 };
 let %marker3 = @traverse(%fragment0, [0]);
 @each(%marker3, %block1, () => array);
-@append(%fragment0, $$root);
+@append($$root, %fragment0);
 "
 `;

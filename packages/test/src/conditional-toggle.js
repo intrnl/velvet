@@ -58,7 +58,7 @@ function $setup ($root, $host) {
 		let $fragment1 = __clone($template2);
 		let $marker1 = __traverse($fragment1, [3]);
 
-		__after($fragment1, $root);
+		__after($root, $fragment1);
 		return $marker1;
 	};
 
@@ -67,7 +67,7 @@ function $setup ($root, $host) {
 		let $fragment1 = __clone($template3);
 		let $marker1 = __traverse($fragment1, [3]);
 
-		__after($fragment1, $root);
+		__after($root, $fragment1);
 		return $marker1;
 	};
 
@@ -76,7 +76,7 @@ function $setup ($root, $host) {
 		return $value ? $block1 : $block2;
 	});
 
-	__append($fragment1, $root);
+	__append($root, $fragment1);
 }
 
 export default __define('x-app', $setup, {});
