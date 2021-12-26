@@ -2,7 +2,7 @@
  * @param {(import('estree').Statement | import('estree').ModuleDeclaration)[]} body
  * @returns {import('estree').Program}
  */
-export function program (body = []) {
+ export function program (body = []) {
 	return {
 		type: 'Program',
 		sourceType: 'module',
@@ -47,7 +47,7 @@ export function array_expression (elements = []) {
  * @type {(import('estree').Property | import('estree').SpreadElement)[]} [properties]
  * @returns {import('estree').ObjectExpression}
  */
- export function object_expression (properties = []) {
+export function object_expression (properties = []) {
 	return {
 		type: 'ObjectExpression',
 		properties: properties.filter((prop) => !!prop),
@@ -69,11 +69,7 @@ export function property (key, value, computed = false, kind = 'init') {
 		kind,
 		computed,
 		method: kind !== 'init',
-		shorthand: (
-			key.type === 'Identifier' &&
-			value.type === 'Identifier' &&
-			key.name === value.name
-		),
+		shorthand: key.type === 'Identifier' && value.type === 'Identifier' && key.name === value.name,
 	};
 }
 
@@ -186,7 +182,7 @@ export function block_statement (body) {
 	return {
 		type: 'BlockStatement',
 		body: body,
-	}
+	};
 }
 
 /**

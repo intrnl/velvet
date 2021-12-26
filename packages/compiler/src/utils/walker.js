@@ -1,5 +1,6 @@
-export const SKIP = Symbol('skip');
-export const REMOVE = Symbol('remove');
+export let SKIP = Symbol('skip');
+export let REMOVE = Symbol('remove');
+
 
 export function walk (node, walker, parent, key, index = -1) {
 	if (Array.isArray(node)) {
@@ -8,7 +9,7 @@ export function walk (node, walker, parent, key, index = -1) {
 			let ret = walk(child, walker, parent, key, idx);
 
 			if (ret == null) {
-				continue
+				continue;
 			}
 			else if (ret == REMOVE) {
 				node.splice(idx--, 1);
@@ -61,7 +62,7 @@ export function walk (node, walker, parent, key, index = -1) {
 		let ret = walk(child, walker, node, k);
 
 		if (ret == null) {
-			continue
+			continue;
 		}
 		else if (ret === REMOVE) {
 			delete node[k];

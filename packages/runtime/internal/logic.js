@@ -6,7 +6,7 @@ export function text (marker, expression) {
 	let node = document.createTextNode('');
 	replace(marker, node);
 
-	effect(() => node.data = expression());
+	effect(() => (node.data = expression()));
 }
 
 export function show (marker, expression) {
@@ -183,7 +183,7 @@ export function dynamic (marker, block, expression) {
 		current = next;
 		instance.clear();
 
-		replace(host, host = next ? instance.run(() => block(next)) : marker);
+		replace(host, (host = next ? instance.run(() => block(next)) : marker));
 	});
 }
 

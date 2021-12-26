@@ -1,13 +1,13 @@
 import { entities } from './entities.js';
 
 
-const windows_1252 = [
+let windows_1252 = [
 	129, 141, 143, 144, 157, 338, 339, 352, 353, 376, 381, 382, 402, 710, 732,
 	8211, 8212, 8216, 8217, 8218, 8220, 8221, 8222, 8224, 8225, 8226, 8230, 8240,
 	8249, 8250, 8364, 8482,
 ];
 
-const entity_pattern = new RegExp(`&(#?(?:x[\\w\\d]+|\\d+|${Object.keys(entities).join('|')}))(?:;|\\b)`, 'g');
+let entity_pattern = new RegExp(`&(#?(?:x[\\w\\d]+|\\d+|${Object.keys(entities).join('|')}))(?:;|\\b)`, 'g');
 
 export function decode_character_references (html) {
 	return html.replace(entity_pattern, (match, entity) => {
@@ -29,8 +29,7 @@ export function decode_character_references (html) {
 	});
 }
 
-
-const NUL = 0;
+let NUL = 0;
 
 function validate_code (code) {
 	// line feed becomes generic whitespace
@@ -76,7 +75,7 @@ function validate_code (code) {
 	return NUL;
 }
 
-const void_elements = new Set([
+let void_elements = new Set([
 	'area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input',
 	'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr',
 ]);
@@ -85,7 +84,7 @@ export function is_void (name) {
 	return void_elements.has(name);
 }
 
-const disallowed_contents = new Map([
+let disallowed_contents = new Map([
 	['li', new Set(['li'])],
 	['dt', new Set(['dt', 'dd'])],
 	['dd', new Set(['dt', 'dd'])],
@@ -99,7 +98,7 @@ const disallowed_contents = new Map([
 	['tfoot', new Set(['tbody'])],
 	['tr', new Set(['tr', 'tbody'])],
 	['td', new Set(['td', 'th', 'tr'])],
-	['th', new Set(['td', 'th', 'tr'])]
+	['th', new Set(['td', 'th', 'tr'])],
 ]);
 
 export function closing_tag_omitted (current, next) {

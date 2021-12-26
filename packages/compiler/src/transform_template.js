@@ -72,7 +72,7 @@ export function transform_template (template) {
 
 			if (node.type === 'Fragment') {
 				block_stack.push(curr_block);
-				blocks.push(curr_block = create_block());
+				blocks.push((curr_block = create_block()));
 				fragment_to_block.set(node, curr_block);
 
 				// we shouldn't push a new scope for root fragment
@@ -91,7 +91,7 @@ export function transform_template (template) {
 
 				if (parent.type === 'Fragment') {
 					let is_first = index === 0;
-					let is_last = index === (parent.children.length - 1);
+					let is_last = index === parent.children.length - 1;
 
 					if (is_first) {
 						value = value.replace(/^\s+/g, '');
@@ -126,10 +126,10 @@ export function transform_template (template) {
 							params = [expression];
 						}
 
-						let statement = t.labeled_statement(t.identifier('$'), t.call_expression(
-							t.member_expression(t.identifier('console'), t.identifier('log')),
-							params
-						));
+						let statement = t.labeled_statement(
+							t.identifier('$'),
+							t.call_expression(t.member_expression(t.identifier('console'), t.identifier('log')), params),
+						);
 
 						curr_scope.push(statement);
 						return;
@@ -169,10 +169,9 @@ export function transform_template (template) {
 
 				let pending = [];
 
-				let is_checkbox = (
+				let is_checkbox =
 					elem_name === 'input' &&
-					node.attributes.some((attr) => attr.name === 'type' && attr.value?.decoded === 'checkbox')
-				);
+					node.attributes.some((attr) => attr.name === 'type' && attr.value?.decoded === 'checkbox');
 
 				for (let attribute of node.attributes) {
 					let attr_name = attribute.name;
@@ -261,7 +260,7 @@ export function transform_template (template) {
 						continue;
 					}
 
-					if (node.inline || attr_value && attr_value.type !== 'Text') {
+					if (node.inline || (attr_value && attr_value.type !== 'Text')) {
 						let name = t.literal(attr_name);
 
 						let statements = b`
@@ -402,9 +401,7 @@ export function transform_template (template) {
 						let consequent_ident = '%block' + blocks.indexOf(consequent_block);
 
 						let alternate_block = fragment_to_block.get(next.alternate);
-						let alternate_ident = alternate_block
-							? '%block' + blocks.indexOf(alternate_block)
-							: t.literal(null);
+						let alternate_ident = alternate_block ? '%block' + blocks.indexOf(alternate_block) : t.literal(null);
 
 						return x`${next.test} ? ${consequent_ident} : ${prev || alternate_ident}`;
 					}, null);
@@ -436,11 +433,10 @@ export function transform_template (template) {
 				local.velvet = { ref: true };
 
 				let declaration = t.variable_declaration('let', [
-					t.variable_declarator(block_ident, t.arrow_function_expression([
-						t.identifier('$$root'),
-						local,
-						local_index,
-					], statement)),
+					t.variable_declarator(
+						block_ident,
+						t.arrow_function_expression([t.identifier('$$root'), local, local_index], statement),
+					),
 				]);
 
 				program.push(declaration);
@@ -475,9 +471,7 @@ export function transform_template (template) {
 					let statement = t.block_statement(scope);
 
 					let decl = t.variable_declaration('let', [
-						t.variable_declarator(pending_ident, t.arrow_function_expression([
-							t.identifier('$$root'),
-						], statement)),
+						t.variable_declarator(pending_ident, t.arrow_function_expression([t.identifier('$$root')], statement)),
 					]);
 
 					program.push(decl);
@@ -498,10 +492,10 @@ export function transform_template (template) {
 					}
 
 					let decl = t.variable_declaration('let', [
-						t.variable_declarator(resolved_ident, t.arrow_function_expression([
-							t.identifier('$$root'),
-							local,
-						], statement)),
+						t.variable_declarator(
+							resolved_ident,
+							t.arrow_function_expression([t.identifier('$$root'), local], statement),
+						),
 					]);
 
 					program.push(decl);
@@ -522,10 +516,10 @@ export function transform_template (template) {
 					}
 
 					let decl = t.variable_declaration('let', [
-						t.variable_declarator(rejected_ident, t.arrow_function_expression([
-							t.identifier('$$root'),
-							local,
-						], statement)),
+						t.variable_declarator(
+							rejected_ident,
+							t.arrow_function_expression([t.identifier('$$root'), local], statement)
+						),
 					]);
 
 					program.push(decl);

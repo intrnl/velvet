@@ -105,7 +105,8 @@ export function transform_script (program) {
 						props.set(name, name);
 						props_idx.push(name);
 					}
-				} else {
+				}
+				else {
 					let identifier = declaration.id;
 					let name = identifier.name;
 
@@ -148,9 +149,7 @@ export function transform_script (program) {
 				let identifier = node.body.expression.left;
 				let right = node.body.expression.right;
 
-				let expression = t.variable_declaration('let', [
-					t.variable_declarator(identifier, right),
-				]);
+				let expression = t.variable_declaration('let', [t.variable_declarator(identifier, right)]);
 
 				(identifier.velvet ||= {}).computed = true;
 				curr_scope.add_declaration(expression);
@@ -178,15 +177,11 @@ export function transform_script (program) {
 				let actual_ident = t.identifier(actual);
 				let ident = t.identifier(name);
 
-				let decl = t.variable_declaration('let', [
-					t.variable_declarator(ident),
-				]);
+				let decl = t.variable_declaration('let', [t.variable_declarator(ident)]);
 
 				let expr = t.expression_statement(
 					t.call_expression(t.identifier('@cleanup'), [
-						t.call_expression(t.member_expression(actual_ident, t.identifier('subscribe')), [
-							ident,
-						]),
+						t.call_expression(t.member_expression(actual_ident, t.identifier('subscribe')), [ident]),
 					]),
 				);
 
@@ -411,14 +406,10 @@ export function transform_script (program) {
 	});
 
 	if (is_bindings.length) {
-		let properties = is_bindings.map(([local, exported]) => (
-			t.property(t.identifier(exported), t.identifier(local))
-		));
+		let properties = is_bindings.map(([local, exported]) => t.property(t.identifier(exported), t.identifier(local)));
 
 		let expression = t.expression_statement(
-			t.call_expression(t.identifier('@bind'), [
-				t.object_expression(properties)
-			])
+			t.call_expression(t.identifier('@bind'), [t.object_expression(properties)]),
 		);
 
 		program.body.push(expression);
@@ -450,20 +441,14 @@ export function finalize_program ({
 	// wrap everything into a setup function
 	let setup_ident = t.identifier(_find_unique_identifier('setup', identifiers));
 
-	let setup_decl = t.function_declaration(setup_ident, [
-		t.identifier('$$root'),
-		t.identifier('$$host'),
-	], program.body.splice(0, program.body.length));
-
-	let props_decl = t.object_expression(
-		props_idx.map((name, idx) => t.property(t.identifier(name), t.literal(idx)))
+	let setup_decl = t.function_declaration(
+		setup_ident,
+		[t.identifier('$$root'), t.identifier('$$host')],
+		program.body.splice(0, program.body.length),
 	);
 
-	let setup_call = t.call_expression(t.identifier('@define'), [
-		t.literal(component_name),
-		setup_ident,
-		props_decl,
-	]);
+	let props_decl = t.object_expression(props_idx.map((name, idx) => t.property(t.identifier(name), t.literal(idx))));
+	let setup_call = t.call_expression(t.identifier('@define'), [t.literal(component_name), setup_ident, props_decl]);
 
 	program.body.push(setup_decl);
 	program.body.push(t.export_default_declaration(setup_call));
@@ -475,10 +460,7 @@ export function finalize_program ({
 		 * @param {import('estree').Node} parent
 		 */
 		enter (node, parent, key) {
-			if (
-				node.type === 'Identifier' &&
-				!(parent.type === 'MemberExpression' && key !== 'object')
-			) {
+			if (node.type === 'Identifier' && !(parent.type === 'MemberExpression' && key !== 'object')) {
 				let name = node.name;
 
 				if (name[0] === '@') {
@@ -487,7 +469,7 @@ export function finalize_program ({
 					let set = import_identifiers.get(name);
 
 					if (!set) {
-						import_identifiers.set(name, set = new Set());
+						import_identifiers.set(name, (set = new Set()));
 					}
 
 					set.add(node);
@@ -498,7 +480,7 @@ export function finalize_program ({
 					let set = hoisted_identifiers.get(name);
 
 					if (!set) {
-						hoisted_identifiers.set(name, set = new Set());
+						hoisted_identifiers.set(name, (set = new Set()));
 					}
 
 					set.add(node);
@@ -600,7 +582,7 @@ function _has_identifier_declared (node, filter) {
 		(node.type === 'RestElement' && _has_identifier_declared(node.argument, filter)) ||
 		(node.type === 'ObjectPattern' && _has_identifier_declared(node.properties, filter)) ||
 		(node.type === 'ArrayPattern' && _has_identifier_declared(node.elements, filter))
-	)
+	);
 }
 
 /**
@@ -634,4 +616,3 @@ function _is_primitive (expression, scope) {
 		(expression.type === 'CallExpression' && _is_primitive(expression.callee, scope) && _is_primitive(expression.arguments, scope))
 	);
 }
-

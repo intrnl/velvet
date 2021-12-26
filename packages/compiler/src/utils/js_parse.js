@@ -4,6 +4,7 @@ import { generate } from 'astring';
 import { walk } from './walker.js';
 import * as t from './js_types.js';
 
+
 /**
  * @param {string} source
  * @returns {import('estree').Program}
@@ -60,7 +61,7 @@ function reattach_comments (ast, comments, source) {
 
 			/** @type {import('estree').Comment} */
 			let comment;
-			let leading_comments = node.comments ||= [];
+			let leading_comments = (node.comments ||= []);
 
 			while ((comment = comments[0]) && comment.start < node.start) {
 				leading_comments.push(comments.shift());
@@ -72,7 +73,7 @@ function reattach_comments (ast, comments, source) {
 				return;
 			}
 
-			let trailing_comments = node.trailingComments ||= [];
+			let trailing_comments = (node.trailingComments ||= []);
 
 			if (comments[0]) {
 				let slice = source.slice(node.end, comments[0].start);
@@ -85,13 +86,13 @@ function reattach_comments (ast, comments, source) {
 	});
 }
 
-let unique_id = (Math.round(Math.random() * 1e13)).toString(36);
+let unique_id = Math.round(Math.random() * 1e13).toString(36);
 let unique_regex = new RegExp(`_${unique_id}_(?:(\\d+)|(FOO)|(BAR)|(BAZ))_(\\w+)?`, 'g');
 
 let sigils = {
 	'@': 'FOO',
 	'%': 'BAR',
-	'%%': 'BAZ'
+	'%%': 'BAZ',
 };
 
 function join_placeholders (strings) {
@@ -101,10 +102,7 @@ function join_placeholders (strings) {
 		result += `_${unique_id}_${index - 1}_${strings[index]}`;
 	}
 
-	return result.replace(
-		/(@|%|%%)(\w+)/g,
-		(_, sigil, id) => `_${unique_id}_${sigils[sigil]}_${id}`,
-	);
+	return result.replace(/(@|%|%%)(\w+)/g, (_, sigil, id) => `_${unique_id}_${sigils[sigil]}_${id}`);
 }
 
 function inject_placeholders (node, values) {
@@ -152,7 +150,7 @@ export function x (strings, ...values) {
 		let str = join_placeholders(strings);
 		let ast = parse_expression(str);
 
-		ast_cache.set(strings, base = ast);
+		ast_cache.set(strings, (base = ast));
 	}
 
 	let expression = structuredClone(base);
@@ -172,7 +170,7 @@ export function b (strings, ...values) {
 			statement.path.parent = undefined;
 		}
 
-		ast_cache.set(strings, base = ast.body);
+		ast_cache.set(strings, (base = ast.body));
 	}
 
 	let program = structuredClone(base);

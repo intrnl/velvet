@@ -152,7 +152,7 @@ export function eat_identifier (state) {
 		index += code <= 0xffff ? 1 : 2;
 	}
 
-	return t.identifier(state.content.slice(state.index, state.index = index));
+	return t.identifier(state.content.slice(state.index, (state.index = index)));
 }
 
 /**
@@ -217,12 +217,12 @@ export function is_whitespace (char) {
 }
 
 function get_char_code (str, index) {
-	const code = str.charCodeAt(index);
+	let code = str.charCodeAt(index);
 
 	if (code <= 0xd7ff || code >= 0xe000) {
 		return code;
 	}
 
-	const next = str.charCodeAt(index + 1);
+	let next = str.charCodeAt(index + 1);
 	return (code << 10) + next - 0x35fdc00;
 }

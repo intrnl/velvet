@@ -26,7 +26,7 @@ class VelvetComponent extends HTMLElement {
 		super();
 
 		let host = this;
-		let props =	host.$p;
+		let props = host.$p;
 
 		host.$s = setup;
 

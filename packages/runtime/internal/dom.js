@@ -12,7 +12,6 @@ export function clone (template) {
 	return fragment;
 }
 
-
 export function traverse (node, indices) {
 	let ref = node;
 
@@ -22,7 +21,6 @@ export function traverse (node, indices) {
 
 	return ref;
 }
-
 
 export function replace (ref, node, adopt) {
 	ref.replaceWith(node);
@@ -39,7 +37,6 @@ export function append (ref, node) {
 export function after (ref, node) {
 	ref.after(node);
 }
-
 
 export function remove (node) {
 	node.remove();
@@ -71,7 +68,6 @@ export function get_parts (a, b) {
 
 	return nodes;
 }
-
 
 export function on (node, type, listener, options) {
 	node.addEventListener(type, listener, options);

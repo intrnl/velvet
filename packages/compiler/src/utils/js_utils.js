@@ -1,5 +1,6 @@
 import { walk } from './walker.js';
 
+
 /**
  * @param {import('estree').Node} node
  * @param {import('estree').Node} parent
@@ -17,41 +18,51 @@ export function is_reference (node, parent) {
 
 		switch (parent.type) {
 			// disregard `bar` in `foo.bar`
-			case 'MemberExpression': return parent.computed || node === parent.object;
+			case 'MemberExpression':
+				return parent.computed || node === parent.object;
 
 			// disregard the `foo` in `class {foo(){}}` but keep it in `class {[foo](){}}`
-			case 'MethodDefinition': return parent.computed;
+			case 'MethodDefinition':
+				return parent.computed;
 
 			// disregard the `foo` in `class {foo=bar}` but keep it in `class {[foo]=bar}` and `class {bar=foo}`
-			case 'PropertyDefinition': return parent.computed || node === parent.value;
+			case 'PropertyDefinition':
+				return parent.computed || node === parent.value;
 
 			// disregard the `bar` in `{ bar: foo }`, but keep it in `{ [bar]: foo }`
-			case 'Property': return parent.computed || node === parent.value;
+			case 'Property':
+				return parent.computed || node === parent.value;
 
 			// disregard the `bar` in `export { foo as bar }` or
 			// the foo in `import { foo as bar }`
 			case 'ExportSpecifier':
-			case 'ImportSpecifier': return node === parent.local;
+			case 'ImportSpecifier':
+				return node === parent.local;
 
 			// disregard the `foo` in `let foo = bar` but keep it in `let bar = foo`
-			case 'VariableDeclarator': return node === parent.init;
+			case 'VariableDeclarator':
+				return node === parent.init;
 
 			// disregard the `foo` in `foo = bar` but keep it in `bar = foo`
 			// case 'AssignmentExpression': return node === parent.right;
 			// case 'UpdateExpression': return node === parent.argument;
 
 			// disregard the `foo` in `(foo) => bar` but keep it in `(bar) => foo`
-			case 'ArrowFunctionExpression': return node === parent.body;
+			case 'ArrowFunctionExpression':
+				return node === parent.body;
 
 			// disregard any of the identifiers in a function declaration
 			case 'FunctionDeclaration':
-			case 'FunctionExpression': return false;
+			case 'FunctionExpression':
+				return false;
 
 			// disregard the `foo` in `foo: while (...) { ... break foo; ... continue foo;}`
 			case 'LabeledStatement':
 			case 'BreakStatement':
-			case 'ContinueStatement': return false;
-			default: return true;
+			case 'ContinueStatement':
+				return false;
+			default:
+				return true;
 		}
 	}
 
@@ -80,10 +91,9 @@ export function extract_identifiers (param, nodes = []) {
 			break;
 
 		case 'ObjectPattern':
-
 			for (let property of param.properties) {
 				if (property.type === 'RestElement') {
-					extract_identifiers(property.argument)
+					extract_identifiers(property.argument);
 				}
 				else {
 					extract_identifiers(property.value, nodes);
@@ -116,15 +126,15 @@ export function extract_identifiers (param, nodes = []) {
 /** @param {import('estree').Node} expression */
 export function analyze (expression) {
 	/** @type {WeakMap<import('estree').Node, Scope>} */
-	const map = new WeakMap();
+	let map = new WeakMap();
 
 	/** @type {Map<string, import('estree').Node>} */
-	const globals = new Map();
+	let globals = new Map();
 
-	const scope = new Scope(null, false);
+	let scope = new Scope(null, false);
 
 	/** @type {[Scope, import('estree').Identifier][]} */
-	const references = [];
+	let references = [];
 	let current_scope = scope;
 
 	walk(expression, {
@@ -132,7 +142,7 @@ export function analyze (expression) {
 		 * @param {import('estree').Node} node
 		 * @param {import('estree').Node} [parent]
 		 */
-		enter(node, parent) {
+		enter (node, parent) {
 			switch (node.type) {
 				case 'Identifier':
 					if (is_reference(node, parent)) {
@@ -156,9 +166,10 @@ export function analyze (expression) {
 							current_scope.declarations.set(node.id.name, node);
 						}
 
-						map.set(node, current_scope = new Scope(current_scope, false));
-					} else {
-						map.set(node, current_scope = new Scope(current_scope, false));
+						map.set(node, (current_scope = new Scope(current_scope, false)));
+					}
+					else {
+						map.set(node, (current_scope = new Scope(current_scope, false)));
 
 						if (node.type === 'FunctionExpression' && node.id) {
 							current_scope.declarations.set(node.id.name, node);
@@ -176,11 +187,11 @@ export function analyze (expression) {
 				case 'ForStatement':
 				case 'ForInStatement':
 				case 'ForOfStatement':
-					map.set(node, current_scope = new Scope(current_scope, true));
+					map.set(node, (current_scope = new Scope(current_scope, true)));
 					break;
 
 				case 'BlockStatement':
-					map.set(node, current_scope = new Scope(current_scope, true));
+					map.set(node, (current_scope = new Scope(current_scope, true)));
 					break;
 
 				case 'ClassDeclaration':
@@ -189,7 +200,7 @@ export function analyze (expression) {
 					break;
 
 				case 'CatchClause':
-					map.set(node, current_scope = new Scope(current_scope, true));
+					map.set(node, (current_scope = new Scope(current_scope, true)));
 
 					if (node.param) {
 						for (let node of extract_identifiers(node.param)) {
@@ -202,15 +213,15 @@ export function analyze (expression) {
 		},
 
 		/** @param {import('estree').Node} node */
-		leave(node) {
+		leave (node) {
 			if (map.has(node)) {
 				current_scope = current_scope.parent;
 			}
-		}
+		},
 	});
 
 	for (let index = references.length - 1; index >= 0; --index) {
-		const [scope, reference] = references[index];
+		let [scope, reference] = references[index];
 
 		if (!scope.references.has(reference.name)) {
 			add_reference(scope, reference.name);
@@ -257,7 +268,8 @@ export class Scope {
 		if (node.type === 'VariableDeclaration') {
 			if (node.kind === 'var' && this.block && this.parent) {
 				this.parent.add_declaration(node);
-			} else {
+			}
+			else {
 				for (let declarator of node.declarations) {
 					for (let node of extract_identifiers(declarator.id)) {
 						this.declarations.set(node.name, node);
@@ -268,7 +280,8 @@ export class Scope {
 					}
 				}
 			}
-		} else if (node.id) {
+		}
+		else if (node.id) {
 			this.declarations.set(node.id.name, node);
 		}
 	}
