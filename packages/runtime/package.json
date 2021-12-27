@@ -1,6 +1,7 @@
 {
 	"type": "module",
 	"name": "@intrnl/velvet",
+	"version": "0.1.0",
 	"exports": {
 		".": "./index.js",
 		"./internal": "./internal/index.js",
