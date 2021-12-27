@@ -511,6 +511,13 @@ console.log($foo(@access), $$, $$$);
 "
 `;
 
+exports[`store > reference store twice 1`] = `
+"let $foo = @ref();
+@cleanup(foo.subscribe($foo));
+console.log($foo(@access), $foo(@access));
+"
+`;
+
 exports[`store > retrieving member property 1`] = `
 "let $foo = @ref();
 @cleanup(foo.subscribe($foo));

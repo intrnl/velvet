@@ -715,6 +715,17 @@ describe('store', () => {
 		let result = print(program);
 		expect(result).toMatchSnapshot();
 	});
+
+	it('reference store twice', () => {
+		let program = parse(`
+			console.log($foo, $foo);
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	})
 });
 
 describe('bind', () => {
