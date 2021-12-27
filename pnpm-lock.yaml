@@ -21,7 +21,7 @@ importers:
     specifiers:
       '@intrnl/fs-cache': ^0.2.3
       '@intrnl/velvet': workspace:^0.1.0
-      '@intrnl/velvet-compiler': workspace:^0.1.1
+      '@intrnl/velvet-compiler': workspace:^0.2.1
       esbuild: ^0.14.8
     dependencies:
       '@intrnl/fs-cache': 0.2.3
