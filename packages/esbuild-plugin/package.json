@@ -1,0 +1,20 @@
+{
+	"type": "module",
+	"name": "@intrnl/esbuild-plugin-velvet",
+	"version": "0.1.0",
+	"files": [
+		"src/"
+	],
+	"main": "src/index.js",
+	"dependencies": {
+		"@intrnl/fs-cache": "^0.2.3",
+		"@intrnl/velvet-compiler": "workspace:^0.1.0"
+	},
+	"peerDependencies": {
+		"esbuild": "^0.14.8"
+	},
+	"devDependencies": {
+		"@intrnl/velvet": "workspace:^0.1.0",
+		"esbuild": "^0.14.8"
+	}
+}
