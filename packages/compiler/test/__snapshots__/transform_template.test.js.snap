@@ -3,6 +3,7 @@
 exports[`attribute > dynamic 1`] = `
 "let %%template0 = @html(\\"<div></div>\\");
 let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
 $: @attr(%child0, \\"class\\", className);
 @append($$root, %fragment0);
 "

@@ -335,6 +335,8 @@ export function transform_template (template) {
 					}
 
 					if (node.inline || (attr_value && attr_value.type !== 'Text')) {
+						need_ident = true;
+
 						let name = t.literal(attr_name);
 
 						let statements = b`
