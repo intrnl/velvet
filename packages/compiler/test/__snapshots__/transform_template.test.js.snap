@@ -368,16 +368,16 @@ let %marker2 = @traverse(%fragment0, [0]);
 exports[`conditional logic > nested consequent 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
-let %block2 = $$root => {
-  let %%template2 = @html(\\"<div>bar!</div><!>\\");
-  let %fragment2 = @clone(%template2);
-  let %marker0 = @traverse(%fragment2, [1]);
-  @after($$root, %fragment2);
-  return %marker0;
-};
 let %block1 = $$root => {
   let %%template1 = @html(\\"<div>foo!</div><!><!>\\");
   let %fragment1 = @clone(%template1);
+  let %block2 = $$root => {
+    let %%template2 = @html(\\"<div>bar!</div><!>\\");
+    let %fragment2 = @clone(%template2);
+    let %marker0 = @traverse(%fragment2, [1]);
+    @after($$root, %fragment2);
+    return %marker0;
+  };
   let %marker1 = @traverse(%fragment1, [1]);
   @show(%marker1, () => bar ? %block2 : null);
   let %marker2 = @traverse(%fragment1, [2]);
