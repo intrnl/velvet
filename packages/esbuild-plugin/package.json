@@ -11,7 +11,7 @@
 	"main": "src/index.js",
 	"dependencies": {
 		"@intrnl/fs-cache": "^0.2.3",
-		"@intrnl/velvet-compiler": "workspace:^0.1.0"
+		"@intrnl/velvet-compiler": "workspace:^0.1.1"
 	},
 	"peerDependencies": {
 		"esbuild": "^0.14.8"
