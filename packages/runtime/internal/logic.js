@@ -27,11 +27,12 @@ export function show (marker, expression) {
 			end = null;
 		}
 
+		current = block;
+
 		if (!block) {
 			return;
 		}
 
-		current = block;
 		end = instance.run(() => block(marker));
 	});
 }
