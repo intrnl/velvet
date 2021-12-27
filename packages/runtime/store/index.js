@@ -1,3 +1,4 @@
+import { Array, Set } from '../internal/globals.js';
 import { noop, is } from '../internal/utils.js';
 
 
@@ -8,6 +9,54 @@ export function writable (value, notifier) {
 export function readable (value, notifier) {
 	let instance = writable(value, notifier);
 	return { subscribe: instance.subscribe.bind(instance) };
+}
+
+export function derived (derives, fn, initial_value) {
+	let single = !Array.isArray(derives);
+	let stores = single ? [derives] : derives;
+
+	let auto = fn.length < 2;
+
+	return readable(initial_value, (set) => {
+		let init = false;
+		let values = [];
+		let cleanup = noop;
+
+		let sync = () => {
+			if (!init) {
+				return;
+			}
+
+			cleanup();
+
+			let result = fn(single ? values[0] : values, set);
+
+			if (auto) {
+				set(result);
+			}
+			else {
+				cleanup = typeof result === 'function' ? result : noop;
+			}
+		};
+
+		let unsubcriptions = stores.map((store, index) => (
+			store.subscribe((value) => {
+				values[index] = value;
+				sync();
+			})
+		));
+
+		init = true;
+		sync();
+
+		return () => {
+			for (let stop of unsubcriptions) {
+				stop();
+			}
+
+			cleanup();
+		};
+	});
 }
 
 class Writable {
