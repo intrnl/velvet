@@ -80,6 +80,14 @@ export function transform_script (program) {
 
 					let ident = own_scope.declarations.get(name);
 					(ident.velvet ||= {}).mutable = true;
+
+					let expression = t.assignment_expression(
+						identifier,
+						t.literal(1),
+						node.operator.slice(1) + '=',
+					);
+
+					return expression;
 				}
 
 				return;
@@ -319,6 +327,11 @@ export function transform_script (program) {
 				let right = node.right;
 
 				let name = identifier.name;
+
+				if (name[0] === '$' && name[1] !== '$') {
+
+					return;
+				}
 
 				let own_scope = curr_scope.find_owner(name);
 				let ident = own_scope && own_scope.declarations.get(name);

@@ -344,6 +344,13 @@ console.log(value1, value2(@access));
 "
 `;
 
+exports[`ref > postfix 1`] = `
+"let count = @ref(0);
+count(count(@access) + 1);
+count(count(@access) - 1);
+"
+`;
+
 exports[`ref > unmutated variable accessing member property 1`] = `
 "let state = {
   count: 0

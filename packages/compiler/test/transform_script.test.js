@@ -204,6 +204,31 @@ describe('ref', () => {
 		let result = print(program);
 		expect(result).toMatchSnapshot();
 	});
+
+	it('postfix', () => {
+		let program = parse(`
+			let count = 0;
+
+			++count;
+			--count;
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('prefix throws', () => {
+		let program = parse(`
+			let count = 0;
+
+			count++;
+			count--;
+		`);
+
+		expect(() => transform_script(program)).to.throw();
+	});
 });
 
 describe('prop', () => {
