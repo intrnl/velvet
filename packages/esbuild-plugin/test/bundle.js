@@ -11,6 +11,6 @@ await build({
 	format: 'esm',
 
 	plugins: [
-		velvetPlugin(),
+		velvetPlugin({ minifyCSS: true }),
 	],
 });

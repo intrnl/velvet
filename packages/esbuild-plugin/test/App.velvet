@@ -9,3 +9,11 @@
 <button @click={increment}>
 	Clicked {count} times
 </button>
+
+<style>
+	@import './reset.css';
+
+	button {
+		background-color: lightgray;
+	}
+</style>

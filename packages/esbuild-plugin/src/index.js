@@ -31,12 +31,8 @@ export default function velvet_plugin (options = {}) {
 
 			let minify_css = minifyCSS ?? build.initialOptions.minify;
 
-			build.onLoad({ filter: include }, async (args) => {
-				let { path: filename, namespace } = args;
-
-				if (namespace !== 'file' && namespace !== '') {
-					return null;
-				}
+			build.onLoad({ filter: include, namespace: 'file' }, async (args) => {
+				let { path: filename } = args;
 
 				const key = [
 					VERSION,
@@ -59,8 +55,6 @@ export default function velvet_plugin (options = {}) {
 	};
 
 	async function loader (filename, prefix, minify_css, internal) {
-		let dirname = path.dirname(filename);
-
 		let source = await fs.readFile(filename, 'utf-8');
 		let dependencies = [];
 
@@ -68,7 +62,7 @@ export default function velvet_plugin (options = {}) {
 			name: componentize(filename, prefix),
 			internal: internal,
 			css: async (css_source) => {
-				let css_result = await bundle_css(dirname, css_source, minify_css);
+				let css_result = await bundle_css(filename, css_source, minify_css);
 				dependencies.push(...css_result.dependencies);
 
 				return css_result.css;
@@ -78,12 +72,13 @@ export default function velvet_plugin (options = {}) {
 		return { js: result, dependencies };
 	}
 
-	async function bundle_css (dirname, source, minify) {
+	async function bundle_css (filename, source, minify) {
 		let result = await build({
 			stdin: {
 				loader: 'css',
 				contents: source,
-				resolveDir: dirname,
+				sourcefile: path.basename(filename),
+				resolveDir: path.dirname(filename),
 			},
 			metafile: true,
 			bundle: true,
@@ -92,10 +87,10 @@ export default function velvet_plugin (options = {}) {
 			write: false,
 		});
 
+
 		return {
-			css: result.outputFiles[0].text,
+			css: result.outputFiles[0].text.trimEnd(),
 			dependencies: Object.keys(result.metafile.inputs)
-				.filter((name) => name !== '<stdin>')
 				.map((name) => path.resolve(name)),
 		};
 	}
