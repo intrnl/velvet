@@ -4,6 +4,10 @@
 	"version": "0.1.0",
 	"author": "intrnl",
 	"license": "MIT",
+	"repository": {
+		"url": "https://github.com/intrnl/velvet",
+		"directory": "packages/runtime"
+	},
 	"sideEffects": false,
 	"exports": {
 		".": "./index.js",
