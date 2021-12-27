@@ -499,7 +499,7 @@ export function transform_template (template) {
 						let ${block_ident} = ($$root) => ${statement};
 					`;
 
-					program.push(...declarations);
+					curr_scope.push(...declarations);
 				}
 
 				if (alternate_block) {
@@ -511,7 +511,7 @@ export function transform_template (template) {
 						let ${block_ident} = ($$root) => ${statement};
 					`;
 
-					program.push(...declarations);
+					curr_scope.push(...declarations);
 				}
 
 				if (parent.type !== 'ConditionalStatement') {
@@ -573,7 +573,7 @@ export function transform_template (template) {
 					),
 				]);
 
-				program.push(declaration);
+				curr_scope.push(declaration);
 
 				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
 				let marker_ident = '%marker' + (id_m++);
@@ -608,7 +608,7 @@ export function transform_template (template) {
 						t.variable_declarator(pending_ident, t.arrow_function_expression([t.identifier('$$root')], statement)),
 					]);
 
-					program.push(decl);
+					curr_scope.push(decl);
 				}
 
 				if (node.resolved) {
@@ -632,7 +632,7 @@ export function transform_template (template) {
 						),
 					]);
 
-					program.push(decl);
+					curr_scope.push(decl);
 				}
 
 				if (node.rejected) {
@@ -656,7 +656,7 @@ export function transform_template (template) {
 						),
 					]);
 
-					program.push(decl);
+					curr_scope.push(decl);
 				}
 
 				let argument = node.argument;
