@@ -632,6 +632,24 @@ describe('effect', () => {
 		let result = print(program);
 		expect(result).toMatchSnapshot();
 	});
+
+	it('handles direct statements', () => {
+		let program = parse(`
+			let value = 0;
+			let array = [];
+			value += 1;
+			array = [1, 2, 3];
+
+			$: if (value % 2 === 0) console.log('odd!');
+			$: for (let item of array) console.log(item);
+			$: console.log(array);
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
 });
 
 describe('store', () => {

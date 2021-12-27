@@ -137,6 +137,21 @@ console.log(unrelated);
 "
 `;
 
+exports[`effect > handles direct statements 1`] = `
+"let value = @ref(0);
+let array = @ref([]);
+value(value(@access) + 1);
+array([1, 2, 3]);
+@effect(() => {
+  if (value(@access) % 2 === 0) console.log('odd!');
+});
+@effect(() => {
+  for (let item of array(@access)) console.log(item);
+});
+@effect(() => console.log(array(@access)));
+"
+`;
+
 exports[`effect > only transform root scope 1`] = `
 "let value = @ref(0);
 value(value(@access) + 1);

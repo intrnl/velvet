@@ -452,7 +452,11 @@ export function transform_script (program) {
 
 				if (is_effect) {
 					let body = node.body;
-					let statement = body.type === 'ExpressionStatement' ? body.expression : body;
+					let statement = body.type === 'ExpressionStatement'
+						? body.expression
+						: body.type === 'BlockStatement'
+							? body
+							: t.block_statement([body]);
 
 					let effect = t.arrow_function_expression([], statement);
 					let expression = t.call_expression(t.identifier('@effect'), [effect]);
