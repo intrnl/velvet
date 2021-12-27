@@ -24,7 +24,7 @@ A template like this...
 ...is generated into efficient DOM mutations...
 
 ```js
-import {ref, access, html, clone, traverse, text, append, define} from "@intrnl/velvet";
+import {ref, access, html, clone, traverse, text, append, define} from "@intrnl/velvet/internal";
 
 let template0 = html("<button> Clicked <!> times </button>");
 
