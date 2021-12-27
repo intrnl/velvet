@@ -1,3 +1,5 @@
+import * as v8 from 'node:v8';
+
 import * as acorn from 'acorn';
 import { generate } from 'astring';
 
@@ -155,6 +157,8 @@ function inject_placeholders (node, values) {
 	});
 }
 
+// structuredClone is only available on Node 17+, we'll use v8.serialize for
+// the time being.
 let ast_cache = new WeakMap();
 
 export function x (strings, ...values) {
@@ -164,10 +168,10 @@ export function x (strings, ...values) {
 		let str = join_placeholders(strings);
 		let ast = parse_expression(str);
 
-		ast_cache.set(strings, (base = ast));
+		ast_cache.set(strings, (base = v8.serialize(ast)));
 	}
 
-	let expression = structuredClone(base);
+	let expression = v8.deserialize(base);
 	inject_placeholders(expression, values);
 
 	return expression;
@@ -184,10 +188,10 @@ export function b (strings, ...values) {
 			statement.path.parent = undefined;
 		}
 
-		ast_cache.set(strings, (base = ast.body));
+		ast_cache.set(strings, (base = v8.serialize(ast.body)));
 	}
 
-	let program = structuredClone(base);
+	let program = v8.deserialize(base);
 	inject_placeholders(program, values);
 
 	return program;
