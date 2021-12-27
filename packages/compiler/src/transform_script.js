@@ -419,14 +419,23 @@ export function transform_script (program) {
 }
 
 
-export function finalize_program ({
-	program,
+export function finalize_template (program, name, props_idx) {
+	let setup_ident = t.identifier('%setup');
 
-	props_idx,
+	let setup_decl = t.function_declaration(
+		setup_ident,
+		[t.identifier('$$root'), t.identifier('$$host')],
+		program.body.splice(0, program.body.length),
+	);
 
-	component_name = 'x-app',
-	mod = 'velvet/internal',
-}) {
+	let props_decl = t.object_expression(props_idx.map((name, idx) => t.property(t.identifier(name), t.literal(idx))));
+	let setup_call = t.call_expression(t.identifier('@define'), [t.literal(name), setup_ident, props_decl]);
+
+	program.body.push(setup_decl);
+	program.body.push(t.export_default_declaration(setup_call));
+}
+
+export function finalize_program (program, mod = 'velvet/internal') {
 	/** @type {Set<string>} */
 	let identifiers = new Set();
 
@@ -437,21 +446,6 @@ export function finalize_program ({
 
 	/** @type {import('estree').Node[]} */
 	let hoisted_statements = [];
-
-	// wrap everything into a setup function
-	let setup_ident = t.identifier(_find_unique_identifier('setup', identifiers));
-
-	let setup_decl = t.function_declaration(
-		setup_ident,
-		[t.identifier('$$root'), t.identifier('$$host')],
-		program.body.splice(0, program.body.length),
-	);
-
-	let props_decl = t.object_expression(props_idx.map((name, idx) => t.property(t.identifier(name), t.literal(idx))));
-	let setup_call = t.call_expression(t.identifier('@define'), [t.literal(component_name), setup_ident, props_decl]);
-
-	program.body.push(setup_decl);
-	program.body.push(t.export_default_declaration(setup_call));
 
 	// find variables to hoist, and list of things to import from module
 	walk(program, {

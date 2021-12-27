@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { finalize_program, transform_script } from '../src/transform_script.js';
+import { finalize_program, finalize_template, transform_script } from '../src/transform_script.js';
 import { parse, print } from '../src/utils/js_parse.js';
 
 
@@ -806,7 +806,7 @@ describe('reserved', () => {
 	});
 });
 
-describe('final', () => {
+describe('program finalizer', () => {
 	it('props test', () => {
 		let program = parse(`
 			export let count = -1;
@@ -816,7 +816,7 @@ describe('final', () => {
 		`);
 
 		let { props_idx } = transform_script(program);
-		finalize_program({ program, props_idx });
+		finalize_program(program);
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();

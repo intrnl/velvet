@@ -193,16 +193,10 @@ foo: {
 "
 `;
 
-exports[`final > props test 1`] = `
-"import {prop, define} from \\"velvet/internal\\";
-function setup($$root, $$host) {
-  let count = prop(0, -1);
-  let magic = prop(1, 420);
-}
-export default define(\\"x-app\\", setup, {
-  count: 0,
-  MAGIC: 1
-});
+exports[`program finalizer > props test 1`] = `
+"import {prop} from \\"velvet/internal\\";
+let count = prop(0, -1);
+let magic = prop(1, 420);
 "
 `;
 
