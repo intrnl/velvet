@@ -613,7 +613,9 @@ function _parse_element (state) {
 	node.start = start;
 	node.end = state.index;
 
-	if (name === 'script' || name === 'style') {
+	parent.children.push(node);
+
+	if (!self_closing && (name === 'script' || name === 'style')) {
 		// we shouldn't parse into script and style elements
 		let pattern = name === 'script' ? /<\/script\s*>/g : /<\/style\s*>/g;
 		let data = p.eat_until(state, pattern);
@@ -621,15 +623,11 @@ function _parse_element (state) {
 		p.eat_pattern(state, pattern, `${name} closing tag`);
 
 		let text = t.text(data, data);
-		let node = t.element(name, [], [text]);
 
-		parent.children.push(node);
-		return;
+		node.end = state.index;
+		node.children.push(text);
 	}
-
-	parent.children.push(node);
-
-	if (!self_closing) {
+	else if (!self_closing) {
 		p.push(state, node);
 	}
 }
