@@ -137,7 +137,7 @@ export function compile (source, options = {}) {
 
 	if (script) {
 		let text_node = script.children[0];
-		let prog = parse(text_node.value);
+		let prog = parse(text_node.value, { start: text_node.start });
 
 		program.body.unshift(...prog.body);
 	}
@@ -147,7 +147,7 @@ export function compile (source, options = {}) {
 
 	if (mod) {
 		let text_node = mod.children[0];
-		let prog = parse(text_node.value);
+		let prog = parse(text_node.value, { start: text_node.start });
 		validate_module(prog);
 
 		program.body.unshift(...prog.body);

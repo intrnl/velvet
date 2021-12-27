@@ -21,6 +21,7 @@ export function parse (source, options) {
 	});
 
 	reattach_comments(program, comments, source);
+	fix_positions(program, options?.start);
 	return program;
 }
 
@@ -82,6 +83,19 @@ function reattach_comments (ast, comments, source) {
 					trailing_comments.push(comments.shift());
 				}
 			}
+		},
+	});
+}
+
+function fix_positions (ast, start = 0) {
+	if (start < 1) {
+		return;
+	}
+
+	walk(ast, {
+		enter (node) {
+			node.start = start;
+			node.end = start;
 		},
 	});
 }
