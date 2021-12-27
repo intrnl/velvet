@@ -93,7 +93,7 @@ class Scope {
 
 		let effects = _this.e;
 		let cleanups = _this.c;
-		let scopes = _this.c;
+		let scopes = _this.s;
 
 		for (let effect of effects) {
 			effect.stop();
