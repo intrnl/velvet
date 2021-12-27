@@ -208,6 +208,14 @@ export function transform_template (template) {
 						: t.literal(true);
 
 					if (attr_name === '#ref') {
+						if (!attr_value || attr_value.type === 'Text') {
+							throw {
+								message: 'expected an expression for #this',
+								start: attribute.start,
+								end: attribute.end,
+							};
+						}
+
 						need_ident = true;
 
 						let statements = b`
@@ -260,6 +268,14 @@ export function transform_template (template) {
 					}
 
 					if (attr_name[0] === ':') {
+						if (!attr_value || attr_value.type === 'Text') {
+							throw {
+								message: 'expected an expression for #this',
+								start: attribute.start,
+								end: attribute.end,
+							};
+						}
+
 						need_ident = true;
 
 						let name = attr_name.slice(1);
