@@ -112,7 +112,10 @@ export function define (tag, setup, definition) {
 		});
 	}
 
-	customElements.define(tag, Component);
+	if (tag) {
+		customElements.define(tag, Component);
+	}
+
 	return Component;
 }
 
