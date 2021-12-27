@@ -86,6 +86,15 @@ describe('attribute', () => {
 
 		expect(print(program)).toMatchSnapshot();
 	});
+
+	it('spread', () => {
+		let template = `<input {...props}>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
 });
 
 describe('component', () => {

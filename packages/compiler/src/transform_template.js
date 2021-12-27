@@ -36,6 +36,10 @@ export function transform_template (template) {
 				curr_block.html += `<${elem_name}`;
 
 				for (let attribute of node.attributes) {
+					if (attribute.type === 'AttributeSpread') {
+						continue;
+					}
+
 					let attr_name = attribute.name;
 					let attr_value = attribute.value;
 
@@ -174,6 +178,19 @@ export function transform_template (template) {
 					node.attributes.some((attr) => attr.name === 'type' && attr.value?.decoded === 'checkbox');
 
 				for (let attribute of node.attributes) {
+					if (attribute.type === 'AttributeSpread') {
+						need_ident = true;
+
+						let expression = attribute.expression;
+
+						let statements = b`
+							$: @assign(${ident}, ${expression});
+						`;
+
+						pending.push(...statements);
+						continue;
+					}
+
 					let attr_name = attribute.name;
 					let attr_value = attribute.value;
 

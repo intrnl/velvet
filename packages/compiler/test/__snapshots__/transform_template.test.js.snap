@@ -53,6 +53,15 @@ $: input = %child0;
 "
 `;
 
+exports[`attribute > spread 1`] = `
+"let %%template0 = @html(\\"<input />\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+$: @assign(%child0, props);
+@append($$root, %fragment0);
+"
+`;
+
 exports[`attribute > static 1`] = `
 "let %%template0 = @html(\\"<div class=\\\\\\"foo\\\\\\"></div>\\");
 let %fragment0 = @clone(%template0);
