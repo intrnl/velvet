@@ -144,9 +144,6 @@ value(value(@access) + 1);
 function increment() {
   $: console.log(value(@access));
 }
-foo: {
-  $: console.log(value(@access));
-}
 "
 `;
 
