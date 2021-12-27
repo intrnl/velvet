@@ -614,6 +614,24 @@ describe('effect', () => {
 		let result = print(program);
 		expect(result).toMatchSnapshot();
 	});
+
+	it('only transform root scope', () => {
+		let program = parse(`
+			let value = 0;
+			value += 1;
+
+			$: console.log(value);
+
+			function increment () {
+				$: console.log(value);
+			}
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
 });
 
 describe('store', () => {

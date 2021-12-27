@@ -396,7 +396,11 @@ export function transform_script (program) {
 			}
 
 			// transform reactive statements
-			if (node.type === 'LabeledStatement' && node.label.name === '$') {
+			if (
+				curr_scope === root_scope &&
+				node.type === 'LabeledStatement' &&
+				node.label.name === '$'
+			) {
 				let is_effect = false;
 
 				walk(node, {

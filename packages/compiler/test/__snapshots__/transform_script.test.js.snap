@@ -137,6 +137,19 @@ console.log(unrelated);
 "
 `;
 
+exports[`effect > only transform root scope 1`] = `
+"let value = @ref(0);
+value(value(@access) + 1);
+@effect(() => console.log(value(@access)));
+function increment() {
+  $: console.log(value(@access));
+}
+foo: {
+  $: console.log(value(@access));
+}
+"
+`;
+
 exports[`effect > references mutated refs 1`] = `
 "$: console.log(value1, value2);
 foo: console.log(value1, value2);
