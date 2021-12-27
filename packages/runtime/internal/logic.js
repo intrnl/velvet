@@ -46,8 +46,12 @@ export function each (marker, block, expression) {
 
 	effect(() => {
 		let items = expression();
+		let index = 0;
 
-		for (let index = 0; index < items.length; index++) {
+		let items_len = items.length;
+		let parts_len = parts.length;
+
+		for (; index < items_len; index++) {
 			if (parts[index]) {
 				let item = parts[index][2];
 				item(items[index]);
@@ -63,17 +67,19 @@ export function each (marker, block, expression) {
 			}
 		}
 
-		for (let index = parts.length - 1; index >= items.length; index--) {
+		if (parts_len > items_len) {
 			let prev = parts[index - 1];
+
 			let start = prev ? prev[1] : marker;
+			let end = parts[parts_len - 1][1];
 
-			let [instance, end] = parts[index];
+			for (; index < parts_len; index++) {
+				parts[index][0].stop();
+			}
 
-			instance.stop();
 			destroy_block(start, end);
+			parts.length = items_len;
 		}
-
-		parts.length = items.length;
 	});
 
 	cleanup(() => {
