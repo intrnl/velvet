@@ -435,7 +435,7 @@ export function finalize_template (program, name, props_idx) {
 	program.body.push(t.export_default_declaration(setup_call));
 }
 
-export function finalize_program (program, mod = 'velvet/internal') {
+export function finalize_program (program, mod = '@intrnl/velvet') {
 	/** @type {Set<string>} */
 	let identifiers = new Set();
 

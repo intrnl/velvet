@@ -1,6 +1,6 @@
 {
 	"type": "module",
-	"name": "@velvet/compiler",
+	"name": "@intrnl/velvet-compiler",
 	"scripts": {
 		"test": "vitest run",
 		"test:watch": "vitest"

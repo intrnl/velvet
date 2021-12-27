@@ -1,6 +1,6 @@
 {
 	"private": true,
-	"name": "@velvet/test",
+	"name": "test",
 	"dependencies": {
 		"velvet": "link:../runtime"
 	}

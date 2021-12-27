@@ -1,6 +1,6 @@
 {
 	"type": "module",
-	"name": "@velvet/runtime",
+	"name": "@intrnl/velvet",
 	"exports": {
 		".": "./index.js",
 		"./internal": "./internal/index.js",
