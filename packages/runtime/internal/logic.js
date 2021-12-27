@@ -46,9 +46,8 @@ export function each (marker, block, expression) {
 
 	effect(() => {
 		let items = expression();
-		let index = 0;
 
-		for (; index < items.length; index++) {
+		for (let index = 0; index < items.length; index++) {
 			if (parts[index]) {
 				let item = parts[index][2];
 				item(items[index]);
@@ -64,7 +63,7 @@ export function each (marker, block, expression) {
 			}
 		}
 
-		for (; index < parts.length; index++) {
+		for (let index = parts.length - 1; index >= items.length; index--) {
 			let prev = parts[index - 1];
 			let start = prev ? prev[1] : marker;
 
