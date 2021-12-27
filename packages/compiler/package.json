@@ -1,15 +1,17 @@
 {
 	"type": "module",
 	"name": "@intrnl/velvet-compiler",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"author": "intrnl",
 	"license": "MIT",
 	"scripts": {
 		"test": "vitest run",
 		"test:watch": "vitest"
 	},
+	"files": [
+		"src/"
+	],
 	"main": "./src/index.js",
-	"files": ["./src/"],
 	"dependencies": {
 		"acorn": "^8.6.0",
 		"astring": "^1.8.1"
