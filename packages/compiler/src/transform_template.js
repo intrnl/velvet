@@ -28,6 +28,17 @@ export function transform_template (template) {
 				let is_inline = node.inline;
 				let is_selfclosing = node.self_closing;
 
+				if (elem_name === 'v:component') {
+					curr_block.html += '<!>';
+
+					block_stack.push(curr_block);
+					blocks.push((curr_block = create_block()));
+
+					scope_stack.push(curr_scope);
+					curr_scope = [];
+					return;
+				}
+
 				if (is_inline) {
 					curr_block.html += `<div>`;
 					return;
@@ -182,6 +193,8 @@ export function transform_template (template) {
 					elem_name === 'input' &&
 					node.attributes.some((attr) => attr.name === 'type' && attr.value?.decoded === 'checkbox');
 
+				let _this_expr;
+
 				for (let attribute of node.attributes) {
 					// @todo: attributes that are defined after the spread needs to know
 					// the presence of spread
@@ -206,6 +219,27 @@ export function transform_template (template) {
 							? t.literal(attr_value.decoded)
 							: attr_value.expression
 						: t.literal(true);
+
+					if (attr_name === '#this') {
+						if (!attr_value || attr_value.type === 'Text') {
+							throw {
+								message: 'expected an expression for #this',
+								start: attribute.start,
+								end: attribute.end,
+							};
+						}
+
+						if (elem_name !== 'v:component') {
+							throw {
+								message: 'expected #this usage in v:component',
+								start: attribute.start,
+								end: attribute.end,
+							};
+						}
+
+						_this_expr = value_expr;
+						continue;
+					}
 
 					if (attr_name === '#ref') {
 						if (!attr_value || attr_value.type === 'Text') {
@@ -321,6 +355,61 @@ export function transform_template (template) {
 
 					pending.unshift(...declarations);
 				}
+				else if (elem_name === 'v:component') {
+					let block = curr_block;
+					let scope = curr_scope;
+
+					curr_block = block_stack.pop();
+					curr_scope = scope_stack.pop();
+
+					if (!_this_expr) {
+						throw {
+							message: 'expected #this expression for v:component',
+							start: node.start,
+							end: node.end,
+						};
+					}
+
+					let header = b`
+						let ${ident} = new %component();
+					`;
+
+					let footer = b`
+						return ${ident};
+					`;
+
+					pending.unshift(...header);
+					pending.push(...footer);
+
+					let block_ident = '%block' + blocks.indexOf(block);
+					let template_ident = '%template' + blocks.indexOf(block);
+					let fragment_ident = '%fragment' + blocks.indexOf(block);
+					let marker_ident = '%marker' + (id_m++);
+
+					if (scope.length) {
+						let html = t.literal(block.html);
+
+						let template_declarations = b`
+							let ${'%' + template_ident} = @html(${html});
+							let ${fragment_ident} = @clone(${template_ident});
+						`;
+
+						scope.unshift(...template_declarations);
+					}
+
+					let curr_fragment_ident = '%fragment' + blocks.indexOf(curr_block);
+					let indices = t.array_expression([...curr_block.indices].map((idx) => t.literal(idx)));
+					let block_statement = t.block_statement([...scope, ...pending]);
+					pending.length = 0;
+
+					let statements = b`
+						let ${block_ident} = (%component) => ${block_statement};
+						let ${marker_ident} = @traverse(${curr_fragment_ident}, ${indices});
+						@dynamic(${marker_ident}, ${block_ident}, () => ${_this_expr});
+					`;
+
+					pending.push(...statements);
+				}
 				else if (is_inline) {
 					let marker_ident = '%marker' + (id_m++);
 
@@ -345,12 +434,17 @@ export function transform_template (template) {
 				curr_scope.push(...pending);
 				curr_block.indices.pop();
 
-				if (is_inline) {
+				if (elem_name === 'v:component') {
+					// do nothing
+				}
+				else if (is_inline) {
 					curr_block.html += `</div>`;
 				}
 				else if (!is_selfclosing) {
 					curr_block.html += `</${elem_name}>`;
 				}
+
+				return;
 			}
 
 			if (node.type === 'Fragment') {

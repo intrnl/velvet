@@ -106,6 +106,24 @@ describe('component', () => {
 
 		expect(print(program)).toMatchSnapshot();
 	});
+
+	it('v:component', () => {
+		let template = `<v:component #this={Component}></v:component>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('v:component with children', () => {
+		let template = `<v:component #this={Component}>Hello {name}!</v:component>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
 });
 
 describe('expression', () => {

@@ -263,6 +263,36 @@ let %marker2 = @traverse(%fragment0, [0]);
 "
 `;
 
+exports[`component > v:component 1`] = `
+"let %%template0 = @html(\\"<!>\\");
+let %fragment0 = @clone(%template0);
+let %block1 = %component => {
+  let %child0 = new %component();
+  return %child0;
+};
+let %marker0 = @traverse(%fragment0, [0]);
+@dynamic(%marker0, %block1, () => Component);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`component > v:component with children 1`] = `
+"let %%template0 = @html(\\"<!>\\");
+let %fragment0 = @clone(%template0);
+let %block1 = %component => {
+  let %%template1 = @html(\\"Hello <!>!\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [1]);
+  @text(%marker0, () => name);
+  let %child0 = new %component();
+  return %child0;
+};
+let %marker1 = @traverse(%fragment0, [0]);
+@dynamic(%marker1, %block1, () => Component);
+@append($$root, %fragment0);
+"
+`;
+
 exports[`component > v:self on a custom element 1`] = `
 "let %%template0 = @html(\\"<x-app><div>hello world!</div></x-app>\\");
 let %fragment0 = @clone(%template0);
