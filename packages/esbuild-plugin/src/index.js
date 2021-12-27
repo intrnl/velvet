@@ -7,7 +7,7 @@ import { compile } from '@intrnl/velvet-compiler';
 import { FSCache, getProjectRoot } from '@intrnl/fs-cache';
 
 
-let VERSION = 0;
+let VERSION = 1;
 
 /**
  * @param {*} options
@@ -16,10 +16,9 @@ let VERSION = 0;
 export default function velvet_plugin (options = {}) {
 	let {
 		include = /\.velvet$/i,
-		prefix = 'x',
+		cache = true,
 		minifyCSS,
-		internal,
-		cache = true
+		compileOptions,
 	} = options;
 
 	return {
@@ -36,14 +35,13 @@ export default function velvet_plugin (options = {}) {
 
 				const key = [
 					VERSION,
-					prefix,
+					compileOptions,
 					minify_css,
-					internal,
 				];
 
 				const result = cache
-					? await fs_cache.get(filename, key, () => loader(filename, prefix, minify_css, internal))
-					: await loader(filename, prefix, minify_css, internal);
+					? await fs_cache.get(filename, key, () => loader(filename, compileOptions, minify_css))
+					: await loader(filename, compileOptions, minify_css);
 
 				return {
 					loader: 'js',
@@ -54,14 +52,18 @@ export default function velvet_plugin (options = {}) {
 		},
 	};
 
-	async function loader (filename, prefix, minify_css, internal) {
+	async function loader (filename, options, minify_css) {
 		let source = await fs.readFile(filename, 'utf-8');
 		let dependencies = [];
 
 		let result = await compile(source, {
-			name: componentize(filename, prefix),
-			internal: internal,
+			filename,
+			...options,
 			css: async (css_source) => {
+				if (options?.css) {
+					css_source = options.css(css_source);
+				}
+
 				let css_result = await bundle_css(filename, css_source, minify_css);
 				dependencies.push(...css_result.dependencies);
 
@@ -94,34 +96,4 @@ export default function velvet_plugin (options = {}) {
 				.map((name) => path.resolve(name)),
 		};
 	}
-}
-
-export function componentize (filename, prefix = 'x') {
-	if (!filename) {
-		return null;
-	}
-
-	const parts = filename.split(/[/\\]/).map(encodeURI);
-
-	if (parts.length > 1) {
-		const index_match = parts[parts.length - 1].match(/^index(\.\w+)/);
-		if (index_match) {
-			parts.pop();
-			parts[parts.length - 1] += index_match[1];
-		}
-	}
-
-	const base = parts.pop()
-		.replace(/%20/g, '-')
-		.replace(/%/g, 'u')
-		.replace(/^_+|_+$|\.[^.]+$/g, '')
-		.replace(/[^a-zA-Z0-9-]+/g, '-')
-		.replace(/(?<!^)[A-Z]/g, '-$&')
-		.toLowerCase();
-
-	if (!base) {
-		throw new Error(`Could not derive component name from file ${filename}`);
-	}
-
-	return prefix + '-' + base;
 }

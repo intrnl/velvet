@@ -7,7 +7,13 @@ import { parse, print } from './utils/js_parse.js';
 
 
 export async function compile (source, options = {}) {
-	let { name = 'x-app', css, internal } = options;
+	let {
+		prefix = 'x',
+		filename,
+		name = componentize(filename, prefix),
+		css,
+		path = '@intrnl/velvet/internal',
+	} = options;
 
 	let template = typeof source === 'string'
 		? parse_template(source)
@@ -153,7 +159,37 @@ export async function compile (source, options = {}) {
 		program.body.unshift(...prog.body);
 	}
 
-	finalize_program(program, internal);
+	finalize_program(program, path);
 
 	return print(program);
+}
+
+export function componentize (filename, prefix = 'x') {
+	if (!filename) {
+		return null;
+	}
+
+	const parts = filename.split(/[/\\]/).map(encodeURI);
+
+	if (parts.length > 1) {
+		const index_match = parts[parts.length - 1].match(/^index(\.\w+)/);
+		if (index_match) {
+			parts.pop();
+			parts[parts.length - 1] += index_match[1];
+		}
+	}
+
+	const base = parts.pop()
+		.replace(/%20/g, '-')
+		.replace(/%/g, 'u')
+		.replace(/^_+|_+$|\.[^.]+$/g, '')
+		.replace(/[^a-zA-Z0-9-]+/g, '-')
+		.replace(/(?<!^)[A-Z]/g, '-$&')
+		.toLowerCase();
+
+	if (!base) {
+		throw new Error(`Could not derive component name from file ${filename}`);
+	}
+
+	return prefix + '-' + base;
 }
