@@ -178,6 +178,8 @@ export function transform_template (template) {
 					node.attributes.some((attr) => attr.name === 'type' && attr.value?.decoded === 'checkbox');
 
 				for (let attribute of node.attributes) {
+					// @todo: attributes that are defined after the spread needs to know
+					// the presence of spread
 					if (attribute.type === 'AttributeSpread') {
 						need_ident = true;
 
