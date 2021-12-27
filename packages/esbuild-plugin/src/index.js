@@ -18,6 +18,7 @@ export default function velvet_plugin (options = {}) {
 		include = /\.velvet$/i,
 		prefix = 'x',
 		minifyCSS,
+		internal,
 		cache = true
 	} = options;
 
@@ -39,13 +40,14 @@ export default function velvet_plugin (options = {}) {
 
 				const key = [
 					VERSION,
-					minify_css,
 					prefix,
+					minify_css,
+					internal,
 				];
 
 				const result = cache
-					? await fs_cache.get(filename, key, () => loader(filename, prefix, minify_css))
-					: await loader(filename, prefix, minify_css);
+					? await fs_cache.get(filename, key, () => loader(filename, prefix, minify_css, internal))
+					: await loader(filename, prefix, minify_css, internal);
 
 				return {
 					loader: 'js',
@@ -56,7 +58,7 @@ export default function velvet_plugin (options = {}) {
 		},
 	};
 
-	async function loader (filename, prefix, minify_css) {
+	async function loader (filename, prefix, minify_css, internal) {
 		let dirname = path.dirname(filename);
 
 		let source = await fs.readFile(filename, 'utf-8');
@@ -64,6 +66,7 @@ export default function velvet_plugin (options = {}) {
 
 		let result = await compile(source, {
 			name: componentize(filename, prefix),
+			internal: internal,
 			css: async (css_source) => {
 				let css_result = await bundle_css(dirname, css_source, minify_css);
 				dependencies.push(...css_result.dependencies);
