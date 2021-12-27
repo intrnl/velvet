@@ -1,6 +1,7 @@
 import { walk } from './utils/walker.js';
 import { analyze, is_reference } from './utils/js_utils.js';
 import * as t from './utils/js_types.js';
+import { print } from './utils/js_parse.js';
 
 
 export function transform_script (program) {
@@ -396,11 +397,35 @@ export function transform_script (program) {
 			}
 
 			// transform reactive statements
-			if (
-				curr_scope === root_scope &&
-				node.type === 'LabeledStatement' &&
-				node.label.name === '$'
-			) {
+			if (node.type === 'LabeledStatement' && node.label.name === '$') {
+				if (curr_scope !== root_scope) {
+					let is_valid = false;
+					let curr_node = node;
+
+					while (curr_node) {
+						let parent = curr_node.path.parent;
+
+						if (!parent) {
+							break;
+						}
+
+						if (
+							parent.type === 'VariableDeclarator' &&
+							parent.id.type === 'Identifier' &&
+							parent.id.name[0] === '%'
+						) {
+							is_valid = true;
+							break;
+						}
+
+						curr_node = parent;
+					}
+
+					if (!is_valid) {
+						return;
+					}
+				}
+
 				let is_effect = false;
 
 				walk(node, {
