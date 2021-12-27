@@ -181,6 +181,10 @@ export function transform_script (program) {
 					};
 				}
 
+				if (parent.type === 'AssignmentExpression' && parent.left === node && parent.operator === '=') {
+					return;
+				}
+
 				let actual = name.slice(1);
 				let actual_ident = t.identifier(actual);
 				let ident = t.identifier(name);
@@ -328,9 +332,34 @@ export function transform_script (program) {
 
 				let name = identifier.name;
 
-				if (name[0] === '$' && name[1] !== '$') {
+				if (name[0] === '$' && name[1] !== '$' && !parent.velvet?.transformed) {
+					let actual_ident = t.identifier(name.slice(1));
 
-					return;
+					let expr;
+					let operator = node.operator.slice(0, -1);
+
+					switch (node.operator) {
+						case '=': {
+							expr = right;
+							break
+						}
+						case '||=': case '&&=': case '??=': {
+							expr = t.logical_expression(identifier, right, operator);
+							break;
+						}
+						default: {
+							expr = t.binary_expression(identifier, right, operator);
+							break;
+						}
+					}
+
+					let call_expr = t.call_expression(
+						t.member_expression(actual_ident, t.identifier('set')),
+						[expr],
+					);
+
+					(call_expr.velvet ||= {}).transformed = true;
+					return call_expr;
 				}
 
 				let own_scope = curr_scope.find_owner(name);

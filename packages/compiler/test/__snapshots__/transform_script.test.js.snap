@@ -490,11 +490,9 @@ exports[`store > multiple setter references 1`] = `
 "let $value1 = @ref();
 @cleanup(value1.subscribe($value1));
 function increment() {
-  $value1($value1(@access) + 1);
+  value1.set($value1(@access) + 1);
 }
-let $value2 = @ref();
-@cleanup(value2.subscribe($value2));
-$value2(2);
+value2.set(2);
 "
 `;
 
@@ -538,9 +536,7 @@ console.log($foo(@access).bar);
 `;
 
 exports[`store > setter 1`] = `
-"let $store = @ref();
-@cleanup(store.subscribe($store));
-$store(123);
+"store.set(123);
 "
 `;
 
