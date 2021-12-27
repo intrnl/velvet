@@ -6,7 +6,7 @@ import { validate_module } from './validate_module.js';
 import { parse, print } from './utils/js_parse.js';
 
 
-export function compile (source, options = {}) {
+export async function compile (source, options = {}) {
 	let { name = 'x-app', css, internal } = options;
 
 	let template = typeof source === 'string'
@@ -125,7 +125,7 @@ export function compile (source, options = {}) {
 		let value = text_node.value;
 
 		if (css) {
-			value = css(value);
+			value = await css(value);
 		}
 
 		text_node.value = value;
