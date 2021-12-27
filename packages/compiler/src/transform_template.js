@@ -252,7 +252,7 @@ export function transform_template (template) {
 						let name = t.literal(attr_name.slice(1));
 
 						let statements = b`
-							$: @on(${ident}, ${name}, ${value_expr});
+							@on(${ident}, ${name}, ${value_expr});
 						`;
 
 						pending.push(...statements);
