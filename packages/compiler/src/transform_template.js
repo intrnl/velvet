@@ -91,6 +91,11 @@ export function transform_template (template) {
 		},
 		leave (node, parent, key, index) {
 			if (node.type === 'Text' && parent.type !== 'Attribute') {
+				if (parent.type === 'Element' && (parent.name === 'script' || parent.name === 'style')) {
+					curr_block.html += node.value;
+					return;
+				}
+
 				let value = node.value.replace(/\s+/g, ' ');
 
 				if (parent.type === 'Fragment') {
