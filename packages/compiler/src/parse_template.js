@@ -620,7 +620,7 @@ function _parse_element (state) {
 
 		p.eat_pattern(state, pattern, `${name} closing tag`);
 
-		let text = t.text(data);
+		let text = t.text(data, data);
 		let node = t.element(name, [], [text]);
 
 		parent.children.push(node);
