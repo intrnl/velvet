@@ -26,9 +26,7 @@ export function walk (node, walker, parent, key, index = -1) {
 		return node;
 	}
 
-	if (!node.path) {
-		node.path = { parent };
-	}
+	node.path = { parent };
 
 	if (walker.enter) {
 		let ret = walker.enter(node, parent, key, index);
