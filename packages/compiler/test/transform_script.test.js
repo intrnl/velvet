@@ -815,7 +815,23 @@ describe('program finalizer', () => {
 			export { magic as MAGIC };
 		`);
 
+		transform_script(program);
+		finalize_program(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('hoists imports', () => {
+		let program = parse(`
+			import foo from 'foo';
+			import { bar } from 'bar';
+
+			console.log(bar);
+		`);
+
 		let { props_idx } = transform_script(program);
+		finalize_template(program, null, props_idx);
 		finalize_program(program);
 
 		let result = print(program);

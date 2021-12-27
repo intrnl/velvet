@@ -193,8 +193,19 @@ foo: {
 "
 `;
 
+exports[`program finalizer > hoists imports 1`] = `
+"import {define} from \\"@intrnl/velvet/internal\\";
+import foo from 'foo';
+import {bar} from 'bar';
+function setup($$root, $$host) {
+  console.log(bar);
+}
+export default define(null, setup, {});
+"
+`;
+
 exports[`program finalizer > props test 1`] = `
-"import {prop} from \\"velvet/internal\\";
+"import {prop} from \\"@intrnl/velvet/internal\\";
 let count = prop(0, -1);
 let magic = prop(1, 420);
 "

@@ -491,6 +491,11 @@ export function finalize_program (program, mod = '@intrnl/velvet/internal') {
 		 * @param {import('estree').Node} parent
 		 */
 		leave (node, parent) {
+			if (node.type === 'ImportDeclaration') {
+				hoisted_statements.push(node);
+				return walk.remove;
+			}
+
 			if (
 				node.type === 'VariableDeclarator' &&
 				_has_identifier_declared(node.id, (name) => name[0] === '%' && name[1] === '%')
