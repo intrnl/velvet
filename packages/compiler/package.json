@@ -5,6 +5,8 @@
 		"test": "vitest run",
 		"test:watch": "vitest"
 	},
+	"main": "./src/index.js",
+	"files": ["./src/"],
 	"dependencies": {
 		"acorn": "^8.6.0",
 		"astring": "^1.8.1"
