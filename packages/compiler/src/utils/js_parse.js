@@ -17,7 +17,7 @@ export function parse (source, options) {
 
 	let program = acorn.parse(source, {
 		onComment: comments,
-		ecmaVersion: 'latest',
+		ecmaVersion: 12,
 		sourceType: 'module',
 		...options,
 	});
@@ -33,7 +33,7 @@ export function parse_expression (source, position = 0, options) {
 
 	let node = acorn.parseExpressionAt(source, position, {
 		onComment: comments,
-		ecmaVersion: 'latest',
+		ecmaVersion: 12,
 		sourceType: 'module',
 		...options,
 	});
@@ -96,8 +96,8 @@ function fix_positions (ast, start = 0) {
 
 	walk(ast, {
 		enter (node) {
-			node.start = start;
-			node.end = start;
+			node.start += start;
+			node.end += start;
 		},
 	});
 }

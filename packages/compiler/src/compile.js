@@ -4,7 +4,7 @@ import { finalize_program, finalize_template, transform_script } from './transfo
 import { validate_module } from './validate_module.js';
 
 import { parse, print } from './utils/js_parse.js';
-import { CompilerError } from './utils/error.js';
+import { create_error } from './utils/error.js';
 
 
 export async function compile (source, options = {}) {
@@ -16,9 +16,7 @@ export async function compile (source, options = {}) {
 		path = '@intrnl/velvet/internal',
 	} = options;
 
-	let template = typeof source === 'string'
-		? parse_template(source)
-		: source;
+	let template = parse_template(source);
 
 	// collect specialities
 	let mod;
@@ -37,15 +35,17 @@ export async function compile (source, options = {}) {
 
 			if (context_attr) {
 				if (context_attr.value?.decoded !== 'module') {
-					throw new CompilerError(
+					throw create_error(
 						'expected context="module" for module scripts',
+						source,
 						node.start,
 						node.end,
 					);
 				}
 				if (mod) {
-					throw new CompilerError(
+					throw create_error(
 						'there can only be one root-level <script context="module"> element',
+						source,
 						node.start,
 						node.end,
 					);
@@ -57,8 +57,9 @@ export async function compile (source, options = {}) {
 			}
 
 			if (script) {
-				throw new CompilerError(
+				throw create_error(
 					'there can only be one root-level <script> element',
+					source,
 					node.start,
 					node.end,
 				);
@@ -71,8 +72,9 @@ export async function compile (source, options = {}) {
 
 		if (node.name === 'style') {
 			if (style) {
-				throw new CompilerError(
+				throw create_error(
 					'there can be only one root-level <style> element',
+					source,
 					node.start,
 					node.end,
 				);
@@ -140,23 +142,41 @@ export async function compile (source, options = {}) {
 		template.children.push(style);
 	}
 
-	let program = transform_template(template);
+	let program = transform_template(template, source);
 
 	if (script) {
 		let text_node = script.children[0];
-		let prog = parse(text_node.value, { start: text_node.start });
+		let text_start = text_node.start;
+		let prog;
+
+		try {
+			prog = parse(text_node.value, { start: text_start });
+		}
+		catch (error) {
+			let message = error.message.replace(/ +\(\d+:\d+\)$/g, '')
+			throw create_error(`JS error: ${message}`, source, error.pos + text_start);
+		}
 
 		program.body.unshift(...prog.body);
 	}
 
-	let { props_idx } = transform_script(program);
+	let { props_idx } = transform_script(program, source);
 	finalize_template(program, name, props_idx);
 
 	if (mod) {
 		let text_node = mod.children[0];
-		let prog = parse(text_node.value, { start: text_node.start });
-		validate_module(prog);
+		let text_start = text_node.start;
+		let prog;
 
+		try {
+			prog = parse(text_node.value, { start: text_start })
+		}
+		catch (error) {
+			let message = error.message.replace(/ +\(\d+:\d+\)$/g, '')
+			throw create_error(`JS error: ${message}`, source, error.pos + text_start);
+		}
+
+		validate_module(prog, source);
 		program.body.unshift(...prog.body);
 	}
 

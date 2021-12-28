@@ -2,7 +2,7 @@ import * as p from './utils/template_parser.js';
 import * as t from './utils/template_types.js';
 import * as j from './utils/js_parse.js';
 import { is_void, closing_tag_omitted } from './utils/html.js';
-import { CompilerError } from './utils/error.js';
+import { create_error } from './utils/error.js';
 
 
 export function parse_template (content) {
@@ -119,16 +119,18 @@ function _parse_expression (state) {
 					else {
 						let last = expressions[expressions.length - 1];
 
-						throw new CompilerError(
+						throw create_error(
 							'there can only be value and index',
+							source,
 							expression.start,
 							last.end,
 						);
 					}
 
 					if (expression.type !== 'Identifier') {
-						throw new CompilerError(
+						throw create_error(
 							'expected an identifier',
+							source,
 							expression.start,
 							expression.end,
 						);
@@ -136,8 +138,9 @@ function _parse_expression (state) {
 				}
 			}
 			else {
-				throw new CompilerError(
+				throw create_error(
 					'expected an identifier',
+					source,
 					local?.start || state.index,
 					local?.end || state.index,
 				);

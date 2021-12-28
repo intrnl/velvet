@@ -1,10 +1,10 @@
 import { walk } from './utils/walker.js';
 import { b, x } from './utils/js_parse.js';
 import * as t from './utils/js_types.js';
-import { CompilerError } from './utils/error.js';
+import { create_error } from './utils/error.js';
 
 
-export function transform_template (template) {
+export function transform_template (template, source) {
 	let blocks = [];
 
 	let program = [];
@@ -156,8 +156,9 @@ export function transform_template (template) {
 						return;
 					}
 					else {
-						throw new CompilerError(
+						throw create_error(
 							`unknown named expression: @${id_name}`,
+							source,
 							id.start,
 							id.end,
 						);
@@ -223,16 +224,18 @@ export function transform_template (template) {
 
 					if (attr_name === '#this') {
 						if (!attr_value || attr_value.type === 'Text') {
-							throw new CompilerError(
+							throw create_error(
 								'expected an expression for #this',
+								source,
 								attribute.start,
 								attribute.end,
 							);
 						}
 
 						if (elem_name !== 'v:component') {
-							throw new CompilerError(
+							throw create_error(
 								'expected #this usage in v:component',
+								source,
 								attribute.start,
 								attribute.end,
 							);
@@ -244,8 +247,9 @@ export function transform_template (template) {
 
 					if (attr_name === '#ref') {
 						if (!attr_value || attr_value.type === 'Text') {
-							throw new CompilerError(
+							throw create_error(
 								'expected an expression for #this',
+								source,
 								attribute.start,
 								attribute.end,
 							);
@@ -304,8 +308,9 @@ export function transform_template (template) {
 
 					if (attr_name[0] === ':') {
 						if (!attr_value || attr_value.type === 'Text') {
-							throw new CompilerError(
+							throw create_error(
 								'expected an expression for #this',
+								source,
 								attribute.start,
 								attribute.end,
 							);
@@ -366,8 +371,9 @@ export function transform_template (template) {
 					curr_scope = scope_stack.pop();
 
 					if (!_this_expr) {
-						throw new CompilerError(
+						throw create_error(
 							'expected #this expression for v:component',
+							source,
 							node.start,
 							node.end,
 						);

@@ -1,0 +1,21 @@
+// Vitest Snapshot v1
+
+exports[`props > throws on two variable exported to one name 1`] = `
+"JS error: Duplicate export 'baz' (6:31)
+4:       let bar = 2;
+5: 
+6:       export { foo as baz, bar as baz };
+                                     ^
+7:       </script>
+8:     "
+`;
+
+exports[`store > throws on lone $ 1`] = `
+"no singular $ reference (3:15)
+1: 
+2:       <script>
+3:       console.log($);
+                     ^
+4:       </script>
+5:     "
+`;

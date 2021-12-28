@@ -220,14 +220,22 @@ describe('ref', () => {
 	});
 
 	it('prefix throws', () => {
-		let program = parse(`
+		let source = `
 			let count = 0;
 
 			count++;
 			count--;
-		`);
+		`;
 
-		expect(() => transform_script(program)).to.throw();
+		let program = parse(source);
+
+		try {
+			transform_script(program, source);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
 	});
 });
 
@@ -343,32 +351,37 @@ describe('prop', () => {
 	});
 
 	it('throws on exporting default', () => {
-		let program = parse(`
+		let source = `
 			export default 123;
-		`);
+		`;
 
-		expect(() => transform_script(program)).to.throw();
+		let program = parse(source);
+
+		try {
+			transform_script(program, source);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
 	});
 
 	it('throws on one variable exported twice', () => {
-		let program = parse(`
+		let source = `
 			let foo = 123;
 
 			export { foo as bar, foo as baz };
-		`);
-
-		expect(() => transform_script(program)).to.throw();
-	});
-
-	it('throws on two variable exported to one name', () => {
-		let program = `
-			let foo = 1;
-			let bar = 2;
-
-			export { foo as baz, bar as baz };
 		`;
 
-		expect(() => parse(program)).to.throw();
+		let program = parse(source);
+
+		try {
+			transform_script(program, source);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
 	});
 });
 
@@ -735,19 +748,35 @@ describe('store', () => {
 	});
 
 	it('throws on lone $', () => {
-		let program = parse(`
+		let source = `
 			console.log($);
-		`);
+		`;
 
-		expect(() => transform_script(program)).to.throw();
+		let program = parse(source);
+
+		try {
+			transform_script(program, source);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
 	});
 
 	it('throws on declaring $ variables', () => {
-		let program = parse(`
+		let source = `
 			let $foo = 'bar';
-		`);
+		`;
 
-		expect(() => transform_script(program)).to.throw();
+		let program = parse(source);
+
+		try {
+			transform_script(program, source);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
 	});
 
 	it('only alter single $', () => {
@@ -827,31 +856,55 @@ describe('bind', () => {
 	});
 
 	it('only one specifier for a bind', () => {
-		let program = parse(`
+		let source = `
 			export const magic = 420;
 
 			export { magic as MAGIC_NUMBER };
-		`);
+		`;
 
-		expect(() => transform_script(program)).to.throw();
+		let program = parse(source);
+
+		try {
+			transform_script(program, source);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
 	});
 });
 
 describe('reserved', () => {
 	it('throws on declaring $$', () => {
-		let program = parse(`
+		let source = `
 			export let $$foo = 'bar';
-		`);
+		`;
 
-		expect(() => transform_script(program)).to.throw();
+		let program = parse(source);
+
+		try {
+			transform_script(program, source);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
 	});
 
 	it('throws on reassigning $$', () => {
-		let program = parse(`
+		let source = `
 			$$root = null;
-		`);
+		`;
 
-		expect(() => transform_script(program)).to.throw();
+		let program = parse(source);
+
+		try {
+			transform_script(program, source);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
 	});
 
 	it('can declare $$$ variables', () => {

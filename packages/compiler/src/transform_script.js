@@ -1,10 +1,10 @@
 import { walk } from './utils/walker.js';
 import { analyze, is_reference } from './utils/js_utils.js';
 import * as t from './utils/js_types.js';
-import { CompilerError } from './utils/error.js';
+import { create_error } from './utils/error.js';
 
 
-export function transform_script (program) {
+export function transform_script (program, source) {
 	let { map, scope: root_scope } = analyze(program);
 	let curr_scope = root_scope;
 
@@ -33,8 +33,9 @@ export function transform_script (program) {
 					name[0] === '$' && (name[1] !== '$' || (name[1] === '$' && name[2] !== '$'))
 				))
 			) {
-				throw new CompilerError(
+				throw create_error(
 					'$ and $$-prefixed variables are reserved and cannot be declared',
+					source,
 					node.start,
 					node.end,
 				);
@@ -46,8 +47,9 @@ export function transform_script (program) {
 				let name = left.name;
 
 				if (name[0] === '$' && name[1] === '$' && name[2] !== '$') {
-					throw new CompilerError(
+					throw create_error(
 						'tried reassignment to $$-prefixed variables',
+						source,
 						node.start,
 						node.end,
 					);
@@ -72,8 +74,9 @@ export function transform_script (program) {
 
 				if (own_scope === root_scope) {
 					if (!prefix) {
-						throw new CompilerError(
+						throw create_error(
 							'postfix update expressions are not supported for refs',
+							source,
 							node.start,
 							node.end,
 						);
@@ -96,8 +99,9 @@ export function transform_script (program) {
 
 			// mark props
 			if (node.type === 'ExportDefaultDeclaration') {
-				throw new CompilerError(
+				throw create_error(
 					'export default is reserved for component definition',
+					source,
 					node.start,
 					node.end,
 				);
@@ -132,8 +136,9 @@ export function transform_script (program) {
 					let exported_name = specifier.exported.name;
 
 					if (props.has(local_name)) {
-						throw new CompilerError(
+						throw create_error(
 							'tried to export something that has already been exported',
+							source,
 							specifier.start,
 							specifier.end,
 						);
@@ -175,8 +180,9 @@ export function transform_script (program) {
 				}
 
 				if (name.length === 1) {
-					throw new CompilerError(
+					throw create_error(
 						'no singular $ reference',
+						source,
 						node.start,
 						node.end,
 					);

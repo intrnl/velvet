@@ -13,6 +13,15 @@ function toggle() {
 "
 `;
 
+exports[`bind > only one specifier for a bind 1`] = `
+"tried to export something that has already been exported (4:12)
+2:       export const magic = 420;
+3: 
+4:       export { magic as MAGIC_NUMBER };
+                  ^
+5:     "
+`;
+
 exports[`bind > separate export specifier 1`] = `
 "const magic = 420;
 let open = @prop(0, false);
@@ -242,6 +251,23 @@ let foo = @prop(1, 1);
 "
 `;
 
+exports[`prop > throws on exporting default 1`] = `
+"export default is reserved for component definition (2:3)
+1: 
+2:       export default 123;
+         ^
+3:     "
+`;
+
+exports[`prop > throws on one variable exported twice 1`] = `
+"tried to export something that has already been exported (4:24)
+2:       let foo = 123;
+3: 
+4:       export { foo as bar, foo as baz };
+                              ^
+5:     "
+`;
+
 exports[`prop > unused properties 1`] = `
 "let value1 = @prop(0);
 let value2 = @prop(1, 100);
@@ -376,6 +402,16 @@ count(count(@access) - 1);
 "
 `;
 
+exports[`ref > prefix throws 1`] = `
+"postfix update expressions are not supported for refs (4:3)
+2:       let count = 0;
+3: 
+4:       count++;
+         ^
+5:       count--;
+6:     "
+`;
+
 exports[`ref > unmutated variable accessing member property 1`] = `
 "let state = {
   count: 0
@@ -492,6 +528,22 @@ let $$$bar = 333;
 "
 `;
 
+exports[`reserved > throws on declaring $$ 1`] = `
+"$ and $$-prefixed variables are reserved and cannot be declared (2:14)
+1: 
+2:       export let $$foo = 'bar';
+                    ^
+3:     "
+`;
+
+exports[`reserved > throws on reassigning $$ 1`] = `
+"tried reassignment to $$-prefixed variables (2:3)
+1: 
+2:       $$root = null;
+         ^
+3:     "
+`;
+
 exports[`store > getter 1`] = `
 "let $store = @ref();
 @cleanup(store.subscribe($store));
@@ -572,4 +624,20 @@ let $value1 = @ref();
 @cleanup(value1(@access).subscribe($value1));
 console.log($value1(@access));
 "
+`;
+
+exports[`store > throws on declaring $ variables 1`] = `
+"$ and $$-prefixed variables are reserved and cannot be declared (2:7)
+1: 
+2:       let $foo = 'bar';
+             ^
+3:     "
+`;
+
+exports[`store > throws on lone $ 1`] = `
+"no singular $ reference (2:15)
+1: 
+2:       console.log($);
+                     ^
+3:     "
 `;

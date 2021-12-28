@@ -1,8 +1,8 @@
 import { walk } from './utils/walker.js';
-import { CompilerError } from './utils/error.js';
+import { create_error } from './utils/error.js';
 
 
-export function validate_module (program) {
+export function validate_module (program, source) {
 	walk(program, {
 		/**
 		 * @param {import('estree').Node} node
@@ -10,8 +10,9 @@ export function validate_module (program) {
 		 */
 		enter (node) {
 			if (node.type === 'ExportDefaultDeclaration') {
-				throw new CompilerError(
+				throw create_error(
 					'export default is reserved for component definition',
+					source,
 					node.start,
 					node.end,
 				);
