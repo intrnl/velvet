@@ -12,7 +12,7 @@ export class CompilerError extends Error {
 	}
 }
 
-export function create_error (message, source, start, end = start) {
+export function create_error (message, source, start = 0, end = start) {
 	let error = new CompilerError(message);
 
 	error.pos = start;
