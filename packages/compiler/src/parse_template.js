@@ -121,7 +121,7 @@ function _parse_expression (state) {
 
 						throw create_error(
 							'there can only be value and index',
-							source,
+							state.content,
 							expression.start,
 							last.end,
 						);
@@ -130,7 +130,7 @@ function _parse_expression (state) {
 					if (expression.type !== 'Identifier') {
 						throw create_error(
 							'expected an identifier',
-							source,
+							state.content,
 							expression.start,
 							expression.end,
 						);
@@ -140,7 +140,7 @@ function _parse_expression (state) {
 			else {
 				throw create_error(
 					'expected an identifier',
-					source,
+					state.content,
 					local?.start || state.index,
 					local?.end || state.index,
 				);
