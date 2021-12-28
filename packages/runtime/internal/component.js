@@ -1,4 +1,4 @@
-import { ref, scope, access } from './reactivity.js';
+import { ref, scope, access, cleanup } from './reactivity.js';
 import { hyphenate, camelize, assign } from './utils.js';
 import { Symbol, Object } from './globals.js';
 
@@ -55,7 +55,11 @@ class VelvetComponent extends HTMLElement {
 				instance.run(() => setup(root, host));
 
 				for (let hook of hooks) {
-					hook();
+					let ret = hook();
+
+					if (typeof ret === 'function') {
+						cleanup(ret);
+					}
 				}
 
 				hooks.length = 0;
