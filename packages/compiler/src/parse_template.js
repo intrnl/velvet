@@ -624,11 +624,15 @@ function _parse_element (state) {
 	else if (name === 'script' || name === 'style') {
 		// we shouldn't parse into script and style elements
 		let pattern = name === 'script' ? /<\/script\s*>/g : /<\/style\s*>/g;
+
+		let text_start = state.index;
 		let data = p.eat_until(state, pattern);
 
-		p.eat_pattern(state, pattern, `${name} closing tag`);
-
 		let text = t.text(data, data);
+		text.start = text_start;
+		text.end = state.index;
+
+		p.eat_pattern(state, pattern, `${name} closing tag`);
 
 		node.end = state.index;
 		node.children.push(text);
