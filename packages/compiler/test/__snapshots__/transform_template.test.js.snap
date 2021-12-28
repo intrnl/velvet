@@ -504,3 +504,36 @@ let %marker3 = @traverse(%fragment0, [0]);
 @append($$root, %fragment0);
 "
 `;
+
+exports[`loop logic > throw on more than two expression 1`] = `
+"there can only be value and index (2:25)
+1: 
+2:       {#each person, index, foo of array}
+                               ^
+3:         <div>{index} - {person.name}</div>
+4:       {/each}"
+`;
+
+exports[`loop logic > throw on non-identifier 1`] = `
+"expected an identifier (2:10)
+1: 
+2:       {#each 123 of array}
+                ^
+3:         <div>{index} - {person.name}</div>
+4:       {/each}"
+`;
+
+exports[`loop logic > throw on non-identifier 2`] = `
+"expected an identifier (2:16)
+1: 
+2:       {#each (foo, 123) of array}
+                      ^
+3:         <div>{index} - {person.name}</div>
+4:       {/each}"
+`;
+
+exports[`named expression > unknown named expression 1`] = `
+"unknown named expression: @xyz (1:2)
+1: {@xyz foo}
+     ^"
+`;

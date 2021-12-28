@@ -157,6 +157,22 @@ describe('expression', () => {
 	});
 });
 
+describe('named expression', () => {
+	it('unknown named expression', () => {
+		let template = `{@xyz foo}`;
+
+		let fragment = parse_template(template);
+
+		try {
+			transform_template(fragment, template);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
+	});
+});
+
 describe('log expression', () => {
 	it('single', () => {
 		let template = `{@log foo}`;
@@ -250,6 +266,52 @@ describe('loop logic', () => {
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('throw on more than two expression', () => {
+		let template1 = `
+			{#each person, index, foo of array}
+				<div>{index} - {person.name}</div>
+			{/each}
+		`;
+
+		try {
+			parse_template(template1);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
+	});
+
+	it('throw on non-identifier', () => {
+		let template1 = `
+			{#each 123 of array}
+				<div>{index} - {person.name}</div>
+			{/each}
+		`;
+
+		let template2 = `
+			{#each (foo, 123) of array}
+				<div>{index} - {person.name}</div>
+			{/each}
+		`;
+
+		try {
+			parse_template(template1);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
+
+		try {
+			parse_template(template2);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
 	});
 });
 
