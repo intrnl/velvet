@@ -135,7 +135,9 @@ export function eat_whitespace (state, required) {
  * @param {ParserState} state
  */
 export function eat_identifier (state) {
-	let index = state.index;
+	let start_index = state.index;
+
+	let index = start_index;
 	let start = get_char_code(state.content, index);
 
 	if (!isIdentifierStart(start, true)) {
@@ -154,7 +156,11 @@ export function eat_identifier (state) {
 		index += code <= 0xffff ? 1 : 2;
 	}
 
-	return t.identifier(state.content.slice(state.index, (state.index = index)));
+	let ident = t.identifier(state.content.slice(state.index, (state.index = index)));
+	ident.start = start_index;
+	ident.end = state.index;
+
+	return ident;
 }
 
 /**
