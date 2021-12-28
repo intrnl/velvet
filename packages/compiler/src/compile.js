@@ -153,8 +153,8 @@ export async function compile (source, options = {}) {
 			prog = parse(text_node.value, { start: text_start });
 		}
 		catch (error) {
-			let message = error.message.replace(/ +\(\d+:\d+\)$/g, '')
-			throw create_error(`JS error: ${message}`, source, error.pos + text_start);
+			let message = error.message.replace(/ +\(\d+:\d+\)$/g, '');
+			throw create_error(`Acorn error: ${message}`, source, error.pos + text_start);
 		}
 
 		program.body.unshift(...prog.body);
@@ -175,8 +175,8 @@ export async function compile (source, options = {}) {
 			})
 		}
 		catch (error) {
-			let message = error.message.replace(/ +\(\d+:\d+\)$/g, '')
-			throw create_error(`JS error: ${message}`, source, error.pos + text_start);
+			let message = error.message.replace(/ +\(\d+:\d+\)$/g, '');
+			throw create_error(`Acorn error: ${message}`, source, error.pos + text_start);
 		}
 
 		validate_module(prog, source);

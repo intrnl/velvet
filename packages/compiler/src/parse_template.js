@@ -650,36 +650,39 @@ function _parse_element (state) {
  * @returns {import('estree').Expression}
  */
 function _read_expression (state) {
+	let node;
+
 	try {
-		let node = j.parse_expression(state.content, state.index);
-
-		let parens = 0;
-
-		for (let index = state.index; index < node.start; index++) {
-			if (state.content[index] === '(') {
-				parens++;
-			}
-		}
-
-		let index = node.end;
-
-		while (parens > 0) {
-			let char = state.content[index];
-
-			if (char === ')') {
-				parens--;
-			}
-			else if (!p.is_whitespace(char)) {
-				throw p.error(state, `expected closing parenthesis`, index);
-			}
-
-			index++;
-		}
-
-		state.index = index;
-		return node;
+		node = j.parse_expression(state.content, state.index);
 	}
 	catch (error) {
-		throw p.error(state, `JS parsing error: ${error.message}`);
+		let message = error.message.replace(/ +\(\d+:\d+\)$/g, '');
+		throw p.error(state, `Acorn error: ${message}`, error.pos);
 	}
+
+	let parens = 0;
+
+	for (let index = state.index; index < node.start; index++) {
+		if (state.content[index] === '(') {
+			parens++;
+		}
+	}
+
+	let index = node.end;
+
+	while (parens > 0) {
+		let char = state.content[index];
+
+		if (char === ')') {
+			parens--;
+		}
+		else if (!p.is_whitespace(char)) {
+			throw p.error(state, `expected closing parenthesis`, index);
+		}
+
+		index++;
+	}
+
+	state.index = index;
+	return node;
 }
