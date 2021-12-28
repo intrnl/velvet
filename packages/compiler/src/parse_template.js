@@ -606,16 +606,21 @@ function _parse_element (state) {
 		}
 	}
 
-	let self_closing = p.eat(state, '/') || is_void(name);
+	let is_element_void = is_void(name);
+	let is_selfclosing = p.eat(state, '/');
+
 	p.eat(state, '>', 'closing tag bracket');
 
-	let node = t.element(name, self_closing, attributes);
+	let node = t.element(name, is_element_void, attributes);
 	node.start = start;
 	node.end = state.index;
 
 	parent.children.push(node);
 
-	if (!self_closing && (name === 'script' || name === 'style')) {
+	if (is_selfclosing || is_element_void) {
+		// do nothing
+	}
+	else if (name === 'script' || name === 'style') {
 		// we shouldn't parse into script and style elements
 		let pattern = name === 'script' ? /<\/script\s*>/g : /<\/style\s*>/g;
 		let data = p.eat_until(state, pattern);
@@ -627,7 +632,7 @@ function _parse_element (state) {
 		node.end = state.index;
 		node.children.push(text);
 	}
-	else if (!self_closing) {
+	else {
 		p.push(state, node);
 	}
 }

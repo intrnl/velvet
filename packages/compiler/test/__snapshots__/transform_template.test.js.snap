@@ -391,6 +391,13 @@ let %marker3 = @traverse(%fragment0, [0]);
 "
 `;
 
+exports[`element > selfclosing on a non-void element 1`] = `
+"let %%template0 = @html(\\"<button></button>\\");
+let %fragment0 = @clone(%template0);
+@append($$root, %fragment0);
+"
+`;
+
 exports[`expression > component 1`] = `
 "let %%template0 = @html(\\"<div>hello <!>!</div>\\");
 let %fragment0 = @clone(%template0);

@@ -97,6 +97,17 @@ describe('attribute', () => {
 	});
 });
 
+describe('element', () => {
+	it('selfclosing on a non-void element', () => {
+		let template = `<button />`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+});
+
 describe('component', () => {
 	it('v:self on a custom element', () => {
 		let template = `<x-app><v:self>hello world!</v:self></x-app>`;
