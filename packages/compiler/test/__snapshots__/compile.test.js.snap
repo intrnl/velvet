@@ -1,5 +1,19 @@
 // Vitest Snapshot v1
 
+exports[`module context > allow top level await 1`] = `
+"import {html, clone, traverse, text, append, define} from \\"@intrnl/velvet/internal\\";
+let template0 = html(\\"<div>the number is <!></div>\\");
+let number = await Promise.resolve(420);
+function setup($$root, $$host) {
+  let fragment0 = clone(template0);
+  let marker0 = traverse(fragment0, [0, 1]);
+  text(marker0, () => number);
+  append($$root, fragment0);
+}
+export default define(null, setup, {});
+"
+`;
+
 exports[`props > throws on two variable exported to one name 1`] = `
 "JS error: Duplicate export 'baz' (6:31)
 4:       let bar = 2;
@@ -8,6 +22,16 @@ exports[`props > throws on two variable exported to one name 1`] = `
                                      ^
 7:       </script>
 8:     "
+`;
+
+exports[`script context > throws on await 1`] = `
+"JS error: Cannot use keyword 'await' outside an async function (3:17)
+1: 
+2:       <script>
+3:         let number = await Promise.resolve(123);
+                        ^
+4:       </script>
+5: "
 `;
 
 exports[`store > throws on lone $ 1`] = `
