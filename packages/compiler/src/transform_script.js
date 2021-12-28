@@ -1,7 +1,7 @@
 import { walk } from './utils/walker.js';
 import { analyze, is_reference } from './utils/js_utils.js';
 import * as t from './utils/js_types.js';
-import { print } from './utils/js_parse.js';
+import { CompilerError } from './utils/error.js';
 
 
 export function transform_script (program) {
@@ -33,11 +33,11 @@ export function transform_script (program) {
 					name[0] === '$' && (name[1] !== '$' || (name[1] === '$' && name[2] !== '$'))
 				))
 			) {
-				throw {
-					message: '$ and $$-prefixed variables are reserved and cannot be declared',
-					start: node.start,
-					end: node.end,
-				};
+				throw new CompilerError(
+					'$ and $$-prefixed variables are reserved and cannot be declared',
+					node.start,
+					node.end,
+				);
 			}
 
 			// mark mutable variables
@@ -46,11 +46,11 @@ export function transform_script (program) {
 				let name = left.name;
 
 				if (name[0] === '$' && name[1] === '$' && name[2] !== '$') {
-					throw {
-						message: 'tried reassignment to $$-prefixed variables',
-						start: node.start,
-						end: node.end,
-					};
+					throw new CompilerError(
+						'tried reassignment to $$-prefixed variables',
+						node.start,
+						node.end,
+					);
 				}
 
 				let own_scope = curr_scope.find_owner(name);
@@ -72,11 +72,11 @@ export function transform_script (program) {
 
 				if (own_scope === root_scope) {
 					if (!prefix) {
-						throw {
-							message: 'postfix update expressions are not supported for refs',
-							start: node.start,
-							end: node.end,
-						};
+						throw new CompilerError(
+							'postfix update expressions are not supported for refs',
+							node.start,
+							node.end,
+						);
 					}
 
 					let ident = own_scope.declarations.get(name);
@@ -96,11 +96,11 @@ export function transform_script (program) {
 
 			// mark props
 			if (node.type === 'ExportDefaultDeclaration') {
-				throw {
-					message: 'export default is reserved for component definition',
-					start: node.start,
-					end: node.end,
-				};
+				throw new CompilerError(
+					'export default is reserved for component definition',
+					node.start,
+					node.end,
+				);
 			}
 
 			if (node.type === 'ExportNamedDeclaration' && node.declaration) {
@@ -132,11 +132,11 @@ export function transform_script (program) {
 					let exported_name = specifier.exported.name;
 
 					if (props.has(local_name)) {
-						throw {
-							message: 'tried to export something that has already been exported',
-							start: specifier.start,
-							end: specifier.end,
-						};
+						throw new CompilerError(
+							'tried to export something that has already been exported',
+							specifier.start,
+							specifier.end,
+						);
 					}
 
 					props.set(local_name, exported_name);
@@ -175,11 +175,11 @@ export function transform_script (program) {
 				}
 
 				if (name.length === 1) {
-					throw {
-						message: 'no singular $ reference',
-						start: node.start,
-						end: node.end,
-					};
+					throw new CompilerError(
+						'no singular $ reference',
+						node.start,
+						node.end,
+					);
 				}
 
 				if (parent.type === 'AssignmentExpression' && parent.left === node && parent.operator === '=') {

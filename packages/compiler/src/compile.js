@@ -4,6 +4,7 @@ import { finalize_program, finalize_template, transform_script } from './transfo
 import { validate_module } from './validate_module.js';
 
 import { parse, print } from './utils/js_parse.js';
+import { CompilerError } from './utils/error.js';
 
 
 export async function compile (source, options = {}) {
@@ -36,18 +37,18 @@ export async function compile (source, options = {}) {
 
 			if (context_attr) {
 				if (context_attr.value?.decoded !== 'module') {
-					throw {
-						message: 'expected context="module" for module scripts',
-						start: node.start,
-						end: node.end,
-					};
+					throw new CompilerError(
+						'expected context="module" for module scripts',
+						node.start,
+						node.end,
+					);
 				}
 				if (mod) {
-					throw {
-						message: 'there can only be one root-level <script context="module"> element',
-						start: node.start,
-						end: node.end,
-					};
+					throw new CompilerError(
+						'there can only be one root-level <script context="module"> element',
+						node.start,
+						node.end,
+					);
 				}
 
 				mod = node;
@@ -56,11 +57,11 @@ export async function compile (source, options = {}) {
 			}
 
 			if (script) {
-				throw {
-					message: 'there can only be one root-level <script> element',
-					start: node.start,
-					end: node.end,
-				};
+				throw new CompilerError(
+					'there can only be one root-level <script> element',
+					node.start,
+					node.end,
+				);
 			}
 
 			script = node;
@@ -70,11 +71,11 @@ export async function compile (source, options = {}) {
 
 		if (node.name === 'style') {
 			if (style) {
-				throw {
-					message: 'there can be only one root-level <style> element',
-					start: node.start,
-					end: node.end,
-				};
+				throw new CompilerError(
+					'there can be only one root-level <style> element',
+					node.start,
+					node.end,
+				);
 			}
 
 			style = node;

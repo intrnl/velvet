@@ -1,4 +1,6 @@
 import { isIdentifierStart, isIdentifierChar } from 'acorn';
+
+import { CompilerError } from './error.js';
 import * as t from './js_types.js';
 import * as tt from './template_types.js';
 
@@ -201,11 +203,7 @@ export function eat_until (state, pattern) {
  * @returns {object}
  */
 export function error (state, message, start = state.index, end = start) {
-	return {
-		message,
-		start,
-		end,
-	};
+	return new CompilerError(message, start, end);
 }
 
 /**

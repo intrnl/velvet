@@ -1,4 +1,5 @@
 import { walk } from './utils/walker.js';
+import { CompilerError } from './utils/error.js';
 
 
 export function validate_module (program) {
@@ -9,11 +10,11 @@ export function validate_module (program) {
 		 */
 		enter (node) {
 			if (node.type === 'ExportDefaultDeclaration') {
-				throw {
-					message: 'export default is reserved for component definition',
-					start: node.start,
-					end: node.end,
-				};
+				throw new CompilerError(
+					'export default is reserved for component definition',
+					node.start,
+					node.end,
+				);
 			}
 		},
 	});

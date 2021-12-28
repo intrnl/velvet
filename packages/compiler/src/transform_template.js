@@ -1,6 +1,7 @@
 import { walk } from './utils/walker.js';
 import { b, x } from './utils/js_parse.js';
 import * as t from './utils/js_types.js';
+import { CompilerError } from './utils/error.js';
 
 
 export function transform_template (template) {
@@ -155,11 +156,11 @@ export function transform_template (template) {
 						return;
 					}
 					else {
-						throw {
-							message: `unknown named expression: @${id_name}`,
-							start: id.start,
-							end: id.end,
-						};
+						throw new CompilerError(
+							`unknown named expression: @${id_name}`,
+							id.start,
+							id.end,
+						);
 					}
 				}
 
@@ -222,19 +223,19 @@ export function transform_template (template) {
 
 					if (attr_name === '#this') {
 						if (!attr_value || attr_value.type === 'Text') {
-							throw {
-								message: 'expected an expression for #this',
-								start: attribute.start,
-								end: attribute.end,
-							};
+							throw new CompilerError(
+								'expected an expression for #this',
+								attribute.start,
+								attribute.end,
+							);
 						}
 
 						if (elem_name !== 'v:component') {
-							throw {
-								message: 'expected #this usage in v:component',
-								start: attribute.start,
-								end: attribute.end,
-							};
+							throw new CompilerError(
+								'expected #this usage in v:component',
+								attribute.start,
+								attribute.end,
+							);
 						}
 
 						_this_expr = value_expr;
@@ -243,11 +244,11 @@ export function transform_template (template) {
 
 					if (attr_name === '#ref') {
 						if (!attr_value || attr_value.type === 'Text') {
-							throw {
-								message: 'expected an expression for #this',
-								start: attribute.start,
-								end: attribute.end,
-							};
+							throw new CompilerError(
+								'expected an expression for #this',
+								attribute.start,
+								attribute.end,
+							);
 						}
 
 						need_ident = true;
@@ -303,11 +304,11 @@ export function transform_template (template) {
 
 					if (attr_name[0] === ':') {
 						if (!attr_value || attr_value.type === 'Text') {
-							throw {
-								message: 'expected an expression for #this',
-								start: attribute.start,
-								end: attribute.end,
-							};
+							throw new CompilerError(
+								'expected an expression for #this',
+								attribute.start,
+								attribute.end,
+							);
 						}
 
 						need_ident = true;
@@ -365,11 +366,11 @@ export function transform_template (template) {
 					curr_scope = scope_stack.pop();
 
 					if (!_this_expr) {
-						throw {
-							message: 'expected #this expression for v:component',
-							start: node.start,
-							end: node.end,
-						};
+						throw new CompilerError(
+							'expected #this expression for v:component',
+							node.start,
+							node.end,
+						);
 					}
 
 					let header = b`
