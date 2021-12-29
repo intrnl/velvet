@@ -98,13 +98,13 @@ export function promise (marker, pending, resolved, rejected, expression) {
 	let status = ref();
 	let result = ref();
 	let error = ref();
-	let uid = 0;
+	let curr;
 
 	resolved &&= resolved.bind(0, result);
 	rejected &&= rejected.bind(0, error);
 
 	effect(() => {
-		let id = uid++;
+		let key = curr = {};
 
 		status(0);
 		result(null);
@@ -115,13 +115,13 @@ export function promise (marker, pending, resolved, rejected, expression) {
 
 			promise.then(
 				(val) => {
-					if (uid === id) {
+					if (curr === key) {
 						result(val);
 						status(2);
 					}
 				},
 				(err) => {
-					if (uid === id) {
+					if (curr === key) {
 						error(err);
 						status(3);
 					}
@@ -129,7 +129,7 @@ export function promise (marker, pending, resolved, rejected, expression) {
 			);
 
 			queueMicrotask(() => {
-				if (uid === id && status(access) === 0) {
+				if (curr === key && status(access) === 0) {
 					status(1);
 				}
 			});
