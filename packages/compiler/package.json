@@ -17,12 +17,12 @@
 	],
 	"main": "./src/index.js",
 	"dependencies": {
-		"acorn": "^8.6.0",
+		"acorn": "^8.7.0",
 		"astring": "^1.8.1"
 	},
 	"devDependencies": {
 		"@types/estree": "^0.0.50",
-		"vite": "^2.7.6",
-		"vitest": "^0.0.113"
+		"vite": "^2.7.9",
+		"vitest": "^0.0.118"
 	}
 }
