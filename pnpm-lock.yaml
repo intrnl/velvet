@@ -7,11 +7,13 @@ importers:
       '@types/estree': ^0.0.50
       acorn: ^8.7.0
       astring: ^1.8.1
+      gensync: ^1.0.0-beta.2
       vite: ^2.7.9
       vitest: ^0.0.118
     dependencies:
       acorn: 8.7.0
       astring: 1.8.1
+      gensync: 1.0.0-beta.2
     devDependencies:
       '@types/estree': 0.0.50
       vite: 2.7.9
@@ -456,6 +458,11 @@ packages:
   /function-bind/1.1.1:
     resolution: {integrity: sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==}
     dev: true
+
+  /gensync/1.0.0-beta.2:
+    resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
+    engines: {node: '>=6.9.0'}
+    dev: false
 
   /get-func-name/2.0.0:
     resolution: {integrity: sha1-6td0q+5y4gQJQzoGY2YCPdaIekE=}

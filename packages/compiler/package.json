@@ -18,7 +18,8 @@
 	"main": "./src/index.js",
 	"dependencies": {
 		"acorn": "^8.7.0",
-		"astring": "^1.8.1"
+		"astring": "^1.8.1",
+		"gensync": "^1.0.0-beta.2"
 	},
 	"devDependencies": {
 		"@types/estree": "^0.0.50",

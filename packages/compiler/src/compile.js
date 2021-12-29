@@ -1,3 +1,5 @@
+import gensync from 'gensync';
+
 import { parse_template } from './parse_template.js';
 import { transform_template } from './transform_template.js';
 import { finalize_program, finalize_template, transform_script } from './transform_script.js';
@@ -7,7 +9,9 @@ import { parse, print } from './utils/js_parse.js';
 import { create_error } from './utils/error.js';
 
 
-export async function compile (source, options = {}) {
+let wrap = (f) => gensync({ sync: f, async: f });
+
+function* _compile (source, options = {}) {
 	let {
 		prefix = 'x',
 		filename,
@@ -134,7 +138,7 @@ export async function compile (source, options = {}) {
 		let value = text_node.value;
 
 		if (css) {
-			value = await css(value);
+			value = yield* wrap(css)(value);
 		}
 
 		text_node.value = value;
@@ -187,6 +191,12 @@ export async function compile (source, options = {}) {
 
 	return print(program);
 }
+
+export let {
+	async: compile,
+	sync: compileSync,
+} = gensync(_compile);
+
 
 export function componentize (filename, prefix = 'x') {
 	if (!filename) {

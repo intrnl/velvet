@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
 
-import { compile } from '../src/compile.js';
+import { compileSync } from '../src/compile.js';
 
 
 describe('module context', () => {
-	it('allow top level await', async () => {
+	it('allow top level await', () => {
 		let source = `
 			<script context=module>
 				let number = await Promise.resolve(420);
@@ -13,13 +13,13 @@ describe('module context', () => {
 			<div>the number is {number}</div>
 		`;
 
-		let result = await compile(source);
+		let result = compileSync(source);
 		expect(result).toMatchSnapshot();
 	});
 });
 
 describe('script context', () => {
-	it('throws on await', async () => {
+	it('throws on await', () => {
 		let source = `
 			<script>
 				let number = await Promise.resolve(123);
@@ -29,7 +29,7 @@ describe('script context', () => {
 		`;
 
 		try {
-			await compile(source);
+			compileSync(source);
 			expect.fail();
 		}
 		catch (error) {
@@ -39,7 +39,7 @@ describe('script context', () => {
 });
 
 describe('props', () => {
-	it('throws on two variable exported to one name', async () => {
+	it('throws on two variable exported to one name', () => {
 		let source = `
 			<script>
 			let foo = 1;
@@ -50,7 +50,7 @@ describe('props', () => {
 		`;
 
 		try {
-			await compile(source);
+			compileSync(source);
 			expect.fail();
 		}
 		catch (error) {
@@ -60,7 +60,7 @@ describe('props', () => {
 });
 
 describe('store', () => {
-	it('throws on lone $', async () => {
+	it('throws on lone $', () => {
 		let source = `
 			<script>
 			console.log($);
@@ -68,7 +68,7 @@ describe('store', () => {
 		`;
 
 		try {
-			await compile(source);
+			compileSync(source);
 			expect.fail();
 		}
 		catch (error) {
