@@ -23,7 +23,7 @@ A template like this...
 ...is transformed into a web component with efficient DOM mutations...
 
 ```js
-import {ref, access, html, clone, traverse, text, append, define} from '@intrnl/velvet/internal';
+import { ref, access, html, clone, traverse, text, on, append, define } from '@intrnl/velvet/internal';
 
 let template0 = html('<button> Clicked <!> times </button>');
 
