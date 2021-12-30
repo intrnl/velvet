@@ -223,20 +223,22 @@ class Ref {
 		this.v = value;
 	}
 
-	run (next) {
+	run (next, effect = true) {
 		let _this = this;
 		let deps = _this.d;
 		let prev = _this.v;
 
 		if (next === access) {
-			track_effect(deps);
+			if (effect) {
+				track_effect(deps);
+			}
 
 			return _this.v;
 		}
 		else {
 			_this.v = next;
 
-			if (!is(prev, next)) {
+			if (effect && !is(prev, next)) {
 				trigger_effect(deps);
 			}
 
