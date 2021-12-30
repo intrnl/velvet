@@ -1,7 +1,6 @@
 # Velvet
 
-Velvet, an experimental JavaScript framework for building web components powered
-by web components.
+Velvet, an experimental JavaScript framework for building supercharged web components.
 
 ## Summary
 
