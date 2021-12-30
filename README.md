@@ -15,22 +15,22 @@ A template like this...
   }
 </script>
 
-<button>
+<button @click={increment}>
   Clicked {count} times
 </button>
 ```
 
-...is generated into efficient DOM mutations...
+...is generated into a web component with efficient DOM mutations...
 
 ```js
-import {ref, access, html, clone, traverse, text, append, define} from "@intrnl/velvet/internal";
+import {ref, access, html, clone, traverse, text, append, define} from '@intrnl/velvet/internal';
 
-let template0 = html("<button> Clicked <!> times </button>");
+let template0 = html('<button> Clicked <!> times </button>');
 
-function setup($$root, $$host) {
+function setup ($$root, $$host) {
   let count = ref(0);
 
-  function increment() {
+  function increment () {
     count(count(access) + 1);
   }
 
@@ -38,9 +38,12 @@ function setup($$root, $$host) {
 
   let marker0 = traverse(fragment0, [0, 1]);
   text(marker0, () => count(access));
-  
+
+  let child0 = traverse(fragment0, [0]);
+  on(child0, 'click', increment);
+
   append($$root, fragment0);
 }
 
-export default define("x-app", setup, {});
+export default define('x-app', setup, {});
 ```
