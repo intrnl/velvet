@@ -376,6 +376,14 @@ call(@access)();
 "
 `;
 
+exports[`ref > mutated variable calling member property 1`] = `
+"let today = new Date();
+let formatter = @ref(new Intl.DateTimeFormat());
+console.log('Today is ' + formatter(@access).format(today));
+formatter(null);
+"
+`;
+
 exports[`ref > mutated variable mutating member property 1`] = `
 "let state = @ref({
   count: 0

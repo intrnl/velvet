@@ -237,6 +237,22 @@ describe('ref', () => {
 			expect(error.toString()).toMatchSnapshot();
 		}
 	});
+
+	it('mutated variable calling member property', () => {
+		let program = parse(`
+			let today = new Date();
+			let formatter = new Intl.DateTimeFormat();
+
+			console.log('Today is ' + formatter.format(today));
+
+			formatter = null;
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
 });
 
 describe('prop', () => {
