@@ -9,6 +9,11 @@
 		"directory": "packages/runtime"
 	},
 	"sideEffects": false,
+	"files": [
+		"index.js",
+		"internal/",
+		"store/"
+	],
 	"exports": {
 		".": "./index.js",
 		"./internal": "./internal/index.js",
