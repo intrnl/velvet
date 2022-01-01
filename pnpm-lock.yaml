@@ -2,22 +2,24 @@ lockfileVersion: 5.3
 
 importers:
 
+  .:
+    specifiers:
+      vitest: ^0.0.125
+    devDependencies:
+      vitest: 0.0.125
+
   packages/compiler:
     specifiers:
       '@types/estree': ^0.0.50
       acorn: ^8.7.0
       astring: ^1.8.1
       gensync: ^1.0.0-beta.2
-      vite: ^2.7.9
-      vitest: ^0.0.118
     dependencies:
       acorn: 8.7.0
       astring: 1.8.1
       gensync: 1.0.0-beta.2
     devDependencies:
       '@types/estree': 0.0.50
-      vite: 2.7.9
-      vitest: 0.0.118_vite@2.7.9
 
   packages/esbuild-plugin:
     specifiers:
@@ -581,8 +583,8 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /vite/2.7.9:
-    resolution: {integrity: sha512-CyopIJIRrc26Wnbkch5BCHFhQodzeV4jjSegLAEw1RImvXSuoOo2SfpEW9zRVi188WmjJwCqCaoG25C0r4nekw==}
+  /vite/2.7.10:
+    resolution: {integrity: sha512-KEY96ntXUid1/xJihJbgmLZx7QSC2D4Tui0FdS0Old5OokYzFclcofhtxtjDdGOk/fFpPbHv9yw88+rB93Tb8w==}
     engines: {node: '>=12.2.0'}
     hasBin: true
     peerDependencies:
@@ -605,16 +607,18 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitest/0.0.118_vite@2.7.9:
-    resolution: {integrity: sha512-2zBpowIaVAMPFB+/DkHFpt63QNXMz737dKTpLtC2t4RNUfLS4n+KKg14nFexj5VlhMf4ntSkrvDHnrE+6gFTmg==}
+  /vitest/0.0.125:
+    resolution: {integrity: sha512-gJc2avxoSiA83OtMFcXUymi4BoCFPw8/+/3FCT1IjBQvUHRfUDrf2tYTGcbkeoqIz39f6b0rkZ27eNocVkQifg==}
     engines: {node: '>=14.14.0'}
     hasBin: true
     peerDependencies:
+      '@vitest/ui': '*'
       c8: '*'
       happy-dom: '*'
       jsdom: '*'
-      vite: ^2.7.1
     peerDependenciesMeta:
+      '@vitest/ui':
+        optional: true
       c8:
         optional: true
       happy-dom:
@@ -628,7 +632,11 @@ packages:
       local-pkg: 0.4.0
       tinypool: 0.0.6
       tinyspy: 0.2.6
-      vite: 2.7.9
+      vite: 2.7.10
+    transitivePeerDependencies:
+      - less
+      - sass
+      - stylus
     dev: true
 
   /yallist/4.0.0:
