@@ -2,13 +2,71 @@ import { Array, Set } from '../internal/globals.js';
 import { noop, is } from '../internal/utils.js';
 
 
-export function writable (value, notifier) {
-	return new Writable(value, notifier);
+let queue = [];
+
+export function writable (value, notifier = noop) {
+	let stop;
+
+	let subscribers = new Set();
+	let invalidators = new Set();
+
+	let set = (next) => {
+		if (!is(value, next)) {
+			value = next;
+
+			if (stop) {
+				let should_flush = !queue.length;
+
+				for (let invalidate of invalidators) {
+					invalidate();
+				}
+
+				queue.push([subscribers, next]);
+
+				if (should_flush) {
+					for (let [subscribers, value] of queue) {
+						for (let listener of subscribers) {
+							listener(value);
+						}
+					}
+
+					queue.length = 0;
+				}
+			}
+		}
+	};
+
+	let update = (updater) => {
+		set(updater(value));
+	};
+
+	let subscribe = (listener, invalidate = noop) => {
+		subscribers.add(listener);
+		invalidators.add(invalidate);
+
+		if (subscribers.size === 1) {
+			stop = notifier(set) || noop;
+		}
+
+		listener(value);
+
+		return () => {
+			subscribers.delete(listener);
+			invalidators.delete(invalidate);
+
+			if (subscribers.size === 0) {
+				stop();
+				stop = null;
+			}
+		};
+	};
+
+	return { set, update, subscribe };
 }
 
 export function readable (value, notifier) {
 	let instance = writable(value, notifier);
-	return { subscribe: instance.subscribe.bind(instance) };
+	return { subscribe: instance.subscribe };
 }
 
 export function derived (derives, fn, initial_value) {
@@ -19,11 +77,14 @@ export function derived (derives, fn, initial_value) {
 
 	return readable(initial_value, (set) => {
 		let init = false;
+
 		let values = [];
+		let pending = 0;
+
 		let cleanup = noop;
 
 		let sync = () => {
-			if (!init) {
+			if (!init || pending) {
 				return;
 			}
 
@@ -40,10 +101,16 @@ export function derived (derives, fn, initial_value) {
 		};
 
 		let unsubcriptions = stores.map((store, index) => (
-			store.subscribe((value) => {
-				values[index] = value;
-				sync();
-			})
+			store.subscribe(
+				(value) => {
+					values[index] = value;
+					pending &= ~(1 << index);
+					sync();
+				},
+				() => {
+					pending |= (1 << index);
+				},
+			)
 		));
 
 		init = true;
@@ -57,65 +124,4 @@ export function derived (derives, fn, initial_value) {
 			cleanup();
 		};
 	});
-}
-
-class Writable {
-	/** notifier start */
-	n;
-	/** notifier stop */
-	u;
-	/** current value */
-	v;
-
-	/** subscribers */
-	s = new Set();
-
-	constructor (value, notifier = noop) {
-		let _this = this;
-
-		_this.v = value;
-		_this.n = notifier;
-	}
-
-	set (next) {
-		let _this = this;
-
-		if (!is(_this.v, next)) {
-			_this.v = next;
-
-			if (_this.u) {
-				for (let subscriber of _this.s) {
-					subscriber(next);
-				}
-			}
-		}
-	}
-
-	update (updater) {
-		let _this = this;
-		_this.set(updater(_this.v));
-	}
-
-	subscribe (listener) {
-		let _this = this;
-		let subscribers = _this.s;
-		let stop = _this.u;
-
-		subscribers.add(listener);
-
-		if (subscribers.size === 1) {
-			stop = _this.u = _this.n((next) => _this.set(next));
-		}
-
-		listener(_this.v);
-
-		return () => {
-			subscribers.delete(listener);
-
-			if (subscribers.size === 0) {
-				stop();
-				_this.u = null;
-			}
-		};
-	}
 }
