@@ -1,5 +1,5 @@
 // Stripped out version of @vue/reactivity, not intended for public usage.
-import { is } from './utils.js';
+import { is, is_function } from './utils.js';
 import { Symbol, Set } from './globals.js';
 
 
@@ -29,7 +29,9 @@ export function effect (fn, scheduler) {
 }
 
 export function cleanup (fn) {
-	curr_scope.c.push(fn);
+	if (is_function(fn)) {
+		curr_scope.c.push(fn);
+	}
 }
 
 export function ref (value) {

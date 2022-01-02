@@ -17,3 +17,5 @@ export function hyphenate (str) {
 
 export let is = Object.is;
 export let assign = Object.assign;
+
+export let is_function = (x) => typeof x === 'function';

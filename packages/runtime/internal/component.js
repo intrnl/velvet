@@ -1,5 +1,5 @@
 import { ref, scope, access, cleanup } from './reactivity.js';
-import { hyphenate, camelize, assign } from './utils.js';
+import { hyphenate, camelize, assign, is_function } from './utils.js';
 import { Symbol, Object } from './globals.js';
 
 // props are assigned its default values only when it's uncontrolled, so the
@@ -56,10 +56,7 @@ class VelvetComponent extends HTMLElement {
 
 				for (let hook of hooks) {
 					let ret = hook();
-
-					if (typeof ret === 'function') {
-						cleanup(ret);
-					}
+					cleanup(ret);
 				}
 
 				hooks.length = 0;
@@ -133,14 +130,16 @@ export function property (index, value) {
 		// we'd wrap non-primitive values like functions and objects, or if we're
 		// referencing an identifier.
 
-		state(typeof value === 'function' ? value() : value);
+		state(is_function(value) ? value() : value);
 	}
 
 	return state;
 }
 
 export function on_mount (fn) {
-	curr_host.$h.push(fn);
+	if (is_function(fn)) {
+		curr_host.$h.push(fn);
+	}
 }
 
 export function event_dispatcher () {
