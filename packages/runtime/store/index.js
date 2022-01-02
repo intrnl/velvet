@@ -42,11 +42,11 @@ export function writable (value, notifier = noop) {
 				}
 			}
 		}
+
+		return next;
 	};
 
-	let update = (updater) => {
-		set(updater(value));
-	};
+	let update = (updater) => set(updater(value));
 
 	let subscribe = (listener, invalidate = noop) => {
 		subscribers.add(listener);
