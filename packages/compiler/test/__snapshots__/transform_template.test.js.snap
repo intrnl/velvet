@@ -1,5 +1,24 @@
 // Vitest Snapshot v1
 
+exports[`attribute > action expression 1`] = `
+"let %%template0 = @html(\\"<input />\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+@cleanup(action(%child0));
+@append($$root, %fragment0);
+"
+`;
+
+exports[`attribute > action expression array 1`] = `
+"let %%template0 = @html(\\"<input />\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+@cleanup(foo(%child0));
+@cleanup(bar(%child0));
+@append($$root, %fragment0);
+"
+`;
+
 exports[`attribute > attribute expression 1`] = `
 "let %%template0 = @html(\\"<div></div>\\");
 let %fragment0 = @clone(%template0);

@@ -138,6 +138,25 @@ describe('attribute', () => {
 	});
 
 
+	it('action expression', () => {
+		let template = `<input #use={action}>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('action expression array', () => {
+		let template = `<input #use={[foo, bar]}>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+
 	it('spread expression', () => {
 		let template = `<input {...props}>`;
 

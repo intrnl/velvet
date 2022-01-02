@@ -278,6 +278,40 @@ export function transform_template (template, source) {
 						continue;
 					}
 
+					if (attr_name === '#use') {
+						if (!attr_value || attr_value.type === 'Text') {
+							throw create_error(
+								'expected an expression for #use',
+								source,
+								attribute.start,
+								attribute.end,
+							);
+						}
+
+						need_ident = true;
+
+						let elements;
+
+						if (value_expr.type === 'ArrayExpression') {
+							elements = value_expr.elements;
+						}
+						else {
+							elements = [value_expr];
+						}
+
+						for (let node of elements) {
+							let statement = t.expression_statement(
+								t.call_expression(t.identifier('@cleanup'), [
+									t.call_expression(node, [ident]),
+								])
+							);
+
+							pending.push(statement);
+						}
+
+						break;
+					}
+
 					if (attr_name[0] === '.') {
 						need_ident = true;
 
