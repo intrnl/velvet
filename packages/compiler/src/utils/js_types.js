@@ -33,6 +33,17 @@ export function literal (value) {
 }
 
 /**
+ * @param {Array<import('estree').Expression>} expressions
+ * @return {import('estree').SequenceExpression}
+ */
+export function sequence_expression (expressions = []) {
+	return {
+		type: 'SequenceExpression',
+		expressions: expressions.filter((expression) => !!expression),
+	};
+}
+
+/**
  * @param {Array<import('estree').Expression | import('estree').SpreadElement | null>} elements
  * @return {import('estree').ArrayExpression}
  */

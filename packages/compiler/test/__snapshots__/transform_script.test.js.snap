@@ -555,7 +555,7 @@ exports[`reserved > throws on reassigning $$ 1`] = `
 exports[`store > binary setter 1`] = `
 "let $store = @ref();
 @cleanup(store.subscribe($store));
-store.set($store(@access) + 123);
+(store.set($store(@access) + 123), $store(@access));
 "
 `;
 
@@ -569,7 +569,7 @@ $store(@access);
 exports[`store > logical setter 1`] = `
 "let $store = @ref();
 @cleanup(store.subscribe($store));
-store.set($store(@access) ?? 123);
+(store.set($store(@access) ?? 123), $store(@access));
 "
 `;
 
@@ -589,9 +589,11 @@ exports[`store > multiple setter references 1`] = `
 "let $value1 = @ref();
 @cleanup(value1.subscribe($value1));
 function increment() {
-  value1.set($value1(@access) + 1);
+  (value1.set($value1(@access) + 1), $value1(@access));
 }
-value2.set(2);
+let $value2 = @ref();
+@cleanup(value2.subscribe($value2));
+(value2.set(2), $value2(@access));
 "
 `;
 
@@ -635,7 +637,9 @@ console.log($foo(@access).bar);
 `;
 
 exports[`store > setter 1`] = `
-"store.set(123);
+"let $store = @ref();
+@cleanup(store.subscribe($store));
+(store.set(123), $store(@access));
 "
 `;
 

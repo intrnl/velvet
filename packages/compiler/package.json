@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"name": "@intrnl/velvet-compiler",
-	"version": "0.2.6",
+	"version": "0.2.7",
 	"author": "intrnl",
 	"license": "MIT",
 	"repository": {
