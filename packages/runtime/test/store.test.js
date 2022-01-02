@@ -59,6 +59,18 @@ describe('writable', () => {
 		store.set({});
 		expect(fn).toHaveBeenCalledTimes(2);
 	});
+
+	it('allows direct retrieval', () => {
+		let store = writable(1);
+
+		expect(store.get()).toBe(1);
+
+		store.set(2);
+		expect(store.get()).toBe(2);
+
+		store.update((prev) => prev * 2);
+		expect(store.get()).toBe(4);
+	});
 });
 
 describe('readable', () => {

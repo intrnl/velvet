@@ -10,6 +10,10 @@ export function writable (value, notifier = noop) {
 	let subscribers = new Set();
 	let invalidators = new Set();
 
+	let get = () => {
+		return value;
+	};
+
 	let set = (next) => {
 		if (!is(value, next)) {
 			value = next;
@@ -61,7 +65,7 @@ export function writable (value, notifier = noop) {
 		};
 	};
 
-	return { set, update, subscribe };
+	return { get, set, update, subscribe };
 }
 
 export function readable (value, notifier) {
