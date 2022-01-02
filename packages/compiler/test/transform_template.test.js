@@ -108,16 +108,6 @@ describe('attribute', () => {
 	});
 
 
-	it('ref expression', () => {
-		let template = `<input #ref={input}>`;
-
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		expect(print(program)).toMatchSnapshot();
-	});
-
-
 	it('event expression', () => {
 		let template = `<button @click={handle_click}></button>`;
 
@@ -130,6 +120,16 @@ describe('attribute', () => {
 
 	it('binding expression', () => {
 		let template = `<input :value={value}>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+
+	it('ref expression', () => {
+		let template = `<input #ref={input}>`;
 
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
