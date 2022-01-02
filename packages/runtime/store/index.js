@@ -2,6 +2,14 @@ import { Array, Set } from '../internal/globals.js';
 import { noop, is } from '../internal/utils.js';
 
 
+export function get (store) {
+	let value;
+	let unsubscribe = store.subscribe((_value) => value = _value);
+
+	unsubscribe();
+	return value;
+}
+
 let queue = [];
 
 export function writable (value, notifier = noop) {
@@ -9,10 +17,6 @@ export function writable (value, notifier = noop) {
 
 	let subscribers = new Set();
 	let invalidators = new Set();
-
-	let get = () => {
-		return value;
-	};
 
 	let set = (next) => {
 		if (!is(value, next)) {
@@ -65,7 +69,7 @@ export function writable (value, notifier = noop) {
 		};
 	};
 
-	return { get, set, update, subscribe };
+	return { set, update, subscribe };
 }
 
 export function readable (value, notifier) {

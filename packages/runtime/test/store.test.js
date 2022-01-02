@@ -1,6 +1,6 @@
 import { vi, describe, it, expect } from 'vitest';
 
-import { writable, readable, derived } from '../store/index.js';
+import { writable, readable, derived, get } from '../store/index.js';
 
 
 describe('writable', () => {
@@ -58,18 +58,6 @@ describe('writable', () => {
 
 		store.set({});
 		expect(fn).toHaveBeenCalledTimes(2);
-	});
-
-	it('allows direct retrieval', () => {
-		let store = writable(1);
-
-		expect(store.get()).toBe(1);
-
-		store.set(2);
-		expect(store.get()).toBe(2);
-
-		store.update((prev) => prev * 2);
-		expect(store.get()).toBe(4);
 	});
 });
 
@@ -242,5 +230,44 @@ describe('derived', () => {
 		count.set(4);
 		expect(fn).toHaveBeenCalledTimes(3);
 		expect(cleanup).toHaveBeenCalledTimes(3);
+	});
+});
+
+describe('get', () => {
+	it('retrieves writable', () => {
+		let store = writable(1);
+
+		expect(get(store)).toBe(1);
+
+		store.set(2);
+		expect(get(store)).toBe(2);
+
+		store.update((prev) => prev * 2);
+		expect(get(store)).toBe(4);
+	});
+
+	it('receives readable', () => {
+		let count = 0;
+
+		let store = readable(null, (set) => {
+			set(count += 1);
+		});
+
+		expect(get(store)).toBe(1);
+		expect(get(store)).toBe(2);
+		expect(get(store)).toBe(3);
+	});
+
+	it('retrieves derived', () => {
+		let count = writable(1);
+		let double = derived(count, ($count) => $count * 2);
+
+		expect(get(double)).toBe(2);
+
+		count.set(2);
+		expect(get(double)).toBe(4);
+
+		count.update((prev) => prev * 2);
+		expect(get(double)).toBe(8);
 	});
 });
