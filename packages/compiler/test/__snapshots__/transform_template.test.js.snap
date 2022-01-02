@@ -49,7 +49,7 @@ exports[`attribute > ref 1`] = `
 "let %%template0 = @html(\\"<input />\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
-$: input = %child0;
+input = %child0;
 @append($$root, %fragment0);
 "
 `;

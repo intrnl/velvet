@@ -257,7 +257,9 @@ export function transform_template (template, source) {
 
 						need_ident = true;
 
-						let statement = t.assignment_expression(value_expr, ident, '=');
+						let statement = t.expression_statement(
+							t.assignment_expression(value_expr, t.identifier(ident), '=')
+						);
 
 						pending.push(statement);
 						continue;
