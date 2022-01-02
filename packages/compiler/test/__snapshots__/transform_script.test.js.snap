@@ -559,6 +559,13 @@ $store(@access);
 "
 `;
 
+exports[`store > logical setter 1`] = `
+"let $store = @ref();
+@cleanup(store.subscribe($store));
+store.set($store(@access) ?? 123);
+"
+`;
+
 exports[`store > multiple getter references 1`] = `
 "let $value1 = @ref();
 @cleanup(value1.subscribe($value1));

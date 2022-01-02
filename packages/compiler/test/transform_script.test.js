@@ -716,6 +716,16 @@ describe('store', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
+	it('logical setter', () => {
+		let program = parse(`
+			$store ??= 123;
+		`);
+
+		transform_script(program);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
 	it('multiple setter references', () => {
 		let program = parse(`
 			function increment () {
