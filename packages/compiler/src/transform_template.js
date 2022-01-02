@@ -181,7 +181,7 @@ export function transform_template (template, source) {
 			}
 
 			if (node.type === 'Element') {
-				let ident = '%child' + (id_c++);
+				let ident = t.identifier('%child' + (id_c++));
 				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
 				let need_ident = false;
 
@@ -205,11 +205,21 @@ export function transform_template (template, source) {
 
 						let expression = attribute.expression;
 
-						let statements = b`
-							$: @assign(${ident}, ${expression});
-						`;
+						let is_static = expression.comments?.length &&
+							expression.comments.some((comment) => comment.value.trim() === '@static');
 
-						pending.push(...statements);
+						let statement = t.expression_statement(
+							t.call_expression(t.identifier('@assign'), [
+								ident,
+								expression,
+							])
+						);
+
+						if (!is_static) {
+							statement = t.labeled_statement(t.identifier('$'), statement);
+						}
+
+						pending.push(statement);
 						continue;
 					}
 
@@ -221,6 +231,9 @@ export function transform_template (template, source) {
 							? t.literal(attr_value.decoded)
 							: attr_value.expression
 						: t.literal(true);
+
+					let is_static = value_expr.comments?.length &&
+						value_expr.comments.some((comment) => comment.value.trim() === '@static');
 
 					if (attr_name === '#this') {
 						if (!attr_value || attr_value.type === 'Text') {
@@ -258,7 +271,7 @@ export function transform_template (template, source) {
 						need_ident = true;
 
 						let statement = t.expression_statement(
-							t.assignment_expression(value_expr, t.identifier(ident), '=')
+							t.assignment_expression(value_expr, ident, '=')
 						);
 
 						pending.push(statement);
@@ -270,11 +283,19 @@ export function transform_template (template, source) {
 
 						let name = t.literal(attr_name.slice(1));
 
-						let statements = b`
-							$: ${ident}[${name}] = ${value_expr};
-						`;
+						let statement = t.expression_statement(
+							t.assignment_expression(
+								t.member_expression(ident, name, true),
+								value_expr,
+								'='
+							)
+						);
 
-						pending.push(...statements);
+						if (!is_static) {
+							statement = t.labeled_statement(t.identifier('$'), statement);
+						}
+
+						pending.push(statement);
 						continue;
 					}
 
@@ -285,11 +306,19 @@ export function transform_template (template, source) {
 
 						let name = t.literal(attr_name.slice(is_toggle ? 1 : 0));
 
-						let statements = b`
-							$: @toggle(${ident}, ${name}, ${value_expr});
-						`;
+						let statement = t.expression_statement(
+							t.call_expression(t.identifier('@toggle'), [
+								ident,
+								name,
+								value_expr,
+							])
+						);
 
-						pending.push(...statements);
+						if (!is_static) {
+							statement = t.labeled_statement(t.identifier('$'), statement);
+						}
+
+						pending.push(statement);
 						continue;
 					}
 
@@ -298,11 +327,15 @@ export function transform_template (template, source) {
 
 						let name = t.literal(attr_name.slice(1));
 
-						let statements = b`
-							@on(${ident}, ${name}, ${value_expr});
-						`;
+						let statement = t.expression_statement(
+							t.call_expression(t.identifier('@on'), [
+								ident,
+								name,
+								value_expr,
+							])
+						);
 
-						pending.push(...statements);
+						pending.push(statement);
 						continue;
 					}
 
@@ -345,11 +378,19 @@ export function transform_template (template, source) {
 
 						let name = t.literal(attr_name);
 
-						let statements = b`
-							$: @attr(${ident}, ${name}, ${value_expr});
-						`;
+						let statement = t.expression_statement(
+							t.call_expression(t.identifier('@attr'), [
+								ident,
+								name,
+								value_expr
+							])
+						);
 
-						pending.push(...statements);
+						if (!is_static) {
+							statement = t.labeled_statement(t.identifier('$'), statement);
+						}
+
+						pending.push(statement);
 						continue;
 					}
 				}

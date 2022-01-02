@@ -6,7 +6,7 @@ import { print } from '../src/utils/js_parse.js';
 
 
 describe('attribute', () => {
-	it('static', () => {
+	it('attribute unquoted', () => {
 		let template = `<div class='foo'></div>`;
 
 		let fragment = parse_template(template);
@@ -15,7 +15,7 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
-	it('static unquoted', () => {
+	it('attribute unquoted', () => {
 		let template = `<div class=foo></div>`;
 
 		let fragment = parse_template(template);
@@ -24,7 +24,7 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
-	it('dynamic', () => {
+	it('attribute expression', () => {
 		let template = `<div class={className}></div>`;
 
 		let fragment = parse_template(template);
@@ -33,7 +33,16 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
-	it('static boolean', () => {
+	it('attribute expression pure', () => {
+		let template = `<div class={/* @static */ className}></div>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('attribute none', () => {
 		let template = `<textarea readonly></textarea>`;
 
 		let fragment = parse_template(template);
@@ -42,7 +51,8 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
-	it('dynamic boolean', () => {
+
+	it('boolean expression', () => {
 		let template = `<textarea ?readonly={is_readonly}></textarea>`;
 
 		let fragment = parse_template(template);
@@ -51,7 +61,16 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
-	it('dynamic boolean no value', () => {
+	it('boolean expression pure', () => {
+		let template = `<textarea ?readonly={/* @static */ is_readonly}></textarea>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('boolean none', () => {
 		let template = `<textarea ?readonly></textarea>`;
 
 		let fragment = parse_template(template);
@@ -60,7 +79,8 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
-	it('property', () => {
+
+	it('property expression', () => {
 		let template = `<input .value={value}>`;
 
 		let fragment = parse_template(template);
@@ -69,7 +89,16 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
-	it('property no value', () => {
+	it('property expression pure', () => {
+		let template = `<input .value={/* @static */ value}>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('property none', () => {
 		let template = `<input .value>`;
 
 		let fragment = parse_template(template);
@@ -78,7 +107,8 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
-	it('ref', () => {
+
+	it('ref expression', () => {
 		let template = `<input #ref={input}>`;
 
 		let fragment = parse_template(template);
@@ -87,7 +117,28 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
-	it('spread', () => {
+
+	it('event expression', () => {
+		let template = `<button @click={handle_click}></button>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+
+	it('binding expression', () => {
+		let template = `<input :value={value}>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+
+	it('spread expression', () => {
 		let template = `<input {...props}>`;
 
 		let fragment = parse_template(template);

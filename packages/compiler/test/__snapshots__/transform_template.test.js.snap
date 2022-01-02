@@ -1,6 +1,6 @@
 // Vitest Snapshot v1
 
-exports[`attribute > dynamic 1`] = `
+exports[`attribute > attribute expression 1`] = `
 "let %%template0 = @html(\\"<div></div>\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
@@ -9,7 +9,48 @@ $: @attr(%child0, \\"class\\", className);
 "
 `;
 
-exports[`attribute > dynamic boolean 1`] = `
+exports[`attribute > attribute expression pure 1`] = `
+"let %%template0 = @html(\\"<div></div>\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+@attr(%child0, \\"class\\", className);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`attribute > attribute none 1`] = `
+"let %%template0 = @html(\\"<textarea readonly></textarea>\\");
+let %fragment0 = @clone(%template0);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`attribute > attribute unquoted 1`] = `
+"let %%template0 = @html(\\"<div class=\\\\\\"foo\\\\\\"></div>\\");
+let %fragment0 = @clone(%template0);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`attribute > attribute unquoted 2`] = `
+"let %%template0 = @html(\\"<div class=\\\\\\"foo\\\\\\"></div>\\");
+let %fragment0 = @clone(%template0);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`attribute > binding expression 1`] = `
+"let %%template0 = @html(\\"<input />\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+let %bind0 = event => value = event.target.value;
+$: %child0[\\"value\\"] = value;
+@on(%child0, \\"input\\", %bind0);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`attribute > boolean expression 1`] = `
 "let %%template0 = @html(\\"<textarea></textarea>\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
@@ -18,7 +59,16 @@ $: @toggle(%child0, \\"readonly\\", is_readonly);
 "
 `;
 
-exports[`attribute > dynamic boolean no value 1`] = `
+exports[`attribute > boolean expression pure 1`] = `
+"let %%template0 = @html(\\"<textarea></textarea>\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+@toggle(%child0, \\"readonly\\", is_readonly);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`attribute > boolean none 1`] = `
 "let %%template0 = @html(\\"<textarea></textarea>\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
@@ -27,7 +77,16 @@ $: @toggle(%child0, \\"readonly\\", true);
 "
 `;
 
-exports[`attribute > property 1`] = `
+exports[`attribute > event expression 1`] = `
+"let %%template0 = @html(\\"<button></button>\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+@on(%child0, \\"click\\", handle_click);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`attribute > property expression 1`] = `
 "let %%template0 = @html(\\"<input />\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
@@ -36,7 +95,16 @@ $: %child0[\\"value\\"] = value;
 "
 `;
 
-exports[`attribute > property no value 1`] = `
+exports[`attribute > property expression pure 1`] = `
+"let %%template0 = @html(\\"<input />\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+%child0[\\"value\\"] = value;
+@append($$root, %fragment0);
+"
+`;
+
+exports[`attribute > property none 1`] = `
 "let %%template0 = @html(\\"<input />\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
@@ -45,7 +113,7 @@ $: %child0[\\"value\\"] = true;
 "
 `;
 
-exports[`attribute > ref 1`] = `
+exports[`attribute > ref expression 1`] = `
 "let %%template0 = @html(\\"<input />\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
@@ -54,32 +122,11 @@ input = %child0;
 "
 `;
 
-exports[`attribute > spread 1`] = `
+exports[`attribute > spread expression 1`] = `
 "let %%template0 = @html(\\"<input />\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
 $: @assign(%child0, props);
-@append($$root, %fragment0);
-"
-`;
-
-exports[`attribute > static 1`] = `
-"let %%template0 = @html(\\"<div class=\\\\\\"foo\\\\\\"></div>\\");
-let %fragment0 = @clone(%template0);
-@append($$root, %fragment0);
-"
-`;
-
-exports[`attribute > static boolean 1`] = `
-"let %%template0 = @html(\\"<textarea readonly></textarea>\\");
-let %fragment0 = @clone(%template0);
-@append($$root, %fragment0);
-"
-`;
-
-exports[`attribute > static unquoted 1`] = `
-"let %%template0 = @html(\\"<div class=\\\\\\"foo\\\\\\"></div>\\");
-let %fragment0 = @clone(%template0);
 @append($$root, %fragment0);
 "
 `;
