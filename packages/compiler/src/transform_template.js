@@ -257,11 +257,9 @@ export function transform_template (template, source) {
 
 						need_ident = true;
 
-						let statements = b`
-							$: ${value_expr} = ${ident};
-						`;
+						let statement = t.assignment_expression(value_expr, ident, '=');
 
-						pending.push(...statements);
+						pending.push(statement);
 						continue;
 					}
 
