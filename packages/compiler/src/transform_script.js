@@ -188,6 +188,10 @@ export function transform_script (program, source) {
 					);
 				}
 
+				if (parent.type === 'AssignmentExpression' && parent.left === node && parent.operator === '=') {
+					return;
+				}
+
 				let actual = name.slice(1);
 				let actual_ident = t.identifier(actual);
 				let ident = t.identifier(name);
@@ -356,13 +360,10 @@ export function transform_script (program, source) {
 						}
 					}
 
-					let call_expr = t.sequence_expression([
-						t.call_expression(
-							t.member_expression(actual_ident, t.identifier('set')),
-							[expr],
-						),
-						t.identifier(identifier.name),
-					]);
+					let call_expr = t.call_expression(
+						t.member_expression(actual_ident, t.identifier('set')),
+						[expr],
+					);
 
 					(call_expr.velvet ||= {}).transformed = true;
 					return call_expr;
