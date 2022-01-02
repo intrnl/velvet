@@ -18,7 +18,6 @@ export function provide (key, value) {
 	};
 
 	on(curr_host, event_name, listener);
-	on(curr_host.shadowRoot, event_name, listener);
 }
 
 /**
