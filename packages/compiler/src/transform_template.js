@@ -909,23 +909,23 @@ export function transform_template (template, source) {
 				}
 
 				let argument = t.arrow_function_expression([], node.argument);
-				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
-				let marker_ident = '%marker' + (id_m++);
+				let fragment_ident = t.identifier('%fragment' + blocks.indexOf(curr_block));
+				let marker_ident = t.identifier('%marker' + (id_m++));
 				let indices = t.array_expression([...curr_block.indices, index].map((idx) => t.literal(idx)));
 
 				let statements = [
 					t.variable_declaration('let', [
 						t.variable_declarator(
-							t.identifier(marker_ident),
+							marker_ident,
 							t.call_expression(t.identifier('@traverse'), [
-								t.identifier(fragment_ident),
+								fragment_ident,
 								indices,
 							]),
 						),
 					]),
 					t.expression_statement(
 						t.call_expression(t.identifier('@promise'), [
-							t.identifier(marker_ident),
+							marker_ident,
 							pending_ident,
 							resolved_ident,
 							rejected_ident,
