@@ -91,6 +91,19 @@ export function member_expression (object, property, computed = false, optional 
 }
 
 /**
+ * @param {...string} str
+ * @returns {import('estree').MemberExpression}}
+ */
+export function member_expression_from (...str) {
+	return str.reduce((prev, curr) => {
+		let object = typeof prev === 'string' ? identifier(prev) : prev;
+		let property = identifier(curr);
+
+		return member_expression(object, property);
+	});
+}
+
+/**
  * @param {import('estree').Expression} expression
  * @returns {import('estree').ExpressionStatement}
  */
@@ -132,10 +145,10 @@ export function binary_expression (left, right, operator) {
 /**
  * @param {import('estree').Pattern | import('estree').MemberExpression} left
  * @param {import('estree').Expression} right
- * @param {import('estree').AssignmentOperator} operator
+ * @param {import('estree').AssignmentOperator} [operator]
  * @returns {import('estree').AssignmentExpression}
  */
-export function assignment_expression (left, right, operator) {
+export function assignment_expression (left, right, operator = '=') {
 	return {
 		type: 'AssignmentExpression',
 		left,
@@ -160,6 +173,21 @@ export function logical_expression (left, right, operator) {
 }
 
 /**
+ * @param {import('estree').Expression} test
+ * @param {import('estree').Expression} consequent
+ * @param {import('estree').Expression} alternate
+ * @returns {import('estree').ConditionalExpression}
+ */
+export function conditional_expression (test, consequent, alternate) {
+	return {
+		type: 'ConditionalExpression',
+		test,
+		consequent,
+		alternate,
+	};
+}
+
+/**
  * @param {import('estree').Expression | import('estree').Super} callee
  * @param {(import('estree').Expression | import('estree').SpreadElement)[]} [args]
  * @param {boolean} [optional]
@@ -171,6 +199,19 @@ export function call_expression (callee, args = [], optional = false) {
 		callee,
 		arguments: args.filter((args) => !!args),
 		optional,
+	};
+}
+
+/**
+ * @param {import('estree').Expression | import('estree').Super} callee
+ * @param {(import('estree').Expression | import('estree').SpreadElement)[]} [args]
+ * @returns {import('estree').NewExpression}
+ */
+export function new_expression (callee, args = []) {
+	return {
+		type: 'NewExpression',
+		callee,
+		arguments: args.filter((args) => !!args),
 	};
 }
 
@@ -281,5 +322,16 @@ export function export_default_declaration (declaration) {
 	return {
 		type: 'ExportDefaultDeclaration',
 		declaration,
+	};
+}
+
+/**
+ * @param {?import('estree').Expression} declaration
+ * @returns {import('estree').ReturnStatement}
+ */
+export function return_statement (argument) {
+	return {
+		type: 'ReturnStatement',
+		argument,
 	};
 }

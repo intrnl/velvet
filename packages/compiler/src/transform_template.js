@@ -1,5 +1,4 @@
 import { walk } from './utils/walker.js';
-import { b, x } from './utils/js_parse.js';
 import * as t from './utils/js_types.js';
 import { create_error } from './utils/error.js';
 
@@ -171,10 +170,23 @@ export function transform_template (template, source) {
 
 				curr_block.html += `<!>`;
 
-				let statements = b`
-					let ${marker_ident} = @traverse(${fragment_ident}, ${indices});
-					@text(${marker_ident}, () => ${expression});
-				`;
+				let statements = [
+					t.variable_declaration('let', [
+						t.variable_declarator(
+							t.identifier(marker_ident),
+							t.call_expression(t.identifier('@traverse'), [
+								t.identifier(fragment_ident),
+								indices,
+							]),
+						)
+					]),
+					t.expression_statement(
+						t.call_expression(t.identifier('@text'), [
+							t.identifier(marker_ident),
+							t.arrow_function_expression([], expression),
+						]),
+					),
+				];
 
 				curr_scope.push(...statements);
 				return;
@@ -392,16 +404,38 @@ export function transform_template (template, source) {
 						let name_lit = t.literal(attr_name.slice(1));
 						let event = t.literal(node.component ? `update:${name}` : `input`);
 						let event_target = node.component
-							? x`event.detail`
+							? t.member_expression_from('event', 'detail')
 							: is_checkbox
-								? x`event.target.checked`
-								: x`event.target.value`;
+								? t.member_expression_from('event', 'target', 'checked')
+								: t.member_expression_from('event', 'target', 'value');
 
-						let statements = b`
-							let ${binding} = (event) => ${value_expr} = ${event_target};
-							$: ${ident}[${name_lit}] = ${value_expr};
-							@on(${ident}, ${event}, ${binding});
-						`;
+						let statements = [
+							t.variable_declaration('let', [
+								t.variable_declarator(
+									t.identifier(binding),
+									t.arrow_function_expression(
+										[t.identifier('event')],
+										t.assignment_expression(value_expr, event_target),
+									),
+								),
+							]),
+							t.labeled_statement(
+								t.identifier('$'),
+								t.expression_statement(
+									t.assignment_expression(
+										t.member_expression(ident, name_lit, true),
+										value_expr,
+									),
+								),
+							),
+							t.expression_statement(
+								t.call_expression(t.identifier('@on'), [
+									ident,
+									event,
+									t.identifier(binding),
+								]),
+							),
+						];
 
 						pending.push(...statements);
 						continue;
@@ -432,11 +466,17 @@ export function transform_template (template, source) {
 				if (need_ident && !is_inline) {
 					let indices = t.array_expression(curr_block.indices.map((index) => t.literal(index)));
 
-					let declarations = b`
-						let ${ident} = @traverse(${fragment_ident}, ${indices});
-					`;
+					let declaration = t.variable_declaration('let', [
+						t.variable_declarator(
+							ident,
+							t.call_expression(t.identifier('@traverse'), [
+								t.identifier(fragment_ident),
+								indices,
+							])
+						),
+					]);
 
-					pending.unshift(...declarations);
+					pending.unshift(declaration);
 				}
 				else if (elem_name === 'v:component') {
 					let block = curr_block;
@@ -454,13 +494,18 @@ export function transform_template (template, source) {
 						);
 					}
 
-					let header = b`
-						let ${ident} = new %component();
-					`;
+					let header = [
+						t.variable_declaration('let', [
+							t.variable_declarator(
+								ident,
+								t.new_expression(t.identifier('%component')),
+							),
+						]),
+					];
 
-					let footer = b`
-						return ${ident};
-					`;
+					let footer = [
+						t.return_statement(ident),
+					];
 
 					pending.unshift(...header);
 					pending.push(...footer);
@@ -471,12 +516,24 @@ export function transform_template (template, source) {
 					let marker_ident = '%marker' + (id_m++);
 
 					if (scope.length) {
-						let html = t.literal(block.html);
-
-						let template_declarations = b`
-							let ${'%' + template_ident} = @html(${html});
-							let ${fragment_ident} = @clone(${template_ident});
-						`;
+						let template_declarations = [
+							t.variable_declaration('let', [
+								t.variable_declarator(
+									t.identifier('%' + template_ident),
+									t.call_expression(t.identifier('@html'), [
+										t.literal(block.html),
+									]),
+								),
+							]),
+							t.variable_declaration('let', [
+								t.variable_declarator(
+									t.identifier(fragment_ident),
+									t.call_expression(t.identifier('@clone'), [
+										t.identifier(template_ident),
+									]),
+								),
+							]),
+						];
 
 						scope.unshift(...template_declarations);
 					}
@@ -486,11 +543,33 @@ export function transform_template (template, source) {
 					let block_statement = t.block_statement([...scope, ...pending]);
 					pending.length = 0;
 
-					let statements = b`
-						let ${block_ident} = (%component) => ${block_statement};
-						let ${marker_ident} = @traverse(${curr_fragment_ident}, ${indices});
-						@dynamic(${marker_ident}, ${block_ident}, () => ${_this_expr});
-					`;
+					let statements = [
+						t.variable_declaration('let', [
+							t.variable_declarator(
+								t.identifier(block_ident),
+								t.arrow_function_expression(
+									[t.identifier('%component')],
+									block_statement
+								),
+							),
+						]),
+						t.variable_declaration('let', [
+							t.variable_declarator(
+								t.identifier(marker_ident),
+								t.call_expression(t.identifier('@traverse'), [
+									t.identifier(curr_fragment_ident),
+									indices,
+								]),
+							),
+						]),
+						t.expression_statement(
+							t.call_expression(t.identifier('@dynamic'), [
+								t.identifier(marker_ident),
+								t.identifier(block_ident),
+								t.arrow_function_expression([], _this_expr),
+							]),
+						),
+					];
 
 					pending.push(...statements);
 				}
@@ -502,14 +581,37 @@ export function transform_template (template, source) {
 
 					let is_self = elem_name === 'v:self';
 
-					let declarations = b`
-						let ${ident} = new ${is_self ? '$$host.constructor' : elem_name}();
-					`;
+					let declarations = [
+						t.variable_declaration('let', [
+							t.variable_declarator(
+								ident,
+								t.new_expression(
+									is_self
+										? t.member_expression_from('$$host', 'constructor')
+										: t.identifier(elem_name)
+								),
+							),
+						]),
+					];
 
-					let statements = b`
-						let ${marker_ident} = @traverse(${fragment_ident}, ${indices});
-						@replace(${marker_ident}, ${ident}, true);
-					`;
+					let statements = [
+						t.variable_declaration('let', [
+							t.variable_declarator(
+								t.identifier(marker_ident),
+								t.call_expression(t.identifier('@traverse'), [
+									t.identifier(fragment_ident),
+									indices,
+								]),
+							),
+						]),
+						t.expression_statement(
+							t.call_expression(t.identifier('@replace'), [
+								t.identifier(marker_ident),
+								ident,
+								t.literal(true),
+							]),
+						),
+					];
 
 					pending.unshift(...declarations);
 					pending.push(...statements);
@@ -537,32 +639,60 @@ export function transform_template (template, source) {
 
 				let html = t.literal(curr_block.html + (parent ? '<!>' : ''));
 
-				let template_declarations = b`
-					let ${'%' + template_ident} = @html(${html});
-					let ${fragment_ident} = @clone(${template_ident});
-				`;
+				let template_declarations = [
+					t.variable_declaration('let', [
+						t.variable_declarator(
+							t.identifier('%' + template_ident),
+							t.call_expression(t.identifier('@html'), [html]),
+						),
+					]),
+					t.variable_declaration('let', [
+						t.variable_declarator(
+							t.identifier(fragment_ident),
+							t.call_expression(t.identifier('@clone'), [t.identifier(template_ident)]),
+						),
+					]),
+				];
 
 				curr_scope.unshift(...template_declarations);
 
 				if (parent) {
-					let end_ident = '%marker' + (id_m++);
+					let end_ident = t.identifier('%marker' + (id_m++));
 					let end_index = t.array_expression([t.literal(node.children.length)]);
 
-					let statements = b`
-						let ${end_ident} = @traverse(${fragment_ident}, ${end_index});
-						@after($$root, ${fragment_ident});
-						return ${end_ident};
-					`;
+					let statements = [
+						t.variable_declaration('let', [
+							t.variable_declarator(
+								end_ident,
+								t.call_expression(t.identifier('@traverse'), [
+									t.identifier(fragment_ident),
+									end_index,
+								]),
+							),
+						]),
+
+						t.expression_statement(
+							t.call_expression(t.identifier('@after'), [
+								t.identifier('$$root'),
+								t.identifier(fragment_ident),
+							]),
+						),
+
+						t.return_statement(end_ident),
+					];
 
 					curr_scope.push(...statements);
 					curr_scope = scope_stack.pop();
 				}
 				else {
-					let statements = b`
-						@append($$root, ${fragment_ident});
-					`;
+					let statement = t.expression_statement(
+						t.call_expression(t.identifier('@append'), [
+							t.identifier('$$root'),
+							t.identifier(fragment_ident),
+						]),
+					);
 
-					curr_scope.push(...statements);
+					curr_scope.push(statement);
 				}
 
 				curr_block = block_stack.pop();
@@ -575,27 +705,33 @@ export function transform_template (template, source) {
 				let alternate_block = fragment_to_block.get(node.alternate);
 
 				if (consequent_block) {
-					let block_ident = '%block' + blocks.indexOf(consequent_block);
+					let block_ident = t.identifier('%block' + blocks.indexOf(consequent_block));
 					let scope = fragment_to_scope.get(node.consequent);
 					let statement = t.block_statement(scope);
 
-					let declarations = b`
-						let ${block_ident} = ($$root) => ${statement};
-					`;
+					let declaration = t.variable_declaration('let', [
+						t.variable_declarator(
+							block_ident,
+							t.arrow_function_expression([t.identifier('$$root')], statement),
+						),
+					]);
 
-					curr_scope.push(...declarations);
+					curr_scope.push(declaration);
 				}
 
 				if (alternate_block) {
-					let block_ident = '%block' + blocks.indexOf(alternate_block);
+					let block_ident = t.identifier('%block' + blocks.indexOf(alternate_block));
 					let scope = fragment_to_scope.get(node.alternate);
 					let statement = t.block_statement(scope);
 
-					let declarations = b`
-						let ${block_ident} = ($$root) => ${statement};
-					`;
+					let declaration = t.variable_declaration('let', [
+						t.variable_declarator(
+							block_ident,
+							t.arrow_function_expression([t.identifier('$$root')], statement),
+						),
+					]);
 
-					curr_scope.push(...declarations);
+					curr_scope.push(declaration);
 				}
 
 				if (parent.type !== 'ConditionalStatement') {
@@ -616,18 +752,33 @@ export function transform_template (template, source) {
 
 					let test = array.reduceRight((prev, next) => {
 						let consequent_block = fragment_to_block.get(next.consequent);
-						let consequent_ident = '%block' + blocks.indexOf(consequent_block);
+						let consequent_ident = t.identifier('%block' + blocks.indexOf(consequent_block));
 
 						let alternate_block = fragment_to_block.get(next.alternate);
-						let alternate_ident = alternate_block ? '%block' + blocks.indexOf(alternate_block) : t.literal(null);
+						let alternate_ident = alternate_block
+							? t.identifier('%block' + blocks.indexOf(alternate_block))
+							: t.literal(null);
 
-						return x`${next.test} ? ${consequent_ident} : ${prev || alternate_ident}`;
+						return t.conditional_expression(next.test, consequent_ident, prev || alternate_ident);
 					}, null);
 
-					let statements = b`
-						let ${marker_ident} = @traverse(${fragment_ident}, ${indices});
-						@show(${marker_ident}, () => ${test});
-					`;
+					let statements = [
+						t.variable_declaration('let', [
+							t.variable_declarator(
+								t.identifier(marker_ident),
+								t.call_expression(t.identifier('@traverse'), [
+									t.identifier(fragment_ident),
+									indices,
+								]),
+							),
+						]),
+						t.expression_statement(
+							t.call_expression(t.identifier('@show'), [
+								t.identifier(marker_ident),
+								t.arrow_function_expression([], test),
+							]),
+						),
+					];
 
 					curr_scope.push(...statements);
 				}
@@ -643,7 +794,7 @@ export function transform_template (template, source) {
 
 				let local = node.local;
 				let local_index = node.index;
-				let expression = x`() => ${node.expression}`;
+				let expression = t.arrow_function_expression([], node.expression);
 
 				let block_ident = t.identifier('%block' + blocks.indexOf(block));
 				let statement = t.block_statement(scope);
@@ -664,10 +815,24 @@ export function transform_template (template, source) {
 
 				let indices = t.array_expression([...curr_block.indices, index].map((idx) => t.literal(idx)));
 
-				let statements = b`
-					let ${marker_ident} = @traverse(${fragment_ident}, ${indices});
-					@each(${marker_ident}, ${block_ident}, ${expression});
-				`;
+				let statements = [
+					t.variable_declaration('let', [
+						t.variable_declarator(
+							t.identifier(marker_ident),
+							t.call_expression(t.identifier('@traverse'), [
+								t.identifier(fragment_ident),
+								indices,
+							]),
+						),
+					]),
+					t.expression_statement(
+						t.call_expression(t.identifier('@each'), [
+							t.identifier(marker_ident),
+							block_ident,
+							expression,
+						]),
+					),
+				];
 
 				curr_scope.push(...statements);
 				return;
@@ -748,10 +913,26 @@ export function transform_template (template, source) {
 				let marker_ident = '%marker' + (id_m++);
 				let indices = t.array_expression([...curr_block.indices, index].map((idx) => t.literal(idx)));
 
-				let statements = b`
-					let ${marker_ident} = @traverse(${fragment_ident}, ${indices});
-					@promise(${marker_ident}, ${pending_ident}, ${resolved_ident}, ${rejected_ident}, ${argument});
-				`;
+				let statements = [
+					t.variable_declaration('let', [
+						t.variable_declarator(
+							t.identifier(marker_ident),
+							t.call_expression(t.identifier('@traverse'), [
+								t.identifier(fragment_ident),
+								indices,
+							]),
+						),
+					]),
+					t.expression_statement(
+						t.call_expression(t.identifier('@promise'), [
+							t.identifier(marker_ident),
+							pending_ident,
+							resolved_ident,
+							rejected_ident,
+							argument,
+						]),
+					),
+				];
 
 				curr_scope.push(...statements);
 				return;
