@@ -908,7 +908,7 @@ export function transform_template (template, source) {
 					curr_scope.push(decl);
 				}
 
-				let argument = node.argument;
+				let argument = t.arrow_function_expression([], node.argument);
 				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
 				let marker_ident = '%marker' + (id_m++);
 				let indices = t.array_expression([...curr_block.indices, index].map((idx) => t.literal(idx)));

@@ -161,7 +161,7 @@ let %block1 = $$root => {
   return %marker0;
 };
 let %marker1 = @traverse(%fragment0, [0]);
-@promise(%marker1, %block1, null, null, promise);
+@promise(%marker1, %block1, null, null, () => promise);
 @append($$root, %fragment0);
 "
 `;
@@ -184,7 +184,7 @@ let %block2 = $$root => {
   return %marker1;
 };
 let %marker2 = @traverse(%fragment0, [0]);
-@promise(%marker2, %block1, null, %block2, promise);
+@promise(%marker2, %block1, null, %block2, () => promise);
 @append($$root, %fragment0);
 "
 `;
@@ -209,7 +209,7 @@ let %block2 = ($$root, error) => {
   return %marker2;
 };
 let %marker3 = @traverse(%fragment0, [0]);
-@promise(%marker3, %block1, null, %block2, promise);
+@promise(%marker3, %block1, null, %block2, () => promise);
 @append($$root, %fragment0);
 "
 `;
@@ -232,7 +232,7 @@ let %block2 = $$root => {
   return %marker1;
 };
 let %marker2 = @traverse(%fragment0, [0]);
-@promise(%marker2, %block1, %block2, null, promise);
+@promise(%marker2, %block1, %block2, null, () => promise);
 @append($$root, %fragment0);
 "
 `;
@@ -257,7 +257,7 @@ let %block2 = ($$root, name) => {
   return %marker2;
 };
 let %marker3 = @traverse(%fragment0, [0]);
-@promise(%marker3, %block1, %block2, null, promise);
+@promise(%marker3, %block1, %block2, null, () => promise);
 @append($$root, %fragment0);
 "
 `;
@@ -273,7 +273,7 @@ let %block1 = $$root => {
   return %marker0;
 };
 let %marker1 = @traverse(%fragment0, [0]);
-@promise(%marker1, null, null, %block1, promise);
+@promise(%marker1, null, null, %block1, () => promise);
 @append($$root, %fragment0);
 "
 `;
@@ -291,7 +291,7 @@ let %block1 = ($$root, error) => {
   return %marker1;
 };
 let %marker2 = @traverse(%fragment0, [0]);
-@promise(%marker2, null, null, %block1, promise);
+@promise(%marker2, null, null, %block1, () => promise);
 @append($$root, %fragment0);
 "
 `;
@@ -307,7 +307,7 @@ let %block1 = $$root => {
   return %marker0;
 };
 let %marker1 = @traverse(%fragment0, [0]);
-@promise(%marker1, null, %block1, null, promise);
+@promise(%marker1, null, %block1, null, () => promise);
 @append($$root, %fragment0);
 "
 `;
@@ -325,7 +325,7 @@ let %block1 = ($$root, result) => {
   return %marker1;
 };
 let %marker2 = @traverse(%fragment0, [0]);
-@promise(%marker2, null, %block1, null, promise);
+@promise(%marker2, null, %block1, null, () => promise);
 @append($$root, %fragment0);
 "
 `;
