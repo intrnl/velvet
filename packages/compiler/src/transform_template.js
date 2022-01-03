@@ -532,17 +532,51 @@ export function transform_template (template, source) {
 			}
 
 			if (node.type === 'Fragment') {
-				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
-				let template_ident = '%template' + blocks.indexOf(curr_block);
+				if (parent) {
+					curr_block.html += '<!>';
+				}
 
-				let html = t.literal(curr_block.html + (parent ? '<!>' : ''));
+				curr_block.finished = true;
 
-				let template_declarations = b`
-					let ${'%' + template_ident} = @html(${html});
-					let ${fragment_ident} = @clone(${template_ident});
-				`;
+				let curr_block_idx = blocks.indexOf(curr_block);
+				let dupe_block_idx = blocks.findIndex((block, index) => (
+					index !== curr_block_idx &&
+					block.finished && block.html === curr_block.html
+				));
 
-				curr_scope.unshift(...template_declarations);
+				let declarations = [];
+				let template_ident = '%template' + curr_block_idx;
+				let fragment_ident = '%fragment' + curr_block_idx;
+
+				// we'll use identifiers of an previous, existing blocks for this
+				if (dupe_block_idx > -1) {
+					curr_block_idx = dupe_block_idx;
+					curr_block = blocks[curr_block_idx];
+
+					template_ident = '%template' + curr_block_idx;
+				}
+				else {
+					let html = t.literal(curr_block.html);
+
+					let template_decl = t.variable_declaration('let', [
+						t.variable_declarator(
+							t.identifier('%' + template_ident),
+							t.call_expression(t.identifier('@html'), [html]),
+						),
+					]);
+
+					declarations.push(template_decl);
+				}
+
+				let clone_decl = t.variable_declaration('let', [
+					t.variable_declarator(
+						t.identifier(fragment_ident),
+						t.call_expression(t.identifier('@clone'), [t.identifier(template_ident)]),
+					),
+				]);
+
+				declarations.push(clone_decl);
+				curr_scope.unshift(...declarations);
 
 				if (parent) {
 					let end_ident = '%marker' + (id_m++);
@@ -766,5 +800,6 @@ function create_block () {
 	return {
 		html: '',
 		indices: [],
+		finished: false,
 	};
 }

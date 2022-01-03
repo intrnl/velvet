@@ -486,8 +486,7 @@ let %marker0 = @traverse(%fragment0, [0, 1]);
 `;
 
 exports[`log expression > in conditional 1`] = `
-"let %%template0 = @html(\\"<!>\\");
-let %fragment0 = @clone(%template0);
+"let %fragment0 = @clone(%template1);
 let %block1 = $$root => {
   let %%template1 = @html(\\"<!>\\");
   let %fragment1 = @clone(%template1);
@@ -602,4 +601,86 @@ exports[`named expression > unknown named expression 1`] = `
 "unknown named expression: @xyz (1:2)
 1: {@xyz foo}
      ^"
+`;
+
+exports[`template deduplication > deduplicate expression in if with alternate 1`] = `
+"let %%template0 = @html(\\"<!>\\");
+let %fragment0 = @clone(%template0);
+let %block1 = $$root => {
+  let %%template1 = @html(\\"<div><!></div><!>\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [0, 0]);
+  @text(%marker0, () => foo);
+  let %marker1 = @traverse(%fragment1, [1]);
+  @after($$root, %fragment1);
+  return %marker1;
+};
+let %block2 = $$root => {
+  let %fragment2 = @clone(%template1);
+  let %marker2 = @traverse(%fragment2, [0, 0]);
+  @text(%marker2, () => bar);
+  let %marker3 = @traverse(%fragment2, [1]);
+  @after($$root, %fragment2);
+  return %marker3;
+};
+let %marker4 = @traverse(%fragment0, [0]);
+@show(%marker4, () => foo ? %block1 : %block2);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`template deduplication > deduplicate expression in multiple if blocks 1`] = `
+"let %%template0 = @html(\\"<!> <!>\\");
+let %fragment0 = @clone(%template0);
+let %block1 = $$root => {
+  let %%template1 = @html(\\"<div><!></div><!>\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [0, 0]);
+  @text(%marker0, () => foo);
+  let %marker1 = @traverse(%fragment1, [1]);
+  @after($$root, %fragment1);
+  return %marker1;
+};
+let %marker2 = @traverse(%fragment0, [0]);
+@show(%marker2, () => foo ? %block1 : null);
+let %block2 = $$root => {
+  let %fragment2 = @clone(%template1);
+  let %marker3 = @traverse(%fragment2, [0, 0]);
+  @text(%marker3, () => bar);
+  let %marker4 = @traverse(%fragment2, [1]);
+  @after($$root, %fragment2);
+  return %marker4;
+};
+let %marker5 = @traverse(%fragment0, [2]);
+@show(%marker5, () => bar ? %block2 : null);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`template deduplication > no deduplicate similar if block and v:component 1`] = `
+"let %%template0 = @html(\\"<!> <!>\\");
+let %fragment0 = @clone(%template0);
+let %block1 = %component => {
+  let %%template1 = @html(\\"Hello, <!>!\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [1]);
+  @text(%marker0, () => name);
+  let %child0 = new %component();
+  return %child0;
+};
+let %marker1 = @traverse(%fragment0, [0]);
+@dynamic(%marker1, %block1, () => Component);
+let %block2 = $$root => {
+  let %%template2 = @html(\\"Hello, <!>!<!>\\");
+  let %fragment2 = @clone(%template2);
+  let %marker2 = @traverse(%fragment2, [1]);
+  @text(%marker2, () => name);
+  let %marker3 = @traverse(%fragment2, [3]);
+  @after($$root, %fragment2);
+  return %marker3;
+};
+let %marker4 = @traverse(%fragment0, [2]);
+@show(%marker4, () => name ? %block2 : null);
+@append($$root, %fragment0);
+"
 `;

@@ -467,3 +467,32 @@ describe('await logic', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 });
+
+describe('template deduplication', () => {
+	it('deduplicate expression in if with alternate', () => {
+		let template = `{#if foo}<div>{foo}</div>{:else}<div>{bar}</div>{/if}`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('deduplicate expression in multiple if blocks', () => {
+		let template = `{#if foo}<div>{foo}</div>{/if} {#if bar}<div>{bar}</div>{/if}`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('no deduplicate similar if block and v:component', () => {
+		let template = `<v:component #this={Component}>Hello, {name}!</v:component> {#if name}Hello, {name}!{/if}`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+});
