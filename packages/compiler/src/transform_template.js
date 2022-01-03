@@ -148,7 +148,7 @@ export function transform_template (template, source) {
 
 						let statement = t.labeled_statement(
 							t.identifier('$'),
-							t.call_expression(t.member_expression(t.identifier('console'), t.identifier('log')), params),
+							t.call_expression(t.member_expression_from('console', 'log'), params),
 						);
 
 						curr_scope.push(statement);
