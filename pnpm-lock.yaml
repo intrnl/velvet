@@ -4,9 +4,9 @@ importers:
 
   .:
     specifiers:
-      vitest: ^0.0.125
+      vitest: ^0.0.129
     devDependencies:
-      vitest: 0.0.125
+      vitest: 0.0.129
 
   packages/compiler:
     specifiers:
@@ -607,8 +607,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitest/0.0.125:
-    resolution: {integrity: sha512-gJc2avxoSiA83OtMFcXUymi4BoCFPw8/+/3FCT1IjBQvUHRfUDrf2tYTGcbkeoqIz39f6b0rkZ27eNocVkQifg==}
+  /vitest/0.0.129:
+    resolution: {integrity: sha512-8Wd8AXcIPUGNNMidO72LQfRN6e8W44Q7c0YJo9jZwIq3uXysmtL5pfdeqCcSMMGijSkWZIpiF6TJesr7ETHPPg==}
     engines: {node: '>=14.14.0'}
     hasBin: true
     peerDependencies:
