@@ -377,6 +377,34 @@ describe('conditional logic', () => {
 
 		expect(print(program)).toMatchSnapshot();
 	});
+
+	it('conditional before expression', () => {
+		let template = `
+			{#if loading}
+				Loading!
+			{/if}
+
+			<div>Hello, {name}!</div>
+		`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('conditional containing expression', () => {
+		let template = `
+			{#if person}
+				{person.first_name} {person.last_name}
+			{/if}
+		`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
 });
 
 describe('loop logic', () => {
