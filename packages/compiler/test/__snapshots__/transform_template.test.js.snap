@@ -69,6 +69,30 @@ $: %child0[\\"value\\"] = value;
 "
 `;
 
+exports[`attribute > binding expression checkbox 1`] = `
+"let %%template0 = @html(\\"<input type=\\\\\\"checkbox\\\\\\" />\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+let %bind0 = event => value = event.target.checked;
+$: %child0[\\"value\\"] = value;
+@on(%child0, \\"input\\", %bind0);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`attribute > binding expression component 1`] = `
+"let %%template0 = @html(\\"<div></div>\\");
+let %fragment0 = @clone(%template0);
+let %child0 = new Component();
+let %bind0 = event => value = event.detail;
+$: %child0[\\"foo\\"] = value;
+@on(%child0, \\"update:foo\\", %bind0);
+let %marker0 = @traverse(%fragment0, [0]);
+@replace(%marker0, %child0, true);
+@append($$root, %fragment0);
+"
+`;
+
 exports[`attribute > boolean expression 1`] = `
 "let %%template0 = @html(\\"<textarea></textarea>\\");
 let %fragment0 = @clone(%template0);

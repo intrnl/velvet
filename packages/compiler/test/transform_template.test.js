@@ -127,6 +127,24 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
+	it('binding expression checkbox', () => {
+		let template = `<input type=checkbox :value={value}>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('binding expression component', () => {
+		let template = `<Component :foo={value} />`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
 
 	it('ref expression', () => {
 		let template = `<input #ref={input}>`;
