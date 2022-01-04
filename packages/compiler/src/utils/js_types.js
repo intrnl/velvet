@@ -91,16 +91,17 @@ export function member_expression (object, property, computed = false, optional 
 }
 
 /**
- * @param {...string} str
+ * @param {string} first
+ * @param {...string} [str]
  * @returns {import('estree').MemberExpression}}
  */
-export function member_expression_from (...str) {
+export function member_expression_from (first, ...str) {
 	return str.reduce((prev, curr) => {
-		let object = typeof prev === 'string' ? identifier(prev) : prev;
+		let object = prev;
 		let property = identifier(curr);
 
 		return member_expression(object, property);
-	});
+	}, identifier(first));
 }
 
 /**
