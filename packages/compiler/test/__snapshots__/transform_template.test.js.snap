@@ -129,6 +129,21 @@ let %child0 = @traverse(%fragment0, [0]);
 "
 `;
 
+exports[`attribute > fails on attribute with invalid expression 1`] = `
+"Acorn error: Unexpected token (1:12)
+1: <div class={.foo}></div>
+               ^"
+`;
+
+exports[`attribute > handles attribute expression with parenthesis 1`] = `
+"let %%template0 = @html(\\"<div></div>\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+$: @attr(%child0, \\"class\\", foo.bar);
+@append($$root, %fragment0);
+"
+`;
+
 exports[`attribute > property expression 1`] = `
 "let %%template0 = @html(\\"<input />\\");
 let %fragment0 = @clone(%template0);
@@ -504,6 +519,21 @@ exports[`expression > custom element 1`] = `
 "let %%template0 = @html(\\"<x-app>hello <!>!</x-app>\\");
 let %fragment0 = @clone(%template0);
 let %marker0 = @traverse(%fragment0, [0, 1]);
+@text(%marker0, () => name);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`expression > fails on invalid expression 1`] = `
+"Acorn error: Unexpected token (1:12)
+1: hello {name.}!
+               ^"
+`;
+
+exports[`expression > handles parenthesis 1`] = `
+"let %%template0 = @html(\\"hello <!>!\\");
+let %fragment0 = @clone(%template0);
+let %marker0 = @traverse(%fragment0, [1]);
 @text(%marker0, () => name);
 @append($$root, %fragment0);
 "

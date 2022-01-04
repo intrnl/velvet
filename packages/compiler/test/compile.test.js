@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { compileSync } from '../src/compile.js';
+import { compileSync, componentize } from '../src/compile.js';
 
 
 describe('module context', () => {
@@ -75,4 +75,36 @@ describe('store', () => {
 			expect(error.toString()).toMatchSnapshot();
 		}
 	});
+});
+
+describe('conditional logic', () => {
+	it('consequent', () => {
+		let template = `
+			{#if foo}
+				<div>foo</div>
+			{/if}
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('consequent and alternate', () => {
+		let template = `
+			{#if foo}
+				<div>foo</div>
+			{:else}
+				<div>bar</div>
+			{/if}
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
+	});
+});
+
+it('componentize', () => {
+	expect(componentize('foo.js', 'x')).toBe('x-foo');
+	expect(componentize('HomePage.js', 'x')).toBe('x-home-page');
+	expect(componentize('button group.js', 'x')).toBe('x-button-group');
 });

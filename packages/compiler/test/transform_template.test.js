@@ -51,6 +51,27 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
+	it('fails on attribute with invalid expression', () => {
+		let template = `<div class={.foo}></div>`;
+
+		try {
+			parse_template(template);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
+	});
+
+	it('handles attribute expression with parenthesis', () => {
+		let template = `<div class={(((foo.bar)))}></div>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
 
 	it('boolean expression', () => {
 		let template = `<textarea ?readonly={is_readonly}></textarea>`;
@@ -237,6 +258,27 @@ describe('expression', () => {
 
 	it('component', () => {
 		let template = `<Main>hello {name}!</Main>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('fails on invalid expression', () => {
+		let template = `hello {name.}!`;
+
+		try {
+			parse_template(template);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
+	});
+
+	it('handles parenthesis', () => {
+		let template = `hello {((name))}!`;
 
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
