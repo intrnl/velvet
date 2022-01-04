@@ -1,7 +1,0 @@
-{
-	"private": true,
-	"name": "test",
-	"dependencies": {
-		"velvet": "link:../runtime"
-	}
-}
