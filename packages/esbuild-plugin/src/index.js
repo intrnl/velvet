@@ -2,12 +2,12 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 
 import { build } from 'esbuild';
-import { compile } from '@intrnl/velvet-compiler';
+import { compile, COMPILER_VERSION } from '@intrnl/velvet-compiler';
 
 import { FSCache, getProjectRoot } from '@intrnl/fs-cache';
 
 
-let VERSION = 1;
+let PLUGIN_VERSION = '0.2.0';
 
 /**
  * @param {*} options
@@ -34,7 +34,8 @@ export default function velvet_plugin (options = {}) {
 				let { path: filename } = args;
 
 				const key = [
-					VERSION,
+					PLUGIN_VERSION,
+					COMPILER_VERSION,
 					compileOptions,
 					minify_css,
 				];

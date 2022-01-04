@@ -25,13 +25,13 @@ importers:
     specifiers:
       '@intrnl/fs-cache': ^0.2.3
       '@intrnl/velvet': workspace:^0.1.0
-      '@intrnl/velvet-compiler': workspace:^0.2.1
+      '@intrnl/velvet-compiler': workspace:^0.3.0
       esbuild: ^0.14.8
     dependencies:
       '@intrnl/fs-cache': 0.2.3
-      '@intrnl/velvet-compiler': link:../compiler
     devDependencies:
       '@intrnl/velvet': link:../runtime
+      '@intrnl/velvet-compiler': link:../compiler
       esbuild: 0.14.8
 
   packages/runtime:
