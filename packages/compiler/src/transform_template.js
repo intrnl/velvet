@@ -321,7 +321,7 @@ export function transform_template (template, source) {
 							pending.push(statement);
 						}
 
-						break;
+						continue;
 					}
 
 					if (attr_name[0] === '.') {
