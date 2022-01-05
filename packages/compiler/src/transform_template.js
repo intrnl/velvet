@@ -6,54 +6,62 @@ import { create_error } from './utils/error.js';
 export function transform_template (template, source) {
 	let blocks = [];
 
-	let program = [];
-
 	let block_stack = [];
-	let scope_stack = [];
 	let curr_block;
+
+	let program = create_scope();
+	let scope_stack = [];
 	let curr_scope = program;
 
 	let fragment_to_block = new Map();
 	let fragment_to_scope = new Map();
 
+	// increment to create unique identifier names
 	let id_c = 0;
 	let id_m = 0;
 	let id_b = 0;
 
 	walk(template, {
 		enter (node, parent, key, index) {
+			// handle element node
 			if (node.type === 'Element') {
 				curr_block.indices.push(index);
+
 				let elem_name = node.name;
 				let is_inline = node.inline;
 				let is_selfclosing = node.self_closing;
 
+				// v:component lives in a new block
 				if (elem_name === 'v:component') {
 					curr_block.html += '<!>';
 
 					block_stack.push(curr_block);
-					blocks.push((curr_block = create_block()));
+					blocks.push(curr_block = create_block());
 
 					scope_stack.push(curr_scope);
-					curr_scope = [];
+					curr_scope = create_scope();
 					return;
 				}
 
+				// inline elements lives in the same block, to do that we need to
+				// masquerade as a regular html element, in this case a div.
 				if (is_inline) {
-					curr_block.html += `<div>`;
+					curr_block.html += '<div>';
 					return;
 				}
 
 				curr_block.html += `<${elem_name}`;
 
-				for (let attribute of node.attributes) {
-					if (attribute.type === 'AttributeSpread') {
+				for (let attr of node.attributes) {
+					// skip attribute spread
+					if (attr.type === 'AttributeSpread') {
 						continue;
 					}
 
-					let attr_name = attribute.name;
-					let attr_value = attribute.value;
+					let attr_name = attr.name;
+					let attr_value = attr.value;
 
+					// skip any special attributes, or attributes containing expression
 					let is_prop = attr_name[0] === '.';
 					let is_toggle = attr_name[0] === '?';
 					let is_listen = attr_name[0] === '@';
@@ -70,12 +78,13 @@ export function transform_template (template, source) {
 					let value = attr_value && attr_value.value;
 
 					if (value) {
-						let value = attr_value.value.replaceAll('"', '&quot');
+						// make sure that double quotes are escaped
+						value = value.replace(/"/g, '&quot;');
 						curr_block.html += `="${value}"`;
 					}
 				}
 
-				if (!is_inline && is_selfclosing) {
+				if (is_selfclosing && !is_inline) {
 					curr_block.html += ` />`;
 				}
 				else {
@@ -85,15 +94,16 @@ export function transform_template (template, source) {
 				return;
 			}
 
+			// handle fragment node
 			if (node.type === 'Fragment') {
 				block_stack.push(curr_block);
-				blocks.push((curr_block = create_block()));
+				blocks.push(curr_block = create_block());
 				fragment_to_block.set(node, curr_block);
 
-				// we shouldn't push a new scope for root fragment
+				// curr_scope is already set for root fragment
 				if (parent) {
 					scope_stack.push(curr_scope);
-					curr_scope = [];
+					curr_scope = create_scope();
 					fragment_to_scope.set(node, curr_scope);
 				}
 
@@ -101,23 +111,26 @@ export function transform_template (template, source) {
 			}
 		},
 		leave (node, parent, key, index) {
-			if (node.type === 'Text' && parent.type !== 'Attribute') {
-				if (parent.type === 'Element' && (parent.name === 'script' || parent.name === 'style')) {
-					curr_block.html += node.value;
-					return;
-				}
+			// handle comment node, remove them to properly trim whitespace from text nodes
+			if (node.type === 'Comment') {
+				return walk.remove;
+			}
 
+			// handle text node
+			if (node.type === 'Text' && parent.type !== 'Attribute') {
+				// trim consecutive whitespaces
 				let value = node.value.replace(/\s+/g, ' ');
 
+				// trim leading and trailing if parent is fragment, remove if empty
 				if (parent.type === 'Fragment') {
 					let is_first = index === 0;
 					let is_last = index === parent.children.length - 1;
 
 					if (is_first) {
-						value = value.replace(/^\s+/g, '');
+						value = value.replace(/^\s+/, '');
 					}
 					if (is_last) {
-						value = value.replace(/\s+$/g, '');
+						value = value.replace(/\s+$/, '');
 					}
 
 					if (!value) {
@@ -129,9 +142,11 @@ export function transform_template (template, source) {
 				return;
 			}
 
+			// handle expression node
 			if (node.type === 'Expression' && parent.type !== 'Attribute') {
-				let expression = node.expression;
+				let expr = node.expression;
 
+				// handle named expressions
 				if (node.id) {
 					let id = node.id;
 					let id_name = id.name;
@@ -139,104 +154,97 @@ export function transform_template (template, source) {
 					if (id_name === 'log') {
 						let params;
 
-						if (expression.type === 'SequenceExpression') {
-							params = expression.expressions;
+						if (expr.type === 'SequenceExpression') {
+							params = expr.expressions;
 						}
 						else {
-							params = [expression];
+							params = [expr];
 						}
 
-						let statement = t.labeled_statement(
+						let expression = t.labeled_statement(
 							t.identifier('$'),
-							t.call_expression(t.member_expression_from('console', 'log'), params),
+							t.call_expression(
+								t.member_expression_from('console', 'log'),
+								params,
+							),
 						);
 
-						curr_scope.push(statement);
+						curr_scope.expressions.push(expression);
 						return;
 					}
-					else {
-						throw create_error(
-							`unknown named expression: @${id_name}`,
-							source,
-							id.start,
-							id.end,
-						);
-					}
+
+					throw create_error(
+						`unknown named expression: @${id_name}`,
+						source,
+						id.start,
+						id.end
+					);
 				}
 
-				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
-				let marker_ident = '%marker' + (id_m++);
-				let indices = t.array_expression([...curr_block.indices, index].map((idx) => t.literal(idx)));
+				// text expression
+				let fragment_ident ='%fragment' + blocks.indexOf(curr_block);
+				let marker_ident ='%marker' + (id_m++);
 
-				curr_block.html += `<!>`;
+				curr_block.html += '<!>';
 
-				let statements = [
-					t.variable_declaration('let', [
-						t.variable_declarator(
-							t.identifier(marker_ident),
-							t.call_expression(t.identifier('@traverse'), [
-								t.identifier(fragment_ident),
-								indices,
-							]),
-						)
-					]),
-					t.expression_statement(
-						t.call_expression(t.identifier('@text'), [
-							t.identifier(marker_ident),
-							t.arrow_function_expression([], expression),
+				let traverse_def = t.variable_declaration('let', [
+					t.variable_declarator(
+						t.identifier(marker_ident),
+						t.call_expression(t.identifier('@traverse'), [
+							t.identifier(fragment_ident),
+							t.array_expression([...curr_block.indices, index].map((idx) => t.literal(idx))),
 						]),
 					),
-				];
+				]);
 
-				curr_scope.push(...statements);
+				let text_expr = t.expression_statement(
+					t.call_expression(t.identifier('@text'), [
+						t.identifier(marker_ident),
+						t.arrow_function_expression([], expr),
+					]),
+				);
+
+				curr_scope.traversals.push(traverse_def);
+				curr_scope.expressions.push(text_expr);
 				return;
 			}
 
+			// handle element node
 			if (node.type === 'Element') {
-				let ident = t.identifier('%child' + (id_c++));
-				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
-				let need_ident = false;
-
 				let elem_name = node.name;
 				let is_inline = node.inline;
 				let is_selfclosing = node.self_closing;
+				let is_component = node.component;
 
-				let pending = [];
+				// we only increment child counter if we've indeed used it.
+				let need_ident = false;
+				let elem_ident = '%child' + (id_c);
+				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
 
-				let is_checkbox =
-					elem_name === 'input' &&
-					node.attributes.some((attr) => attr.name === 'type' && attr.value?.decoded === 'checkbox');
-
+				// holds expression from #this attribute to instantiate v:component
 				let _this_expr;
 
-				for (let attribute of node.attributes) {
-					// @todo: attributes that are defined after the spread needs to know
-					// the presence of spread
-					if (attribute.type === 'AttributeSpread') {
+				for (let attr of node.attributes) {
+					// handle attribute spread
+					if (attr.type === 'AttributeSpread') {
 						need_ident = true;
 
-						let expression = attribute.expression;
-
-						let is_static = expression.comments?.length &&
-							expression.comments.some((comment) => comment.value.trim() === '@static');
-
-						let statement = t.expression_statement(
-							t.call_expression(t.identifier('@assign'), [
-								ident,
-								expression,
-							])
+						let test_expr = t.labeled_statement(
+							t.identifier('$'),
+							t.expression_statement(
+								t.call_expression(t.identifier('@assign'), [
+									t.identifier(elem_ident),
+									attr.expression,
+								]),
+							),
 						);
 
-						if (!is_static) {
-							statement = t.labeled_statement(t.identifier('$'), statement);
-						}
-
-						pending.push(statement);
+						curr_scope.expressions.push(test_expr);
 						continue;
 					}
 
-					let attr_name = attribute.name;
-					let attr_value = attribute.value;
+					let attr_name = attr.name;
+					let attr_value = attr.value;
 
 					let value_expr = attr_value
 						? attr_value.type === 'Text'
@@ -244,25 +252,23 @@ export function transform_template (template, source) {
 							: attr_value.expression
 						: t.literal(true);
 
-					let is_static = value_expr.comments?.length &&
-						value_expr.comments.some((comment) => comment.value.trim() === '@static');
-
+					// handle #this attribute
 					if (attr_name === '#this') {
-						if (!attr_value || attr_value.type === 'Text') {
+						if (elem_name !== 'v:component') {
 							throw create_error(
-								'expected an expression for #this',
+								`expected #this to be used in v:component`,
 								source,
-								attribute.start,
-								attribute.end,
+								attr.start,
+								attr.end,
 							);
 						}
 
-						if (elem_name !== 'v:component') {
+						if (!attr_value || attr_value.type === 'Text') {
 							throw create_error(
-								'expected #this usage in v:component',
+								`expected #this to have an expression`,
 								source,
-								attribute.start,
-								attribute.end,
+								attr.start,
+								attr.end,
 							);
 						}
 
@@ -270,33 +276,38 @@ export function transform_template (template, source) {
 						continue;
 					}
 
+					// handle #ref attribute
 					if (attr_name === '#ref') {
 						if (!attr_value || attr_value.type === 'Text') {
 							throw create_error(
-								'expected an expression for #this',
+								`expected #ref to have an expression`,
 								source,
-								attribute.start,
-								attribute.end,
+								attr.start,
+								attr.end,
 							);
 						}
 
 						need_ident = true;
 
-						let statement = t.expression_statement(
-							t.assignment_expression(value_expr, ident, '=')
+						let ref_expr = t.expression_statement(
+							t.assignment_expression(
+								value_expr,
+								t.identifier(elem_ident),
+							),
 						);
 
-						pending.push(statement);
+						curr_scope.expressions.push(ref_expr);
 						continue;
 					}
 
+					// handle #use attribute
 					if (attr_name === '#use') {
 						if (!attr_value || attr_value.type === 'Text') {
 							throw create_error(
-								'expected an expression for #use',
+								`expected #use to have an expression`,
 								source,
-								attribute.start,
-								attribute.end,
+								attr.start,
+								attr.end,
 							);
 						}
 
@@ -312,171 +323,175 @@ export function transform_template (template, source) {
 						}
 
 						for (let node of elements) {
-							let statement = t.expression_statement(
+							let use_expr = t.expression_statement(
 								t.call_expression(t.identifier('@cleanup'), [
-									t.call_expression(node, [ident]),
-								])
+									t.call_expression(node, [t.identifier(elem_ident)]),
+								]),
 							);
 
-							pending.push(statement);
+							curr_scope.expressions.push(use_expr);
 						}
 
 						continue;
 					}
 
+					// handle properties
 					if (attr_name[0] === '.') {
 						need_ident = true;
 
-						let name = t.literal(attr_name.slice(1));
+						let prop_name = attr_name.slice(1);
 
-						let statement = t.expression_statement(
-							t.assignment_expression(
-								t.member_expression(ident, name, true),
-								value_expr,
-								'='
-							)
+						let prop_expr = t.labeled_statement(
+							t.identifier('$'),
+							t.expression_statement(
+								t.assignment_expression(
+									t.member_expression(t.identifier(elem_ident), t.literal(prop_name), true),
+									value_expr,
+								),
+							),
 						);
 
-						if (!is_static) {
-							statement = t.labeled_statement(t.identifier('$'), statement);
-						}
-
-						pending.push(statement);
+						curr_scope.expressions.push(prop_expr);
 						continue;
 					}
 
+					// handle attribute toggle
 					let is_toggle = attr_name[0] === '?';
 
-					if (is_toggle || (node.inline && !attr_value)) {
+					if (is_toggle || (is_inline && !attr_value)) {
 						need_ident = true;
 
-						let name = t.literal(attr_name.slice(is_toggle ? 1 : 0));
+						let toggle_name = is_toggle ? attr_name.slice(1) : attr_name;
 
-						let statement = t.expression_statement(
-							t.call_expression(t.identifier('@toggle'), [
-								ident,
-								name,
-								value_expr,
-							])
+						let toggle_expr = t.labeled_statement(
+							t.identifier('$'),
+							t.expression_statement(
+								t.call_expression(t.identifier('@toggle'), [
+									t.identifier(elem_ident),
+									t.literal(toggle_name),
+									value_expr,
+								]),
+							),
 						);
 
-						if (!is_static) {
-							statement = t.labeled_statement(t.identifier('$'), statement);
-						}
-
-						pending.push(statement);
+						curr_scope.expressions.push(toggle_expr);
 						continue;
 					}
 
+					// handle events
 					if (attr_name[0] === '@') {
 						need_ident = true;
 
-						let name = t.literal(attr_name.slice(1));
+						let event_name = attr_name.slice(1);
 
-						let statement = t.expression_statement(
+						let event_expr = t.expression_statement(
 							t.call_expression(t.identifier('@on'), [
-								ident,
-								name,
+								t.identifier(elem_ident),
+								t.literal(event_name),
 								value_expr,
-							])
+							]),
 						);
 
-						pending.push(statement);
+						curr_scope.expressions.push(event_expr);
 						continue;
 					}
 
+					// handle bindings
 					if (attr_name[0] === ':') {
 						if (!attr_value || attr_value.type === 'Text') {
 							throw create_error(
-								'expected an expression for #this',
+								`expected ${attr_name} to have an expression`,
 								source,
-								attribute.start,
-								attribute.end,
+								attr.start,
+								attr.end,
 							);
 						}
 
 						need_ident = true;
+						let bind_name = attr_name.slice(1);
+						let bind_ident = '%bind' + (id_b++);
 
-						let name = attr_name.slice(1);
+						let is_checkbox = (
+							!is_component &&
+							elem_name === 'input' &&
+							node.attributes.some((attr) => attr.name === 'type' && attr.value?.decoded === 'checkbox')
+						);
 
-						let binding = '%bind' + (id_b++);
+						let event_name = is_component
+							? `update:${bind_name}`
+							: `input`;
 
-						let name_lit = t.literal(attr_name.slice(1));
-						let event = t.literal(node.component ? `update:${name}` : `input`);
-						let event_target = node.component
+						let event_target = is_component
 							? t.member_expression_from('event', 'detail')
 							: is_checkbox
 								? t.member_expression_from('event', 'target', 'checked')
 								: t.member_expression_from('event', 'target', 'value');
 
-						let statements = [
-							t.variable_declaration('let', [
-								t.variable_declarator(
-									t.identifier(binding),
-									t.arrow_function_expression(
-										[t.identifier('event')],
-										t.assignment_expression(value_expr, event_target),
-									),
-								),
-							]),
-							t.labeled_statement(
-								t.identifier('$'),
-								t.expression_statement(
-									t.assignment_expression(
-										t.member_expression(ident, name_lit, true),
-										value_expr,
-									),
+						let event_decl = t.variable_declaration('let', [
+							t.variable_declarator(
+								t.identifier(bind_ident),
+								t.arrow_function_expression(
+									[t.identifier('event')],
+									t.assignment_expression(value_expr, event_target),
 								),
 							),
-							t.expression_statement(
-								t.call_expression(t.identifier('@on'), [
-									ident,
-									event,
-									t.identifier(binding),
-								]),
-							),
-						];
+						]);
 
-						pending.push(...statements);
+						let bind_expr = t.labeled_statement(
+							t.identifier('$'),
+							t.expression_statement(
+								t.assignment_expression(
+									t.member_expression(t.identifier(elem_ident), t.literal(bind_name), true),
+									value_expr,
+								),
+							),
+						);
+
+						let event_expr = t.expression_statement(
+							t.call_expression(t.identifier('@on'), [
+								t.identifier(elem_ident),
+								t.literal(event_name),
+								t.identifier(bind_ident),
+							]),
+						);
+
+						curr_scope.expressions.push(event_decl, bind_expr, event_expr);
 						continue;
 					}
 
-					if (node.inline || (attr_value && attr_value.type !== 'Text')) {
+					if (is_inline || (attr_value && attr_value.type !== 'Text')) {
 						need_ident = true;
 
-						let name = t.literal(attr_name);
-
-						let statement = t.expression_statement(
-							t.call_expression(t.identifier('@attr'), [
-								ident,
-								name,
-								value_expr
-							])
+						let attr_expr = t.labeled_statement(
+							t.identifier('$'),
+							t.expression_statement(
+								t.call_expression(t.identifier('@attr'), [
+									t.identifier(elem_ident),
+									t.literal(attr_name),
+									value_expr,
+								]),
+							),
 						);
 
-						if (!is_static) {
-							statement = t.labeled_statement(t.identifier('$'), statement);
-						}
-
-						pending.push(statement);
+						curr_scope.expressions.push(attr_expr);
 						continue;
 					}
 				}
 
 				if (need_ident && !is_inline) {
-					let indices = t.array_expression(curr_block.indices.map((index) => t.literal(index)));
+					id_c++;
 
-					let declaration = t.variable_declaration('let', [
+					let decl = t.variable_declaration('let', [
 						t.variable_declarator(
-							ident,
+							t.identifier(elem_ident),
 							t.call_expression(t.identifier('@traverse'), [
 								t.identifier(fragment_ident),
-								indices,
-							])
+								t.array_expression(curr_block.indices.map((i) => t.literal(i))),
+							]),
 						),
 					]);
 
-					pending.unshift(declaration);
+					curr_scope.traversals.push(decl);
 				}
 				else if (elem_name === 'v:component') {
 					let block = curr_block;
@@ -487,137 +502,138 @@ export function transform_template (template, source) {
 
 					if (!_this_expr) {
 						throw create_error(
-							'expected #this expression for v:component',
+							`expected v:component to have #this`,
 							source,
 							node.start,
 							node.end,
 						);
 					}
 
-					let header = [
-						t.variable_declaration('let', [
-							t.variable_declarator(
-								ident,
-								t.new_expression(t.identifier('%component')),
-							),
-						]),
-					];
+					let instantiate_def = t.variable_declaration('let', [
+						t.variable_declarator(
+							t.identifier(elem_ident),
+							t.new_expression(t.identifier('%component')),
+						),
+					]);
 
-					let footer = [
-						t.return_statement(ident),
-					];
 
-					pending.unshift(...header);
-					pending.push(...footer);
+					scope.traversals.push(instantiate_def);
 
 					let block_ident = '%block' + blocks.indexOf(block);
 					let template_ident = '%template' + blocks.indexOf(block);
 					let fragment_ident = '%fragment' + blocks.indexOf(block);
 					let marker_ident = '%marker' + (id_m++);
 
-					if (scope.length) {
-						let template_declarations = [
-							t.variable_declaration('let', [
-								t.variable_declarator(
-									t.identifier('%' + template_ident),
-									t.call_expression(t.identifier('@html'), [
-										t.literal(block.html),
-									]),
-								),
-							]),
-							t.variable_declaration('let', [
-								t.variable_declarator(
-									t.identifier(fragment_ident),
-									t.call_expression(t.identifier('@clone'), [
-										t.identifier(template_ident),
-									]),
-								),
-							]),
-						];
+					// let has_length = scope_has_length(scope);
+					let has_length = block.html;
 
-						scope.unshift(...template_declarations);
-					}
-
-					let curr_fragment_ident = '%fragment' + blocks.indexOf(curr_block);
-					let indices = t.array_expression([...curr_block.indices].map((idx) => t.literal(idx)));
-					let block_statement = t.block_statement([...scope, ...pending]);
-					pending.length = 0;
-
-					let statements = [
-						t.variable_declaration('let', [
+					if (has_length) {
+						let template_def = t.variable_declaration('let', [
 							t.variable_declarator(
-								t.identifier(block_ident),
-								t.arrow_function_expression(
-									[t.identifier('%component')],
-									block_statement
-								),
-							),
-						]),
-						t.variable_declaration('let', [
-							t.variable_declarator(
-								t.identifier(marker_ident),
-								t.call_expression(t.identifier('@traverse'), [
-									t.identifier(curr_fragment_ident),
-									indices,
+								t.identifier('%' + template_ident),
+								t.call_expression(t.identifier('@html'), [
+									t.literal(block.html),
 								]),
 							),
-						]),
-						t.expression_statement(
-							t.call_expression(t.identifier('@dynamic'), [
-								t.identifier(marker_ident),
-								t.identifier(block_ident),
-								t.arrow_function_expression([], _this_expr),
+						]);
+
+						let fragment_def = t.variable_declaration('let', [
+							t.variable_declarator(
+								t.identifier(fragment_ident),
+								t.call_expression(t.identifier('@clone'), [
+									t.identifier(template_ident),
+								]),
+							),
+						]);
+
+						let after_expr = t.expression_statement(
+							t.call_expression(t.identifier('@after'), [
+								t.identifier(elem_ident),
+								t.identifier(fragment_ident),
+							]),
+						);
+
+						scope.definitions.push(template_def, fragment_def);
+						scope.expressions.push(after_expr);
+					}
+
+					let return_stmt = t.return_statement(t.identifier(elem_ident));
+					scope.expressions.push(return_stmt);
+
+					let curr_fragment_ident = '%fragment' + blocks.indexOf(curr_block);
+
+					let block_decl = t.variable_declaration('let', [
+						t.variable_declarator(
+							t.identifier(block_ident),
+							t.arrow_function_expression(
+								[t.identifier('%component')],
+								t.block_statement(merge_scope(scope)),
+							),
+						),
+					]);
+
+					let traverse_def = t.variable_declaration('let', [
+						t.variable_declarator(
+							t.identifier(marker_ident),
+							t.call_expression(t.identifier('@traverse'), [
+								t.identifier(curr_fragment_ident),
+								t.array_expression(curr_block.indices.map((i) => t.literal(i))),
 							]),
 						),
-					];
+					]);
 
-					pending.push(...statements);
+					let dynamic_expr = t.expression_statement(
+						t.call_expression(t.identifier('@dynamic'), [
+							t.identifier(marker_ident),
+							t.identifier(block_ident),
+							t.arrow_function_expression([], _this_expr),
+						]),
+					);
+
+					curr_scope.traversals.push(traverse_def);
+					curr_scope.blocks.push(block_decl);
+					curr_scope.expressions.push(dynamic_expr);
 				}
 				else if (is_inline) {
 					let marker_ident = '%marker' + (id_m++);
 
 					let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
-					let indices = t.array_expression(curr_block.indices.map((index) => t.literal(index)));
 
 					let is_self = elem_name === 'v:self';
 
-					let declarations = [
-						t.variable_declaration('let', [
-							t.variable_declarator(
-								ident,
-								t.new_expression(
-									is_self
-										? t.member_expression_from('$$host', 'constructor')
-										: t.identifier(elem_name)
-								),
+					let elem_decl = t.variable_declaration('let', [
+						t.variable_declarator(
+							t.identifier(elem_ident),
+							t.new_expression(
+								is_self
+									? t.member_expression_from('$$host', 'constructor')
+									: t.identifier(elem_name)
 							),
-						]),
-					];
+						),
+					]);
 
-					let statements = [
-						t.variable_declaration('let', [
-							t.variable_declarator(
-								t.identifier(marker_ident),
-								t.call_expression(t.identifier('@traverse'), [
-									t.identifier(fragment_ident),
-									indices,
-								]),
-							),
-						]),
-						t.expression_statement(
-							t.call_expression(t.identifier('@replace'), [
-								t.identifier(marker_ident),
-								ident,
-								t.literal(true),
+					let traverse_def = t.variable_declaration('let', [
+						t.variable_declarator(
+							t.identifier(marker_ident),
+							t.call_expression(t.identifier('@traverse'), [
+								t.identifier(fragment_ident),
+								t.array_expression(curr_block.indices.map((i) => t.literal(i))),
 							]),
 						),
-					];
+					]);
 
-					pending.unshift(...declarations);
-					pending.push(...statements);
+					let replace_expr = t.expression_statement(
+						t.call_expression(t.identifier('@replace'), [
+							t.identifier(marker_ident),
+							t.identifier(elem_ident),
+							t.literal(true),
+						]),
+					);
+
+					curr_scope.traversals.push(elem_decl, traverse_def);
+					curr_scope.expressions.push(replace_expr);
 				}
 
-				curr_scope.push(...pending);
 				curr_block.indices.pop();
 
 				if (elem_name === 'v:component') {
@@ -633,66 +649,74 @@ export function transform_template (template, source) {
 				return;
 			}
 
+			// handle fragment node
 			if (node.type === 'Fragment') {
-				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
-				let template_ident = '%template' + blocks.indexOf(curr_block);
+				let curr_block_idx = blocks.indexOf(curr_block);
 
-				let html = t.literal(curr_block.html + (parent ? '<!>' : ''));
+				let template_ident = '%template' + curr_block_idx;
+				let fragment_ident = '%fragment' + curr_block_idx;
 
-				let template_declarations = [
-					t.variable_declaration('let', [
-						t.variable_declarator(
-							t.identifier('%' + template_ident),
-							t.call_expression(t.identifier('@html'), [html]),
-						),
-					]),
-					t.variable_declaration('let', [
-						t.variable_declarator(
-							t.identifier(fragment_ident),
-							t.call_expression(t.identifier('@clone'), [t.identifier(template_ident)]),
-						),
-					]),
-				];
+				// write marker if not root fragment
+				if (parent) {
+					curr_block.html += '<!>';
+				}
 
-				curr_scope.unshift(...template_declarations);
+				let template_def = t.variable_declaration('let', [
+					t.variable_declarator(
+						// template def has to be hoisted
+						t.identifier('%' + template_ident),
+						t.call_expression(t.identifier('@html'), [t.literal(curr_block.html)]),
+					),
+				]);
+
+				let fragment_def = t.variable_declaration('let', [
+					t.variable_declarator(
+						t.identifier(fragment_ident),
+						t.call_expression(t.identifier('@clone'), [t.identifier(template_ident)]),
+					),
+				]);
+
+				curr_scope.definitions.push(template_def, fragment_def);
 
 				if (parent) {
-					let end_ident = t.identifier('%marker' + (id_m++));
-					let end_index = t.array_expression([t.literal(node.children.length)]);
+					// we return the marker we just created
+					let end_ident = '%marker' + (id_m++);
 
-					let statements = [
-						t.variable_declaration('let', [
-							t.variable_declarator(
-								end_ident,
-								t.call_expression(t.identifier('@traverse'), [
-									t.identifier(fragment_ident),
-									end_index,
-								]),
-							),
-						]),
-
-						t.expression_statement(
-							t.call_expression(t.identifier('@after'), [
-								t.identifier('$$root'),
+					let traverse_def = t.variable_declaration('let', [
+						t.variable_declarator(
+							t.identifier(end_ident),
+							t.call_expression(t.identifier('@traverse'), [
 								t.identifier(fragment_ident),
+								t.array_expression([t.literal(node.children.length)]),
 							]),
 						),
+					]);
 
-						t.return_statement(end_ident),
-					];
+					let after_expr = t.expression_statement(
+						t.call_expression(t.identifier('@after'), [
+							t.identifier('$$root'),
+							t.identifier(fragment_ident),
+						]),
+					);
 
-					curr_scope.push(...statements);
+					let return_stmt = t.return_statement(t.identifier(end_ident));
+
+					curr_scope.traversals.push(traverse_def);
+					curr_scope.expressions.push(after_expr, return_stmt);
+
+					// since we created a new scope, pop it, it's placed here because
+					// curr_scope is on program for root fragment
 					curr_scope = scope_stack.pop();
 				}
 				else {
-					let statement = t.expression_statement(
+					let append_expr = t.expression_statement(
 						t.call_expression(t.identifier('@append'), [
 							t.identifier('$$root'),
 							t.identifier(fragment_ident),
 						]),
 					);
 
-					curr_scope.push(statement);
+					curr_scope.expressions.push(append_expr);
 				}
 
 				curr_block = block_stack.pop();
@@ -700,47 +724,52 @@ export function transform_template (template, source) {
 				return;
 			}
 
+			// handle conditional statement node
 			if (node.type === 'ConditionalStatement') {
 				let consequent_block = fragment_to_block.get(node.consequent);
 				let alternate_block = fragment_to_block.get(node.alternate);
 
 				if (consequent_block) {
-					let block_ident = t.identifier('%block' + blocks.indexOf(consequent_block));
+					let block_ident = '%block' + blocks.indexOf(consequent_block);
 					let scope = fragment_to_scope.get(node.consequent);
-					let statement = t.block_statement(scope);
 
-					let declaration = t.variable_declaration('let', [
+					let block_decl = t.variable_declaration('let', [
 						t.variable_declarator(
-							block_ident,
-							t.arrow_function_expression([t.identifier('$$root')], statement),
+							t.identifier(block_ident),
+							t.arrow_function_expression(
+								[t.identifier('$$root')],
+								t.block_statement(merge_scope(scope)),
+							),
 						),
 					]);
 
-					curr_scope.push(declaration);
+					curr_scope.blocks.push(block_decl);
 				}
 
 				if (alternate_block) {
-					let block_ident = t.identifier('%block' + blocks.indexOf(alternate_block));
+					let block_ident = '%block' + blocks.indexOf(alternate_block);
 					let scope = fragment_to_scope.get(node.alternate);
-					let statement = t.block_statement(scope);
 
-					let declaration = t.variable_declaration('let', [
+					let block_decl = t.variable_declaration('let', [
 						t.variable_declarator(
-							block_ident,
-							t.arrow_function_expression([t.identifier('$$root')], statement),
+							t.identifier(block_ident),
+							t.arrow_function_expression(
+								[t.identifier('$$root')],
+								t.block_statement(merge_scope(scope)),
+							),
 						),
 					]);
 
-					curr_scope.push(declaration);
+					curr_scope.blocks.push(block_decl);
 				}
 
+				// conditional statement can be nested for alternate conditions
+				// so we'll transform only the toplevel node
 				if (parent.type !== 'ConditionalStatement') {
 					curr_block.html += '<!>';
 
 					let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
 					let marker_ident = '%marker' + (id_m++);
-
-					let indices = t.array_expression([...curr_block.indices, index].map((idx) => t.literal(idx)));
 
 					let array = [];
 					let curr = node;
@@ -762,30 +791,31 @@ export function transform_template (template, source) {
 						return t.conditional_expression(next.test, consequent_ident, prev || alternate_ident);
 					}, null);
 
-					let statements = [
-						t.variable_declaration('let', [
-							t.variable_declarator(
-								t.identifier(marker_ident),
-								t.call_expression(t.identifier('@traverse'), [
-									t.identifier(fragment_ident),
-									indices,
-								]),
-							),
-						]),
-						t.expression_statement(
-							t.call_expression(t.identifier('@show'), [
-								t.identifier(marker_ident),
-								t.arrow_function_expression([], test),
+					let traverse_def = t.variable_declaration('let', [
+						t.variable_declarator(
+							t.identifier(marker_ident),
+							t.call_expression(t.identifier('@traverse'), [
+								t.identifier(fragment_ident),
+								t.array_expression([...curr_block.indices, index].map(i => t.literal(i))),
 							]),
 						),
-					];
+					]);
 
-					curr_scope.push(...statements);
+					let show_expr = t.expression_statement(
+						t.call_expression(t.identifier('@show'), [
+							t.identifier(marker_ident),
+							t.arrow_function_expression([], test),
+						]),
+					);
+
+					curr_scope.traversals.push(traverse_def);
+					curr_scope.expressions.push(show_expr);
 				}
 
 				return;
 			}
 
+			// handle loop statement node
 			if (node.type === 'LoopStatement') {
 				curr_block.html += '<!>';
 
@@ -794,50 +824,49 @@ export function transform_template (template, source) {
 
 				let local = node.local;
 				let local_index = node.index;
-				let expression = t.arrow_function_expression([], node.expression);
 
-				let block_ident = t.identifier('%block' + blocks.indexOf(block));
-				let statement = t.block_statement(scope);
-
+				// indicate to script transformer that this is a ref
 				local.velvet = { ref: true };
 
-				let declaration = t.variable_declaration('let', [
+				let block_ident = '%block' + blocks.indexOf(block);
+				let curr_fragment_ident = '%fragment' + blocks.indexOf(curr_block);
+				let marker_ident = '%marker' + (id_m++);
+
+				let traverse_def = t.variable_declaration('let', [
 					t.variable_declarator(
-						block_ident,
-						t.arrow_function_expression([t.identifier('$$root'), local, local_index], statement),
+						t.identifier(marker_ident),
+						t.call_expression(t.identifier('@traverse'), [
+							t.identifier(curr_fragment_ident),
+							t.array_expression([...curr_block.indices, index].map(i => t.literal(i))),
+						]),
 					),
 				]);
 
-				curr_scope.push(declaration);
-
-				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
-				let marker_ident = '%marker' + (id_m++);
-
-				let indices = t.array_expression([...curr_block.indices, index].map((idx) => t.literal(idx)));
-
-				let statements = [
-					t.variable_declaration('let', [
-						t.variable_declarator(
-							t.identifier(marker_ident),
-							t.call_expression(t.identifier('@traverse'), [
-								t.identifier(fragment_ident),
-								indices,
-							]),
+				let block_decl = t.variable_declaration('let', [
+					t.variable_declarator(
+						t.identifier(block_ident),
+						t.arrow_function_expression(
+							[t.identifier('$$root'), local, local_index],
+							t.block_statement(merge_scope(scope)),
 						),
-					]),
-					t.expression_statement(
-						t.call_expression(t.identifier('@each'), [
-							t.identifier(marker_ident),
-							block_ident,
-							expression,
-						]),
 					),
-				];
+				]);
 
-				curr_scope.push(...statements);
+				let each_expr = t.expression_statement(
+					t.call_expression(t.identifier('@each'), [
+						t.identifier(marker_ident),
+						t.identifier(block_ident),
+						t.arrow_function_expression([], node.expression),
+					]),
+				);
+
+				curr_scope.traversals.push(traverse_def);
+				curr_scope.blocks.push(block_decl);
+				curr_scope.expressions.push(each_expr);
 				return;
 			}
 
+			// handle await statement node
 			if (node.type === 'AwaitStatement') {
 				curr_block.html += '<!>';
 
@@ -850,14 +879,20 @@ export function transform_template (template, source) {
 					let block = fragment_to_block.get(fragment);
 					let scope = fragment_to_scope.get(fragment);
 
-					pending_ident = t.identifier('%block' + blocks.indexOf(block));
-					let statement = t.block_statement(scope);
+					let pending_name = '%block' + blocks.indexOf(block);
+					pending_ident = t.identifier(pending_name);
 
-					let decl = t.variable_declaration('let', [
-						t.variable_declarator(pending_ident, t.arrow_function_expression([t.identifier('$$root')], statement)),
+					let block_decl = t.variable_declaration('let', [
+						t.variable_declarator(
+							t.identifier(pending_name),
+							t.arrow_function_expression(
+								[t.identifier('$$root')],
+								t.block_statement(merge_scope(scope))
+							),
+						),
 					]);
 
-					curr_scope.push(decl);
+					curr_scope.blocks.push(block_decl);
 				}
 
 				if (node.resolved) {
@@ -867,21 +902,24 @@ export function transform_template (template, source) {
 					let block = fragment_to_block.get(fragment);
 					let scope = fragment_to_scope.get(fragment);
 
-					resolved_ident = t.identifier('%block' + blocks.indexOf(block));
-					let statement = t.block_statement(scope);
+					let resolved_name = '%block' + blocks.indexOf(block);
+					resolved_ident = t.identifier(resolved_name);
 
 					if (local) {
 						local.velvet = { ref: true };
 					}
 
-					let decl = t.variable_declaration('let', [
+					let block_decl = t.variable_declaration('let', [
 						t.variable_declarator(
-							resolved_ident,
-							t.arrow_function_expression([t.identifier('$$root'), local], statement),
+							t.identifier(resolved_name),
+							t.arrow_function_expression(
+								[t.identifier('$$root'), local],
+								t.block_statement(merge_scope(scope))
+							),
 						),
 					]);
 
-					curr_scope.push(decl);
+					curr_scope.blocks.push(block_decl);
 				}
 
 				if (node.rejected) {
@@ -891,56 +929,57 @@ export function transform_template (template, source) {
 					let block = fragment_to_block.get(fragment);
 					let scope = fragment_to_scope.get(fragment);
 
-					rejected_ident = t.identifier('%block' + blocks.indexOf(block));
-					let statement = t.block_statement(scope);
+					let rejected_name = '%block' + blocks.indexOf(block);
+					rejected_ident = t.identifier(rejected_name);
 
 					if (local) {
 						local.velvet = { ref: true };
 					}
 
-					let decl = t.variable_declaration('let', [
+					let block_decl = t.variable_declaration('let', [
 						t.variable_declarator(
-							rejected_ident,
-							t.arrow_function_expression([t.identifier('$$root'), local], statement)
+							t.identifier(rejected_name),
+							t.arrow_function_expression(
+								[t.identifier('$$root'), local],
+								t.block_statement(merge_scope(scope))
+							),
 						),
 					]);
 
-					curr_scope.push(decl);
+					curr_scope.blocks.push(block_decl);
 				}
 
-				let argument = t.arrow_function_expression([], node.argument);
-				let fragment_ident = t.identifier('%fragment' + blocks.indexOf(curr_block));
-				let marker_ident = t.identifier('%marker' + (id_m++));
-				let indices = t.array_expression([...curr_block.indices, index].map((idx) => t.literal(idx)));
+				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
+				let marker_ident = '%marker' + (id_m++);
 
-				let statements = [
-					t.variable_declaration('let', [
-						t.variable_declarator(
-							marker_ident,
-							t.call_expression(t.identifier('@traverse'), [
-								fragment_ident,
-								indices,
-							]),
-						),
-					]),
-					t.expression_statement(
-						t.call_expression(t.identifier('@promise'), [
-							marker_ident,
-							pending_ident,
-							resolved_ident,
-							rejected_ident,
-							argument,
+				let traverse_def = t.variable_declaration('let', [
+					t.variable_declarator(
+						t.identifier(marker_ident),
+						t.call_expression(t.identifier('@traverse'), [
+							t.identifier(fragment_ident),
+							t.array_expression([...curr_block.indices, index].map(i => t.literal(i))),
 						]),
 					),
-				];
+				]);
 
-				curr_scope.push(...statements);
+				let promies_expr = t.expression_statement(
+					t.call_expression(t.identifier('@promise'), [
+						t.identifier(marker_ident),
+						pending_ident,
+						resolved_ident,
+						rejected_ident,
+						t.arrow_function_expression([], node.argument),
+					]),
+				);
+
+				curr_scope.traversals.push(traverse_def);
+				curr_scope.expressions.push(promies_expr);
 				return;
 			}
 		},
 	});
 
-	return t.program(program);
+	return t.program(merge_scope(program));
 }
 
 function create_block () {
@@ -948,4 +987,35 @@ function create_block () {
 		html: '',
 		indices: [],
 	};
+}
+
+function create_scope () {
+	return {
+		// @html, @clone
+		definitions: [],
+		// @traverse, component instantiation
+		traversals: [],
+		// %block0, $block1, ...
+		blocks: [],
+		// @append, @after, @text, @show, ...
+		expressions: [],
+	};
+}
+
+function merge_scope (scope) {
+	return [
+		...scope.definitions,
+		...scope.traversals,
+		...scope.blocks,
+		...scope.expressions,
+	];
+}
+
+function scope_has_length (scope) {
+	return !!(
+		scope.definitions.length ||
+		scope.traversals.length ||
+		scope.blocks.length ||
+		scope.expressions.length
+	);
 }

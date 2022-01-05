@@ -6,13 +6,13 @@ let template0 = html(\\"<!>\\");
 let template1 = html(\\"<div>foo</div><!>\\");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
+  let marker1 = traverse(fragment0, [0]);
   let block1 = $$root => {
     let fragment1 = clone(template1);
     let marker0 = traverse(fragment1, [1]);
     after($$root, fragment1);
     return marker0;
   };
-  let marker1 = traverse(fragment0, [0]);
   show(marker1, () => foo ? block1 : null);
   append($$root, fragment0);
 }
@@ -27,6 +27,7 @@ let template1 = html(\\"<div>foo</div><!>\\");
 let template2 = html(\\"<div>bar</div><!>\\");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
+  let marker2 = traverse(fragment0, [0]);
   let block1 = $$root => {
     let fragment1 = clone(template1);
     let marker0 = traverse(fragment1, [1]);
@@ -39,7 +40,6 @@ function setup($$root, $$host) {
     after($$root, fragment2);
     return marker1;
   };
-  let marker2 = traverse(fragment0, [0]);
   show(marker2, () => foo ? block1 : block2);
   append($$root, fragment0);
 }

@@ -28,15 +28,6 @@ $: @attr(%child0, \\"class\\", className);
 "
 `;
 
-exports[`attribute > attribute expression pure 1`] = `
-"let %%template0 = @html(\\"<div></div>\\");
-let %fragment0 = @clone(%template0);
-let %child0 = @traverse(%fragment0, [0]);
-@attr(%child0, \\"class\\", className);
-@append($$root, %fragment0);
-"
-`;
-
 exports[`attribute > attribute none 1`] = `
 "let %%template0 = @html(\\"<textarea readonly></textarea>\\");
 let %fragment0 = @clone(%template0);
@@ -84,10 +75,10 @@ exports[`attribute > binding expression component 1`] = `
 "let %%template0 = @html(\\"<div></div>\\");
 let %fragment0 = @clone(%template0);
 let %child0 = new Component();
+let %marker0 = @traverse(%fragment0, [0]);
 let %bind0 = event => value = event.detail;
 $: %child0[\\"foo\\"] = value;
 @on(%child0, \\"update:foo\\", %bind0);
-let %marker0 = @traverse(%fragment0, [0]);
 @replace(%marker0, %child0, true);
 @append($$root, %fragment0);
 "
@@ -98,15 +89,6 @@ exports[`attribute > boolean expression 1`] = `
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
 $: @toggle(%child0, \\"readonly\\", is_readonly);
-@append($$root, %fragment0);
-"
-`;
-
-exports[`attribute > boolean expression pure 1`] = `
-"let %%template0 = @html(\\"<textarea></textarea>\\");
-let %fragment0 = @clone(%template0);
-let %child0 = @traverse(%fragment0, [0]);
-@toggle(%child0, \\"readonly\\", is_readonly);
 @append($$root, %fragment0);
 "
 `;
@@ -153,15 +135,6 @@ $: %child0[\\"value\\"] = value;
 "
 `;
 
-exports[`attribute > property expression pure 1`] = `
-"let %%template0 = @html(\\"<input />\\");
-let %fragment0 = @clone(%template0);
-let %child0 = @traverse(%fragment0, [0]);
-%child0[\\"value\\"] = value;
-@append($$root, %fragment0);
-"
-`;
-
 exports[`attribute > property none 1`] = `
 "let %%template0 = @html(\\"<input />\\");
 let %fragment0 = @clone(%template0);
@@ -192,6 +165,7 @@ $: @assign(%child0, props);
 exports[`await logic > pending 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
+let %marker1 = @traverse(%fragment0, [0]);
 let %block1 = $$root => {
   let %%template1 = @html(\\"pending<!>\\");
   let %fragment1 = @clone(%template1);
@@ -199,7 +173,6 @@ let %block1 = $$root => {
   @after($$root, %fragment1);
   return %marker0;
 };
-let %marker1 = @traverse(%fragment0, [0]);
 @promise(%marker1, %block1, null, null, () => promise);
 @append($$root, %fragment0);
 "
@@ -208,6 +181,7 @@ let %marker1 = @traverse(%fragment0, [0]);
 exports[`await logic > pending and rejected 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
+let %marker2 = @traverse(%fragment0, [0]);
 let %block1 = $$root => {
   let %%template1 = @html(\\"pending<!>\\");
   let %fragment1 = @clone(%template1);
@@ -222,7 +196,6 @@ let %block2 = $$root => {
   @after($$root, %fragment2);
   return %marker1;
 };
-let %marker2 = @traverse(%fragment0, [0]);
 @promise(%marker2, %block1, null, %block2, () => promise);
 @append($$root, %fragment0);
 "
@@ -231,6 +204,7 @@ let %marker2 = @traverse(%fragment0, [0]);
 exports[`await logic > pending and rejected with local 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
+let %marker3 = @traverse(%fragment0, [0]);
 let %block1 = $$root => {
   let %%template1 = @html(\\"pending<!>\\");
   let %fragment1 = @clone(%template1);
@@ -242,12 +216,11 @@ let %block2 = ($$root, error) => {
   let %%template2 = @html(\\"uh, oh! <pre><!></pre><!>\\");
   let %fragment2 = @clone(%template2);
   let %marker1 = @traverse(%fragment2, [1, 0]);
-  @text(%marker1, () => error.message);
   let %marker2 = @traverse(%fragment2, [2]);
+  @text(%marker1, () => error.message);
   @after($$root, %fragment2);
   return %marker2;
 };
-let %marker3 = @traverse(%fragment0, [0]);
 @promise(%marker3, %block1, null, %block2, () => promise);
 @append($$root, %fragment0);
 "
@@ -256,6 +229,7 @@ let %marker3 = @traverse(%fragment0, [0]);
 exports[`await logic > pending and resolved 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
+let %marker2 = @traverse(%fragment0, [0]);
 let %block1 = $$root => {
   let %%template1 = @html(\\"pending<!>\\");
   let %fragment1 = @clone(%template1);
@@ -270,7 +244,6 @@ let %block2 = $$root => {
   @after($$root, %fragment2);
   return %marker1;
 };
-let %marker2 = @traverse(%fragment0, [0]);
 @promise(%marker2, %block1, %block2, null, () => promise);
 @append($$root, %fragment0);
 "
@@ -279,6 +252,7 @@ let %marker2 = @traverse(%fragment0, [0]);
 exports[`await logic > pending and resolved with local 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
+let %marker3 = @traverse(%fragment0, [0]);
 let %block1 = $$root => {
   let %%template1 = @html(\\"pending<!>\\");
   let %fragment1 = @clone(%template1);
@@ -290,12 +264,11 @@ let %block2 = ($$root, name) => {
   let %%template2 = @html(\\"hello, <!>!<!>\\");
   let %fragment2 = @clone(%template2);
   let %marker1 = @traverse(%fragment2, [1]);
-  @text(%marker1, () => name);
   let %marker2 = @traverse(%fragment2, [3]);
+  @text(%marker1, () => name);
   @after($$root, %fragment2);
   return %marker2;
 };
-let %marker3 = @traverse(%fragment0, [0]);
 @promise(%marker3, %block1, %block2, null, () => promise);
 @append($$root, %fragment0);
 "
@@ -304,6 +277,7 @@ let %marker3 = @traverse(%fragment0, [0]);
 exports[`await logic > rejected 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
+let %marker1 = @traverse(%fragment0, [0]);
 let %block1 = $$root => {
   let %%template1 = @html(\\"rejected<!>\\");
   let %fragment1 = @clone(%template1);
@@ -311,7 +285,6 @@ let %block1 = $$root => {
   @after($$root, %fragment1);
   return %marker0;
 };
-let %marker1 = @traverse(%fragment0, [0]);
 @promise(%marker1, null, null, %block1, () => promise);
 @append($$root, %fragment0);
 "
@@ -320,16 +293,16 @@ let %marker1 = @traverse(%fragment0, [0]);
 exports[`await logic > rejected with local 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
+let %marker2 = @traverse(%fragment0, [0]);
 let %block1 = ($$root, error) => {
   let %%template1 = @html(\\"error: <!><!>\\");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [1]);
-  @text(%marker0, () => error.message);
   let %marker1 = @traverse(%fragment1, [2]);
+  @text(%marker0, () => error.message);
   @after($$root, %fragment1);
   return %marker1;
 };
-let %marker2 = @traverse(%fragment0, [0]);
 @promise(%marker2, null, null, %block1, () => promise);
 @append($$root, %fragment0);
 "
@@ -338,6 +311,7 @@ let %marker2 = @traverse(%fragment0, [0]);
 exports[`await logic > resolved 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
+let %marker1 = @traverse(%fragment0, [0]);
 let %block1 = $$root => {
   let %%template1 = @html(\\"resolved<!>\\");
   let %fragment1 = @clone(%template1);
@@ -345,7 +319,6 @@ let %block1 = $$root => {
   @after($$root, %fragment1);
   return %marker0;
 };
-let %marker1 = @traverse(%fragment0, [0]);
 @promise(%marker1, null, %block1, null, () => promise);
 @append($$root, %fragment0);
 "
@@ -354,16 +327,16 @@ let %marker1 = @traverse(%fragment0, [0]);
 exports[`await logic > resolved with local 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
+let %marker2 = @traverse(%fragment0, [0]);
 let %block1 = ($$root, result) => {
   let %%template1 = @html(\\"the number is <!><!>\\");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [1]);
-  @text(%marker0, () => result.value);
   let %marker1 = @traverse(%fragment1, [2]);
+  @text(%marker0, () => result.value);
   @after($$root, %fragment1);
   return %marker1;
 };
-let %marker2 = @traverse(%fragment0, [0]);
 @promise(%marker2, null, %block1, null, () => promise);
 @append($$root, %fragment0);
 "
@@ -372,11 +345,11 @@ let %marker2 = @traverse(%fragment0, [0]);
 exports[`component > v:component 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
+let %marker0 = @traverse(%fragment0, [0]);
 let %block1 = %component => {
   let %child0 = new %component();
   return %child0;
 };
-let %marker0 = @traverse(%fragment0, [0]);
 @dynamic(%marker0, %block1, () => Component);
 @append($$root, %fragment0);
 "
@@ -385,15 +358,16 @@ let %marker0 = @traverse(%fragment0, [0]);
 exports[`component > v:component with children 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
+let %marker1 = @traverse(%fragment0, [0]);
 let %block1 = %component => {
   let %%template1 = @html(\\"Hello <!>!\\");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [1]);
-  @text(%marker0, () => name);
   let %child0 = new %component();
+  @text(%marker0, () => name);
+  @after(%child0, %fragment1);
   return %child0;
 };
-let %marker1 = @traverse(%fragment0, [0]);
 @dynamic(%marker1, %block1, () => Component);
 @append($$root, %fragment0);
 "
@@ -412,6 +386,8 @@ let %marker0 = @traverse(%fragment0, [0, 0]);
 exports[`conditional logic > conditional before expression 1`] = `
 "let %%template0 = @html(\\"<!> <div>Hello, <!>!</div>\\");
 let %fragment0 = @clone(%template0);
+let %marker1 = @traverse(%fragment0, [0]);
+let %marker2 = @traverse(%fragment0, [2, 1]);
 let %block1 = $$root => {
   let %%template1 = @html(\\"Loading!<!>\\");
   let %fragment1 = @clone(%template1);
@@ -419,9 +395,7 @@ let %block1 = $$root => {
   @after($$root, %fragment1);
   return %marker0;
 };
-let %marker1 = @traverse(%fragment0, [0]);
 @show(%marker1, () => loading ? %block1 : null);
-let %marker2 = @traverse(%fragment0, [2, 1]);
 @text(%marker2, () => name);
 @append($$root, %fragment0);
 "
@@ -430,18 +404,18 @@ let %marker2 = @traverse(%fragment0, [2, 1]);
 exports[`conditional logic > conditional containing expression 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
+let %marker3 = @traverse(%fragment0, [0]);
 let %block1 = $$root => {
   let %%template1 = @html(\\"<!> <!><!>\\");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [0]);
-  @text(%marker0, () => person.first_name);
   let %marker1 = @traverse(%fragment1, [2]);
-  @text(%marker1, () => person.last_name);
   let %marker2 = @traverse(%fragment1, [3]);
+  @text(%marker0, () => person.first_name);
+  @text(%marker1, () => person.last_name);
   @after($$root, %fragment1);
   return %marker2;
 };
-let %marker3 = @traverse(%fragment0, [0]);
 @show(%marker3, () => person ? %block1 : null);
 @append($$root, %fragment0);
 "
@@ -450,6 +424,7 @@ let %marker3 = @traverse(%fragment0, [0]);
 exports[`conditional logic > consequent 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
+let %marker1 = @traverse(%fragment0, [0]);
 let %block1 = $$root => {
   let %%template1 = @html(\\"<div>foo!</div><!>\\");
   let %fragment1 = @clone(%template1);
@@ -457,7 +432,6 @@ let %block1 = $$root => {
   @after($$root, %fragment1);
   return %marker0;
 };
-let %marker1 = @traverse(%fragment0, [0]);
 @show(%marker1, () => foo ? %block1 : null);
 @append($$root, %fragment0);
 "
@@ -466,6 +440,7 @@ let %marker1 = @traverse(%fragment0, [0]);
 exports[`conditional logic > consequent and alternate 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
+let %marker2 = @traverse(%fragment0, [0]);
 let %block1 = $$root => {
   let %%template1 = @html(\\"<div>foo!</div><!>\\");
   let %fragment1 = @clone(%template1);
@@ -480,7 +455,6 @@ let %block2 = $$root => {
   @after($$root, %fragment2);
   return %marker1;
 };
-let %marker2 = @traverse(%fragment0, [0]);
 @show(%marker2, () => foo ? %block1 : %block2);
 @append($$root, %fragment0);
 "
@@ -489,6 +463,7 @@ let %marker2 = @traverse(%fragment0, [0]);
 exports[`conditional logic > consequent and alternate test 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
+let %marker2 = @traverse(%fragment0, [0]);
 let %block2 = $$root => {
   let %%template2 = @html(\\"<div>bar!</div><!>\\");
   let %fragment2 = @clone(%template2);
@@ -503,7 +478,6 @@ let %block1 = $$root => {
   @after($$root, %fragment1);
   return %marker0;
 };
-let %marker2 = @traverse(%fragment0, [0]);
 @show(%marker2, () => foo ? %block1 : bar ? %block2 : null);
 @append($$root, %fragment0);
 "
@@ -512,9 +486,12 @@ let %marker2 = @traverse(%fragment0, [0]);
 exports[`conditional logic > nested consequent 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
+let %marker3 = @traverse(%fragment0, [0]);
 let %block1 = $$root => {
   let %%template1 = @html(\\"<div>foo!</div><!><!>\\");
   let %fragment1 = @clone(%template1);
+  let %marker1 = @traverse(%fragment1, [1]);
+  let %marker2 = @traverse(%fragment1, [2]);
   let %block2 = $$root => {
     let %%template2 = @html(\\"<div>bar!</div><!>\\");
     let %fragment2 = @clone(%template2);
@@ -522,13 +499,10 @@ let %block1 = $$root => {
     @after($$root, %fragment2);
     return %marker0;
   };
-  let %marker1 = @traverse(%fragment1, [1]);
   @show(%marker1, () => bar ? %block2 : null);
-  let %marker2 = @traverse(%fragment1, [2]);
   @after($$root, %fragment1);
   return %marker2;
 };
-let %marker3 = @traverse(%fragment0, [0]);
 @show(%marker3, () => foo ? %block1 : null);
 @append($$root, %fragment0);
 "
@@ -545,9 +519,9 @@ exports[`expression > component 1`] = `
 "let %%template0 = @html(\\"<div>hello <!>!</div>\\");
 let %fragment0 = @clone(%template0);
 let %marker0 = @traverse(%fragment0, [0, 1]);
-@text(%marker0, () => name);
 let %child0 = new Main();
 let %marker1 = @traverse(%fragment0, [0]);
+@text(%marker0, () => name);
 @replace(%marker1, %child0, true);
 @append($$root, %fragment0);
 "
@@ -577,18 +551,29 @@ let %marker0 = @traverse(%fragment0, [1]);
 "
 `;
 
+exports[`expression > multiple expressions 1`] = `
+"let %%template0 = @html(\\"hello, <!> <!>!\\");
+let %fragment0 = @clone(%template0);
+let %marker0 = @traverse(%fragment0, [1]);
+let %marker1 = @traverse(%fragment0, [3]);
+@text(%marker0, () => first_name);
+@text(%marker1, () => last_name);
+@append($$root, %fragment0);
+"
+`;
+
 exports[`log expression > in conditional 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
+let %marker1 = @traverse(%fragment0, [0]);
 let %block1 = $$root => {
   let %%template1 = @html(\\"<!>\\");
   let %fragment1 = @clone(%template1);
-  $: console.log($$root, foo)
   let %marker0 = @traverse(%fragment1, [1]);
+  $: console.log($$root, foo)
   @after($$root, %fragment1);
   return %marker0;
 };
-let %marker1 = @traverse(%fragment0, [0]);
 @show(%marker1, () => foo ? %block1 : null);
 @append($$root, %fragment0);
 "
@@ -626,18 +611,18 @@ $: console.log([foo, bar, baz])
 exports[`loop logic > index 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
+let %marker3 = @traverse(%fragment0, [0]);
 let %block1 = ($$root, person, index) => {
   let %%template1 = @html(\\"<div><!> - <!></div><!>\\");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [0, 0]);
-  @text(%marker0, () => index);
   let %marker1 = @traverse(%fragment1, [0, 2]);
-  @text(%marker1, () => person.name);
   let %marker2 = @traverse(%fragment1, [1]);
+  @text(%marker0, () => index);
+  @text(%marker1, () => person.name);
   @after($$root, %fragment1);
   return %marker2;
 };
-let %marker3 = @traverse(%fragment0, [0]);
 @each(%marker3, %block1, () => array);
 @append($$root, %fragment0);
 "
@@ -646,18 +631,18 @@ let %marker3 = @traverse(%fragment0, [0]);
 exports[`loop logic > iteration 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
+let %marker3 = @traverse(%fragment0, [0]);
 let %block1 = ($$root, person) => {
   let %%template1 = @html(\\"<div><!> - <!></div><!>\\");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [0, 0]);
-  @text(%marker0, () => person.first);
   let %marker1 = @traverse(%fragment1, [0, 2]);
-  @text(%marker1, () => person.last);
   let %marker2 = @traverse(%fragment1, [1]);
+  @text(%marker0, () => person.first);
+  @text(%marker1, () => person.last);
   @after($$root, %fragment1);
   return %marker2;
 };
-let %marker3 = @traverse(%fragment0, [0]);
 @each(%marker3, %block1, () => array);
 @append($$root, %fragment0);
 "

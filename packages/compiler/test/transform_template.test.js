@@ -33,7 +33,7 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
-	it('attribute expression pure', () => {
+	it.skip('attribute expression pure', () => {
 		let template = `<div class={/* @static */ className}></div>`;
 
 		let fragment = parse_template(template);
@@ -82,7 +82,7 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
-	it('boolean expression pure', () => {
+	it.skip('boolean expression pure', () => {
 		let template = `<textarea ?readonly={/* @static */ is_readonly}></textarea>`;
 
 		let fragment = parse_template(template);
@@ -110,7 +110,7 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
-	it('property expression pure', () => {
+	it.skip('property expression pure', () => {
 		let template = `<input .value={/* @static */ value}>`;
 
 		let fragment = parse_template(template);
@@ -279,6 +279,15 @@ describe('expression', () => {
 
 	it('handles parenthesis', () => {
 		let template = `hello {((name))}!`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('multiple expressions', () => {
+		let template = `hello, {first_name} {last_name}!`;
 
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
