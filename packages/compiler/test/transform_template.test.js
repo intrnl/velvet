@@ -215,6 +215,24 @@ describe('element', () => {
 
 		expect(print(program)).toMatchSnapshot();
 	});
+
+	it('v:element', () => {
+		let template = `<v:element #this={Element}></v:element>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('v:element with children', () => {
+		let template = `<v:element #this={Element}>Hello {name}!</v:element>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
 });
 
 describe('component', () => {

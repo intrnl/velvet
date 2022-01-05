@@ -462,7 +462,7 @@ function _parse_element (state) {
 			throw p.error(state, 'v:self placement causes infinite recursion');
 		}
 	}
-	else if (name === 'v:component') {
+	else if (name === 'v:component' || name === 'v:element') {
 		// left blank
 	}
 	else if (name[0] === 'v' && name[1] === ':') {

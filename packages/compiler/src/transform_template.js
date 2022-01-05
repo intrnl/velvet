@@ -31,8 +31,8 @@ export function transform_template (template, source) {
 				let is_inline = node.inline;
 				let is_selfclosing = node.self_closing;
 
-				// v:component lives in a new block
-				if (elem_name === 'v:component') {
+				// v:component and v:element lives in a new block
+				if (elem_name === 'v:component' || elem_name === 'v:element') {
 					curr_block.html += '<!>';
 
 					block_stack.push(curr_block);
@@ -254,9 +254,9 @@ export function transform_template (template, source) {
 
 					// handle #this attribute
 					if (attr_name === '#this') {
-						if (elem_name !== 'v:component') {
+						if (elem_name !== 'v:component' && elem_name !== 'v:element') {
 							throw create_error(
-								`expected #this to be used in v:component`,
+								`expected #this to be used in v:component or v:element`,
 								source,
 								attr.start,
 								attr.end,
@@ -493,16 +493,18 @@ export function transform_template (template, source) {
 
 					curr_scope.traversals.push(decl);
 				}
-				else if (elem_name === 'v:component') {
+				else if (elem_name === 'v:component' || elem_name === 'v:element') {
 					let block = curr_block;
 					let scope = curr_scope;
+
+					let is_component = elem_name === 'v:component';
 
 					curr_block = block_stack.pop();
 					curr_scope = scope_stack.pop();
 
 					if (!_this_expr) {
 						throw create_error(
-							`expected v:component to have #this`,
+							`expected ${elem_name} to have #this`,
 							source,
 							node.start,
 							node.end,
@@ -512,7 +514,12 @@ export function transform_template (template, source) {
 					let instantiate_def = t.variable_declaration('let', [
 						t.variable_declarator(
 							t.identifier(elem_ident),
-							t.new_expression(t.identifier('%component')),
+							is_component
+								? t.new_expression(t.identifier('%component'))
+								: t.call_expression(
+										t.member_expression_from('document', 'createElement'),
+										[t.identifier('%component')],
+									)
 						),
 					]);
 

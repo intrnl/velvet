@@ -515,6 +515,37 @@ let %fragment0 = @clone(%template0);
 "
 `;
 
+exports[`element > v:element 1`] = `
+"let %%template0 = @html(\\"<!></div>\\");
+let %fragment0 = @clone(%template0);
+let %marker0 = @traverse(%fragment0, [0]);
+let %block1 = %component => {
+  let %child0 = document.createElement(%component);
+  return %child0;
+};
+@dynamic(%marker0, %block1, () => Element);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`element > v:element with children 1`] = `
+"let %%template0 = @html(\\"<!></div>\\");
+let %fragment0 = @clone(%template0);
+let %marker1 = @traverse(%fragment0, [0]);
+let %block1 = %component => {
+  let %%template1 = @html(\\"Hello <!>!\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [1]);
+  let %child0 = document.createElement(%component);
+  @text(%marker0, () => name);
+  @append(%child0, %fragment1);
+  return %child0;
+};
+@dynamic(%marker1, %block1, () => Element);
+@append($$root, %fragment0);
+"
+`;
+
 exports[`expression > component 1`] = `
 "let %%template0 = @html(\\"<div>hello <!>!</div>\\");
 let %fragment0 = @clone(%template0);
