@@ -35,13 +35,14 @@ function setup ($$root, $$host) {
   }
 
   let fragment0 = clone(template0);
-
+  
   let marker0 = traverse(fragment0, [0, 1]);
-  text(marker0, () => count(access));
-
   let child0 = traverse(fragment0, [0]);
-  on(child0, 'click', increment);
 
+  text(marker0, () => count(access));
+  
+  on(child0, 'click', increment);
+  
   append($$root, fragment0);
 }
 
