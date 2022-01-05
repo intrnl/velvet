@@ -546,15 +546,15 @@ export function transform_template (template, source) {
 							),
 						]);
 
-						let after_expr = t.expression_statement(
-							t.call_expression(t.identifier('@after'), [
+						let append_expr = t.expression_statement(
+							t.call_expression(t.identifier('@append'), [
 								t.identifier(elem_ident),
 								t.identifier(fragment_ident),
 							]),
 						);
 
 						scope.definitions.push(template_def, fragment_def);
-						scope.expressions.push(after_expr);
+						scope.expressions.push(append_expr);
 					}
 
 					let return_stmt = t.return_statement(t.identifier(elem_ident));

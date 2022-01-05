@@ -365,7 +365,7 @@ let %block1 = %component => {
   let %marker0 = @traverse(%fragment1, [1]);
   let %child0 = new %component();
   @text(%marker0, () => name);
-  @after(%child0, %fragment1);
+  @append(%child0, %fragment1);
   return %child0;
 };
 @dynamic(%marker1, %block1, () => Component);
