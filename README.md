@@ -47,3 +47,10 @@ function setup ($$root, $$host) {
 
 export default define('x-app', setup, {});
 ```
+
+## Credits
+
+- [Svelte](https://github.com/sveltejs/svelte)  
+  It's pretty much what inspired this project's quest of trying to be small, while also trying to be
+  highly efficient with mutations. Logic templating is also taken from it, as it makes for an easier
+  transition.
