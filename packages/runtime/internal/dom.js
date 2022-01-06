@@ -80,3 +80,45 @@ export function toggle (node, name, value) {
 export function attr (node, name, value) {
 	node.setAttribute(name, value);
 }
+
+export function get_checked_values (array, value, checked) {
+	array = [...array];
+
+	if (checked) {
+		array.push(value);
+	}
+	else {
+		let index = array.indexOf(value);
+
+		if (index > -1) {
+			array.splice(index, 1);
+		}
+	}
+
+	return array;
+}
+
+export function get_select_values (select) {
+	let multiple = select.multiple;
+	let array = [];
+
+	for (let option of select.selectedOptions) {
+		array.push(option.value);
+	}
+
+	return multiple ? array[0] : array;
+}
+
+export function set_select_values (select, current) {
+	let multiple = select.multiple;
+
+	for (let option of select.options) {
+		let selected = multiple ? current.includes(option.value) : (option.value === current);
+
+		option.selected = selected;
+
+		if (selected && !multiple) {
+			return;
+		}
+	}
+}
