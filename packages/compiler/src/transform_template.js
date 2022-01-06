@@ -428,13 +428,13 @@ export function transform_template (template, source) {
 							// handle everything else
 							else {
 								let event_target = is_component
-									? t.member_expression_from('event', 'detail')
+									? t.member_expression_from('$$event', 'detail')
 									: is_checkbox
-										? t.member_expression_from('event', 'target', 'checked')
-										: t.member_expression_from('event', 'target', 'value');
+										? t.member_expression_from('$$event', 'target', 'checked')
+										: t.member_expression_from('$$event', 'target', 'value');
 
 								event_fn = t.arrow_function_expression(
-									[t.identifier('event')],
+									[t.identifier('$$event')],
 									t.assignment_expression(value_expr, event_target),
 								);
 							}

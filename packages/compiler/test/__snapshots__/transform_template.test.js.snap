@@ -54,7 +54,7 @@ exports[`attribute > binding checkbox expression 1`] = `
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
 $: %child0[\\"value\\"] = value;
-@on(%child0, \\"input\\", event => value = event.target.checked);
+@on(%child0, \\"input\\", $$event => value = $$event.target.checked);
 @append($$root, %fragment0);
 "
 `;
@@ -75,7 +75,7 @@ let %fragment0 = @clone(%template0);
 let %child0 = new Component();
 let %marker0 = @traverse(%fragment0, [0]);
 $: %child0[\\"foo\\"] = value;
-@on(%child0, \\"update:foo\\", event => value = event.detail);
+@on(%child0, \\"update:foo\\", $$event => value = $$event.detail);
 @replace(%marker0, %child0, true);
 @append($$root, %fragment0);
 "
@@ -86,7 +86,7 @@ exports[`attribute > binding expression 1`] = `
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
 $: %child0[\\"value\\"] = value;
-@on(%child0, \\"input\\", event => value = event.target.value);
+@on(%child0, \\"input\\", $$event => value = $$event.target.value);
 @append($$root, %fragment0);
 "
 `;
