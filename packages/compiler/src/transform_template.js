@@ -224,6 +224,17 @@ export function transform_template (template, source) {
 				// holds expression from #this attribute to instantiate v:component
 				let _this_expr;
 
+				// checks for properties and bindings
+				let is_checkbox = (
+					!is_component && elem_name === 'input' &&
+					node.attributes.some((attr) => attr.name === 'type' && attr.value?.decoded === 'checkbox')
+				);
+
+				let is_select = (
+					!is_component && elem_name === 'select'
+				);
+
+				// loop through attributes
 				for (let attr of node.attributes) {
 					// handle attribute spread
 					if (attr.type === 'AttributeSpread') {
@@ -343,15 +354,6 @@ export function transform_template (template, source) {
 						need_ident = true;
 
 						let prop_name = attr_name.slice(1);
-
-						let is_checkbox = (
-							!is_component && elem_name === 'input' &&
-							node.attributes.some((attr) => attr.name === 'type' && attr.value?.decoded === 'checkbox')
-						);
-
-						let is_select = (
-							!is_component && elem_name === 'select'
-						);
 
 						// handle special checkbox group binding
 						if (is_checkbox && prop_name === 'group') {
