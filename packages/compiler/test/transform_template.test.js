@@ -317,6 +317,19 @@ describe('element', () => {
 
 		expect(print(program)).toMatchSnapshot();
 	});
+
+	it('throws on improper closing tag', () => {
+		let template = `<legend>Title</button>`;
+
+		try {
+			let fragment = parse_template(template);
+			let program = transform_template(fragment);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
+	});
 });
 
 describe('component', () => {

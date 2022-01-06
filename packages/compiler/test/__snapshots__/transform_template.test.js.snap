@@ -617,6 +617,12 @@ let %fragment0 = @clone(%template0);
 "
 `;
 
+exports[`element > throws on improper closing tag 1`] = `
+"</button> attempted to close an element that was not open (1:13)
+1: <legend>Title</button>
+                ^"
+`;
+
 exports[`element > v:element 1`] = `
 "let %%template0 = @html(\\"<!></div>\\");
 let %fragment0 = @clone(%template0);

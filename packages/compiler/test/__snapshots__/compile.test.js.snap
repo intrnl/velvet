@@ -88,6 +88,12 @@ export default define(null, setup, {});
 "
 `;
 
+exports[`element > throws on improper closing tag 1`] = `
+"</button> attempted to close an element that was not open (1:13)
+1: <legend>Title</button>
+                ^"
+`;
+
 exports[`module context > allow top level await 1`] = `
 "import {html, clone, traverse, text, append, define} from \\"@intrnl/velvet/internal\\";
 let template0 = html(\\"<div>the number is <!></div>\\");

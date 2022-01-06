@@ -489,7 +489,7 @@ function _parse_element (state) {
 			parent.end = start;
 			p.pop(state);
 
-			parent = p.current();
+			parent = p.current(state);
 		}
 
 		parent.end = state.index;

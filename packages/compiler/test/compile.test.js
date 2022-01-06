@@ -113,6 +113,20 @@ describe('store', () => {
 	});
 });
 
+describe('element', () => {
+	it('throws on improper closing tag', () => {
+		let template = `<legend>Title</button>`;
+
+		try {
+			compileSync(template);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
+	});
+});
+
 describe('conditional logic', () => {
 	it('consequent', () => {
 		let template = `
