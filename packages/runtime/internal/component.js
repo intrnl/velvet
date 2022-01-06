@@ -120,7 +120,7 @@ export function define (tag, setup, definition) {
 	return Component;
 }
 
-export function property (index, value) {
+export function prop (index, value) {
 	let state = curr_host.$p[index];
 
 	if (state(access) === default_value) {
