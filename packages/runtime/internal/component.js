@@ -82,7 +82,10 @@ class VelvetComponent extends HTMLElement {
 		let host = this;
 		let prop = camelize(attr);
 
-		host[prop] = next || true;
+		// toggleAttribute: ''
+		// removeAttribute: null
+
+		host[prop] = next === '' ? true : next;
 	}
 }
 
