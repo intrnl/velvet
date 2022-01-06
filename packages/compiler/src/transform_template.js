@@ -19,7 +19,6 @@ export function transform_template (template, source) {
 	// increment to create unique identifier names
 	let id_c = 0;
 	let id_m = 0;
-	let id_b = 0;
 
 	walk(template, {
 		enter (node, parent, key, index) {
