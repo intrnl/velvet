@@ -128,6 +128,24 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
+	it('property checkbox group', () => {
+		let template = `<input type=checkbox .group={selected}>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('property select value', () => {
+		let template = `<select multiple .value={value}></select>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
 
 	it('event expression', () => {
 		let template = `<button @click={handle_click}></button>`;
@@ -148,7 +166,16 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
-	it('binding expression checkbox', () => {
+	it('binding component expression', () => {
+		let template = `<Component :foo={value} />`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('binding checkbox expression', () => {
 		let template = `<input type=checkbox :value={value}>`;
 
 		let fragment = parse_template(template);
@@ -157,8 +184,17 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
-	it('binding expression component', () => {
-		let template = `<Component :foo={value} />`;
+	it('binding checkbox group', () => {
+		let template = `<input type=checkbox :group={selected}>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('binding select value', () => {
+		let template = `<select multiple :value={value}></select>`;
 
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);

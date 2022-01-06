@@ -335,23 +335,121 @@ export function transform_template (template, source) {
 						continue;
 					}
 
-					// handle properties
-					if (attr_name[0] === '.') {
+					// handle properties and bindings
+					let is_prop = attr_name[0] === '.';
+					let is_binding = attr_name[0] === ':';
+
+					if (is_prop || is_binding) {
 						need_ident = true;
 
 						let prop_name = attr_name.slice(1);
 
-						let prop_expr = t.labeled_statement(
-							t.identifier('$'),
-							t.expression_statement(
-								t.assignment_expression(
-									t.member_expression(t.identifier(elem_ident), t.literal(prop_name), true),
-									value_expr,
-								),
-							),
+						let is_checkbox = (
+							!is_component && elem_name === 'input' &&
+							node.attributes.some((attr) => attr.name === 'type' && attr.value?.decoded === 'checkbox')
 						);
 
-						curr_scope.expressions.push(prop_expr);
+						let is_select = (
+							!is_component && elem_name === 'select'
+						);
+
+						// handle special checkbox group binding
+						if (is_checkbox && prop_name === 'group') {
+							let prop_expr = t.labeled_statement(
+								t.identifier('$'),
+								t.expression_statement(
+									t.assignment_expression(
+										t.member_expression_from(elem_ident, 'checked'),
+										t.call_expression(
+											t.member_expression(value_expr, t.identifier('includes')),
+											[t.member_expression_from(elem_ident, 'value')],
+										),
+									),
+								),
+							);
+
+							curr_scope.expressions.push(prop_expr);
+						}
+						// handle special select value binding
+						else if (is_select && prop_name === 'value') {
+							let prop_expr = t.labeled_statement(
+								t.identifier('$'),
+								t.expression_statement(
+									t.call_expression(t.identifier('@set_select_values'), [
+										t.identifier(elem_ident),
+										value_expr,
+									]),
+								),
+							);
+
+							curr_scope.expressions.push(prop_expr);
+						}
+						else {
+							let prop_expr = t.labeled_statement(
+								t.identifier('$'),
+								t.expression_statement(
+									t.assignment_expression(
+										t.member_expression(t.identifier(elem_ident), t.literal(prop_name), true),
+										value_expr,
+									),
+								),
+							);
+
+							curr_scope.expressions.push(prop_expr);
+						}
+
+						if (is_binding) {
+							let event_name = is_component
+								? `update:${prop_name}`
+								: `input`;
+
+							let event_fn;
+
+							// handle checkbox group binding
+							if (is_checkbox && prop_name === 'group') {
+								event_fn = t.arrow_function_expression([], t.assignment_expression(
+									value_expr,
+									t.call_expression(t.identifier('@get_checked_values'), [
+										value_expr,
+										t.member_expression_from(elem_ident, 'value'),
+										t.member_expression_from(elem_ident, 'checked'),
+									]),
+								));
+							}
+							// handle select value binding
+							else if (is_select && prop_name === 'value') {
+								event_fn = t.arrow_function_expression([], t.assignment_expression(
+									value_expr,
+									t.call_expression(t.identifier('@get_select_values'), [
+										t.identifier(elem_ident),
+									]),
+								));
+							}
+							// handle everything else
+							else {
+								let event_target = is_component
+									? t.member_expression_from('event', 'detail')
+									: is_checkbox
+										? t.member_expression_from('event', 'target', 'checked')
+										: t.member_expression_from('event', 'target', 'value');
+
+								event_fn = t.arrow_function_expression(
+									[t.identifier('event')],
+									t.assignment_expression(value_expr, event_target),
+								);
+							}
+
+							let event_expr = t.expression_statement(
+								t.call_expression(t.identifier('@on'), [
+									t.identifier(elem_ident),
+									t.literal(event_name),
+									event_fn,
+								]),
+							);
+
+							curr_scope.expressions.push(event_expr);
+						}
+
 						continue;
 					}
 
@@ -393,69 +491,6 @@ export function transform_template (template, source) {
 						);
 
 						curr_scope.expressions.push(event_expr);
-						continue;
-					}
-
-					// handle bindings
-					if (attr_name[0] === ':') {
-						if (!attr_value || attr_value.type === 'Text') {
-							throw create_error(
-								`expected ${attr_name} to have an expression`,
-								source,
-								attr.start,
-								attr.end,
-							);
-						}
-
-						need_ident = true;
-						let bind_name = attr_name.slice(1);
-						let bind_ident = '%bind' + (id_b++);
-
-						let is_checkbox = (
-							!is_component &&
-							elem_name === 'input' &&
-							node.attributes.some((attr) => attr.name === 'type' && attr.value?.decoded === 'checkbox')
-						);
-
-						let event_name = is_component
-							? `update:${bind_name}`
-							: `input`;
-
-						let event_target = is_component
-							? t.member_expression_from('event', 'detail')
-							: is_checkbox
-								? t.member_expression_from('event', 'target', 'checked')
-								: t.member_expression_from('event', 'target', 'value');
-
-						let event_decl = t.variable_declaration('let', [
-							t.variable_declarator(
-								t.identifier(bind_ident),
-								t.arrow_function_expression(
-									[t.identifier('event')],
-									t.assignment_expression(value_expr, event_target),
-								),
-							),
-						]);
-
-						let bind_expr = t.labeled_statement(
-							t.identifier('$'),
-							t.expression_statement(
-								t.assignment_expression(
-									t.member_expression(t.identifier(elem_ident), t.literal(bind_name), true),
-									value_expr,
-								),
-							),
-						);
-
-						let event_expr = t.expression_statement(
-							t.call_expression(t.identifier('@on'), [
-								t.identifier(elem_ident),
-								t.literal(event_name),
-								t.identifier(bind_ident),
-							]),
-						);
-
-						curr_scope.expressions.push(event_decl, bind_expr, event_expr);
 						continue;
 					}
 

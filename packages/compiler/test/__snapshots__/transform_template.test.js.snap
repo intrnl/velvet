@@ -49,37 +49,54 @@ let %fragment0 = @clone(%template0);
 "
 `;
 
-exports[`attribute > binding expression 1`] = `
-"let %%template0 = @html(\\"<input />\\");
-let %fragment0 = @clone(%template0);
-let %child0 = @traverse(%fragment0, [0]);
-let %bind0 = event => value = event.target.value;
-$: %child0[\\"value\\"] = value;
-@on(%child0, \\"input\\", %bind0);
-@append($$root, %fragment0);
-"
-`;
-
-exports[`attribute > binding expression checkbox 1`] = `
+exports[`attribute > binding checkbox expression 1`] = `
 "let %%template0 = @html(\\"<input type=\\\\\\"checkbox\\\\\\" />\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
-let %bind0 = event => value = event.target.checked;
 $: %child0[\\"value\\"] = value;
-@on(%child0, \\"input\\", %bind0);
+@on(%child0, \\"input\\", event => value = event.target.checked);
 @append($$root, %fragment0);
 "
 `;
 
-exports[`attribute > binding expression component 1`] = `
+exports[`attribute > binding checkbox group 1`] = `
+"let %%template0 = @html(\\"<input type=\\\\\\"checkbox\\\\\\" />\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+$: %child0.checked = selected.includes(%child0.value);
+@on(%child0, \\"input\\", () => selected = @get_checked_values(selected, %child0.value, %child0.checked));
+@append($$root, %fragment0);
+"
+`;
+
+exports[`attribute > binding component expression 1`] = `
 "let %%template0 = @html(\\"<div></div>\\");
 let %fragment0 = @clone(%template0);
 let %child0 = new Component();
 let %marker0 = @traverse(%fragment0, [0]);
-let %bind0 = event => value = event.detail;
 $: %child0[\\"foo\\"] = value;
-@on(%child0, \\"update:foo\\", %bind0);
+@on(%child0, \\"update:foo\\", event => value = event.detail);
 @replace(%marker0, %child0, true);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`attribute > binding expression 1`] = `
+"let %%template0 = @html(\\"<input />\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+$: %child0[\\"value\\"] = value;
+@on(%child0, \\"input\\", event => value = event.target.value);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`attribute > binding select value 1`] = `
+"let %%template0 = @html(\\"<select multiple></select>\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+$: @set_select_values(%child0, value);
+@on(%child0, \\"input\\", () => value = @get_select_values(%child0));
 @append($$root, %fragment0);
 "
 `;
@@ -126,6 +143,15 @@ $: @attr(%child0, \\"class\\", foo.bar);
 "
 `;
 
+exports[`attribute > property checkbox group 1`] = `
+"let %%template0 = @html(\\"<input type=\\\\\\"checkbox\\\\\\" />\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+$: %child0.checked = selected.includes(%child0.value);
+@append($$root, %fragment0);
+"
+`;
+
 exports[`attribute > property expression 1`] = `
 "let %%template0 = @html(\\"<input />\\");
 let %fragment0 = @clone(%template0);
@@ -140,6 +166,15 @@ exports[`attribute > property none 1`] = `
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
 $: %child0[\\"value\\"] = true;
+@append($$root, %fragment0);
+"
+`;
+
+exports[`attribute > property select value 1`] = `
+"let %%template0 = @html(\\"<select multiple></select>\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+$: @set_select_values(%child0, value);
 @append($$root, %fragment0);
 "
 `;
