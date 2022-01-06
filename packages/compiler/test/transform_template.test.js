@@ -318,6 +318,15 @@ describe('element', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
+	it('multiple v:element', () => {
+		let template = `<v:element #this={element}>Foo!</v:element><v:element #this={element}>Bar!</v:element>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
 	it('throws on improper closing tag', () => {
 		let template = `<legend>Title</button>`;
 
@@ -376,7 +385,7 @@ describe('component', () => {
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
-	})
+	});
 });
 
 describe('expression', () => {

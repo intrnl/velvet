@@ -701,7 +701,7 @@ export function transform_template (template, source) {
 
 				curr_block.indices.pop();
 
-				if (elem_name === 'v:component') {
+				if (elem_name === 'v:component' || elem_name === 'v:element') {
 					// do nothing
 				}
 				else if (is_inline) {

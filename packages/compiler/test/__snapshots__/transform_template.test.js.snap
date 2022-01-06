@@ -610,6 +610,31 @@ let %block1 = $$root => {
 "
 `;
 
+exports[`element > multiple v:element 1`] = `
+"let %%template0 = @html(\\"<!><!>\\");
+let %fragment0 = @clone(%template0);
+let %marker0 = @traverse(%fragment0, [0]);
+let %marker1 = @traverse(%fragment0, [1]);
+let %block1 = %component => {
+  let %%template1 = @html(\\"Foo!\\");
+  let %fragment1 = @clone(%template1);
+  let %child0 = document.createElement(%component);
+  @append(%child0, %fragment1);
+  return %child0;
+};
+let %block2 = %component => {
+  let %%template2 = @html(\\"Bar!\\");
+  let %fragment2 = @clone(%template2);
+  let %child1 = document.createElement(%component);
+  @append(%child1, %fragment2);
+  return %child1;
+};
+@dynamic(%marker0, %block1, () => element);
+@dynamic(%marker1, %block2, () => element);
+@append($$root, %fragment0);
+"
+`;
+
 exports[`element > selfclosing on a non-void element 1`] = `
 "let %%template0 = @html(\\"<button></button>\\");
 let %fragment0 = @clone(%template0);
@@ -624,7 +649,7 @@ exports[`element > throws on improper closing tag 1`] = `
 `;
 
 exports[`element > v:element 1`] = `
-"let %%template0 = @html(\\"<!></div>\\");
+"let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
 let %marker0 = @traverse(%fragment0, [0]);
 let %block1 = %component => {
@@ -637,7 +662,7 @@ let %block1 = %component => {
 `;
 
 exports[`element > v:element with children 1`] = `
-"let %%template0 = @html(\\"<!></div>\\");
+"let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
 let %marker1 = @traverse(%fragment0, [0]);
 let %block1 = %component => {
