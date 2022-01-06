@@ -428,9 +428,9 @@ export function transform_template (template, source) {
 							// handle checkbox group binding
 							if (is_checkbox && prop_name === 'group') {
 								event_fn = t.arrow_function_expression([], t.assignment_expression(
-									value_expr,
+									t.clone(value_expr),
 									t.call_expression(t.identifier('@get_checked_values'), [
-										value_expr,
+										t.clone(value_expr),
 										t.member_expression_from(elem_ident, 'value'),
 										t.member_expression_from(elem_ident, 'checked'),
 									]),
@@ -439,7 +439,7 @@ export function transform_template (template, source) {
 							// handle select value binding
 							else if (is_select && prop_name === 'value') {
 								event_fn = t.arrow_function_expression([], t.assignment_expression(
-									value_expr,
+									t.clone(value_expr),
 									t.call_expression(t.identifier('@get_select_values'), [
 										t.identifier(elem_ident),
 									]),
@@ -455,7 +455,7 @@ export function transform_template (template, source) {
 
 								event_fn = t.arrow_function_expression(
 									is_component ? [t.identifier('%event')] : [],
-									t.assignment_expression(value_expr, event_target),
+									t.assignment_expression(t.clone(value_expr), event_target),
 								);
 							}
 

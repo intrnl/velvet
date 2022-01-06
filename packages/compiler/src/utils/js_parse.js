@@ -1,10 +1,7 @@
-import * as v8 from 'node:v8';
-
 import * as acorn from 'acorn';
 import { generate } from 'astring';
 
 import { walk } from './walker.js';
-import * as t from './js_types.js';
 
 
 /**

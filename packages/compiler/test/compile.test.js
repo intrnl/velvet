@@ -59,6 +59,42 @@ describe('props', () => {
 	});
 });
 
+describe('attribute', () => {
+	it('binding checkbox group', () => {
+		let template = `
+			<script>
+				let selected = ['Apple'];
+			</script>
+
+			<input type=checkbox value=Apple :group={selected} />
+			<input type=checkbox value=Orange :group={selected} />
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('binding checkbox group nested', () => {
+		let template = `
+			<script>
+				let state = {
+					selected: ['Apple'],
+				};
+
+				state = {
+					selected: ['Orange'],
+				};
+			</script>
+
+			<input type=checkbox value=Apple :group={state.selected} />
+			<input type=checkbox value=Orange :group={state.selected} />
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
+	})
+});
+
 describe('store', () => {
 	it('throws on lone $', () => {
 		let source = `

@@ -1,3 +1,57 @@
+function clone_if_node (obj, deep, loc) {
+	if (obj && obj.type) {
+		return clone(obj, deep, loc);
+	}
+
+	return obj;
+}
+
+function clone_if_node_or_array (obj, deep, loc) {
+	if (Array.isArray(obj)) {
+		return obj.map(item => clone_if_node(item, deep, loc));
+	}
+
+	return clone_if_node(obj, deep, loc);
+}
+
+
+export function clone (node, deep = true, loc = false) {
+	let clone = { type: node.type };
+
+	if (node.type === 'Identifier') {
+		clone.name = node.name;
+	}
+	else {
+		for (let key in node) {
+			if (
+				key === 'type' ||
+				key === 'comments' ||
+				key === 'leadingComments' ||
+				key === 'trailingComments'
+			) {
+				continue;
+			}
+
+			if (!loc && (key === 'start' || key === 'end' || key === 'loc')) {
+				continue;
+			}
+
+			if (key === 'path') {
+				continue;
+			}
+
+			if (deep) {
+				clone[key] = clone_if_node_or_array(node[key], deep, loc);
+			}
+			else {
+				clone[key] = node[key];
+			}
+		}
+	}
+
+	return clone;
+}
+
 /**
  * @param {(import('estree').Statement | import('estree').ModuleDeclaration)[]} body
  * @returns {import('estree').Program}

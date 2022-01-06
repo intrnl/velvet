@@ -1,5 +1,46 @@
 // Vitest Snapshot v1
 
+exports[`attribute > binding checkbox group 1`] = `
+"import {ref, html, clone, traverse, effect, access, on, get_checked_values, append, define} from \\"@intrnl/velvet/internal\\";
+let template0 = html(\\"<input type=\\\\\\"checkbox\\\\\\" value=\\\\\\"Apple\\\\\\" /> <input type=\\\\\\"checkbox\\\\\\" value=\\\\\\"Orange\\\\\\" />\\");
+function setup($$root, $$host) {
+  let selected = ref(['Apple']);
+  let fragment0 = clone(template0);
+  let child0 = traverse(fragment0, [0]);
+  let child1 = traverse(fragment0, [2]);
+  effect(() => child0.checked = selected(access).includes(child0.value));
+  on(child0, \\"input\\", () => selected(get_checked_values(selected(access), child0.value, child0.checked)));
+  effect(() => child1.checked = selected(access).includes(child1.value));
+  on(child1, \\"input\\", () => selected(get_checked_values(selected(access), child1.value, child1.checked)));
+  append($$root, fragment0);
+}
+export default define(null, setup, {});
+"
+`;
+
+exports[`attribute > binding checkbox group nested 1`] = `
+"import {ref, html, clone, traverse, effect, access, on, get_checked_values, append, define} from \\"@intrnl/velvet/internal\\";
+let template0 = html(\\"<input type=\\\\\\"checkbox\\\\\\" value=\\\\\\"Apple\\\\\\" /> <input type=\\\\\\"checkbox\\\\\\" value=\\\\\\"Orange\\\\\\" />\\");
+function setup($$root, $$host) {
+  let state = ref({
+    selected: ['Apple']
+  });
+  state({
+    selected: ['Orange']
+  });
+  let fragment0 = clone(template0);
+  let child0 = traverse(fragment0, [0]);
+  let child1 = traverse(fragment0, [2]);
+  effect(() => child0.checked = state(access).selected.includes(child0.value));
+  on(child0, \\"input\\", () => state(access).selected = get_checked_values(state(access).selected, child0.value, child0.checked));
+  effect(() => child1.checked = state(access).selected.includes(child1.value));
+  on(child1, \\"input\\", () => state(access).selected = get_checked_values(state(access).selected, child1.value, child1.checked));
+  append($$root, fragment0);
+}
+export default define(null, setup, {});
+"
+`;
+
 exports[`conditional logic > consequent 1`] = `
 "import {html, clone, traverse, after, show, append, define} from \\"@intrnl/velvet/internal\\";
 let template0 = html(\\"<!>\\");
