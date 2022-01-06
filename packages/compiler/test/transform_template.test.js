@@ -166,6 +166,15 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
+	it('binding member expression', () => {
+		let template = `<input :value={foo.bar}>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
 	it('binding component expression', () => {
 		let template = `<Component :foo={value} />`;
 
@@ -200,6 +209,45 @@ describe('attribute', () => {
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('fails on binding with no value', () => {
+		let template = `<input :value>`;
+
+		try {
+			let fragment = parse_template(template);
+			let program = transform_template(fragment, template);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
+	});
+
+	it('fails on binding with invalid expression', () => {
+		let template = `<input :value={  foo()  }>`;
+
+		try {
+			let fragment = parse_template(template);
+			let program = transform_template(fragment, template);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
+	});
+
+	it('fails on binding with optional member expression', () => {
+		let template = `<input :value={foo?.bar}>`;
+
+		try {
+			let fragment = parse_template(template);
+			let program = transform_template(fragment, template);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
 	});
 
 

@@ -91,6 +91,16 @@ $: %child0[\\"value\\"] = value;
 "
 `;
 
+exports[`attribute > binding member expression 1`] = `
+"let %%template0 = @html(\\"<input />\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+$: %child0[\\"value\\"] = foo.bar;
+@on(%child0, \\"input\\", () => foo.bar = %child0.value);
+@append($$root, %fragment0);
+"
+`;
+
 exports[`attribute > binding select value 1`] = `
 "let %%template0 = @html(\\"<select multiple></select>\\");
 let %fragment0 = @clone(%template0);
@@ -132,6 +142,24 @@ exports[`attribute > fails on attribute with invalid expression 1`] = `
 "Acorn error: Unexpected token (1:12)
 1: <div class={.foo}></div>
                ^"
+`;
+
+exports[`attribute > fails on binding with invalid expression 1`] = `
+"expected binding to have an identifier or member expression (1:17)
+1: <input :value={  foo()  }>
+                    ^"
+`;
+
+exports[`attribute > fails on binding with no value 1`] = `
+"expected binding to have an identifier or member expression (1:7)
+1: <input :value>
+          ^"
+`;
+
+exports[`attribute > fails on binding with optional member expression 1`] = `
+"expected binding to have an identifier or member expression (1:15)
+1: <input :value={foo?.bar}>
+                  ^"
 `;
 
 exports[`attribute > handles attribute expression with parenthesis 1`] = `
