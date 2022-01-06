@@ -405,6 +405,45 @@ let %block1 = ($$root, result) => {
 "
 `;
 
+exports[`component > multiple component 1`] = `
+"let %%template0 = @html(\\"<div>Button</div><div>Link Button</div>\\");
+let %fragment0 = @clone(%template0);
+let %child0 = new Button();
+let %marker0 = @traverse(%fragment0, [0]);
+let %child1 = new Button();
+let %marker1 = @traverse(%fragment0, [1]);
+@replace(%marker0, %child0, true);
+$: @attr(%child1, \\"href\\", \\"/\\");
+@replace(%marker1, %child1, true);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`component > multiple v:component 1`] = `
+"let %%template0 = @html(\\"<!><!>\\");
+let %fragment0 = @clone(%template0);
+let %marker0 = @traverse(%fragment0, [0]);
+let %marker1 = @traverse(%fragment0, [1]);
+let %block1 = %component => {
+  let %%template1 = @html(\\"Button 1\\");
+  let %fragment1 = @clone(%template1);
+  let %child0 = new %component();
+  @append(%child0, %fragment1);
+  return %child0;
+};
+let %block2 = %component => {
+  let %%template2 = @html(\\"Button 2\\");
+  let %fragment2 = @clone(%template2);
+  let %child1 = new %component();
+  @append(%child1, %fragment2);
+  return %child1;
+};
+@dynamic(%marker0, %block1, () => Button);
+@dynamic(%marker1, %block2, () => Button);
+@append($$root, %fragment0);
+"
+`;
+
 exports[`component > v:component 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);

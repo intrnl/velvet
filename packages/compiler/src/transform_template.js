@@ -548,6 +548,8 @@ export function transform_template (template, source) {
 					curr_scope.traversals.push(decl);
 				}
 				else if (elem_name === 'v:component' || elem_name === 'v:element') {
+					id_c++;
+
 					let block = curr_block;
 					let scope = curr_scope;
 
@@ -656,6 +658,8 @@ export function transform_template (template, source) {
 					curr_scope.expressions.push(dynamic_expr);
 				}
 				else if (is_inline) {
+					id_c++;
+
 					let marker_ident = '%marker' + (id_m++);
 
 					let fragment_ident = '%fragment' + blocks.indexOf(curr_block);

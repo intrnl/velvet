@@ -346,6 +346,24 @@ describe('component', () => {
 
 		expect(print(program)).toMatchSnapshot();
 	});
+
+	it('multiple component', () => {
+		let template = `<Button>Button</Button><Button href='/'>Link Button</Button>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('multiple v:component', () => {
+		let template = `<v:component #this={Button}>Button 1</v:component><v:component #this={Button}>Button 2</v:component>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	})
 });
 
 describe('expression', () => {
