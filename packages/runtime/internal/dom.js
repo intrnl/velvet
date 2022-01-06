@@ -106,7 +106,7 @@ export function get_select_values (select) {
 		array.push(option.value);
 	}
 
-	return multiple ? array[0] : array;
+	return multiple ? array : array[0];
 }
 
 export function set_select_values (select, current) {
