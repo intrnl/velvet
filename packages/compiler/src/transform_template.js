@@ -288,12 +288,19 @@ export function transform_template (template, source) {
 
 					// handle #ref attribute
 					if (attr_name === '#ref') {
-						if (!attr_value || attr_value.type === 'Text') {
+						if (
+							!attr_value ||
+							attr_value.type === 'Text' ||
+							(value_expr.type !== 'Identifier' && value_expr.type !== 'MemberExpression')
+						) {
+							let start = attr_value && attr_value.type !== 'Text' ? value_expr.start : attr.start;
+							let end = attr_value && attr_value.type !== 'Text' ? value_expr.end : attr.end;
+
 							throw create_error(
-								`expected #ref to have an expression`,
+								`expected #ref to have an identifier or member expression`,
 								source,
-								attr.start,
-								attr.end,
+								start,
+								end,
 							);
 						}
 
