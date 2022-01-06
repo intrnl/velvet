@@ -10,6 +10,7 @@ importers:
 
   packages/compiler:
     specifiers:
+      '@intrnl/velvet': workspace:^0.1.13
       '@types/estree': ^0.0.50
       acorn: ^8.7.0
       astring: ^1.8.1
@@ -19,6 +20,7 @@ importers:
       astring: 1.8.1
       gensync: 1.0.0-beta.2
     devDependencies:
+      '@intrnl/velvet': link:../runtime
       '@types/estree': 0.0.50
 
   packages/esbuild-plugin:
