@@ -108,13 +108,13 @@ export function transform_template (template, source) {
 
 				return;
 			}
-		},
-		leave (node, parent, key, index) {
+
 			// handle comment node, remove them to properly trim whitespace from text nodes
 			if (node.type === 'Comment') {
 				return walk.remove;
 			}
-
+		},
+		leave (node, parent, key, index) {
 			// handle text node
 			if (node.type === 'Text' && parent.type !== 'Attribute') {
 				// trim consecutive whitespaces
