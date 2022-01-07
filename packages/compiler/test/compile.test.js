@@ -57,6 +57,24 @@ describe('props', () => {
 			expect(error.toString()).toMatchSnapshot();
 		}
 	});
+
+	it('exporting binding and mutable', () => {
+		let template = `
+			<script>
+				export function greet () {
+					alert('hello!');
+				}
+
+				const MAGIC_NUMBER = 420;
+				export { MAGIC_NUMBER as magic };
+
+				export let number = 1;
+			</script>
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
+	});
 });
 
 describe('attribute', () => {

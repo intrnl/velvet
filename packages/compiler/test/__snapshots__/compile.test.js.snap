@@ -108,6 +108,28 @@ export default define(null, setup, {});
 "
 `;
 
+exports[`props > exporting binding and mutable 1`] = `
+"import {prop, html, clone, append, bind, define} from \\"@intrnl/velvet/internal\\";
+let template0 = html(\\"\\");
+function setup($$root, $$host) {
+  function greet() {
+    alert('hello!');
+  }
+  const MAGIC_NUMBER = 420;
+  let number = prop(0, 1);
+  let fragment0 = clone(template0);
+  append($$root, fragment0);
+  bind({
+    greet,
+    magic: MAGIC_NUMBER
+  });
+}
+export default define(null, setup, {
+  number: 0
+});
+"
+`;
+
 exports[`props > throws on two variable exported to one name 1`] = `
 "Acorn error: Duplicate export 'baz' (6:31)
 4:       let bar = 2;

@@ -8,6 +8,8 @@ export function transform_script (program, source) {
 	let { map, scope: root_scope } = analyze(program);
 	let curr_scope = root_scope;
 
+	let potential_props = new Map();
+
 	let props = new Map();
 	let props_idx = [];
 
@@ -115,16 +117,14 @@ export function transform_script (program, source) {
 						let identifier = declarator.id;
 						let name = identifier.name;
 
-						props.set(name, name);
-						props_idx.push(name);
+						potential_props.set(name, name);
 					}
 				}
 				else {
 					let identifier = declaration.id;
 					let name = identifier.name;
 
-					props.set(name, name);
-					props_idx.push(name);
+					potential_props.set(name, name);
 				}
 
 				return declaration;
@@ -135,7 +135,7 @@ export function transform_script (program, source) {
 					let local_name = specifier.local.name;
 					let exported_name = specifier.exported.name;
 
-					if (props.has(local_name)) {
+					if (potential_props.has(local_name)) {
 						throw create_error(
 							'tried to export something that has already been exported',
 							source,
@@ -144,8 +144,7 @@ export function transform_script (program, source) {
 						);
 					}
 
-					props.set(local_name, exported_name);
-					props_idx.push(exported_name);
+					potential_props.set(local_name, exported_name);
 				}
 
 				return walk.remove;
@@ -261,7 +260,7 @@ export function transform_script (program, source) {
 
 				let is_mutable = identifier.velvet?.mutable;
 				let is_computed = identifier.velvet?.computed;
-				let prop = props.get(name);
+				let prop = potential_props.get(name);
 
 				// computed:
 				// - __computed(() => value)
@@ -277,7 +276,12 @@ export function transform_script (program, source) {
 				// - __ref(primitive)
 
 				if (is_mutable || is_computed || prop) {
-					let prop_idx = prop && props_idx.indexOf(prop);
+					let prop_idx;
+
+					if (prop) {
+						props.set(name, prop);
+						prop_idx = props_idx.push(prop) - 1;
+					}
 
 					let primitive = init && _is_primitive(init, is_computed && curr_scope);
 
@@ -481,16 +485,17 @@ export function transform_script (program, source) {
 	});
 
 	// - add bindings for props that are not refs
-	let is_bindings = [...props].filter(([local]) => {
-		let ident = root_scope.declarations.get(local);
-		return !ident?.velvet?.ref;
-	});
+	let bind_props = [];
 
-	if (is_bindings.length) {
-		let properties = is_bindings.map(([local, exported]) => t.property(t.identifier(exported), t.identifier(local)));
+	for (let [local, exported] of potential_props) {
+		if (!props.has(local)) {
+			bind_props.push(t.property(t.identifier(exported), t.identifier(local)));
+		}
+	}
 
+	if (bind_props.length) {
 		let expression = t.expression_statement(
-			t.call_expression(t.identifier('@bind'), [t.object_expression(properties)]),
+			t.call_expression(t.identifier('@bind'), [t.object_expression(bind_props)]),
 		);
 
 		program.body.push(expression);

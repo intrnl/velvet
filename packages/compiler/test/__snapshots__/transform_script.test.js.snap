@@ -2,7 +2,7 @@
 
 exports[`bind > const and function exports 1`] = `
 "const magic = 420;
-let open = @prop(1, false);
+let open = @prop(0, false);
 function toggle() {
   open(!open(@access));
 }
