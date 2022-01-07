@@ -2,7 +2,7 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 
 import { build } from 'esbuild';
-import { compile, COMPILER_VERSION } from '@intrnl/velvet-compiler';
+import { compile, COMPILER_VERSION, CompilerError } from '@intrnl/velvet-compiler';
 
 import { FSCache, getProjectRoot } from '@intrnl/fs-cache';
 
@@ -40,15 +40,39 @@ export default function velvet_plugin (options = {}) {
 					minify_css,
 				];
 
-				const result = cache
-					? await fs_cache.get(filename, key, () => loader(filename, compileOptions, minify_css))
-					: await loader(filename, compileOptions, minify_css);
+				try {
+					const result = cache
+						? await fs_cache.get(filename, key, () => loader(filename, compileOptions, minify_css))
+						: await loader(filename, compileOptions, minify_css);
 
-				return {
-					loader: 'js',
-					contents: result.js,
-					watchFiles: result.dependencies,
-				};
+					return {
+						loader: 'js',
+						contents: result.js,
+						watchFiles: result.dependencies,
+					};
+				}
+				catch (error) {
+					if (!(error instanceof CompilerError)) {
+						throw error;
+					}
+
+					let { message, source, start, end } = error;
+
+					let line_text = source.split(/\r\n|\r|\n/g)[start.line - 1];
+					let line_end = start.line === end.line ? end.column : line_text.length;
+
+					return {
+						errors: [{
+							text: message,
+							location: {
+								line: start.line,
+								column: start.column,
+								length: line_end - start.column,
+								lineText: line_text,
+							},
+						}],
+					};
+				}
 			});
 		},
 	};
