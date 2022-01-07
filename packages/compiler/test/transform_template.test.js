@@ -706,3 +706,14 @@ describe('await logic', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 });
+
+describe('comment', () => {
+	it('comment inbetween text', () => {
+		let template = `foo  <!-- 1 -->  bar  <!-- 2 -->  baz`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+});

@@ -109,7 +109,7 @@ export function transform_template (template, source) {
 				return;
 			}
 
-			// handle comment node, remove them to properly trim whitespace from text nodes
+			// remove comment node
 			if (node.type === 'Comment') {
 				return walk.remove;
 			}
@@ -117,8 +117,7 @@ export function transform_template (template, source) {
 		leave (node, parent, key, index) {
 			// handle text node
 			if (node.type === 'Text' && parent.type !== 'Attribute') {
-				// trim consecutive whitespaces
-				let value = node.value.replace(/\s+/g, ' ');
+				let value = node.value;
 
 				// trim leading and trailing if parent is fragment, remove if empty
 				if (parent.type === 'Fragment') {
@@ -126,15 +125,27 @@ export function transform_template (template, source) {
 					let is_last = index === parent.children.length - 1;
 
 					if (is_first) {
-						value = value.replace(/^\s+/, '');
+						value = value.trimStart();
 					}
 					if (is_last) {
-						value = value.replace(/\s+$/, '');
+						value = value.trimEnd();
 					}
+				}
 
-					if (!value) {
-						return walk.remove;
-					}
+				// trim trailing if the next children is a comment
+				// ideally we would be trimming leading instead since trimStart performs
+				// faster, but comment nodes would've been removed by then
+				if (parent.children[index + 1]?.type === 'Comment') {
+					value = value.trimEnd();
+				}
+
+				// trim consecutive whitespace
+				// ideally we would only be matching 2 or more instead of 1 or more,
+				// but we also need to normalize the different whitespaces
+				value = value.replace(/\s+/g, ' ');
+
+				if (!value) {
+					return walk.remove;
 				}
 
 				curr_block.html += value;
