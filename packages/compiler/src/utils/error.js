@@ -2,6 +2,7 @@ export class CompilerError extends Error {
 	start;
 	end;
 	frame;
+	source;
 
 	toString () {
 		if (!this.start) {
@@ -24,6 +25,7 @@ export function create_error (message, source, start = 0, end = start) {
 		error.start = start_pos;
 		error.end = end_pos;
 
+		error.source = source;
 		error.frame = get_code_frame(source, start_pos.line - 1, start_pos.column);
 	}
 
