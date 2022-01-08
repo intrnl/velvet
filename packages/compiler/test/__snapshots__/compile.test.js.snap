@@ -44,17 +44,17 @@ export default define(null, setup, {});
 exports[`conditional logic > consequent 1`] = `
 "import {html, clone, traverse, after, show, append, define} from \\"@intrnl/velvet/internal\\";
 let template0 = html(\\"<!>\\");
-let template1 = html(\\"<div>foo</div><!>\\");
+let template1 = html(\\"<div>foo</div>\\");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
-  let marker1 = traverse(fragment0, [0]);
+  let marker0 = traverse(fragment0, [0]);
   let block1 = $$root => {
     let fragment1 = clone(template1);
-    let marker0 = traverse(fragment1, [1]);
+    let child0 = traverse(fragment1, [0]);
     after($$root, fragment1);
-    return marker0;
+    return child0;
   };
-  show(marker1, () => foo ? block1 : null);
+  show(marker0, () => foo ? block1 : null);
   append($$root, fragment0);
 }
 export default define(null, setup, {});
@@ -64,24 +64,24 @@ export default define(null, setup, {});
 exports[`conditional logic > consequent and alternate 1`] = `
 "import {html, clone, traverse, after, show, append, define} from \\"@intrnl/velvet/internal\\";
 let template0 = html(\\"<!>\\");
-let template1 = html(\\"<div>foo</div><!>\\");
-let template2 = html(\\"<div>bar</div><!>\\");
+let template1 = html(\\"<div>foo</div>\\");
+let template2 = html(\\"<div>bar</div>\\");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
-  let marker2 = traverse(fragment0, [0]);
+  let marker0 = traverse(fragment0, [0]);
   let block1 = $$root => {
     let fragment1 = clone(template1);
-    let marker0 = traverse(fragment1, [1]);
+    let child0 = traverse(fragment1, [0]);
     after($$root, fragment1);
-    return marker0;
+    return child0;
   };
   let block2 = $$root => {
     let fragment2 = clone(template2);
-    let marker1 = traverse(fragment2, [1]);
+    let child1 = traverse(fragment2, [0]);
     after($$root, fragment2);
-    return marker1;
+    return child1;
   };
-  show(marker2, () => foo ? block1 : block2);
+  show(marker0, () => foo ? block1 : block2);
   append($$root, fragment0);
 }
 export default define(null, setup, {});

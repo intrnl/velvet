@@ -16,6 +16,8 @@ export function transform_template (template, source) {
 	let fragment_to_block = new Map();
 	let fragment_to_scope = new Map();
 
+	let child_to_ident = new Map();
+
 	// increment to create unique identifier names
 	let id_c = 0;
 	let id_m = 0;
@@ -552,6 +554,7 @@ export function transform_template (template, source) {
 
 				if (need_ident && !is_inline) {
 					id_c++;
+					child_to_ident.set(node, elem_ident);
 
 					let decl = t.variable_declaration('let', [
 						t.variable_declarator(
@@ -567,6 +570,7 @@ export function transform_template (template, source) {
 				}
 				else if (elem_name === 'v:component' || elem_name === 'v:element') {
 					id_c++;
+					child_to_ident.set(node, elem_ident);
 
 					let block = curr_block;
 					let scope = curr_scope;
@@ -677,9 +681,9 @@ export function transform_template (template, source) {
 				}
 				else if (is_inline) {
 					id_c++;
+					child_to_ident.set(node, elem_ident);
 
 					let marker_ident = '%marker' + (id_m++);
-
 					let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
 
 					let is_self = elem_name === 'v:self';
@@ -739,9 +743,22 @@ export function transform_template (template, source) {
 				let template_ident = '%template' + curr_block_idx;
 				let fragment_ident = '%fragment' + curr_block_idx;
 
-				// write marker if not root fragment
+				// write marker if not root fragment, but only do so if the end of the
+				// fragment is not a static element or text.
+				let is_static_end = false;
+
 				if (parent) {
-					curr_block.html += '<!>';
+					let child = node.children[node.children.length - 1];
+
+					if (
+						child.type === 'Text' ||
+						(child.type === 'Element' && child.name !== 'v:element' && child.name !== 'v:component')
+					) {
+						is_static_end = true;
+					}
+					else {
+						curr_block.html += '<!>';
+					}
 				}
 
 				let template_def = t.variable_declaration('let', [
@@ -762,18 +779,43 @@ export function transform_template (template, source) {
 				curr_scope.definitions.push(template_def, fragment_def);
 
 				if (parent) {
-					// we return the marker we just created
-					let end_ident = '%marker' + (id_m++);
+					// we return the marker we just created, or child if it's single
+					let end_ident;
+					let need_traverse = false;
 
-					let traverse_def = t.variable_declaration('let', [
-						t.variable_declarator(
-							t.identifier(end_ident),
-							t.call_expression(t.identifier('@traverse'), [
-								t.identifier(fragment_ident),
-								t.array_expression([t.literal(node.children.length)]),
-							]),
-						),
-					]);
+					if (is_static_end) {
+						let child = node.children[node.children.length - 1];
+						let elem_ident = child_to_ident.get(child);
+
+						if (!elem_ident) {
+							elem_ident = '%child' + (id_c++);
+							child_to_ident.set(child, elem_ident);
+
+							need_traverse = true;
+						}
+
+						end_ident = elem_ident;
+					}
+					else {
+						end_ident = '%marker' + (id_m++);
+						need_traverse = true;
+					}
+
+					if (need_traverse) {
+						let traverse_def = t.variable_declaration('let', [
+							t.variable_declarator(
+								t.identifier(end_ident),
+								t.call_expression(t.identifier('@traverse'), [
+									t.identifier(fragment_ident),
+									t.array_expression([
+										t.literal(node.children.length + (is_static_end ? -1 : 0)),
+									]),
+								]),
+							),
+						]);
+
+						curr_scope.traversals.push(traverse_def);
+					}
 
 					let after_expr = t.expression_statement(
 						t.call_expression(t.identifier('@after'), [
@@ -784,7 +826,6 @@ export function transform_template (template, source) {
 
 					let return_stmt = t.return_statement(t.identifier(end_ident));
 
-					curr_scope.traversals.push(traverse_def);
 					curr_scope.expressions.push(after_expr, return_stmt);
 
 					// since we created a new scope, pop it, it's placed here because
