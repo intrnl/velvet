@@ -566,6 +566,13 @@ $store(@access);
 "
 `;
 
+exports[`store > getter within computed 1`] = `
+"let $searchParams = @ref();
+@cleanup(searchParams.subscribe($searchParams));
+let query = @computed(() => $searchParams(@access).query);
+"
+`;
+
 exports[`store > logical setter 1`] = `
 "let $store = @ref();
 @cleanup(store.subscribe($store));

@@ -851,7 +851,18 @@ describe('store', () => {
 
 		let result = print(program);
 		expect(result).toMatchSnapshot();
-	})
+	});
+
+	it('getter within computed', () => {
+		let program = parse(`
+			$: query = $searchParams.query;
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
 });
 
 describe('bind', () => {

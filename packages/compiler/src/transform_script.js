@@ -13,6 +13,9 @@ export function transform_script (program, source) {
 	let props = new Map();
 	let props_idx = [];
 
+	// [node, [decl, expr]]
+	let deferred_stores = [];
+
 	// - throw on declaring $ and $$ variables
 	// - mark variables that have mutable operations
 	// - mark props
@@ -216,9 +219,7 @@ export function transform_script (program, source) {
 					}
 
 					if (parent.type === 'Program') {
-						let body = parent.body;
-						let idx = body.indexOf(curr_node);
-						body.splice(idx, 0, decl, expr);
+						deferred_stores.push([curr_node, decl, expr]);
 						break;
 					}
 
@@ -235,6 +236,13 @@ export function transform_script (program, source) {
 			}
 		},
 	});
+
+	for (let [node, decl, expr] of deferred_stores) {
+		let body = program.body;
+		let idx = body.indexOf(node);
+
+		body.splice(idx, 0, decl, expr);
+	}
 
 	walk(program, {
 		/**
