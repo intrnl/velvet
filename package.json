@@ -5,6 +5,6 @@
 		"test:watch": "vitest"
 	},
 	"devDependencies": {
-		"vitest": "^0.0.131"
+		"vitest": "^0.0.139"
 	}
 }
