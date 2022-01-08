@@ -551,6 +551,26 @@ let %block1 = $$root => {
 "
 `;
 
+exports[`conditional logic > conditional containing two elements 1`] = `
+"let %%template0 = @html(\\"<!>\\");
+let %fragment0 = @clone(%template0);
+let %marker3 = @traverse(%fragment0, [0]);
+let %block1 = $$root => {
+  let %%template1 = @html(\\"<div><!></div><div><!></div><!>\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [0, 0]);
+  let %marker1 = @traverse(%fragment1, [1, 0]);
+  let %marker2 = @traverse(%fragment1, [2]);
+  @text(%marker0, () => person.first_name);
+  @text(%marker1, () => person.last_name);
+  @after($$root, %fragment1);
+  return %marker2;
+};
+@show(%marker3, () => person ? %block1 : null);
+@append($$root, %fragment0);
+"
+`;
+
 exports[`conditional logic > conditional containing v:component 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);

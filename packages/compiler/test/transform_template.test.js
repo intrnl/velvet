@@ -608,6 +608,19 @@ describe('conditional logic', () => {
 
 		expect(print(program)).toMatchSnapshot();
 	});
+
+	it('conditional containing two elements', () => {
+		let template = `
+			{#if person}
+				<div>{person.first_name}</div><div>{person.last_name}</div>
+			{/if}
+		`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
 });
 
 describe('loop logic', () => {
