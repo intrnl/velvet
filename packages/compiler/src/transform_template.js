@@ -47,7 +47,7 @@ export function transform_template (template, source) {
 				// inline elements lives in the same block, to do that we need to
 				// masquerade as a regular html element, in this case a div.
 				if (is_inline) {
-					curr_block.html += '<div>';
+					curr_block.html += '<x>';
 					return;
 				}
 
@@ -727,7 +727,7 @@ export function transform_template (template, source) {
 					// do nothing
 				}
 				else if (is_inline) {
-					curr_block.html += `</div>`;
+					curr_block.html += `</x>`;
 				}
 				else if (!is_selfclosing) {
 					curr_block.html += `</${elem_name}>`;

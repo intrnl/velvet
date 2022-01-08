@@ -70,7 +70,7 @@ $: %child0.checked = selected.includes(%child0.value);
 `;
 
 exports[`attribute > binding component expression 1`] = `
-"let %%template0 = @html(\\"<div></div>\\");
+"let %%template0 = @html(\\"<x></x>\\");
 let %fragment0 = @clone(%template0);
 let %child0 = new Component();
 let %marker0 = @traverse(%fragment0, [0]);
@@ -413,7 +413,7 @@ let %fragment0 = @clone(%template0);
 `;
 
 exports[`component > multiple component 1`] = `
-"let %%template0 = @html(\\"<div>Button</div><div>Link Button</div>\\");
+"let %%template0 = @html(\\"<x>Button</x><x>Link Button</x>\\");
 let %fragment0 = @clone(%template0);
 let %child0 = new Button();
 let %marker0 = @traverse(%fragment0, [0]);
@@ -483,7 +483,7 @@ let %block1 = %component => {
 `;
 
 exports[`component > v:self on a custom element 1`] = `
-"let %%template0 = @html(\\"<x-app><div>hello world!</div></x-app>\\");
+"let %%template0 = @html(\\"<x-app><x>hello world!</x></x-app>\\");
 let %fragment0 = @clone(%template0);
 let %child0 = new $$host.constructor();
 let %marker0 = @traverse(%fragment0, [0, 0]);
@@ -515,7 +515,7 @@ exports[`conditional logic > conditional containing component 1`] = `
 let %fragment0 = @clone(%template0);
 let %marker2 = @traverse(%fragment0, [0]);
 let %block1 = $$root => {
-  let %%template1 = @html(\\"<div>Greet, <!></div>\\");
+  let %%template1 = @html(\\"<x>Greet, <!></x>\\");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [0, 1]);
   let %child0 = new Button();
@@ -647,7 +647,7 @@ exports[`conditional logic > conditional containing v:self 1`] = `
 let %fragment0 = @clone(%template0);
 let %marker2 = @traverse(%fragment0, [0]);
 let %block1 = $$root => {
-  let %%template1 = @html(\\"<div>Greetings, <!>!</div>\\");
+  let %%template1 = @html(\\"<x>Greetings, <!>!</x>\\");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [0, 1]);
   let %child0 = new $$host.constructor();
@@ -819,7 +819,7 @@ let %block1 = %component => {
 `;
 
 exports[`expression > component 1`] = `
-"let %%template0 = @html(\\"<div>hello <!>!</div>\\");
+"let %%template0 = @html(\\"<x>hello <!>!</x>\\");
 let %fragment0 = @clone(%template0);
 let %marker0 = @traverse(%fragment0, [0, 1]);
 let %child0 = new Main();
