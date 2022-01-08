@@ -534,19 +534,17 @@ let %block1 = $$root => {
 exports[`conditional logic > conditional containing expression 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
-let %marker3 = @traverse(%fragment0, [0]);
+let %marker2 = @traverse(%fragment0, [0]);
 let %block1 = $$root => {
-  let %%template1 = @html(\\"<!> <!><!>\\");
+  let %%template1 = @html(\\"<!><!>\\");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [0]);
-  let %marker1 = @traverse(%fragment1, [2]);
-  let %marker2 = @traverse(%fragment1, [3]);
-  @text(%marker0, () => person.first_name);
-  @text(%marker1, () => person.last_name);
+  let %marker1 = @traverse(%fragment1, [1]);
+  @text(%marker0, () => person.name);
   @after($$root, %fragment1);
-  return %marker2;
+  return %marker1;
 };
-@show(%marker3, () => person ? %block1 : null);
+@show(%marker2, () => person ? %block1 : null);
 @append($$root, %fragment0);
 "
 `;
@@ -561,6 +559,26 @@ let %block1 = $$root => {
   let %marker0 = @traverse(%fragment1, [0, 0]);
   let %marker1 = @traverse(%fragment1, [1, 0]);
   let %marker2 = @traverse(%fragment1, [2]);
+  @text(%marker0, () => person.first_name);
+  @text(%marker1, () => person.last_name);
+  @after($$root, %fragment1);
+  return %marker2;
+};
+@show(%marker3, () => person ? %block1 : null);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`conditional logic > conditional containing two expressions 1`] = `
+"let %%template0 = @html(\\"<!>\\");
+let %fragment0 = @clone(%template0);
+let %marker3 = @traverse(%fragment0, [0]);
+let %block1 = $$root => {
+  let %%template1 = @html(\\"<!> <!><!>\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [0]);
+  let %marker1 = @traverse(%fragment1, [2]);
+  let %marker2 = @traverse(%fragment1, [3]);
   @text(%marker0, () => person.first_name);
   @text(%marker1, () => person.last_name);
   @after($$root, %fragment1);

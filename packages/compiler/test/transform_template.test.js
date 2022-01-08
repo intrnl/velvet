@@ -547,6 +547,19 @@ describe('conditional logic', () => {
 	it('conditional containing expression', () => {
 		let template = `
 			{#if person}
+				{person.name}
+			{/if}
+		`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('conditional containing two expressions', () => {
+		let template = `
+			{#if person}
 				{person.first_name} {person.last_name}
 			{/if}
 		`;
