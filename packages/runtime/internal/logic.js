@@ -1,5 +1,6 @@
 import { ref, effect, scope, cleanup, access } from './reactivity.js';
 import { replace, remove_parts } from './dom.js';
+import { is } from './utils.js';
 
 
 export function text (marker, expression) {
@@ -149,16 +150,16 @@ export function promise (marker, pending, resolved, rejected, expression) {
 }
 
 export function keyed (marker, block, expression) {
-	let init = true;
-	let current;
+	let init;
+	let curr;
 
 	let end;
 	let instance = scope();
 
 	effect(() => {
-		let key = expression();
+		let next = expression();
 
-		if (!init && key === current) {
+		if (init && is(next, curr)) {
 			return;
 		}
 
@@ -168,7 +169,8 @@ export function keyed (marker, block, expression) {
 			end = null;
 		}
 
-		current = key;
+		init = true;
+		curr = next;
 		end = instance.run(() => block(marker));
 	});
 }
