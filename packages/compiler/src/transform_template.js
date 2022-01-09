@@ -1100,6 +1100,51 @@ export function transform_template (template, source) {
 				curr_scope.expressions.push(promies_expr);
 				return;
 			}
+
+			// handle keyed statement node
+			if (node.type === 'KeyedStatement') {
+				curr_block.html += '<!>';
+
+				let block = fragment_to_block.get(node.body);
+				let scope = fragment_to_scope.get(node.body);
+
+				let block_ident = '%block' + blocks.indexOf(block);
+				let curr_fragment_ident = '%fragment' + blocks.indexOf(curr_block);
+				let marker_ident = '%marker' + (id_m++);
+
+				let traverse_def = t.variable_declaration('let', [
+					t.variable_declarator(
+						t.identifier(marker_ident),
+						t.call_expression(t.identifier('@traverse'), [
+							t.identifier(curr_fragment_ident),
+							t.array_expression([...curr_block.indices, index].map(i => t.literal(i))),
+						]),
+					),
+				]);
+
+				let block_decl = t.variable_declaration('let', [
+					t.variable_declarator(
+						t.identifier(block_ident),
+						t.arrow_function_expression(
+							[t.identifier('$$root')],
+							t.block_statement(merge_scope(scope)),
+						),
+					),
+				]);
+
+				let key_expr = t.expression_statement(
+					t.call_expression(t.identifier('@keyed'), [
+						t.identifier(marker_ident),
+						t.identifier(block_ident),
+						t.arrow_function_expression([], node.argument),
+					]),
+				);
+
+				curr_scope.traversals.push(traverse_def);
+				curr_scope.blocks.push(block_decl);
+				curr_scope.expressions.push(key_expr);
+				return;
+			}
 		},
 	});
 

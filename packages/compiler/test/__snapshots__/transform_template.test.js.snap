@@ -865,6 +865,23 @@ let %marker1 = @traverse(%fragment0, [3]);
 "
 `;
 
+exports[`keyed logic > keyed 1`] = `
+"let %%template0 = @html(\\"<!>\\");
+let %fragment0 = @clone(%template0);
+let %marker0 = @traverse(%fragment0, [0]);
+let %block1 = $$root => {
+  let %%template1 = @html(\\"<img />\\");
+  let %fragment1 = @clone(%template1);
+  let %child0 = @traverse(%fragment1, [0]);
+  $: @attr(%child0, \\"src\\", src);
+  @after($$root, %fragment1);
+  return %child0;
+};
+@keyed(%marker0, %block1, () => src);
+@append($$root, %fragment0);
+"
+`;
+
 exports[`log expression > in conditional 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);

@@ -785,6 +785,17 @@ describe('await logic', () => {
 	});
 });
 
+describe('keyed logic', () => {
+	it('keyed', () => {
+		let template = `{#key src}<img src={src} />{/key}`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+});
+
 describe('comment', () => {
 	it('comment inbetween text', () => {
 		let template = `foo  <!-- 1 -->  bar  <!-- 2 -->  baz`;

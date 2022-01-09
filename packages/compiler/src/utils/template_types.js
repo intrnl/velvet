@@ -283,3 +283,23 @@ export function await_clause (local, body) {
 		body,
 	};
 }
+
+/**
+ * @typedef {object} KeyedStatement
+ * @property {'KeyedStatement'} type
+ * @property {import('estree').Expression} argument
+ * @property {Fragment} body
+ */
+
+/**
+ * @param {import('estree').Expression} argument
+ * @param {Fragment} body
+ * @returns {KeyedStatement}
+ */
+export function keyed_statement (argument, body) {
+	return {
+		type: 'KeyedStatement',
+		argument,
+		body,
+	};
+}

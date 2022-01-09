@@ -206,6 +206,23 @@ function _parse_expression (state) {
 			return;
 		}
 
+		if (p.eat(state, 'key')) {
+			p.eat_whitespace(state, true);
+
+			let argument = _read_expression(state);
+
+			p.eat_whitespace(state);
+			p.eat(state, '}', 'closing #key bracket');
+
+			let body = t.fragment();
+			let node = t.keyed_statement(argument, body);
+			node.start = start;
+
+			p.current(state).children.push(node);
+			p.push(state, node, body);
+			return;
+		}
+
 		throw p.error(state, 'unknown logic block opening');
 	}
 
@@ -227,6 +244,9 @@ function _parse_expression (state) {
 		}
 		else if (statement.type === 'AwaitStatement') {
 			expected = 'await';
+		}
+		else if (statement.type === 'KeyedStatement') {
+			expected = 'key';
 		}
 		else {
 			throw p.error(state, 'unexpected logic block closing');
