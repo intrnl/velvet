@@ -889,12 +889,29 @@ let %marker1 = @traverse(%fragment0, [0]);
 let %block1 = $$root => {
   let %%template1 = @html(\\"<!>\\");
   let %fragment1 = @clone(%template1);
-  let %marker0 = @traverse(%fragment1, [1]);
+  let %marker0 = @traverse(%fragment1, [0]);
   $: console.log($$root, foo)
   @after($$root, %fragment1);
   return %marker0;
 };
 @show(%marker1, () => foo ? %block1 : null);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`log expression > in conditional with text 1`] = `
+"let %%template0 = @html(\\"<!>\\");
+let %fragment0 = @clone(%template0);
+let %marker0 = @traverse(%fragment0, [0]);
+let %block1 = $$root => {
+  let %%template1 = @html(\\"Hello!\\");
+  let %fragment1 = @clone(%template1);
+  let %child0 = @traverse(%fragment1, [0]);
+  $: console.log($$root, foo)
+  @after($$root, %fragment1);
+  return %child0;
+};
+@show(%marker0, () => foo ? %block1 : null);
 @append($$root, %fragment0);
 "
 `;
@@ -916,7 +933,7 @@ $: console.log(foo)
 `;
 
 exports[`log expression > values 1`] = `
-"let %%template0 = @html(\\" \\");
+"let %%template0 = @html(\\"\\");
 let %fragment0 = @clone(%template0);
 $: console.log('test', {
   foo,

@@ -490,6 +490,15 @@ describe('log expression', () => {
 
 		expect(print(program)).toMatchSnapshot();
 	});
+
+	it('in conditional with text', () => {
+		let template = `{#if foo}{@log $$root, foo} Hello! {/if}`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
 });
 
 describe('conditional logic', () => {

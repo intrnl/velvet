@@ -182,7 +182,7 @@ export function transform_template (template, source) {
 						);
 
 						curr_scope.expressions.push(expression);
-						return;
+						return walk.remove;
 					}
 
 					throw create_error(
@@ -751,12 +751,11 @@ export function transform_template (template, source) {
 					let child = node.children[node.children.length - 1];
 
 					if (
-						child.type === 'Text' ||
-						(child.type === 'Element' && child.name !== 'v:element' && child.name !== 'v:component')
+						child &&
+						(child.type === 'Text' || (child.type === 'Element' && child.name !== 'v:element' && child.name !== 'v:component'))
 					) {
 						is_static_end = true;
-					}
-					else {
+					} else {
 						curr_block.html += '<!>';
 					}
 				}
