@@ -39,12 +39,6 @@ importers:
   packages/runtime:
     specifiers: {}
 
-  packages/test:
-    specifiers:
-      velvet: link:../runtime
-    dependencies:
-      velvet: link:../runtime
-
 packages:
 
   /@intrnl/fs-cache/0.2.3:
