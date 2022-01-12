@@ -9,6 +9,18 @@ import { FSCache, getProjectRoot } from '@intrnl/fs-cache';
 
 let PLUGIN_VERSION = '0.2.0';
 
+/** @type {import('esbuild').Plugin} */
+let ignore_url_plugin = {
+	name: '#ignore-url',
+	setup (build) {
+		build.onResolve({ filter: /./ }, (args) => {
+			if (args.kind === 'url-token' && !args.path.endsWith('.css')) {
+				return { path: args.path, external: true };
+			}
+		});
+	},
+};
+
 /**
  * @param {*} options
  * @returns {import('esbuild').Plugin}
@@ -112,6 +124,9 @@ export default function velvet_plugin (options = {}) {
 			splitting: false,
 			minify: minify,
 			write: false,
+			plugins: [
+				ignore_url_plugin,
+			],
 		});
 
 
