@@ -13,7 +13,10 @@ export function transform_script (program, source) {
 	let props = new Map();
 	let props_idx = [];
 
-	// [node, [decl, expr]]
+	// [actual, [scope, reference]]
+	let stores = new Map();
+
+	// [container, reference, ...exprs][]
 	let deferred_stores = [];
 
 	// - throw on declaring $ and $$ variables
@@ -173,7 +176,7 @@ export function transform_script (program, source) {
 				return expression;
 			}
 
-			// transform stores
+			// mark stores
 			if (is_reference(node, parent)) {
 				let name = node.name;
 
@@ -194,39 +197,27 @@ export function transform_script (program, source) {
 					return;
 				}
 
+				let ref_scope = find_reference_scope(curr_scope);
+				let container = ref_scope.node;
+
 				let actual = name.slice(1);
-				let actual_ident = t.identifier(actual);
 				let ident = t.identifier(name);
 
-				let decl = t.variable_declaration('let', [t.variable_declarator(ident)]);
+				let decl = t.variable_declaration('let', [
+					t.variable_declarator(ident),
+				]);
 
 				let expr = t.expression_statement(
 					t.call_expression(t.identifier('@cleanup'), [
-						t.call_expression(t.member_expression(actual_ident, t.identifier('subscribe')), [ident]),
+						t.call_expression(t.member_expression_from(actual, 'subscribe'), [ident]),
 					]),
 				);
 
 				(ident.velvet ||= {}).mutable = true;
 				ident.velvet.transformed = true;
 
-				let curr_node = node;
-
-				while (curr_node) {
-					let parent = curr_node.path.parent;
-
-					if (!parent) {
-						break;
-					}
-
-					if (parent.type === 'Program') {
-						deferred_stores.push([curr_node, decl, expr]);
-						break;
-					}
-
-					curr_node = parent;
-				}
-
-				root_scope.add_declaration(decl);
+				deferred_stores.push([container, node, decl, expr]);
+				ref_scope.add_declaration(decl);
 				return;
 			}
 		},
@@ -237,11 +228,25 @@ export function transform_script (program, source) {
 		},
 	});
 
-	for (let [node, decl, expr] of deferred_stores) {
-		let body = program.body;
-		let idx = body.indexOf(node);
+	// prepend store subscriptions
+	for (let [container, reference, ...exprs] of deferred_stores) {
+		let node = reference;
 
-		body.splice(idx, 0, decl, expr);
+		while (node) {
+			let parent = node.path.parent;
+
+			if (!parent) {
+				break;
+			}
+
+			if (parent === container) {
+				let index = container.body.indexOf(node);
+				container.body.splice(index, 0, ...exprs);
+				break;
+			}
+
+			node = parent;
+		}
 	}
 
 	walk(program, {
@@ -256,7 +261,6 @@ export function transform_script (program, source) {
 
 			// transform refs and props
 			if (
-				curr_scope === root_scope &&
 				node.type === 'VariableDeclarator' &&
 				node.id.type === 'Identifier' &&
 				(parent.kind === 'let' || parent.kind === 'var')
@@ -268,7 +272,7 @@ export function transform_script (program, source) {
 
 				let is_mutable = identifier.velvet?.mutable;
 				let is_computed = identifier.velvet?.computed;
-				let prop = potential_props.get(name);
+				let prop = curr_scope === root_scope && potential_props.get(name);
 
 				// computed:
 				// - __computed(() => value)
@@ -708,4 +712,37 @@ function _is_primitive (expression, scope) {
 		(expression.type === 'NewExpression' && _is_primitive(expression.callee, scope) && _is_primitive(expression.arguments, scope)) ||
 		(expression.type === 'CallExpression' && _is_primitive(expression.callee, scope) && _is_primitive(expression.arguments, scope))
 	);
+}
+
+function find_reference_scope (scope) {
+	// this is to find the right scope for determining where stores should be placed
+	// - Program
+	// - BlockStatement of ArrowFunctionExpression of VariableDeclarator whose names starts with %
+
+	let curr_scope = scope;
+
+	while (curr_scope) {
+		let node = curr_scope.node;
+
+		if (node.type === 'Program') {
+			break;
+		}
+
+		if (node.type === 'BlockStatement') {
+			let parent = node.path.parent;
+			let grandparent = parent.path.parent;
+
+			if (
+				parent.type === 'ArrowFunctionExpression' &&
+				grandparent.type === 'VariableDeclarator' &&
+				grandparent.id.name[0] === '%'
+			) {
+				break;
+			}
+		}
+
+		curr_scope = curr_scope.parent;
+	}
+
+	return curr_scope;
 }

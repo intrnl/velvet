@@ -863,6 +863,17 @@ describe('store', () => {
 		let result = print(program);
 		expect(result).toMatchSnapshot();
 	});
+
+	it('lone block statement', () => {
+		let program = parse(`
+			{ $foo; }
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
 });
 
 describe('bind', () => {

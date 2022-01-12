@@ -580,6 +580,15 @@ store.set($store(@access) ?? 123);
 "
 `;
 
+exports[`store > lone block statement 1`] = `
+"let $foo = @ref();
+@cleanup(foo.subscribe($foo));
+{
+  $foo(@access);
+}
+"
+`;
+
 exports[`store > multiple getter references 1`] = `
 "let $value1 = @ref();
 @cleanup(value1.subscribe($value1));

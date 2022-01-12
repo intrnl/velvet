@@ -129,6 +129,80 @@ describe('store', () => {
 			expect(error.toString()).toMatchSnapshot();
 		}
 	});
+
+	it('subscription on script and root', () => {
+		let template = `
+			<script>
+			  console.log($foo);
+			</script>
+
+			{$foo}
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('subscription on root and conditional', () => {
+		let template = `
+			{$foo}
+			{#if foo}
+				{$foo}
+			{/if}
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('subscription on conditional', () => {
+		let template = `
+			{#if foo}
+				{$foo}
+			{/if}
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('subscription on conditional and alternate', () => {
+		let template = `
+			{#if foo}
+				{$foo}
+			{:else}
+				{$foo}
+			{/if}
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('subscription on nested conditional', () => {
+		let template = `
+			{#if foo}
+			  {$foo}
+				{#if foo}
+					{$foo}
+				{/if}
+			{/if}
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('subscription on await resolve', () => {
+		let template = `
+			{#await promise then result}
+				{$result}
+			{/await}
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
+	});
 });
 
 describe('element', () => {

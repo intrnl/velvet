@@ -131,7 +131,7 @@ export function analyze (expression) {
 	/** @type {Map<string, import('estree').Node>} */
 	let globals = new Map();
 
-	let scope = new Scope(null, false);
+	let scope = new Scope(null, expression, false);
 
 	/** @type {[Scope, import('estree').Identifier][]} */
 	let references = [];
@@ -166,10 +166,10 @@ export function analyze (expression) {
 							current_scope.declarations.set(node.id.name, node);
 						}
 
-						map.set(node, (current_scope = new Scope(current_scope, false)));
+						map.set(node, (current_scope = new Scope(current_scope, node, false)));
 					}
 					else {
-						map.set(node, (current_scope = new Scope(current_scope, false)));
+						map.set(node, (current_scope = new Scope(current_scope, node, false)));
 
 						if (node.type === 'FunctionExpression' && node.id) {
 							current_scope.declarations.set(node.id.name, node);
@@ -187,11 +187,11 @@ export function analyze (expression) {
 				case 'ForStatement':
 				case 'ForInStatement':
 				case 'ForOfStatement':
-					map.set(node, (current_scope = new Scope(current_scope, true)));
+					map.set(node, (current_scope = new Scope(current_scope, node, true)));
 					break;
 
 				case 'BlockStatement':
-					map.set(node, (current_scope = new Scope(current_scope, true)));
+					map.set(node, (current_scope = new Scope(current_scope, node, true)));
 					break;
 
 				case 'ClassDeclaration':
@@ -200,7 +200,7 @@ export function analyze (expression) {
 					break;
 
 				case 'CatchClause':
-					map.set(node, (current_scope = new Scope(current_scope, true)));
+					map.set(node, (current_scope = new Scope(current_scope, node, true)));
 
 					if (node.param) {
 						for (let node of extract_identifiers(node.param)) {
@@ -240,12 +240,15 @@ function add_reference (scope, name) {
 }
 
 export class Scope {
-	constructor(parent, block) {
+	constructor(parent, node, block) {
 		/** @type {Scope | null} */
 		this.parent = parent;
 
 		/** @type {boolean} */
 		this.block = block;
+
+		/** @type {import('estree').Node} */
+		this.node = node;
 
 		/** @type {Map<string, import('estree').Node>} */
 		this.declarations = new Map();

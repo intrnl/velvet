@@ -150,6 +150,170 @@ exports[`script context > throws on await 1`] = `
 5: "
 `;
 
+exports[`store > subscription on await resolve 1`] = `
+"import {html, clone, traverse, ref, cleanup, access, text, after, promise as promise$1, append, define} from \\"@intrnl/velvet/internal\\";
+let template0 = html(\\"<!>\\");
+let template1 = html(\\"<!><!>\\");
+function setup($$root, $$host) {
+  let fragment0 = clone(template0);
+  let marker2 = traverse(fragment0, [0]);
+  let block1 = ($$root, result) => {
+    let fragment1 = clone(template1);
+    let marker0 = traverse(fragment1, [0]);
+    let marker1 = traverse(fragment1, [1]);
+    let $result = ref();
+    cleanup(result(access).subscribe($result));
+    text(marker0, () => $result(access));
+    after($$root, fragment1);
+    return marker1;
+  };
+  promise$1(marker2, null, block1, null, () => promise);
+  append($$root, fragment0);
+}
+export default define(null, setup, {});
+"
+`;
+
+exports[`store > subscription on conditional 1`] = `
+"import {html, clone, traverse, ref, cleanup, text, access, after, show, append, define} from \\"@intrnl/velvet/internal\\";
+let template0 = html(\\"<!>\\");
+let template1 = html(\\"<!><!>\\");
+function setup($$root, $$host) {
+  let fragment0 = clone(template0);
+  let marker2 = traverse(fragment0, [0]);
+  let block1 = $$root => {
+    let fragment1 = clone(template1);
+    let marker0 = traverse(fragment1, [0]);
+    let marker1 = traverse(fragment1, [1]);
+    let $foo = ref();
+    cleanup(foo.subscribe($foo));
+    text(marker0, () => $foo(access));
+    after($$root, fragment1);
+    return marker1;
+  };
+  show(marker2, () => foo ? block1 : null);
+  append($$root, fragment0);
+}
+export default define(null, setup, {});
+"
+`;
+
+exports[`store > subscription on conditional and alternate 1`] = `
+"import {html, clone, traverse, ref, cleanup, text, access, after, show, append, define} from \\"@intrnl/velvet/internal\\";
+let template0 = html(\\"<!>\\");
+let template1 = html(\\"<!><!>\\");
+let template2 = html(\\"<!><!>\\");
+function setup($$root, $$host) {
+  let fragment0 = clone(template0);
+  let marker4 = traverse(fragment0, [0]);
+  let block1 = $$root => {
+    let fragment1 = clone(template1);
+    let marker0 = traverse(fragment1, [0]);
+    let marker1 = traverse(fragment1, [1]);
+    let $foo = ref();
+    cleanup(foo.subscribe($foo));
+    text(marker0, () => $foo(access));
+    after($$root, fragment1);
+    return marker1;
+  };
+  let block2 = $$root => {
+    let fragment2 = clone(template2);
+    let marker2 = traverse(fragment2, [0]);
+    let marker3 = traverse(fragment2, [1]);
+    let $foo = ref();
+    cleanup(foo.subscribe($foo));
+    text(marker2, () => $foo(access));
+    after($$root, fragment2);
+    return marker3;
+  };
+  show(marker4, () => foo ? block1 : block2);
+  append($$root, fragment0);
+}
+export default define(null, setup, {});
+"
+`;
+
+exports[`store > subscription on nested conditional 1`] = `
+"import {html, clone, traverse, ref, cleanup, text, access, after, show, append, define} from \\"@intrnl/velvet/internal\\";
+let template0 = html(\\"<!>\\");
+let template1 = html(\\"<!> <!><!>\\");
+let template2 = html(\\"<!><!>\\");
+function setup($$root, $$host) {
+  let fragment0 = clone(template0);
+  let marker5 = traverse(fragment0, [0]);
+  let block1 = $$root => {
+    let fragment1 = clone(template1);
+    let marker0 = traverse(fragment1, [0]);
+    let marker3 = traverse(fragment1, [2]);
+    let marker4 = traverse(fragment1, [3]);
+    let block2 = $$root => {
+      let fragment2 = clone(template2);
+      let marker1 = traverse(fragment2, [0]);
+      let marker2 = traverse(fragment2, [1]);
+      let $foo = ref();
+      cleanup(foo.subscribe($foo));
+      text(marker1, () => $foo(access));
+      after($$root, fragment2);
+      return marker2;
+    };
+    let $foo = ref();
+    cleanup(foo.subscribe($foo));
+    text(marker0, () => $foo(access));
+    show(marker3, () => foo ? block2 : null);
+    after($$root, fragment1);
+    return marker4;
+  };
+  show(marker5, () => foo ? block1 : null);
+  append($$root, fragment0);
+}
+export default define(null, setup, {});
+"
+`;
+
+exports[`store > subscription on root and conditional 1`] = `
+"import {html, clone, traverse, ref, cleanup, text, access, after, show, append, define} from \\"@intrnl/velvet/internal\\";
+let template0 = html(\\"<!> <!>\\");
+let template1 = html(\\"<!><!>\\");
+function setup($$root, $$host) {
+  let fragment0 = clone(template0);
+  let marker0 = traverse(fragment0, [0]);
+  let marker3 = traverse(fragment0, [2]);
+  let block1 = $$root => {
+    let fragment1 = clone(template1);
+    let marker1 = traverse(fragment1, [0]);
+    let marker2 = traverse(fragment1, [1]);
+    let $foo = ref();
+    cleanup(foo.subscribe($foo));
+    text(marker1, () => $foo(access));
+    after($$root, fragment1);
+    return marker2;
+  };
+  let $foo = ref();
+  cleanup(foo.subscribe($foo));
+  text(marker0, () => $foo(access));
+  show(marker3, () => foo ? block1 : null);
+  append($$root, fragment0);
+}
+export default define(null, setup, {});
+"
+`;
+
+exports[`store > subscription on script and root 1`] = `
+"import {ref, cleanup, access, html, clone, traverse, text, append, define} from \\"@intrnl/velvet/internal\\";
+let template0 = html(\\"<!>\\");
+function setup($$root, $$host) {
+  let $foo = ref();
+  cleanup(foo.subscribe($foo));
+  console.log($foo(access));
+  let fragment0 = clone(template0);
+  let marker0 = traverse(fragment0, [0]);
+  text(marker0, () => $foo(access));
+  append($$root, fragment0);
+}
+export default define(null, setup, {});
+"
+`;
+
 exports[`store > throws on lone $ 1`] = `
 "no singular $ reference (3:15)
 1: 
