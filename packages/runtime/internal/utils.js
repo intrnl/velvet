@@ -15,7 +15,7 @@ export function hyphenate (str) {
 	return str.replace(RE_HYPHENATE, '-$1').toLowerCase();
 }
 
-export let is = Object.is;
-export let assign = Object.assign;
+export let is = /*@__PURE__*/ Object.is;
+export let assign = /*@__PURE__*/ Object.assign;
 
 export let is_function = (x) => typeof x === 'function';
