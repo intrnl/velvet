@@ -250,6 +250,9 @@ export class Scope {
 		/** @type {import('estree').Node} */
 		this.node = node;
 
+		/** @type {number} */
+		this.depth = parent ? parent.depth + 1 : 0;
+
 		/** @type {Map<string, import('estree').Node>} */
 		this.declarations = new Map();
 

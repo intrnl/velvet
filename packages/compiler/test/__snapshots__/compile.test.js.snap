@@ -241,12 +241,12 @@ let template2 = html(\\"<!><!>\\");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
   let marker4 = traverse(fragment0, [0]);
+  let $foo = ref();
+  cleanup(foo.subscribe($foo));
   let block1 = $$root => {
     let fragment1 = clone(template1);
     let marker0 = traverse(fragment1, [0]);
     let marker1 = traverse(fragment1, [1]);
-    let $foo = ref();
-    cleanup(foo.subscribe($foo));
     text(marker0, () => $foo(access));
     after($$root, fragment1);
     return marker1;
@@ -255,8 +255,6 @@ function setup($$root, $$host) {
     let fragment2 = clone(template2);
     let marker2 = traverse(fragment2, [0]);
     let marker3 = traverse(fragment2, [1]);
-    let $foo = ref();
-    cleanup(foo.subscribe($foo));
     text(marker2, () => $foo(access));
     after($$root, fragment2);
     return marker3;
@@ -308,18 +306,16 @@ function setup($$root, $$host) {
     let marker0 = traverse(fragment1, [0]);
     let marker3 = traverse(fragment1, [2]);
     let marker4 = traverse(fragment1, [3]);
+    let $foo = ref();
+    cleanup(foo.subscribe($foo));
     let block2 = $$root => {
       let fragment2 = clone(template2);
       let marker1 = traverse(fragment2, [0]);
       let marker2 = traverse(fragment2, [1]);
-      let $foo = ref();
-      cleanup(foo.subscribe($foo));
       text(marker1, () => $foo(access));
       after($$root, fragment2);
       return marker2;
     };
-    let $foo = ref();
-    cleanup(foo.subscribe($foo));
     text(marker0, () => $foo(access));
     show(marker3, () => foo ? block2 : null);
     after($$root, fragment1);
@@ -341,12 +337,12 @@ function setup($$root, $$host) {
   let fragment0 = clone(template0);
   let marker4 = traverse(fragment0, [0]);
   let marker5 = traverse(fragment0, [2]);
+  let $foo = ref();
+  cleanup(foo.subscribe($foo));
   let block1 = $$root => {
     let fragment1 = clone(template1);
     let marker0 = traverse(fragment1, [0]);
     let marker1 = traverse(fragment1, [1]);
-    let $foo = ref();
-    cleanup(foo.subscribe($foo));
     text(marker0, () => $foo(access));
     after($$root, fragment1);
     return marker1;
@@ -362,8 +358,6 @@ function setup($$root, $$host) {
     return marker3;
   };
   promise$1(marker4, block1, block2, null, () => promise);
-  let $foo = ref();
-  cleanup(foo.subscribe($foo));
   text(marker5, () => $foo(access));
   append($$root, fragment0);
 }
@@ -379,18 +373,16 @@ function setup($$root, $$host) {
   let fragment0 = clone(template0);
   let marker0 = traverse(fragment0, [0]);
   let marker3 = traverse(fragment0, [2]);
+  let $foo = ref();
+  cleanup(foo.subscribe($foo));
   let block1 = $$root => {
     let fragment1 = clone(template1);
     let marker1 = traverse(fragment1, [0]);
     let marker2 = traverse(fragment1, [1]);
-    let $foo = ref();
-    cleanup(foo.subscribe($foo));
     text(marker1, () => $foo(access));
     after($$root, fragment1);
     return marker2;
   };
-  let $foo = ref();
-  cleanup(foo.subscribe($foo));
   text(marker0, () => $foo(access));
   show(marker3, () => foo ? block1 : null);
   append($$root, fragment0);

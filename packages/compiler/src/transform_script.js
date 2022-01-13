@@ -13,10 +13,7 @@ export function transform_script (program, source) {
 	let props = new Map();
 	let props_idx = [];
 
-	// [actual, [scope, reference]]
-	let stores = new Map();
-
-	// [container, reference, ...exprs][]
+	// [ident, [scope, reference]][]
 	let deferred_stores = [];
 
 	// - throw on declaring $ and $$ variables
@@ -197,27 +194,40 @@ export function transform_script (program, source) {
 					return;
 				}
 
-				let ref_scope = find_reference_scope(curr_scope);
-				let container = ref_scope.node;
+				// 1. we'll try to find the scope that actual has been defined in, if not found, then we
+				//    will assume global and use the root scope.
+				// 2. store the first referenced identifier, and the plausible scope to place the
+				//    declarations in.
+				// 3. if it's referenced again, do the following:
+				//    - if the scope is the same as current scope, do nothing.
+				//    - if the scope depth is shallow than current scope, replace scope
+				//    - if the scope depth is the same as current scope, walk up to find another scope.
 
 				let actual = name.slice(1);
-				let ident = t.identifier(name);
 
-				let decl = t.variable_declaration('let', [
-					t.variable_declarator(ident),
-				]);
+				let defined_scope = curr_scope.find_owner(actual) || root_scope;
+				let ref_scope = find_reference_scope(curr_scope);
 
-				let expr = t.expression_statement(
-					t.call_expression(t.identifier('@cleanup'), [
-						t.call_expression(t.member_expression_from(actual, 'subscribe'), [ident]),
-					]),
-				);
+				let map = defined_scope._stores ||= Object.create(null);
+				let def = map[actual];
 
-				(ident.velvet ||= {}).mutable = true;
-				ident.velvet.transformed = true;
+				if (def) {
+					let curr = def[0];
 
-				deferred_stores.push([container, node, decl, expr]);
-				ref_scope.add_declaration(decl);
+					if (curr === ref_scope) {
+						// do nothing
+					}
+					else if (curr.depth > ref_scope.depth) {
+						def[0] = ref_scope;
+					}
+					else if (curr.depth === ref_scope.depth) {
+						def[0] = find_reference_scope(curr.parent);
+					}
+				}
+				else {
+					deferred_stores.push([name, map[actual] = [ref_scope, node]]);
+				}
+
 				return;
 			}
 		},
@@ -229,24 +239,39 @@ export function transform_script (program, source) {
 	});
 
 	// prepend store subscriptions
-	for (let [container, reference, ...exprs] of deferred_stores) {
-		let node = reference;
+	for (let [name, [scope, reference]] of deferred_stores) {
+		let ident = t.identifier(name);
+		let actual = name.slice(1);
 
-		while (node) {
-			let parent = node.path.parent;
+		let decl = t.variable_declaration('let', [
+			t.variable_declarator(ident),
+		]);
 
-			if (!parent) {
-				break;
-			}
+		let expr = t.expression_statement(
+			t.call_expression(t.identifier('@cleanup'), [
+				t.call_expression(t.member_expression_from(actual, 'subscribe'), [ident]),
+			]),
+		);
+
+		ident.velvet = { mutable: true, transformed: true };
+
+		let container = scope.node;
+		let curr = reference;
+
+		while (curr) {
+			let parent = curr.path.parent;
 
 			if (parent === container) {
-				let index = container.body.indexOf(node);
-				container.body.splice(index, 0, ...exprs);
+				let body = container.body;
+				let index = body.indexOf(curr);
+				body.splice(index, 0, decl, expr);
 				break;
 			}
 
-			node = parent;
+			curr = parent;
 		}
+
+		scope.add_declaration(decl);
 	}
 
 	walk(program, {
