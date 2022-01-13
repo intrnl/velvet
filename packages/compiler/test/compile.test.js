@@ -166,6 +166,18 @@ describe('store', () => {
 		expect(result).toMatchSnapshot();
 	});
 
+	it('subscription on conditional with log', () => {
+		let template = `
+			{#if foo}
+				{$foo}
+				{@log $foo}
+			{/if}
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
+	});
+
 	it('subscription on conditional and alternate', () => {
 		let template = `
 			{#if foo}

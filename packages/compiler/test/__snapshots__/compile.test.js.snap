@@ -268,6 +268,33 @@ export default define(null, setup, {});
 "
 `;
 
+exports[`store > subscription on conditional with log 1`] = `
+"import {html, clone, traverse, ref, cleanup, text, access, effect, after, show, append, define} from \\"@intrnl/velvet/internal\\";
+let template0 = html(\\"<!>\\");
+let template1 = html(\\"<!> \\");
+function setup($$root, $$host) {
+  let fragment0 = clone(template0);
+  let marker1 = traverse(fragment0, [0]);
+  let block1 = $$root => {
+    let fragment1 = clone(template1);
+    let marker0 = traverse(fragment1, [0]);
+    let child0 = traverse(fragment1, [1]);
+    let $foo = ref();
+    cleanup(foo.subscribe($foo));
+    text(marker0, () => $foo(access));
+    effect(() => {
+      console.log($foo(access))
+    });
+    after($$root, fragment1);
+    return child0;
+  };
+  show(marker1, () => foo ? block1 : null);
+  append($$root, fragment0);
+}
+export default define(null, setup, {});
+"
+`;
+
 exports[`store > subscription on nested conditional 1`] = `
 "import {html, clone, traverse, ref, cleanup, text, access, after, show, append, define} from \\"@intrnl/velvet/internal\\";
 let template0 = html(\\"<!>\\");
