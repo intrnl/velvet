@@ -175,9 +175,11 @@ export function transform_template (template, source) {
 
 						let expression = t.labeled_statement(
 							t.identifier('$'),
-							t.call_expression(
-								t.member_expression_from('console', 'log'),
-								params,
+							t.expression_statement(
+								t.call_expression(
+									t.member_expression_from('console', 'log'),
+									params,
+								),
 							),
 						);
 

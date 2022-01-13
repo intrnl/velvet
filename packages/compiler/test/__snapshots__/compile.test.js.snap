@@ -280,9 +280,7 @@ function setup($$root, $$host) {
     let $foo = ref();
     cleanup(foo.subscribe($foo));
     text(marker0, () => $foo(access));
-    effect(() => {
-      console.log($foo(access))
-    });
+    effect(() => console.log($foo(access)));
     after($$root, fragment1);
     return child0;
   };

@@ -890,7 +890,7 @@ let %block1 = $$root => {
   let %%template1 = @html(\\"<!>\\");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [0]);
-  $: console.log($$root, foo)
+  $: console.log($$root, foo);
   @after($$root, %fragment1);
   return %marker0;
 };
@@ -907,7 +907,7 @@ let %block1 = $$root => {
   let %%template1 = @html(\\"Hello!\\");
   let %fragment1 = @clone(%template1);
   let %child0 = @traverse(%fragment1, [0]);
-  $: console.log($$root, foo)
+  $: console.log($$root, foo);
   @after($$root, %fragment1);
   return %child0;
 };
@@ -919,7 +919,7 @@ let %block1 = $$root => {
 exports[`log expression > multiple 1`] = `
 "let %%template0 = @html(\\"\\");
 let %fragment0 = @clone(%template0);
-$: console.log(foo, bar, baz)
+$: console.log(foo, bar, baz);
 @append($$root, %fragment0);
 "
 `;
@@ -927,7 +927,7 @@ $: console.log(foo, bar, baz)
 exports[`log expression > single 1`] = `
 "let %%template0 = @html(\\"\\");
 let %fragment0 = @clone(%template0);
-$: console.log(foo)
+$: console.log(foo);
 @append($$root, %fragment0);
 "
 `;
@@ -939,8 +939,8 @@ $: console.log('test', {
   foo,
   baz,
   baz
-})
-$: console.log([foo, bar, baz])
+});
+$: console.log([foo, bar, baz]);
 @append($$root, %fragment0);
 "
 `;
