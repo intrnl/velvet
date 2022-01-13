@@ -150,6 +150,45 @@ exports[`script context > throws on await 1`] = `
 5: "
 `;
 
+exports[`store > subscription on await pending and resolve 1`] = `
+"import {html, clone, traverse, ref, cleanup, text, access, after, promise as promise$1, append, define} from \\"@intrnl/velvet/internal\\";
+let template0 = html(\\"<!> <!>\\");
+let template1 = html(\\"<!><!>\\");
+let template2 = html(\\"<!><!>\\");
+function setup($$root, $$host) {
+  let fragment0 = clone(template0);
+  let marker4 = traverse(fragment0, [0]);
+  let marker5 = traverse(fragment0, [2]);
+  let block1 = $$root => {
+    let fragment1 = clone(template1);
+    let marker0 = traverse(fragment1, [0]);
+    let marker1 = traverse(fragment1, [1]);
+    let $foo = ref();
+    cleanup(foo.subscribe($foo));
+    text(marker0, () => $foo(access));
+    after($$root, fragment1);
+    return marker1;
+  };
+  let block2 = ($$root, foo) => {
+    let fragment2 = clone(template2);
+    let marker2 = traverse(fragment2, [0]);
+    let marker3 = traverse(fragment2, [1]);
+    let $foo = ref();
+    cleanup(foo(access).subscribe($foo));
+    text(marker2, () => $foo(access));
+    after($$root, fragment2);
+    return marker3;
+  };
+  promise$1(marker4, block1, block2, null, () => promise);
+  let $foo = ref();
+  cleanup(foo.subscribe($foo));
+  text(marker5, () => $foo(access));
+  append($$root, fragment0);
+}
+export default define(null, setup, {});
+"
+`;
+
 exports[`store > subscription on await resolve 1`] = `
 "import {html, clone, traverse, ref, cleanup, access, text, after, promise as promise$1, append, define} from \\"@intrnl/velvet/internal\\";
 let template0 = html(\\"<!>\\");

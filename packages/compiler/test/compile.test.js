@@ -203,6 +203,21 @@ describe('store', () => {
 		let result = compileSync(template);
 		expect(result).toMatchSnapshot();
 	});
+
+	it('subscription on await pending and resolve', () => {
+		let template = `
+			{#await promise}
+				{$foo}
+			{:then foo}
+				{$foo}
+			{/await}
+
+			{$foo}
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
+	});
 });
 
 describe('element', () => {
