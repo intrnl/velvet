@@ -211,8 +211,6 @@ describe('store', () => {
 			{:then foo}
 				{$foo}
 			{/await}
-
-			{$foo}
 		`;
 
 		let result = compileSync(template);
