@@ -163,6 +163,27 @@ export function transform_template (template, source) {
 					let id = node.id;
 					let id_name = id.name;
 
+					if (id_name === 'let') {
+						if (expr.type !== 'AssignmentExpression' || expr.left.type !== 'Identifier' || expr.operator !== '=') {
+							throw create_error(
+								'invalid let expression',
+								source,
+								expr.start,
+								expr.end,
+							);
+						}
+
+						let ident = expr.left;
+						let right = expr.right;
+
+						let decl = t.variable_declaration('let', [t.variable_declarator(ident, right)]);
+
+						ident.velvet = { computed: true };
+
+						curr_scope.expressions.push(decl);
+						return walk.remove;
+					}
+
 					if (id_name === 'log') {
 						let params;
 

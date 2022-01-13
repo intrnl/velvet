@@ -501,6 +501,50 @@ describe('log expression', () => {
 	});
 });
 
+describe('let expression', () => {
+	it('single', () => {
+		let template = `
+			{@let foo = 123}
+		`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('throws on incorrect definition', () => {
+		try {
+			let template = `{@let }`;
+			parse_template(template);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
+
+		try {
+			let template = `{@let foo}`;
+			let fragment = parse_template(template);
+			transform_template(fragment, template);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
+
+		try {
+			let template = `{@let foo.bar = 123}`;
+			let fragment = parse_template(template);
+			transform_template(fragment, template);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
+	});
+});
+
 describe('conditional logic', () => {
 	it('consequent', () => {
 		let template = `{#if foo}<div>foo!</div>{/if}`;

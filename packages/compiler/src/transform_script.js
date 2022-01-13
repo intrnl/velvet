@@ -62,9 +62,12 @@ export function transform_script (program, source) {
 
 				let own_scope = curr_scope.find_owner(name);
 
-				if (own_scope === root_scope) {
+				if (own_scope) {
 					let ident = own_scope.declarations.get(name);
-					(ident.velvet ||= {}).mutable = true;
+
+					if (own_scope === root_scope || ident.velvet?.computed) {
+						(ident.velvet ||= {}).mutable = true;
+					}
 				}
 
 				return;
@@ -77,26 +80,29 @@ export function transform_script (program, source) {
 				let name = identifier.name;
 				let own_scope = curr_scope.find_owner(name);
 
-				if (own_scope === root_scope) {
-					if (!prefix) {
-						throw create_error(
-							'postfix update expressions are not supported for refs',
-							source,
-							node.start,
-							node.end,
-						);
-					}
-
+				if (own_scope) {
 					let ident = own_scope.declarations.get(name);
-					(ident.velvet ||= {}).mutable = true;
 
-					let expression = t.assignment_expression(
-						identifier,
-						t.literal(1),
-						node.operator.slice(1) + '=',
-					);
+					if (own_scope === root_scope || ident.velvet?.computed) {
+						if (!prefix) {
+							throw create_error(
+								'postfix update expressions are not supported for refs',
+								source,
+								node.start,
+								node.end,
+							);
+						}
 
-					return expression;
+						(ident.velvet ||= {}).mutable = true;
+
+						let expression = t.assignment_expression(
+							identifier,
+							t.literal(1),
+							node.operator.slice(1) + '=',
+						);
+
+						return expression;
+					}
 				}
 
 				return;

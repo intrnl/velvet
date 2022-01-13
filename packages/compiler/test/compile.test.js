@@ -243,6 +243,18 @@ describe('store', () => {
 		let result = compileSync(template);
 		expect(result).toMatchSnapshot();
 	});
+
+	it('subscription on conditional with let', () => {
+		let template = `
+			{#if show_favorite}
+				{@let is_favorited = $favorite.favorited}
+				{is_favorited}
+			{/if}
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
+	});
 });
 
 describe('element', () => {
@@ -256,6 +268,74 @@ describe('element', () => {
 		catch (error) {
 			expect(error.toString()).toMatchSnapshot();
 		}
+	});
+});
+
+describe('let expression', () => {
+	it('unmutated referencing unmutated', () => {
+		let template = `
+			<script>
+				let count = 0;
+			</script>
+
+			{#if foo}
+				{@let doubled = count * 2}
+				{count} {doubled}
+			{/if}
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('unmutated referencing mutated', () => {
+		let template = `
+			<script>
+				let count = 0;
+				count = 2;
+			</script>
+
+			{#if foo}
+				{@let doubled = count * 2}
+				{count} {doubled}
+			{/if}
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('mutated referencing unmutated', () => {
+		let template = `
+			<script>
+				let count = 0;
+			</script>
+
+			{#if foo}
+				{@let doubled = count * 2}
+				{count} {doubled = 2}
+			{/if}
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('mutated referencing mutated', () => {
+		let template = `
+			<script>
+				let count = 0;
+				count = 2;
+			</script>
+
+			{#if foo}
+				{@let doubled = count * 2}
+				{count} {doubled = 2}
+			{/if}
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
 	});
 });
 

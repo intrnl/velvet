@@ -882,6 +882,32 @@ let %block1 = $$root => {
 "
 `;
 
+exports[`let expression > single 1`] = `
+"let %%template0 = @html(\\"\\");
+let %fragment0 = @clone(%template0);
+let foo = 123;
+@append($$root, %fragment0);
+"
+`;
+
+exports[`let expression > throws on incorrect definition 1`] = `
+"Acorn error: Unexpected token (1:6)
+1: {@let }
+         ^"
+`;
+
+exports[`let expression > throws on incorrect definition 2`] = `
+"invalid let expression (1:6)
+1: {@let foo}
+         ^"
+`;
+
+exports[`let expression > throws on incorrect definition 3`] = `
+"invalid let expression (1:6)
+1: {@let foo.bar = 123}
+         ^"
+`;
+
 exports[`log expression > in conditional 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
