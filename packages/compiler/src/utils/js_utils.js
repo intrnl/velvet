@@ -115,12 +115,12 @@ export function extract_identifiers (param, nodes = []) {
 			break;
 		}
 
-		case 'RestElement':{
+		case 'RestElement': {
 			extract_identifiers(param.argument, nodes);
 			break;
 		}
 
-		case 'AssignmentPattern':{
+		case 'AssignmentPattern': {
 			extract_identifiers(param.left, nodes);
 			break;
 		}
