@@ -198,7 +198,7 @@ export function transform_template (template, source) {
 							t.identifier('$'),
 							t.expression_statement(
 								t.call_expression(
-									t.member_expression_from('console', 'log'),
+									t.member_expression_from(['console', 'log']),
 									params,
 								),
 							),
@@ -421,10 +421,10 @@ export function transform_template (template, source) {
 								t.identifier('$'),
 								t.expression_statement(
 									t.assignment_expression(
-										t.member_expression_from(elem_ident, 'checked'),
+										t.member_expression_from([elem_ident, 'checked']),
 										t.call_expression(
 											t.member_expression(value_expr, t.identifier('includes')),
-											[t.member_expression_from(elem_ident, 'value')],
+											[t.member_expression_from([elem_ident, 'value'])],
 										),
 									),
 								),
@@ -473,8 +473,8 @@ export function transform_template (template, source) {
 									t.clone(value_expr),
 									t.call_expression(t.identifier('@get_checked_values'), [
 										t.clone(value_expr),
-										t.member_expression_from(elem_ident, 'value'),
-										t.member_expression_from(elem_ident, 'checked'),
+										t.member_expression_from([elem_ident, 'value']),
+										t.member_expression_from([elem_ident, 'checked']),
 									]),
 								));
 							}
@@ -490,10 +490,10 @@ export function transform_template (template, source) {
 							// handle everything else
 							else {
 								let event_target = is_component
-									? t.member_expression_from('%event', 'detail')
+									? t.member_expression_from(['%event', 'detail'])
 									: is_checkbox
-										? t.member_expression_from(elem_ident, 'checked')
-										: t.member_expression_from(elem_ident, 'value');
+										? t.member_expression_from([elem_ident, 'checked'])
+										: t.member_expression_from([elem_ident, 'value']);
 
 								event_fn = t.arrow_function_expression(
 									is_component ? [t.identifier('%event')] : [],
@@ -618,7 +618,7 @@ export function transform_template (template, source) {
 							is_component
 								? t.new_expression(t.identifier('%component'))
 								: t.call_expression(
-										t.member_expression_from('document', 'createElement'),
+										t.member_expression_from(['document', 'createElement']),
 										[t.identifier('%component')],
 									)
 						),
@@ -716,7 +716,7 @@ export function transform_template (template, source) {
 							t.identifier(elem_ident),
 							t.new_expression(
 								is_self
-									? t.member_expression_from('$$host', 'constructor')
+									? t.member_expression_from(['$$host', 'constructor'])
 									: t.identifier(elem_name)
 							),
 						),
@@ -925,7 +925,11 @@ export function transform_template (template, source) {
 						curr = curr.alternate;
 					}
 
-					let test = array.reduceRight((prev, next) => {
+					let test = null;
+
+					for (let idx = array.length - 1; idx >= 0; idx--) {
+						let next = array[idx];
+
 						let consequent_block = fragment_to_block.get(next.consequent);
 						let consequent_ident = t.identifier('%block' + blocks.indexOf(consequent_block));
 
@@ -934,8 +938,8 @@ export function transform_template (template, source) {
 							? t.identifier('%block' + blocks.indexOf(alternate_block))
 							: t.literal(null);
 
-						return t.conditional_expression(next.test, consequent_ident, prev || alternate_ident);
-					}, null);
+						test = t.conditional_expression(next.test, consequent_ident, test || alternate_ident);
+					}
 
 					let traverse_def = t.variable_declaration('let', [
 						t.variable_declarator(

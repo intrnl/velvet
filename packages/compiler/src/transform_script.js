@@ -255,7 +255,7 @@ export function transform_script (program, source) {
 
 		let expr = t.expression_statement(
 			t.call_expression(t.identifier('@cleanup'), [
-				t.call_expression(t.member_expression_from(actual, 'subscribe'), [ident]),
+				t.call_expression(t.member_expression_from([actual, 'subscribe']), [ident]),
 			]),
 		);
 

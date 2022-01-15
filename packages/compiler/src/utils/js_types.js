@@ -145,17 +145,17 @@ export function member_expression (object, property, computed = false, optional 
 }
 
 /**
- * @param {string} first
- * @param {...string} [str]
- * @returns {import('estree').MemberExpression}}
+ * @param {string[]} arr
+ * @returns {import('estree').MemberExpression | import('estree').Identifier}
  */
-export function member_expression_from (first, ...str) {
-	return str.reduce((prev, curr) => {
-		let object = prev;
-		let property = identifier(curr);
+export function member_expression_from (arr) {
+	let result = identifier(arr[0]);
 
-		return member_expression(object, property);
-	}, identifier(first));
+	for (let idx = 1; idx < arr.length; idx++) {
+		result = member_expression(result, identifier(arr[idx]));
+	}
+
+	return result;
 }
 
 /**
