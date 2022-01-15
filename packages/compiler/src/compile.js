@@ -90,48 +90,6 @@ function* _compile (source, options = {}) {
 		}
 	}
 
-	// trim whitespaces
-	while (true) {
-		let node = template.children[0];
-
-		if (!node || node.type !== 'Text') {
-			break;
-		}
-
-		let prev = node.value;
-		let next = prev.replace(/^\s+/, '');
-
-		if (prev === next) {
-			break;
-		}
-		if (!next) {
-			template.children.splice(0, 1);
-		}
-
-		node.value = next;
-	}
-
-	while (true) {
-		let idx = template.children.length - 1;
-		let node = template.children[idx];
-
-		if (!node || node.type !== 'Text') {
-			break;
-		}
-
-		let prev = node.value;
-		let next = prev.replace(/\s+$/, '');
-
-		if (prev === next) {
-			break;
-		}
-		if (!next) {
-			template.children.splice(idx, 1);
-		}
-
-		node.value = next;
-	}
-
 	// transform specialities
 	if (style) {
 		let text_node = style.children[0];
