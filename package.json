@@ -2,9 +2,11 @@
 	"private": true,
 	"scripts": {
 		"test": "vitest run",
-		"test:watch": "vitest"
+		"test:watch": "vitest",
+		"lint": "eslint --fix --cache packages/"
 	},
 	"devDependencies": {
+		"eslint": "^8.6.0",
 		"vitest": "^0.1.12"
 	}
 }

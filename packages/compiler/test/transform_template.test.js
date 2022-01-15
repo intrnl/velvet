@@ -216,7 +216,7 @@ describe('attribute', () => {
 
 		try {
 			let fragment = parse_template(template);
-			let program = transform_template(fragment, template);
+			transform_template(fragment, template);
 			expect.fail();
 		}
 		catch (error) {
@@ -229,7 +229,7 @@ describe('attribute', () => {
 
 		try {
 			let fragment = parse_template(template);
-			let program = transform_template(fragment, template);
+			transform_template(fragment, template);
 			expect.fail();
 		}
 		catch (error) {
@@ -242,7 +242,7 @@ describe('attribute', () => {
 
 		try {
 			let fragment = parse_template(template);
-			let program = transform_template(fragment, template);
+			transform_template(fragment, template);
 			expect.fail();
 		}
 		catch (error) {
@@ -332,7 +332,7 @@ describe('element', () => {
 
 		try {
 			let fragment = parse_template(template);
-			let program = transform_template(fragment);
+			transform_template(fragment, template);
 			expect.fail();
 		}
 		catch (error) {

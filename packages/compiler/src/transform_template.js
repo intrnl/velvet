@@ -212,7 +212,7 @@ export function transform_template (template, source) {
 						`unknown named expression: @${id_name}`,
 						source,
 						id.start,
-						id.end
+						id.end,
 					);
 				}
 
@@ -618,9 +618,9 @@ export function transform_template (template, source) {
 							is_component
 								? t.new_expression(t.identifier('%component'))
 								: t.call_expression(
-										t.member_expression_from(['document', 'createElement']),
-										[t.identifier('%component')],
-									)
+									t.member_expression_from(['document', 'createElement']),
+									[t.identifier('%component')],
+								),
 						),
 					]);
 
@@ -716,7 +716,7 @@ export function transform_template (template, source) {
 							t.new_expression(
 								is_self
 									? t.member_expression_from(['$$host', 'constructor'])
-									: t.identifier(elem_name)
+									: t.identifier(elem_name),
 							),
 						),
 					]);
@@ -777,7 +777,8 @@ export function transform_template (template, source) {
 						(child.type === 'Text' || (child.type === 'Element' && child.name !== 'v:element' && child.name !== 'v:component'))
 					) {
 						is_static_end = true;
-					} else {
+					}
+					else {
 						curr_block.html += '<!>';
 					}
 				}
@@ -945,7 +946,7 @@ export function transform_template (template, source) {
 							t.identifier(marker_ident),
 							t.call_expression(t.identifier('@traverse'), [
 								t.identifier(fragment_ident),
-								t.array_expression([...curr_block.indices, index].map(i => t.literal(i))),
+								t.array_expression([...curr_block.indices, index].map((i) => t.literal(i))),
 							]),
 						),
 					]);
@@ -986,7 +987,7 @@ export function transform_template (template, source) {
 						t.identifier(marker_ident),
 						t.call_expression(t.identifier('@traverse'), [
 							t.identifier(curr_fragment_ident),
-							t.array_expression([...curr_block.indices, index].map(i => t.literal(i))),
+							t.array_expression([...curr_block.indices, index].map((i) => t.literal(i))),
 						]),
 					),
 				]);
@@ -1036,7 +1037,7 @@ export function transform_template (template, source) {
 							t.identifier(pending_name),
 							t.arrow_function_expression(
 								[t.identifier('$$root')],
-								t.block_statement(merge_scope(scope))
+								t.block_statement(merge_scope(scope)),
 							),
 						),
 					]);
@@ -1063,7 +1064,7 @@ export function transform_template (template, source) {
 							t.identifier(resolved_name),
 							t.arrow_function_expression(
 								[t.identifier('$$root'), local],
-								t.block_statement(merge_scope(scope))
+								t.block_statement(merge_scope(scope)),
 							),
 						),
 					]);
@@ -1090,7 +1091,7 @@ export function transform_template (template, source) {
 							t.identifier(rejected_name),
 							t.arrow_function_expression(
 								[t.identifier('$$root'), local],
-								t.block_statement(merge_scope(scope))
+								t.block_statement(merge_scope(scope)),
 							),
 						),
 					]);
@@ -1106,7 +1107,7 @@ export function transform_template (template, source) {
 						t.identifier(marker_ident),
 						t.call_expression(t.identifier('@traverse'), [
 							t.identifier(fragment_ident),
-							t.array_expression([...curr_block.indices, index].map(i => t.literal(i))),
+							t.array_expression([...curr_block.indices, index].map((i) => t.literal(i))),
 						]),
 					),
 				]);
@@ -1142,7 +1143,7 @@ export function transform_template (template, source) {
 						t.identifier(marker_ident),
 						t.call_expression(t.identifier('@traverse'), [
 							t.identifier(curr_fragment_ident),
-							t.array_expression([...curr_block.indices, index].map(i => t.literal(i))),
+							t.array_expression([...curr_block.indices, index].map((i) => t.literal(i))),
 						]),
 					),
 				]);

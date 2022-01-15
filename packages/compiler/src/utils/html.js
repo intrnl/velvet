@@ -15,9 +15,11 @@ export function decode_character_references (html) {
 
 		if (entity[0] !== '#') {
 			code = entities[entity];
-		} else if (entity[1] === 'x') {
+		}
+		else if (entity[1] === 'x') {
 			code = parseInt(entity.substring(2), 16);
-		} else {
+		}
+		else {
 			code = parseInt(entity.substring(1), 10);
 		}
 

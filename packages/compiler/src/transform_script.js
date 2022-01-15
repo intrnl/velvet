@@ -395,7 +395,7 @@ export function transform_script (program, source) {
 					switch (node.operator) {
 						case '=': {
 							expr = right;
-							break
+							break;
 						}
 						case '||=': case '&&=': case '??=': {
 							expr = t.logical_expression(identifier, right, operator);

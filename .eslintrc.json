@@ -1,0 +1,37 @@
+{
+	"$schema": "https://json.schemastore.org/eslintrc.json",
+	"root": true,
+	"extends": ["eslint:recommended"],
+	"parserOptions": {
+		"sourceType": "module",
+		"ecmaVersion": 2022
+	},
+	"env": {
+		"es6": true
+	},
+	"rules": {
+		"array-bracket-newline": ["error", "consistent"],
+		"array-bracket-spacing": ["error", "never"],
+		"arrow-parens": ["error", "always"],
+		"arrow-spacing": ["error", { "before": true, "after": true }],
+		"block-spacing": ["error", "always"],
+		"brace-style": ["error", "stroustrup"],
+		"comma-dangle": ["error", "always-multiline"],
+		"comma-spacing": ["error", { "before": false, "after": true }],
+		"curly": ["error", "all"],
+		"dot-location": ["error", "property"],
+		"eol-last": ["error", "always"],
+		"func-call-spacing": ["error", "never"],
+		"generator-star-spacing": ["error", { "before": false, "after": true }],
+		"indent": ["error", "tab", { "SwitchCase": 1, "offsetTernaryExpressions": true, "ignoreComments": true }],
+		"keyword-spacing": ["error", { "before": true, "after": true }],
+		"max-len": ["error", { "code": 120, "ignoreUrls": true, "ignoreComments": true, "ignoreRegExpLiterals": true, "ignoreStrings": true, "ignoreTemplateLiterals": true }],
+		"object-curly-spacing": ["error", "always"],
+		"quotes": ["error", "single", { "allowTemplateLiterals": true, "avoidEscape": true }],
+		"semi-spacing": ["error", { "before": false, "after": true }],
+		"semi-style": ["error", "last"],
+		"semi": ["error", "always"],
+		"space-before-blocks": ["error", "always"],
+		"space-before-function-paren": ["error", "always"]
+	}
+}

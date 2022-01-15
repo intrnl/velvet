@@ -1,6 +1,6 @@
 import { isIdentifierStart, isIdentifierChar } from 'acorn';
 
-import { CompilerError, create_error } from './error.js';
+import { create_error } from './error.js';
 import * as t from './js_types.js';
 import * as tt from './template_types.js';
 

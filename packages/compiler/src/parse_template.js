@@ -491,7 +491,7 @@ function _parse_element (state) {
 
 	if (is_closing) {
 		if (is_void(name)) {
-			throw p.error(state, `${tag} is a void element and cannot have a closing tag or children`);
+			throw p.error(state, `${name} is a void element and cannot have a closing tag or children`);
 		}
 
 		p.eat_whitespace(state);
@@ -559,7 +559,7 @@ function _parse_element (state) {
 				continue;
 			}
 
-			let attr_name = p.eat_until(state, /[\s=\/>'"]/g);
+			let attr_name = p.eat_until(state, /[\s=/>'"]/g);
 			let attr_value = null;
 
 			if (!attr_name) {
@@ -608,7 +608,7 @@ function _parse_element (state) {
 					attr_value = node;
 				}
 				else {
-					let data = p.eat_until(state, /[\s=\/>'"]/g);
+					let data = p.eat_until(state, /[\s=/>'"]/g);
 
 					let node = t.text(data);
 					node.start = value_start;

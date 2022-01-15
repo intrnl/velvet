@@ -110,7 +110,7 @@ describe('attribute', () => {
 
 		let result = compileSync(template);
 		expect(result).toMatchSnapshot();
-	})
+	});
 });
 
 describe('store', () => {

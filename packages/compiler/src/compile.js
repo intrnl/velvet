@@ -134,7 +134,7 @@ function* _compile (source, options = {}) {
 			prog = parse(text_node.value, {
 				start: text_start,
 				allowAwaitOutsideFunction: true,
-			})
+			});
 		}
 		catch (error) {
 			let message = error.message.replace(/ +\(\d+:\d+\)$/g, '');

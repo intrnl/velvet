@@ -76,11 +76,12 @@ export function is_reference (node, parent) {
  */
 export function extract_identifiers (param, nodes = []) {
 	switch (param.type) {
-		case 'Identifier':
+		case 'Identifier': {
 			nodes.push(param);
 			break;
+		}
 
-		case 'MemberExpression':
+		case 'MemberExpression': {
 			let object = param;
 
 			while (object.type === 'MemberExpression') {
@@ -89,8 +90,9 @@ export function extract_identifiers (param, nodes = []) {
 
 			nodes.push(object);
 			break;
+		}
 
-		case 'ObjectPattern':
+		case 'ObjectPattern': {
 			for (let property of param.properties) {
 				if (property.type === 'RestElement') {
 					extract_identifiers(property.argument);
@@ -101,8 +103,9 @@ export function extract_identifiers (param, nodes = []) {
 			}
 
 			break;
+		}
 
-		case 'ArrayPattern':
+		case 'ArrayPattern': {
 			for (let element of param.elements) {
 				if (element) {
 					extract_identifiers(element, nodes);
@@ -110,14 +113,17 @@ export function extract_identifiers (param, nodes = []) {
 			}
 
 			break;
+		}
 
-		case 'RestElement':
+		case 'RestElement':{
 			extract_identifiers(param.argument, nodes);
 			break;
+		}
 
-		case 'AssignmentPattern':
+		case 'AssignmentPattern':{
 			extract_identifiers(param.left, nodes);
 			break;
+		}
 	}
 
 	return nodes;
@@ -236,11 +242,14 @@ export function analyze (expression) {
 
 function add_reference (scope, name) {
 	scope.references.add(name);
-	if (scope.parent) add_reference(scope.parent, name);
+
+	if (scope.parent) {
+		add_reference(scope.parent, name);
+	}
 }
 
 export class Scope {
-	constructor(parent, node, block) {
+	constructor (parent, node, block) {
 		/** @type {Scope | null} */
 		this.parent = parent;
 
@@ -297,7 +306,10 @@ export class Scope {
 	 * @returns {Scope | null}
 	 */
 	find_owner (name) {
-		if (this.declarations.has(name)) return this;
+		if (this.declarations.has(name)) {
+			return this;
+		}
+
 		return this.parent && this.parent.find_owner(name);
 	}
 
