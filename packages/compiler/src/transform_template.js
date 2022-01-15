@@ -632,7 +632,6 @@ export function transform_template (template, source) {
 					let fragment_ident = '%fragment' + blocks.indexOf(block);
 					let marker_ident = '%marker' + (id_m++);
 
-					// let has_length = scope_has_length(scope);
 					let has_length = block.html;
 
 					if (has_length) {
@@ -1204,13 +1203,4 @@ function merge_scope (scope) {
 		...scope.blocks,
 		...scope.expressions,
 	];
-}
-
-function scope_has_length (scope) {
-	return !!(
-		scope.definitions.length ||
-		scope.traversals.length ||
-		scope.blocks.length ||
-		scope.expressions.length
-	);
 }
