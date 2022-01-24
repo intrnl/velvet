@@ -67,23 +67,6 @@ export function match (state, str) {
 
 /**
  * @param {ParserState} state
- * @param {RegExp} pattern
- * @returns {string | false}
- */
-export function match_pattern (state, pattern) {
-	pattern.lastIndex = state.index;
-
-	let match = pattern.exec(state.content);
-
-	if (!match || match.index !== state.index) {
-		return false;
-	}
-
-	return match[0];
-}
-
-/**
- * @param {ParserState} state
  * @param {string} str
  * @param {string | boolean} [required]
  * @returns {boolean}
@@ -161,46 +144,6 @@ export function eat_identifier (state) {
 	ident.end = state.index;
 
 	return ident;
-}
-
-/**
- * @param {ParserState} state
- * @param {RegExp} pattern
- * @param {string} required
- * @returns {string | false}
- */
-export function eat_pattern (state, pattern, required) {
-	let result = match_pattern(state, pattern);
-
-	if (result) {
-		state.index += result.length;
-	}
-	else if (required) {
-		let message = `expected ${required}`;
-		throw error(state, message);
-	}
-
-	return result;
-}
-
-/**
- * @param {ParserState} state
- * @param {RegExp} pattern
- * @returns {string | null}
- */
-export function eat_until (state, pattern) {
-	let start = state.index;
-	pattern.lastIndex = start;
-
-	let match = pattern.exec(state.content);
-
-	if (match) {
-		state.index = match.index;
-		return state.content.slice(start, state.index);
-	}
-
-	state.index = state.content.length;
-	return state.content.slice(start);
 }
 
 /**

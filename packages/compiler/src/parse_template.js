@@ -447,7 +447,22 @@ function _parse_element (state) {
 
 	// comment
 	if (p.eat(state, '!--')) {
-		let data = p.eat_until(state, /-->/g);
+		let data = '';
+
+		for (; state.index < state.content.length; state.index++) {
+			let char = state.content[state.index];
+
+			if (
+				char === '-' &&
+				state.content[state.index + 1] === '-' &&
+				state.content[state.index + 2] === '>'
+			) {
+				break;
+			}
+
+			data += char;
+		}
+
 		p.eat(state, '-->', 'closing comment');
 
 		let node = t.comment(data);
@@ -459,7 +474,17 @@ function _parse_element (state) {
 	}
 
 	let is_closing = p.eat(state, '/');
-	let name = p.eat_until(state, /[\s>]/g);
+	let name = '';
+
+	for (; state.index < state.content.length; state.index++) {
+		let char = state.content[state.index];
+
+		if (p.is_whitespace(char) || char === '>') {
+			break;
+		}
+
+		name += char;
+	}
 
 	if (name === 'v:self') {
 		// check for recursion
@@ -559,8 +584,18 @@ function _parse_element (state) {
 				continue;
 			}
 
-			let attr_name = p.eat_until(state, /[\s=/>'"]/g);
+			let attr_name = '';
 			let attr_value = null;
+
+			for (; state.index < state.content.length; state.index++) {
+				let char = state.content[state.index];
+
+				if (char === '=' || char === '>' || p.is_whitespace(char) || char === '/' || char === "'" || char === '"') {
+					break;
+				}
+
+				attr_name += char;
+			}
 
 			if (!attr_name) {
 				break;
@@ -574,26 +609,42 @@ function _parse_element (state) {
 
 			p.eat_whitespace(state);
 
-			if (p.eat_pattern(state, /['"]/g)) {
+			if (p.eat(state, '"') || p.eat(state, "'")) {
 				throw p.error(state, 'expected attribute assignment');
 			}
-
-			if (p.eat(state, '=')) {
+			else if (p.eat(state, '=')) {
 				let value_start = state.index;
-				let quotation = p.eat_pattern(state, /['"]/g);
 
-				if (quotation) {
-					let end_pattern = quotation === '"' ? /"/g : /'/g;
-					let data = p.eat_until(state, end_pattern);
-					p.eat(state, quotation, 'closing quotation mark');
+				let next_char = state.content[state.index];
+				let is_double_quote = next_char === '"';
+				let is_single_quote = !is_double_quote && next_char === "'";
+
+				if (is_double_quote || is_single_quote) {
+					state.index++;
+
+					let data = '';
+
+					for (; state.index < state.content.length; state.index++) {
+						let char = state.content[state.index];
+
+						if (char === next_char) {
+							break;
+						}
+
+						data += char;
+					}
+
+					p.eat(state, next_char, 'closing quotation mark');
 
 					let node = t.text(data);
-					node.start = value_start;
-					node.end = state.index;
+					node.start = value_start + 1;
+					node.end = state.index - 1;
 
 					attr_value = node;
 				}
-				else if (p.eat(state, '{')) {
+				else if (next_char === '{') {
+					state.index++;
+
 					p.eat_whitespace(state);
 
 					let expression = _read_expression(state);
@@ -608,7 +659,17 @@ function _parse_element (state) {
 					attr_value = node;
 				}
 				else {
-					let data = p.eat_until(state, /[\s=/>'"]/g);
+					let data = '';
+
+					for (; state.index < state.content.length; state.index++) {
+						let char = state.content[state.index];
+
+						if (char === '=' || char === '>' || p.is_whitespace(char) || char === '/' || char === "'" || char === '"') {
+							break;
+						}
+
+						data += char;
+					}
 
 					let node = t.text(data);
 					node.start = value_start;
@@ -646,16 +707,28 @@ function _parse_element (state) {
 	}
 	else if (name === 'script' || name === 'style') {
 		// we shouldn't parse into script and style elements
-		let pattern = name === 'script' ? /<\/script\s*>/g : /<\/style\s*>/g;
-
 		let text_start = state.index;
-		let data = p.eat_until(state, pattern);
+		let data = '';
+
+		for (; state.index < state.content.length; state.index++) {
+			let char = state.content[state.index];
+
+			if (
+				char === '<' && state.content[state.index + 1] === '/' &&
+				state.content[state.index + 2 + name.length] === '>' &&
+				state.content.slice(state.index + 2, state.index + 2 + name.length) === name
+			) {
+				break;
+			}
+
+			data += char;
+		}
 
 		let text = t.text(data, data);
 		text.start = text_start;
 		text.end = state.index;
 
-		p.eat_pattern(state, pattern, `${name} closing tag`);
+		p.eat(state, `</${name}>`, `${name} closing tag`);
 
 		node.end = state.index;
 		node.children.push(text);
