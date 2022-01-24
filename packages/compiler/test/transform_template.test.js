@@ -339,6 +339,28 @@ describe('element', () => {
 			expect(error.toString()).toMatchSnapshot();
 		}
 	});
+
+	it('whitespace on closing tag', () => {
+		let template = `<button>Hello</button      >`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('throws on script closing tag whitespace', () => {
+		let template = `<script>console.log('hello')</script    >`;
+
+		try {
+			let fragment = parse_template(template);
+			transform_template(fragment, template);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
+	});
 });
 
 describe('component', () => {

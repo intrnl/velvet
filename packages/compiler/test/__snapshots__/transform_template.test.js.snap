@@ -787,6 +787,12 @@ exports[`element > throws on improper closing tag 1`] = `
                 ^"
 `;
 
+exports[`element > throws on script closing tag whitespace 1`] = `
+"expected script closing tag (1:41)
+1: <script>console.log('hello')</script    >
+                                            ^"
+`;
+
 exports[`element > v:element 1`] = `
 "let %%template0 = @html(\\"<!>\\");
 let %fragment0 = @clone(%template0);
@@ -814,6 +820,13 @@ let %block1 = %component => {
   return %child0;
 };
 @dynamic(%marker1, %block1, () => Element);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`element > whitespace on closing tag 1`] = `
+"let %%template0 = @html(\\"<button>Hello</button>\\");
+let %fragment0 = @clone(%template0);
 @append($$root, %fragment0);
 "
 `;
