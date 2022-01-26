@@ -710,13 +710,16 @@ function _parse_element (state) {
 		let text_start = state.index;
 		let data = '';
 
+		let name_len = name.length;
+
 		for (; state.index < state.content.length; state.index++) {
 			let char = state.content[state.index];
 
+			// match angle brackets first before the name
 			if (
 				char === '<' && state.content[state.index + 1] === '/' &&
-				state.content[state.index + 2 + name.length] === '>' &&
-				state.content.slice(state.index + 2, state.index + 2 + name.length) === name
+				state.content[state.index + 2 + name_len] === '>' &&
+				state.content.slice(state.index + 2, state.index + 2 + name_len) === name
 			) {
 				break;
 			}
