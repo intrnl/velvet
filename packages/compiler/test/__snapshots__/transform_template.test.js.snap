@@ -91,6 +91,16 @@ $: %child0[\\"value\\"] = value;
 "
 `;
 
+exports[`attribute > binding input number 1`] = `
+"let %%template0 = @html(\\"<input type=\\\\\\"number\\\\\\" />\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+$: %child0[\\"value\\"] = value;
+@on(%child0, \\"input\\", () => value = @to_number(%child0.value));
+@append($$root, %fragment0);
+"
+`;
+
 exports[`attribute > binding member expression 1`] = `
 "let %%template0 = @html(\\"<input />\\");
 let %fragment0 = @clone(%template0);

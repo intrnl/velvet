@@ -260,13 +260,22 @@ export function transform_template (template, source) {
 				let _this_expr;
 
 				// checks for properties and bindings
-				let is_checkbox = (
-					!is_component && elem_name === 'input' &&
-					node.attributes.some((attr) => attr.name === 'type' && attr.value?.decoded === 'checkbox')
+				let is_input = (
+					!is_component && elem_name === 'input'
 				);
 
 				let is_select = (
 					!is_component && elem_name === 'select'
+				);
+
+				let is_input_checkbox = (
+					is_input &&
+					node.attributes.some((attr) => attr.name === 'type' && attr.value?.decoded === 'checkbox')
+				);
+
+				let is_input_number = (
+					is_input && !is_input_checkbox &&
+					node.attributes.some((attr) => attr.name === 'type' && attr.value?.decoded === 'number')
 				);
 
 				// loop through attributes
@@ -416,7 +425,7 @@ export function transform_template (template, source) {
 						let prop_name = attr_name.slice(1);
 
 						// handle special checkbox group binding
-						if (is_checkbox && prop_name === 'group') {
+						if (is_input_checkbox && prop_name === 'group') {
 							let prop_expr = t.labeled_statement(
 								t.identifier('$'),
 								t.expression_statement(
@@ -468,7 +477,7 @@ export function transform_template (template, source) {
 							let event_fn;
 
 							// handle checkbox group binding
-							if (is_checkbox && prop_name === 'group') {
+							if (is_input_checkbox && prop_name === 'group') {
 								event_fn = t.arrow_function_expression([], t.assignment_expression(
 									t.clone(value_expr),
 									t.call_expression(t.identifier('@get_checked_values'), [
@@ -487,11 +496,20 @@ export function transform_template (template, source) {
 									]),
 								));
 							}
+							// handle input number binding
+							else if (is_input_number && prop_name === 'value') {
+								event_fn = t.arrow_function_expression([], t.assignment_expression(
+									t.clone(value_expr),
+									t.call_expression(t.identifier('@to_number'), [
+										t.member_expression_from([elem_ident, 'value']),
+									]),
+								));
+							}
 							// handle everything else
 							else {
 								let event_target = is_component
 									? t.member_expression_from(['%event', 'detail'])
-									: is_checkbox
+									: is_input_checkbox
 										? t.member_expression_from([elem_ident, 'checked'])
 										: t.member_expression_from([elem_ident, 'value']);
 

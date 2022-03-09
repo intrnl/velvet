@@ -19,3 +19,7 @@ export let is = /*@__PURE__*/ Object.is;
 export let assign = /*@__PURE__*/ Object.assign;
 
 export let is_function = (x) => typeof x === 'function';
+
+export function to_number (value) {
+	return value === '' ? null : +value;
+}

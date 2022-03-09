@@ -211,6 +211,15 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
+	it('binding input number', () => {
+		let template = `<input type=number :value={value}>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
 	it('fails on binding with no value', () => {
 		let template = `<input :value>`;
 
