@@ -53,7 +53,7 @@ exports[`attribute > binding checkbox expression 1`] = `
 "let %%template0 = @html(\\"<input type=\\\\\\"checkbox\\\\\\" />\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
-$: %child0[\\"value\\"] = value;
+$: %child0[\\"checked\\"] = value;
 @on(%child0, \\"input\\", () => value = %child0.checked);
 @append($$root, %fragment0);
 "

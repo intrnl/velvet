@@ -185,7 +185,7 @@ describe('attribute', () => {
 	});
 
 	it('binding checkbox expression', () => {
-		let template = `<input type=checkbox :value={value}>`;
+		let template = `<input type=checkbox :checked={value}>`;
 
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);

@@ -470,14 +470,14 @@ export function transform_template (template, source) {
 						}
 
 						if (is_binding) {
-							let event_name = is_component
-								? `update:${prop_name}`
-								: `input`;
+							let event_name = `update:${prop_name}`;
 
 							let event_fn;
 
 							// handle checkbox group binding
 							if (is_input_checkbox && prop_name === 'group') {
+								event_name = 'input';
+
 								event_fn = t.arrow_function_expression([], t.assignment_expression(
 									t.clone(value_expr),
 									t.call_expression(t.identifier('@get_checked_values'), [
@@ -489,6 +489,8 @@ export function transform_template (template, source) {
 							}
 							// handle select value binding
 							else if (is_select && prop_name === 'value') {
+								event_name = 'input';
+
 								event_fn = t.arrow_function_expression([], t.assignment_expression(
 									t.clone(value_expr),
 									t.call_expression(t.identifier('@get_select_values'), [
@@ -498,6 +500,8 @@ export function transform_template (template, source) {
 							}
 							// handle input number binding
 							else if (is_input_number && prop_name === 'value') {
+								event_name = 'input';
+
 								event_fn = t.arrow_function_expression([], t.assignment_expression(
 									t.clone(value_expr),
 									t.call_expression(t.identifier('@to_number'), [
@@ -505,17 +509,32 @@ export function transform_template (template, source) {
 									]),
 								));
 							}
+							// handle input
+							else if (is_input) {
+								event_name = 'input';
+
+								if (prop_name !== 'value' && prop_name !== 'checked') {
+									throw create_error(
+										`invalid binding property "${prop_name}" for input element`,
+										source,
+										start,
+										end
+									);
+								}
+
+								event_fn = t.arrow_function_expression([], t.assignment_expression(
+									t.clone(value_expr),
+									t.member_expression_from([elem_ident, prop_name]),
+								));
+							}
 							// handle everything else
 							else {
-								let event_target = is_component
-									? t.member_expression_from(['%event', 'detail'])
-									: is_input_checkbox
-										? t.member_expression_from([elem_ident, 'checked'])
-										: t.member_expression_from([elem_ident, 'value']);
-
 								event_fn = t.arrow_function_expression(
-									is_component ? [t.identifier('%event')] : [],
-									t.assignment_expression(t.clone(value_expr), event_target),
+									[t.identifier('%event')],
+									t.assignment_expression(
+										t.clone(value_expr),
+										t.member_expression_from(['%event', 'detail'])
+									),
 								);
 							}
 
