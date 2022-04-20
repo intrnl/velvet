@@ -416,7 +416,7 @@ let %block1 = ($$root, result) => {
 `;
 
 exports[`comment > comment inbetween text 1`] = `
-"let %%template0 = @html(\\"foo bar baz\\");
+"let %%template0 = @html(\\"foo bar baz buzzbazz\\");
 let %fragment0 = @clone(%template0);
 @append($$root, %fragment0);
 "

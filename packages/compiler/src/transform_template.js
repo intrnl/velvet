@@ -110,16 +110,36 @@ export function transform_template (template, source) {
 
 				return;
 			}
-
+		},
+		leave (node, parent, key, index) {
 			// remove comment node
 			if (node.type === 'Comment') {
 				return walk.remove;
 			}
-		},
-		leave (node, parent, key, index) {
+
 			// handle text node
 			if (node.type === 'Text' && parent.type !== 'Attribute') {
 				let value = node.value;
+
+				let next_node = parent.children[index + 1];
+				let next_type = next_node && next_node.type;
+
+				// merge if next children is a text node
+				if (next_type === 'Text') {
+					next_node.value = value + next_node.value;
+					return walk.remove;
+				}
+
+				// or if next children is a comment node and a text node
+				if (next_type === 'Comment') {
+					let next_next_node = parent.children[index + 2];
+					let next_next_type = next_next_node && next_next_node.type;
+
+					if (next_next_type === 'Text') {
+						next_next_node.value = value + next_next_node.value;
+						return walk.remove;
+					}
+				}
 
 				// trim leading and trailing if parent is fragment, remove if empty
 				if (parent.type === 'Fragment') {
@@ -132,13 +152,6 @@ export function transform_template (template, source) {
 					if (is_last) {
 						value = value.trimEnd();
 					}
-				}
-
-				// trim trailing if the next children is a comment
-				// ideally we would be trimming leading instead since trimStart performs
-				// faster, but comment nodes would've been removed by then
-				if (parent.children[index + 1]?.type === 'Comment') {
-					value = value.trimEnd();
 				}
 
 				// trim consecutive whitespace
