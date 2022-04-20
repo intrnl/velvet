@@ -1,3 +1,4 @@
+import { append } from './dom.js';
 import { ref, scope, access, cleanup } from './reactivity.js';
 import { hyphenate, camelize, assign, is_function } from './utils.js';
 import { Symbol, Object } from './globals.js';
@@ -68,13 +69,14 @@ export class VelvetComponent extends HTMLElement {
 					cleanup(ret);
 				}
 
-				for (let style of styles) {
-					if (init_ccss && style instanceof CSSStyleSheet) {
-						root.adoptedStyleSheets.push(style);
+				if (document.adoptedStyleSheets) {
+					if (init_ccss) {
+						root.adoptedStyleSheets = styles;
 					}
-					else if (style instanceof HTMLElement) {
-						let cloned = style.cloneNode(true);
-						root.appendChild(cloned);
+				}
+				else {
+					for (let style of styles) {
+						append(root, style.cloneNode(true));
 					}
 				}
 
