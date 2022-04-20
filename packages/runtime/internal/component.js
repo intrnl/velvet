@@ -12,6 +12,7 @@ export let default_value = Symbol();
 export class VelvetComponent extends HTMLElement {
 	// static $c: setup function
 	// static $d: prop definitions
+	// static $s: stylesheets
 
 	/** is mounted */
 	$m = false;
@@ -42,11 +43,19 @@ export class VelvetComponent extends HTMLElement {
 		if (!host.$m) {
 			host.$m = true;
 
-			let root = host.shadowRoot || host.attachShadow({ mode: 'open' });
-
 			let setup = host.constructor.$c;
+			let styles = host.constructor.$s;
+
 			let instance = host.$c;
 			let hooks = host.$h;
+
+			let root = host.shadowRoot;
+			let init_ccss = false;
+
+			if (!root) {
+				root = host.attachShadow({ mode: 'open' });
+				init_ccss = true;
+			}
 
 			let prev_host = curr_host;
 
@@ -57,6 +66,15 @@ export class VelvetComponent extends HTMLElement {
 				for (let hook of hooks) {
 					let ret = hook();
 					cleanup(ret);
+				}
+
+				for (let style of styles) {
+					if (init_ccss && style instanceof CSSStyleSheet) {
+						root.adoptedStyleSheets.push(style);
+					}
+					else if (style instanceof HTMLElement) {
+						root.appendChild(style);
+					}
 				}
 
 				hooks.length = 0;
@@ -90,12 +108,13 @@ export class VelvetComponent extends HTMLElement {
 }
 
 
-export function define (tag, setup, definition) {
+export function define (tag, setup, definition, styles) {
 	class Component extends VelvetComponent {
 		static observedAttributes = Object.keys(definition).map(hyphenate);
 
 		static $c = setup;
 		static $d = definition;
+		static $s = styles;
 	}
 
 	for (let prop in definition) {
@@ -119,6 +138,20 @@ export function define (tag, setup, definition) {
 	}
 
 	return Component;
+}
+
+export function css (text) {
+	if (!document.adoptedStyleSheets) {
+		const style = document.createElement('style');
+		style.textContent = text;
+
+		return style;
+	}
+
+	const style = new CSSStyleSheet();
+	style.replaceSync(text);
+
+	return style;
 }
 
 export function prop (index, value) {
