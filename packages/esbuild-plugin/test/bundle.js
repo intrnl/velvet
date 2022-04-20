@@ -1,6 +1,5 @@
 import { build } from 'esbuild';
-import velvetPlugin from '../src/index.js';
-
+import velvetPlugin, { ccssPlugin } from '../src/index.js';
 
 await build({
 	entryPoints: ['./App.velvet'],
@@ -11,6 +10,7 @@ await build({
 	format: 'esm',
 
 	plugins: [
-		velvetPlugin({ minifyCSS: true }),
+		velvetPlugin({ minifyCSS: true, cache: false }),
+		ccssPlugin(),
 	],
 });

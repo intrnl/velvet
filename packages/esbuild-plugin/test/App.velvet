@@ -11,7 +11,7 @@
 </button>
 
 <style>
-	@import './reset.css';
+	@import url('./reset.module.css');
 
 	button {
 		background-color: lightgray;

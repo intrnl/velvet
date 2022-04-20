@@ -7,19 +7,10 @@ import { compile, COMPILER_VERSION, CompilerError } from '@intrnl/velvet-compile
 import { FSCache, getProjectRoot } from '@intrnl/fs-cache';
 
 
-let PLUGIN_VERSION = '0.2.0';
+let PLUGIN_VERSION = '0.3.0';
 
-/** @type {import('esbuild').Plugin} */
-let ignore_url_plugin = {
-	name: '#ignore-url',
-	setup (build) {
-		build.onResolve({ filter: /./ }, (args) => {
-			if (args.kind === 'url-token' && !args.path.endsWith('.css')) {
-				return { path: args.path, external: true };
-			}
-		});
-	},
-};
+
+export { default as ccssPlugin } from './ccss_plugin.js';
 
 /**
  * @param {*} options
@@ -104,7 +95,7 @@ export default function velvet_plugin (options = {}) {
 				let css_result = await bundle_css(filename, css_source, minify_css);
 				dependencies.push(...css_result.dependencies);
 
-				return css_result.css;
+				return css_result;
 			},
 		});
 
@@ -112,6 +103,25 @@ export default function velvet_plugin (options = {}) {
 	}
 
 	async function bundle_css (filename, source, minify) {
+		let dependencies = [];
+
+		/** @type {import('esbuild').Plugin} */
+		let external_resolve_plugin = {
+			name: '#external-resolve',
+			setup (build) {
+				build.onResolve({ filter: /./ }, (args) => {
+					if (args.kind === 'url-token') {
+						return { path: args.path, external: true };
+					}
+				});
+
+				build.onLoad({ filter: /./ }, (args) => {
+					dependencies.push(args.path);
+					return { contents: '', loader: 'css' };
+				})
+			}
+		};
+
 		let result = await build({
 			stdin: {
 				loader: 'css',
@@ -119,21 +129,19 @@ export default function velvet_plugin (options = {}) {
 				sourcefile: path.basename(filename),
 				resolveDir: path.dirname(filename),
 			},
-			metafile: true,
 			bundle: true,
 			splitting: false,
 			minify: minify,
 			write: false,
 			plugins: [
-				ignore_url_plugin,
+				external_resolve_plugin,
 			],
 		});
 
 
 		return {
 			css: result.outputFiles[0].text.trimEnd(),
-			dependencies: Object.keys(result.metafile.inputs)
-				.map((name) => path.resolve(name)),
+			dependencies: dependencies,
 		};
 	}
 }
