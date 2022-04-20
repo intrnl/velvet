@@ -22,9 +22,9 @@ export default function ccss_plugin (options = {}) {
 					minify: minify,
 				});
 
-				const js = (
+				let js = (
 					'import { css } from "@intrnl/velvet/internal";\n' +
-					`export default css(${JSON.stringify(result.code)});\n`
+					`export default css(${JSON.stringify(result.code.trim())});\n`
 				);
 
 				return {
