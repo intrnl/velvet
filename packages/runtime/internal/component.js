@@ -9,9 +9,9 @@ import { Symbol, Object } from './globals.js';
 export let curr_host = null;
 export let default_value = Symbol();
 
-class VelvetComponent extends HTMLElement {
-	/** setup function */
-	$s;
+export class VelvetComponent extends HTMLElement {
+	// static $c: setup function
+	// static $d: prop definitions
 
 	/** is mounted */
 	$m = false;
@@ -22,13 +22,13 @@ class VelvetComponent extends HTMLElement {
 	/** on mount hooks */
 	$h = [];
 
-	constructor (setup, definition) {
+	constructor () {
 		super();
 
 		let host = this;
 		let props = host.$p;
 
-		host.$s = setup;
+		let definition = host.constructor.$d;
 
 		for (let prop in definition) {
 			let index = definition[prop];
@@ -44,7 +44,7 @@ class VelvetComponent extends HTMLElement {
 
 			let root = host.shadowRoot || host.attachShadow({ mode: 'open' });
 
-			let setup = host.$s;
+			let setup = host.constructor.$c;
 			let instance = host.$c;
 			let hooks = host.$h;
 
@@ -92,12 +92,10 @@ class VelvetComponent extends HTMLElement {
 
 export function define (tag, setup, definition) {
 	class Component extends VelvetComponent {
-		static tagName = tag;
 		static observedAttributes = Object.keys(definition).map(hyphenate);
 
-		constructor () {
-			super(setup, definition);
-		}
+		static $c = setup;
+		static $d = definition;
 	}
 
 	for (let prop in definition) {
