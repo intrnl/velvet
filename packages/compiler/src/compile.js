@@ -23,9 +23,10 @@ function* _compile (source, options = {}) {
 	let template = parse_template(source);
 
 	// collect specialities
-	let mod;
-	let script;
-	let style;
+	let module_node;
+	let script_node;
+	let style_node;
+	let style_value = null;
 
 	for (let index = 0; index < template.children.length; index++) {
 		let node = template.children[index];
@@ -46,7 +47,7 @@ function* _compile (source, options = {}) {
 						node.end,
 					);
 				}
-				if (mod) {
+				if (module_node) {
 					throw create_error(
 						'there can only be one root-level <script context="module"> element',
 						source,
@@ -55,12 +56,12 @@ function* _compile (source, options = {}) {
 					);
 				}
 
-				mod = node;
+				module_node = node;
 				template.children.splice(index--, 1);
 				continue;
 			}
 
-			if (script) {
+			if (script_node) {
 				throw create_error(
 					'there can only be one root-level <script> element',
 					source,
@@ -69,13 +70,13 @@ function* _compile (source, options = {}) {
 				);
 			}
 
-			script = node;
+			script_node = node;
 			template.children.splice(index--, 1);
 			continue;
 		}
 
 		if (node.name === 'style') {
-			if (style) {
+			if (style_node) {
 				throw create_error(
 					'there can be only one root-level <style> element',
 					source,
@@ -84,30 +85,35 @@ function* _compile (source, options = {}) {
 				);
 			}
 
-			style = node;
+			style_node = node;
 			template.children.splice(index--, 1);
 			continue;
 		}
 	}
 
 	// transform specialities
-	if (style) {
-		let text_node = style.children[0];
+	if (style_node) {
+		let text_node = style_node.children[0];
 		let value = text_node.value;
 
 		if (css) {
 			value = yield* wrap(css)(value);
 		}
 
-		text_node.value = value;
+		if (typeof value === 'string') {
+			value = {
+				css: value,
+				dependencies: [],
+			}
+		}
 
-		template.children.push(style);
+		style_value = value;
 	}
 
 	let program = transform_template(template, source);
 
-	if (script) {
-		let text_node = script.children[0];
+	if (script_node) {
+		let text_node = script_node.children[0];
 		let text_start = text_node.start;
 		let prog;
 
@@ -123,10 +129,10 @@ function* _compile (source, options = {}) {
 	}
 
 	let { props_idx } = transform_script(program, source);
-	finalize_template(program, name, props_idx);
+	finalize_template(program, name, props_idx, style_value);
 
-	if (mod) {
-		let text_node = mod.children[0];
+	if (module_node) {
+		let text_node = module_node.children[0];
 		let text_start = text_node.start;
 		let prog;
 

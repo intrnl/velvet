@@ -234,7 +234,7 @@ import {bar} from 'bar';
 function setup($$root, $$host) {
   console.log(bar);
 }
-export default define(null, setup, {});
+export default define(null, setup, {}, []);
 "
 `;
 

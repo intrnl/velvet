@@ -14,7 +14,7 @@ function setup($$root, $$host) {
   on(child1, \\"input\\", () => selected(get_checked_values(selected(access), child1.value, child1.checked)));
   append($$root, fragment0);
 }
-export default define(null, setup, {});
+export default define(null, setup, {}, []);
 "
 `;
 
@@ -37,7 +37,7 @@ function setup($$root, $$host) {
   on(child1, \\"input\\", () => state(access).selected = get_checked_values(state(access).selected, child1.value, child1.checked));
   append($$root, fragment0);
 }
-export default define(null, setup, {});
+export default define(null, setup, {}, []);
 "
 `;
 
@@ -57,7 +57,7 @@ function setup($$root, $$host) {
   show(marker0, () => foo ? block1 : null);
   append($$root, fragment0);
 }
-export default define(null, setup, {});
+export default define(null, setup, {}, []);
 "
 `;
 
@@ -84,7 +84,7 @@ function setup($$root, $$host) {
   show(marker0, () => foo ? block1 : block2);
   append($$root, fragment0);
 }
-export default define(null, setup, {});
+export default define(null, setup, {}, []);
 "
 `;
 
@@ -117,7 +117,7 @@ function setup($$root, $$host) {
   show(marker3, () => foo ? block1 : null);
   append($$root, fragment0);
 }
-export default define(null, setup, {});
+export default define(null, setup, {}, []);
 "
 `;
 
@@ -143,7 +143,7 @@ function setup($$root, $$host) {
   show(marker3, () => foo ? block1 : null);
   append($$root, fragment0);
 }
-export default define(null, setup, {});
+export default define(null, setup, {}, []);
 "
 `;
 
@@ -170,7 +170,7 @@ function setup($$root, $$host) {
   show(marker3, () => foo ? block1 : null);
   append($$root, fragment0);
 }
-export default define(null, setup, {});
+export default define(null, setup, {}, []);
 "
 `;
 
@@ -196,7 +196,7 @@ function setup($$root, $$host) {
   show(marker3, () => foo ? block1 : null);
   append($$root, fragment0);
 }
-export default define(null, setup, {});
+export default define(null, setup, {}, []);
 "
 `;
 
@@ -210,7 +210,7 @@ function setup($$root, $$host) {
   text(marker0, () => number);
   append($$root, fragment0);
 }
-export default define(null, setup, {});
+export default define(null, setup, {}, []);
 "
 `;
 
@@ -232,7 +232,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {
   number: 0
-});
+}, []);
 "
 `;
 
@@ -287,7 +287,7 @@ function setup($$root, $$host) {
   promise$1(marker4, block1, block2, null, () => promise);
   append($$root, fragment0);
 }
-export default define(null, setup, {});
+export default define(null, setup, {}, []);
 "
 `;
 
@@ -311,7 +311,7 @@ function setup($$root, $$host) {
   promise$1(marker2, null, block1, null, () => promise);
   append($$root, fragment0);
 }
-export default define(null, setup, {});
+export default define(null, setup, {}, []);
 "
 `;
 
@@ -335,7 +335,7 @@ function setup($$root, $$host) {
   show(marker2, () => foo ? block1 : null);
   append($$root, fragment0);
 }
-export default define(null, setup, {});
+export default define(null, setup, {}, []);
 "
 `;
 
@@ -368,7 +368,7 @@ function setup($$root, $$host) {
   show(marker4, () => foo ? block1 : block2);
   append($$root, fragment0);
 }
-export default define(null, setup, {});
+export default define(null, setup, {}, []);
 "
 `;
 
@@ -393,7 +393,7 @@ function setup($$root, $$host) {
   show(marker2, () => show_favorite ? block1 : null);
   append($$root, fragment0);
 }
-export default define(null, setup, {});
+export default define(null, setup, {}, []);
 "
 `;
 
@@ -418,7 +418,7 @@ function setup($$root, $$host) {
   show(marker1, () => foo ? block1 : null);
   append($$root, fragment0);
 }
-export default define(null, setup, {});
+export default define(null, setup, {}, []);
 "
 `;
 
@@ -453,7 +453,7 @@ function setup($$root, $$host) {
   show(marker5, () => foo ? block1 : null);
   append($$root, fragment0);
 }
-export default define(null, setup, {});
+export default define(null, setup, {}, []);
 "
 `;
 
@@ -490,7 +490,7 @@ function setup($$root, $$host) {
   text(marker5, () => $foo(access));
   append($$root, fragment0);
 }
-export default define(null, setup, {});
+export default define(null, setup, {}, []);
 "
 `;
 
@@ -516,7 +516,7 @@ function setup($$root, $$host) {
   show(marker3, () => foo ? block1 : null);
   append($$root, fragment0);
 }
-export default define(null, setup, {});
+export default define(null, setup, {}, []);
 "
 `;
 
@@ -532,7 +532,7 @@ function setup($$root, $$host) {
   text(marker0, () => $foo(access));
   append($$root, fragment0);
 }
-export default define(null, setup, {});
+export default define(null, setup, {}, []);
 "
 `;
 
@@ -544,4 +544,29 @@ exports[`store > throws on lone $ 1`] = `
                      ^
 4:       </script>
 5:     "
+`;
+
+exports[`style > imports 1`] = `
+"import {html, clone, append, css, define} from \\"@intrnl/velvet/internal\\";
+import style0 from \\"./reset.css\\";
+let template0 = html(\\"<div class=\\\\\\"foo\\\\\\">Hello</div>\\");
+let style1 = css(\\".foo { color: blue }\\");
+function setup($$root, $$host) {
+  let fragment0 = clone(template0);
+  append($$root, fragment0);
+}
+export default define(null, setup, {}, [style0, style1]);
+"
+`;
+
+exports[`style > inline 1`] = `
+"import {html, clone, append, css, define} from \\"@intrnl/velvet/internal\\";
+let template0 = html(\\"<div class=\\\\\\"foo\\\\\\">Hello</div>\\");
+let style0 = css(\\".foo { color: red; }\\");
+function setup($$root, $$host) {
+  let fragment0 = clone(template0);
+  append($$root, fragment0);
+}
+export default define(null, setup, {}, [style0]);
+"
 `;

@@ -1003,7 +1003,7 @@ describe('program finalizer', () => {
 		`);
 
 		let { props_idx } = transform_script(program);
-		finalize_template(program, null, props_idx);
+		finalize_template(program, null, props_idx, null);
 		finalize_program(program);
 
 		let result = print(program);

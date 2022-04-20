@@ -370,6 +370,17 @@ export function import_specifier (local, imported) {
 }
 
 /**
+ * @param {import('estree').Identifier} local
+ * @returns {import('estree').ImportDefaultSpecifier}
+ */
+export function import_default_specifier (local) {
+	return {
+		type: 'ImportDefaultSpecifier',
+		local,
+	};
+}
+
+/**
  * @param {import('estree').Declaration | import('estree').Expression} declaration
  * @returns {import('estree').ExportDefaultDeclaration}
  */

@@ -548,7 +548,33 @@ export function transform_script (program, source) {
 }
 
 
-export function finalize_template (program, name, props_idx) {
+export function finalize_template (program, name, props_idx, style) {
+	let style_elems = [];
+
+	if (style) {
+		let c = 0;
+
+		for (let dep of style.dependencies) {
+			let ident = t.identifier('%%style' + (c++));
+
+			let specifier = t.import_default_specifier(ident);
+			let declaration = t.import_declaration([specifier], t.literal(dep));
+
+			program.body.push(declaration);
+			style_elems.push(ident);
+		}
+
+		if (style.css) {
+			let ident = t.identifier('%%style' + (c++));
+
+			let expr = t.call_expression(t.identifier('@css'), [t.literal(style.css)]);
+			let decl = t.variable_declaration('let', [t.variable_declarator(ident, expr)]);
+
+			program.body.push(decl);
+			style_elems.push(ident);
+		}
+	}
+
 	let setup_ident = t.identifier('%setup');
 
 	let setup_decl = t.function_declaration(
@@ -558,7 +584,14 @@ export function finalize_template (program, name, props_idx) {
 	);
 
 	let props_decl = t.object_expression(props_idx.map((name, idx) => t.property(t.identifier(name), t.literal(idx))));
-	let setup_call = t.call_expression(t.identifier('@define'), [t.literal(name), setup_ident, props_decl]);
+	let style_decl = t.array_expression(style_elems);
+
+	let setup_call = t.call_expression(t.identifier('@define'), [
+		t.literal(name),
+		setup_ident,
+		props_decl,
+		style_decl,
+	]);
 
 	program.body.push(setup_decl);
 	program.body.push(t.export_default_declaration(setup_call));
@@ -647,6 +680,22 @@ export function finalize_program (program, mod = '@intrnl/velvet/internal') {
 
 	// hoist!
 	if (hoisted_statements.length) {
+		// make sure ImportDeclaration(s) are sorted to the top
+		hoisted_statements.sort((a, b) => {
+			let a_type = a.type;
+			let b_type = b.type;
+
+			if (a_type === 'ImportDeclaration' && b_type !== 'ImportDeclaration') {
+				return -1;
+			}
+
+			if (a_type !== 'ImportDeclaration' && b_type === 'ImportDeclaration') {
+				return 1;
+			}
+
+			return 0;
+		});
+
 		program.body = [...hoisted_statements, ...program.body];
 	}
 

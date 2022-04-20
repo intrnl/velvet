@@ -365,6 +365,36 @@ describe('conditional logic', () => {
 	});
 });
 
+describe('style', () => {
+	it('inline', () => {
+		let template = `
+			<style>.foo { color: red; }</style>
+			<div class="foo">Hello</div>
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('imports', () => {
+		let template = `
+			<style>.foo { color: red; }</style>
+			<div class="foo">Hello</div>
+		`;
+
+		let result = compileSync(template, {
+			css: () => {
+				return {
+					css: '.foo { color: blue }',
+					dependencies: ['./reset.css'],
+				};
+			},
+		});
+
+		expect(result).toMatchSnapshot();
+	})
+});
+
 it('componentize', () => {
 	expect(componentize('foo.js', 'x')).toBe('x-foo');
 	expect(componentize('HomePage.js', 'x')).toBe('x-home-page');
