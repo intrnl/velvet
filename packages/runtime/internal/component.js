@@ -73,7 +73,8 @@ export class VelvetComponent extends HTMLElement {
 						root.adoptedStyleSheets.push(style);
 					}
 					else if (style instanceof HTMLElement) {
-						root.appendChild(style);
+						let cloned = style.cloneNode(true);
+						root.appendChild(cloned);
 					}
 				}
 
