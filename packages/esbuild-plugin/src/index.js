@@ -36,7 +36,7 @@ export default function velvet_plugin (options = {}) {
 			build.onLoad({ filter: include, namespace: 'file' }, async (args) => {
 				let { path: filename } = args;
 
-				const key = [
+				let key = [
 					PLUGIN_VERSION,
 					COMPILER_VERSION,
 					compileOptions,
@@ -44,7 +44,7 @@ export default function velvet_plugin (options = {}) {
 				];
 
 				try {
-					const result = cache
+					let result = cache
 						? await fs_cache.get(filename, key, () => loader(filename, compileOptions, minify_css))
 						: await loader(filename, compileOptions, minify_css);
 
