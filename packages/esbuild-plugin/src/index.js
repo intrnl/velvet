@@ -7,7 +7,7 @@ import { compile, COMPILER_VERSION, CompilerError } from '@intrnl/velvet-compile
 import { FSCache, getProjectRoot } from '@intrnl/fs-cache';
 
 
-let PLUGIN_VERSION = '0.3.1';
+let PLUGIN_VERSION = '0.3.2';
 
 
 export { default as ccssPlugin } from './ccss_plugin.js';
