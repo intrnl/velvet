@@ -7,7 +7,7 @@ import { compile, COMPILER_VERSION, CompilerError } from '@intrnl/velvet-compile
 import { FSCache, getProjectRoot } from '@intrnl/fs-cache';
 
 
-let PLUGIN_VERSION = '0.3.0';
+let PLUGIN_VERSION = '0.3.1';
 
 
 export { default as ccssPlugin } from './ccss_plugin.js';
@@ -93,8 +93,6 @@ export default function velvet_plugin (options = {}) {
 				}
 
 				let css_result = await bundle_css(filename, css_source, minify_css);
-				dependencies.push(...css_result.dependencies);
-
 				return css_result;
 			},
 		});
@@ -113,10 +111,12 @@ export default function velvet_plugin (options = {}) {
 					if (args.kind === 'url-token') {
 						return { path: args.path, external: true };
 					}
+
+					dependencies.push(args.path);
+					return { path: args.path, namespace: 'noop' };
 				});
 
-				build.onLoad({ filter: /./ }, (args) => {
-					dependencies.push(args.path);
+				build.onLoad({ filter: /./, namespace: 'noop' }, () => {
 					return { contents: '', loader: 'css' };
 				})
 			}
