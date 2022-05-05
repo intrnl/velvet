@@ -297,6 +297,15 @@ describe('attribute', () => {
 
 		expect(print(program)).toMatchSnapshot();
 	});
+
+	it('ifdef attributes', () => {
+		let template = `<a target?={target}></a>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
 });
 
 describe('element', () => {

@@ -81,6 +81,20 @@ export function attr (node, name, value) {
 	node.setAttribute(name, value);
 }
 
+export function attr_ifdef (node, name, value) {
+	let map = node.$ifd || (node.$ifd = {});
+	let def = value != null;
+
+	if (def) {
+		attr(node, name, value);
+	}
+	else if (map[name]) {
+		node.removeAttribute(name);
+	}
+
+	map[name] = def;
+}
+
 export function get_checked_values (array, value, checked) {
 	array = [...array];
 

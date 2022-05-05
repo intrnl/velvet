@@ -67,10 +67,11 @@ export function transform_template (template, source) {
 					let is_toggle = attr_name[0] === '?';
 					let is_listen = attr_name[0] === '@';
 					let is_bind = attr_name[0] === ':';
+					let is_ifdef = attr_name[attr_name.length - 1] === '?';
 
 					let is_expr = attr_value && attr_value.type !== 'Text';
 
-					if (is_prop || is_toggle || is_listen || is_bind || is_expr) {
+					if (is_prop || is_toggle || is_listen || is_bind || is_ifdef || is_expr) {
 						continue;
 					}
 
@@ -603,6 +604,25 @@ export function transform_template (template, source) {
 						);
 
 						curr_scope.expressions.push(event_expr);
+						continue;
+					}
+
+					// handle attribute ifdef
+					if (attr_name[attr_name.length - 1] === '?') {
+						need_ident = true;
+
+						let attr_expr = t.labeled_statement(
+							t.identifier('$'),
+							t.expression_statement(
+								t.call_expression(t.identifier('@attr_ifdef'), [
+									t.identifier(elem_ident),
+									t.literal(attr_name.slice(0, -1)),
+									value_expr,
+								]),
+							),
+						)
+
+						curr_scope.expressions.push(attr_expr);
 						continue;
 					}
 
