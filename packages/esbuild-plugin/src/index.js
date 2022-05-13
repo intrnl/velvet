@@ -108,12 +108,14 @@ export default function velvet_plugin (options = {}) {
 			name: '#external-resolve',
 			setup (build) {
 				build.onResolve({ filter: /./ }, (args) => {
-					if (args.kind === 'url-token') {
-						return { path: args.path, external: true };
+					let filepath = args.path;
+
+					if (args.kind === 'url-token' || (/^(?:\/|[a-z]+:\/\/?)/i).test(filepath)) {
+						return { path: filepath, external: true };
 					}
 
-					dependencies.push(args.path);
-					return { path: args.path, namespace: 'noop' };
+					dependencies.push(filepath);
+					return { path: filepath, namespace: 'noop' };
 				});
 
 				build.onLoad({ filter: /./, namespace: 'noop' }, () => {
