@@ -35,7 +35,7 @@ export function traverse (node, indices) {
 export function replace (ref, node, adopt) {
 	ref.replaceWith(node);
 
-	if (adopt === true) {
+	if (adopt) {
 		let children = ref.childNodes;
 		let idx = 0;
 		let len = children.length;
