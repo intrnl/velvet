@@ -15,8 +15,18 @@ export function clone (template) {
 export function traverse (node, indices) {
 	let ref = node;
 
-	for (let index of indices) {
-		ref = ref.childNodes[index];
+	let i;
+	let il;
+	let x;
+	let j;
+
+	for (i = 0, il = indices.length; i < il; i++) {
+		x = indices[i];
+		ref = ref.firstChild;
+
+		for (j = 0; j < x; j++) {
+			ref = ref.nextSibling;
+		}
 	}
 
 	return ref;
@@ -25,8 +35,14 @@ export function traverse (node, indices) {
 export function replace (ref, node, adopt) {
 	ref.replaceWith(node);
 
-	if (adopt) {
-		node.append(...ref.childNodes);
+	if (adopt === true) {
+		let children = ref.childNodes;
+		let idx = 0;
+		let len = children.length;
+
+		for (; idx < len; idx++) {
+			node.appendChild(children[idx]);
+		}
 	}
 }
 
@@ -43,8 +59,11 @@ export function remove (node) {
 }
 
 export function remove_all (nodes) {
-	for (let node of nodes) {
-		remove(node);
+	let idx = 0;
+	let len = nodes.length;
+
+	for (; idx < len; idx++) {
+		remove(nodes[idx]);
 	}
 }
 
@@ -96,6 +115,7 @@ export function attr_ifdef (node, name, value) {
 }
 
 export function get_checked_values (array, value, checked) {
+	// this could be an iterable, so we need to spread.
 	array = [...array];
 
 	if (checked) {
