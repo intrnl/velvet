@@ -28,7 +28,7 @@ export default function velvet_plugin (options = {}) {
 		name: '@intrnl/esbuild-plugin-velvet',
 		async setup (build) {
 			let fs_cache = cache && new FSCache({
-				...await getProjectRoot('@intrnl/esbuild-plugin-vanilla-extract'),
+				...await getProjectRoot('@intrnl/esbuild-plugin-velvet'),
 			});
 
 			let minify_css = minifyCSS ?? build.initialOptions.minify;
