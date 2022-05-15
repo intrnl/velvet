@@ -1,5 +1,5 @@
 import { append } from './dom.js';
-import { ref, scope, access, cleanup } from './reactivity.js';
+import { ref, scope, access } from './reactivity.js';
 import { hyphenate, camelize, assign, is_function } from './utils.js';
 import { Symbol, Object } from './globals.js';
 
@@ -64,11 +64,6 @@ export class VelvetComponent extends HTMLElement {
 				curr_host = host;
 				instance.run(() => setup(root, host));
 
-				for (let hook of hooks) {
-					let ret = hook();
-					cleanup(ret);
-				}
-
 				if (document.adoptedStyleSheets) {
 					if (init_ccss) {
 						root.adoptedStyleSheets = styles;
@@ -77,6 +72,14 @@ export class VelvetComponent extends HTMLElement {
 				else {
 					for (let style of styles) {
 						append(root, style.cloneNode(true));
+					}
+				}
+
+				for (let hook of hooks) {
+					let ret = hook();
+
+					if (is_function(ret)) {
+						instance.c.push(ret);
 					}
 				}
 
