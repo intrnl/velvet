@@ -35,22 +35,29 @@ let %fragment0 = @clone(%template0);
 "
 `;
 
+exports[`attribute > attribute quotations 1`] = `
+"let %%template0 = @html(\\"<div a='foo bar' sq=\\\\\\"'\\\\\\" dq='\\\\\\"'></div>\\");
+let %fragment0 = @clone(%template0);
+@append($$root, %fragment0);
+"
+`;
+
 exports[`attribute > attribute unquoted 1`] = `
-"let %%template0 = @html(\\"<div class=\\\\\\"foo\\\\\\"></div>\\");
+"let %%template0 = @html(\\"<div class=foo></div>\\");
 let %fragment0 = @clone(%template0);
 @append($$root, %fragment0);
 "
 `;
 
 exports[`attribute > attribute unquoted 2`] = `
-"let %%template0 = @html(\\"<div class=\\\\\\"foo\\\\\\"></div>\\");
+"let %%template0 = @html(\\"<div class=foo></div>\\");
 let %fragment0 = @clone(%template0);
 @append($$root, %fragment0);
 "
 `;
 
 exports[`attribute > binding checkbox expression 1`] = `
-"let %%template0 = @html(\\"<input type=\\\\\\"checkbox\\\\\\" />\\");
+"let %%template0 = @html(\\"<input type=checkbox />\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
 $: %child0[\\"checked\\"] = value;
@@ -60,7 +67,7 @@ $: %child0[\\"checked\\"] = value;
 `;
 
 exports[`attribute > binding checkbox group 1`] = `
-"let %%template0 = @html(\\"<input type=\\\\\\"checkbox\\\\\\" />\\");
+"let %%template0 = @html(\\"<input type=checkbox />\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
 $: %child0.checked = selected.includes(%child0.value);
@@ -92,7 +99,7 @@ $: %child0[\\"value\\"] = value;
 `;
 
 exports[`attribute > binding input number 1`] = `
-"let %%template0 = @html(\\"<input type=\\\\\\"number\\\\\\" />\\");
+"let %%template0 = @html(\\"<input type=number />\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
 $: %child0[\\"value\\"] = value;
@@ -191,7 +198,7 @@ $: @attr_ifdef(%child0, \\"target\\", target);
 `;
 
 exports[`attribute > property checkbox group 1`] = `
-"let %%template0 = @html(\\"<input type=\\\\\\"checkbox\\\\\\" />\\");
+"let %%template0 = @html(\\"<input type=checkbox />\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
 $: %child0.checked = selected.includes(%child0.value);

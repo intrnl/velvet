@@ -2,7 +2,7 @@
 
 exports[`attribute > binding checkbox group 1`] = `
 "import {ref, html, clone, traverse, effect, access, on, get_checked_values, append, define} from \\"@intrnl/velvet/internal\\";
-let template0 = html(\\"<input type=\\\\\\"checkbox\\\\\\" value=\\\\\\"Apple\\\\\\" /> <input type=\\\\\\"checkbox\\\\\\" value=\\\\\\"Orange\\\\\\" />\\");
+let template0 = html(\\"<input type=checkbox value=Apple /> <input type=checkbox value=Orange />\\");
 function setup($$root, $$host) {
   let selected = ref(['Apple']);
   let fragment0 = clone(template0);
@@ -20,7 +20,7 @@ export default define(null, setup, {}, []);
 
 exports[`attribute > binding checkbox group nested 1`] = `
 "import {ref, html, clone, traverse, effect, access, on, get_checked_values, append, define} from \\"@intrnl/velvet/internal\\";
-let template0 = html(\\"<input type=\\\\\\"checkbox\\\\\\" value=\\\\\\"Apple\\\\\\" /> <input type=\\\\\\"checkbox\\\\\\" value=\\\\\\"Orange\\\\\\" />\\");
+let template0 = html(\\"<input type=checkbox value=Apple /> <input type=checkbox value=Orange />\\");
 function setup($$root, $$host) {
   let state = ref({
     selected: ['Apple']
@@ -549,7 +549,7 @@ exports[`store > throws on lone $ 1`] = `
 exports[`style > imports 1`] = `
 "import {html, clone, append, css, define} from \\"@intrnl/velvet/internal\\";
 import style0 from \\"./reset.css\\";
-let template0 = html(\\"<div class=\\\\\\"foo\\\\\\">Hello</div>\\");
+let template0 = html(\\"<div class=foo>Hello</div>\\");
 let style1 = css(\\".foo { color: blue }\\");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
@@ -561,7 +561,7 @@ export default define(null, setup, {}, [style0, style1]);
 
 exports[`style > inline 1`] = `
 "import {html, clone, append, css, define} from \\"@intrnl/velvet/internal\\";
-let template0 = html(\\"<div class=\\\\\\"foo\\\\\\">Hello</div>\\");
+let template0 = html(\\"<div class=foo>Hello</div>\\");
 let style0 = css(\\".foo { color: red; }\\");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);

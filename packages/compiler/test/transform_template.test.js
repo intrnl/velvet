@@ -24,6 +24,15 @@ describe('attribute', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 
+	it('attribute quotations', () => {
+		let template = `<div a="foo bar" sq="'" dq='"'></div>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
 	it('attribute expression', () => {
 		let template = `<div class={className}></div>`;
 

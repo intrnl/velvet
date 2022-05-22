@@ -80,9 +80,53 @@ export function transform_template (template, source) {
 					let value = attr_value && attr_value.value;
 
 					if (value) {
-						// make sure that double quotes are escaped
-						value = value.replace(/"/g, '&quot;');
-						curr_block.html += `="${value}"`;
+						// unquote attributes when possible
+
+						let has_dq = false;
+						let has_sq = false;
+						let needs_quote = false;
+
+						for (let idx = 0, len = value.length; idx < len; idx++) {
+							let ch = value[idx];
+
+							if (ch === '"') {
+								has_dq = true;
+								needs_quote = true;
+							}
+
+							if (ch === "'") {
+								has_sq = true;
+								needs_quote = true;
+							}
+
+							if (
+								ch === ' ' || ch === '\t' || ch === '\n' || ch === '\f' || ch === '\r' ||
+								ch === '`' || ch === '=' || ch === '<' || ch === '>'
+							) {
+								needs_quote = true;
+							}
+						}
+
+						if (needs_quote) {
+							let wrapper = "'";
+
+							if (has_dq && has_sq) {
+								wrapper = "'";
+								value = value.replace(/'/g, '&#39;');
+							}
+							else if (has_dq) {
+								// do nothing.
+								// wrapper = "'";
+							}
+							else if (has_sq) {
+								wrapper = '"';
+							}
+
+							curr_block.html += `=${wrapper}${value}${wrapper}`;
+						}
+						else {
+							curr_block.html += `=${value}`;
+						}
 					}
 				}
 
