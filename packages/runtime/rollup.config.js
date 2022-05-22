@@ -12,6 +12,8 @@ try {
 	mangleCache = JSON.parse(source);
 } catch {}
 
+let originalMangleCache = mangleCache;
+
 export default defineConfig({
 	input: {
 		'public': './src/public.js',
@@ -48,8 +50,27 @@ export default defineConfig({
 				};
 			},
 			closeBundle () {
-				fs.writeFileSync(mangleFile, JSON.stringify(mangleCache, null, '\t'));
+				if (isObjectInequal(originalMangleCache, mangleCache)) {
+					console.log('writing new mangle cache');
+					fs.writeFileSync(mangleFile, JSON.stringify(mangleCache, null, '\t') + '\n');
+				}
 			},
 		},
 	],
 });
+
+function isObjectInequal (a, b) {
+	for (let key in a) {
+		if (!(key in b)) {
+			return true;
+		}
+	}
+
+	for (let key in b) {
+		if (a[key] !== b[key]) {
+			return true;
+		}
+	}
+
+	return false;
+}
