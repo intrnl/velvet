@@ -151,7 +151,7 @@ exports[`attribute > class object expression 1`] = `
 let %fragment0 = @clone(%template0);
 @attr(%child0, \\"class\\", \\"foo\\");
 $: @class_toggle(%child0, \\"baz\\", baz);
-$: @class_toggle(%child0, computed, true);
+@class_toggle(%child0, computed, true);
 @append($$root, %fragment0);
 "
 `;
@@ -267,7 +267,7 @@ let %fragment0 = @clone(%template0);
 @attr(%child0, \\"style\\", \\"color:red\\");
 $: @style_set(%child0, \\"background\\", bg);
 $: @style_set(%child0, \\"--baz\\", baz);
-$: @style_set(%child0, computed, false);
+@style_set(%child0, computed, false);
 @append($$root, %fragment0);
 "
 `;

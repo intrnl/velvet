@@ -689,6 +689,7 @@ export function transform_template (template, source) {
 									);
 								}
 
+								let is_computed = prop.computed && prop.key.type !== 'Literal';
 								let prop_name = prop.key.type === 'Literal' ? prop.key.value : prop.key.name;
 								let prop_value = prop.value;
 
@@ -699,23 +700,27 @@ export function transform_template (template, source) {
 										continue;
 									}
 
-									if (!(prop.computed && prop.key.type !== 'Literal')) {
+									if (!is_computed) {
 										static_name && (static_name += ' ');
 										static_name += `${prop_name}`;
 										continue;
 									}
 								}
 
-								let class_expr = t.labeled_statement(
-									t.identifier('$'),
-									t.expression_statement(
-										t.call_expression(t.identifier('@class_toggle'), [
-											t.identifier(elem_ident),
-											prop.computed ? prop.key : t.literal(prop_name),
-											prop_value,
-										]),
-									),
+								let class_expr = t.expression_statement(
+									t.call_expression(t.identifier('@class_toggle'), [
+										t.identifier(elem_ident),
+										prop.computed ? prop.key : t.literal(prop_name),
+										prop_value,
+									]),
 								);
+
+								if (!is_computed) {
+									class_expr = t.labeled_statement(
+										t.identifier('$'),
+										class_expr,
+									);
+								}
 
 								exprs.push(class_expr);
 							}
@@ -752,6 +757,7 @@ export function transform_template (template, source) {
 									);
 								}
 
+								let is_computed = prop.computed && prop.key.type !== 'Literal';
 								let prop_name = prop.key.type === 'Literal' ? prop.key.value : prop.key.name;
 								let prop_value = prop.value;
 
@@ -762,23 +768,27 @@ export function transform_template (template, source) {
 										continue;
 									}
 
-									if (!(prop.computed && prop.key.type !== 'Literal')) {
+									if (!is_computed) {
 										static_styles && (static_styles += ';');
 										static_styles += `${prop_name}:${prop_value.value}`;
 										continue;
 									}
 								}
 
-								let style_expr = t.labeled_statement(
-									t.identifier('$'),
-									t.expression_statement(
-										t.call_expression(t.identifier('@style_set'), [
-											t.identifier(elem_ident),
-											prop.computed ? prop.key : t.literal(prop_name),
-											prop_value,
-										]),
-									),
+								let style_expr = t.expression_statement(
+									t.call_expression(t.identifier('@style_set'), [
+										t.identifier(elem_ident),
+										prop.computed ? prop.key : t.literal(prop_name),
+										prop_value,
+									]),
 								);
+
+								if (!is_computed) {
+									style_expr = t.labeled_statement(
+										t.identifier('$'),
+										style_expr,
+									);
+								}
 
 								exprs.push(style_expr);
 							}
