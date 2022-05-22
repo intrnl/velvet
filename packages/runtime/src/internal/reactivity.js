@@ -3,8 +3,8 @@ import { is, is_function } from './utils.js';
 import { Symbol, Set } from './globals.js';
 
 
-export let curr_track_bit = 1;
-export let curr_track_depth = 0;
+let curr_track_bit = 1;
+let curr_track_depth = 0;
 
 /** @type {?Scope} */
 export let curr_scope = null;
@@ -52,7 +52,7 @@ export function computed (getter) {
 }
 
 
-class Scope {
+export class Scope {
 	/** @type {?true} disabled */
 	_disabled;
 
@@ -136,7 +136,7 @@ class Scope {
 	}
 }
 
-class Effect {
+export class Effect {
 	/** ref dependencies */
 	_dependencies = [];
 	/** fn */
@@ -219,7 +219,7 @@ class Effect {
 	}
 }
 
-class Ref {
+export class Ref {
 	/** effect dependencies */
 	_dependencies = create_dep();
 	/** current value */
@@ -253,7 +253,7 @@ class Ref {
 	}
 }
 
-class Computed {
+export class Computed {
 	/** effect dependencies */
 	_dependencies = create_dep();
 	/** dirty */

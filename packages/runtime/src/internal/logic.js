@@ -1,4 +1,4 @@
-import { ref, effect, scope, cleanup, access } from './reactivity.js';
+import { ref, effect, scope, cleanup, access, Scope } from './reactivity.js';
 import { replace, remove_parts } from './dom.js';
 import { is } from './utils.js';
 
@@ -42,7 +42,7 @@ export function each (marker, block, expression) {
 	// we can't make the scope instances ahead of time, a cleanup hook is required
 	// to clean up these detached scopes.
 
-	// [instance, marker, item]
+	/** @type {[instance: Scope, marker: Comment, item: any][]} */
 	let parts = [];
 
 	effect(() => {
@@ -75,7 +75,7 @@ export function each (marker, block, expression) {
 			let end = parts[parts_len - 1][1];
 
 			for (; index < parts_len; index++) {
-				parts[index][0].stop();
+				parts[index][0]._stop();
 			}
 
 			destroy_block(start, end);
@@ -86,7 +86,7 @@ export function each (marker, block, expression) {
 	cleanup(() => {
 		for (let part of parts) {
 			let instance = part[0];
-			instance.stop();
+			instance._stop();
 		}
 	});
 }
