@@ -40,7 +40,7 @@ export function replace (ref, node, adopt) {
 		let len = children.length;
 
 		while (len--) {
-			node.appendChild(children[idx]);
+			node.appendChild(children[0]);
 		}
 	}
 }
