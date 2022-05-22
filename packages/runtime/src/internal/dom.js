@@ -113,6 +113,14 @@ export function attr_ifdef (node, name, value) {
 	map[name] = def;
 }
 
+export function class_toggle (node, name, value) {
+	node.classList.toggle(name, value);
+}
+
+export function style_set (node, name, value) {
+	node.style.setProperty(name, value);
+}
+
 export function get_checked_values (array, value, checked) {
 	// this could be an iterable, so we need to spread.
 	array = [...array];

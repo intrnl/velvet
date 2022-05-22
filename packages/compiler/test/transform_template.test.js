@@ -315,6 +315,24 @@ describe('attribute', () => {
 
 		expect(print(program)).toMatchSnapshot();
 	});
+
+	it('class object expression', () => {
+		let template = `<div class={{ foo: true, bar: false, baz: baz, [computed]: true }}></div>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('style object expression', () => {
+		let template = `<div style={{ color: 'red', background: bg, '--foo': null, '--baz': baz, [computed]: false }}></div>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
 });
 
 describe('element', () => {

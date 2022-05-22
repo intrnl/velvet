@@ -670,7 +670,137 @@ export function transform_template (template, source) {
 						continue;
 					}
 
-					if (is_inline || (attr_value && attr_value.type !== 'Text')) {
+					let is_expression = attr_value && attr_value.type !== 'Text';
+
+					if (is_expression) {
+						if (attr_name === 'class' && attr_value.expression.type === 'ObjectExpression') {
+							let obj = attr_value.expression;
+
+							let static_name = '';
+							let exprs = [];
+
+							for (let prop of obj.properties) {
+								if (prop.type === 'SpreadElement') {
+									throw create_error(
+										`invalid spread in class expression`,
+										source,
+										start,
+										end
+									);
+								}
+
+								let prop_name = prop.key.type === 'Literal' ? prop.key.value : prop.key.name;
+								let prop_value = prop.value;
+
+								if (prop_value.type === 'Literal') {
+									let value = prop_value.value;
+
+									if (!value) {
+										continue;
+									}
+
+									if (!(prop.computed && prop.key.type !== 'Literal')) {
+										static_name && (static_name += ' ');
+										static_name += `${prop_name}`;
+										continue;
+									}
+								}
+
+								let class_expr = t.labeled_statement(
+									t.identifier('$'),
+									t.expression_statement(
+										t.call_expression(t.identifier('@class_toggle'), [
+											t.identifier(elem_ident),
+											prop.computed ? prop.key : t.literal(prop_name),
+											prop_value,
+										]),
+									),
+								);
+
+								exprs.push(class_expr);
+							}
+
+							if (static_name) {
+								let class_expr = t.expression_statement(
+									t.call_expression(t.identifier('@attr'), [
+										t.identifier(elem_ident),
+										t.literal('class'),
+										t.literal(static_name),
+									]),
+								);
+
+								curr_scope.expressions.push(class_expr);
+							}
+
+							curr_scope.expressions.push(...exprs);
+							continue;
+						}
+
+						if (attr_name === 'style' && attr_value.expression.type === 'ObjectExpression') {
+							let obj = attr_value.expression;
+
+							let static_styles = '';
+							let exprs = [];
+
+							for (let prop of obj.properties) {
+								if (prop.type === 'SpreadElement') {
+									throw create_error(
+										`invalid spread in style expression`,
+										source,
+										start,
+										end
+									);
+								}
+
+								let prop_name = prop.key.type === 'Literal' ? prop.key.value : prop.key.name;
+								let prop_value = prop.value;
+
+								if (prop_value.type === 'Literal') {
+									let value = prop_value.value;
+
+									if (value === null) {
+										continue;
+									}
+
+									if (!(prop.computed && prop.key.type !== 'Literal')) {
+										static_styles && (static_styles += ';');
+										static_styles += `${prop_name}:${prop_value.value}`;
+										continue;
+									}
+								}
+
+								let style_expr = t.labeled_statement(
+									t.identifier('$'),
+									t.expression_statement(
+										t.call_expression(t.identifier('@style_set'), [
+											t.identifier(elem_ident),
+											prop.computed ? prop.key : t.literal(prop_name),
+											prop_value,
+										]),
+									),
+								);
+
+								exprs.push(style_expr);
+							}
+
+							if (static_styles) {
+								let style_expr = t.expression_statement(
+									t.call_expression(t.identifier('@attr'), [
+										t.identifier(elem_ident),
+										t.literal('style'),
+										t.literal(static_styles),
+									]),
+								);
+
+								curr_scope.expressions.push(style_expr);
+							}
+
+							curr_scope.expressions.push(...exprs);
+							continue;
+						}
+					}
+
+					if (is_inline || is_expression) {
 						need_ident = true;
 
 						let attr_expr = t.labeled_statement(
