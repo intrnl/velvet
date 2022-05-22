@@ -10,13 +10,27 @@
 	},
 	"sideEffects": false,
 	"files": [
-		"index.js",
-		"internal/",
-		"store/"
+		"dist/"
 	],
 	"exports": {
-		".": "./index.js",
-		"./internal": "./internal/index.js",
-		"./store": "./store/index.js"
+		".": {
+			"import": "./dist/esm/public.js",
+			"require": "./dist/cjs/public.js"
+		},
+		"./internal": {
+			"import": "./dist/esm/internal.js",
+			"require": "./dist/cjs/internal.js"
+		},
+		"./store": {
+			"import": "./dist/esm/store.js",
+			"require": "./dist/cjs/store.js"
+		}
+	},
+	"scripts": {
+		"bundle": "rollup -c"
+	},
+	"devDependencies": {
+		"esbuild": "^0.14.38",
+		"rollup": "^2.74.1"
 	}
 }

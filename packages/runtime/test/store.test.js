@@ -1,6 +1,6 @@
 import { vi, describe, it, expect } from 'vitest';
 
-import { writable, readable, derived, get } from '../store/index.js';
+import { writable, readable, derived, get } from '../src/store/index.js';
 
 
 describe('writable', () => {

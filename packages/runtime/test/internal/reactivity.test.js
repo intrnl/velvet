@@ -1,6 +1,6 @@
 import { vi, describe, it, expect } from 'vitest';
 
-import { ref, access, effect, computed, scope } from '../../internal/reactivity.js';
+import { ref, access, effect, computed, scope } from '../../src/internal/reactivity.js';
 
 
 describe('ref', () => {
