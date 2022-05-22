@@ -27,6 +27,7 @@
 		}
 	},
 	"scripts": {
+		"prepublishOnly": "rm -r dist; pnpm run bundle",
 		"bundle": "rollup -c"
 	},
 	"devDependencies": {
