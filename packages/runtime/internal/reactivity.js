@@ -6,9 +6,9 @@ import { Symbol, Set } from './globals.js';
 export let curr_track_bit = 1;
 export let curr_track_depth = 0;
 
-/** @type {Scope | null} */
+/** @type {?Scope} */
 export let curr_scope = null;
-/** @type {Effect | null} */
+/** @type {?Effect} */
 export let curr_effect = null;
 /** @type {Set<Effect>} */
 let active_effects = new Set();
@@ -53,19 +53,19 @@ export function computed (getter) {
 
 
 class Scope {
-	/** disabled */
+	/** @type {?true} disabled */
 	d;
 
-	/** parent scope */
+	/** @type {?Scope} parent scope */
 	p;
-	/** index on parent scope */
+	/** @type {?number} index on parent scope */
 	i;
 
-	/** child effects */
+	/** @type {Effect[]} child effects */
 	e = [];
-	/** child cleanups */
+	/** @type {(() => void)[]} child cleanups */
 	c = [];
-	/** child scopes */
+	/** @type {Scope[]} child scopes */
 	s = [];
 
 	constructor (detached) {
@@ -304,6 +304,9 @@ class Computed {
 	}
 }
 
+/**
+ * @param {RefDependencies} dep
+ */
 function track_effect (dep) {
 	if (!curr_effect) {
 		return;
@@ -327,6 +330,9 @@ function track_effect (dep) {
 	}
 }
 
+/**
+ * @param {RefDependencies} dep
+ */
 function trigger_effect (dep) {
 	for (let effect of dep) {
 		if (effect.s) {
@@ -338,7 +344,9 @@ function trigger_effect (dep) {
 	}
 }
 
+
 function create_dep () {
+	/** @type {RefDependencies} */
 	let dep = new Set();
 	dep.w = 0;
 	dep.n = 0;
@@ -346,10 +354,22 @@ function create_dep () {
 	return dep;
 }
 
+/**
+ * @param {RefDependencies} dep
+ * @returns {boolean}
+ */
 function was_tracked (dep) {
 	return (dep.w & curr_track_bit) > 0;
 }
 
+/**
+ * @param {RefDependencies} dep
+ * @returns {boolean}
+ */
 function new_tracked (dep) {
 	return (dep.n & curr_track_bit) > 0;
 }
+
+/**
+ * @typedef {Set<Effect> & { w: number, n: number }} RefDependencies
+ */
