@@ -260,7 +260,7 @@ class Computed {
 	_dirty = true;
 	/** current value */
 	_value;
-	/** effect */
+	/** @type {Effect} effect */
 	_effect;
 
 	constructor (getter) {
@@ -286,7 +286,7 @@ class Computed {
 
 			if (_this._dirty) {
 				_this._dirty = false;
-				_this._value = _this._effect.run();
+				_this._value = _this._effect._run();
 			}
 
 			return _this._value;
