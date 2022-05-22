@@ -34,7 +34,7 @@ describe('effects', () => {
 		value(4);
 		expect(fn).toHaveBeenCalledTimes(3);
 
-		instance.stop();
+		instance._stop();
 
 		value(6);
 		expect(fn).toHaveBeenCalledTimes(3);
@@ -74,7 +74,7 @@ describe('scope', () => {
 		let value = ref(0);
 		let fn = vi.fn(() => value(access));
 
-		instance.run(() => {
+		instance._run(() => {
 			effect(fn);
 		});
 
@@ -83,7 +83,7 @@ describe('scope', () => {
 		value(2);
 		expect(fn).toHaveBeenCalledTimes(2);
 
-		instance.stop();
+		instance._stop();
 
 		value(4);
 		expect(fn).toHaveBeenCalledTimes(2);
@@ -95,10 +95,10 @@ describe('scope', () => {
 		let value = ref(0);
 		let fn = vi.fn(() => value(access));
 
-		instance.run(() => {
+		instance._run(() => {
 			let child = scope();
 
-			child.run(() => {
+			child._run(() => {
 				effect(fn);
 			});
 		});
@@ -108,7 +108,7 @@ describe('scope', () => {
 		value(2);
 		expect(fn).toHaveBeenCalledTimes(2);
 
-		instance.stop();
+		instance._stop();
 
 		value(4);
 		expect(fn).toHaveBeenCalledTimes(2);
