@@ -6,8 +6,11 @@ import { Symbol, Set } from './globals.js';
 export let curr_track_bit = 1;
 export let curr_track_depth = 0;
 
+/** @type {Scope | null} */
 export let curr_scope = null;
+/** @type {Effect | null} */
 export let curr_effect = null;
+/** @type {Set<Effect>} */
 let active_effects = new Set();
 
 let max_track_bits = 30;
