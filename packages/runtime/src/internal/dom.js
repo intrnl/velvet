@@ -37,10 +37,9 @@ export function replace (ref, node, adopt) {
 
 	if (adopt) {
 		let children = ref.childNodes;
-		let idx = 0;
 		let len = children.length;
 
-		for (; idx < len; idx++) {
+		while (len--) {
 			node.appendChild(children[idx]);
 		}
 	}
