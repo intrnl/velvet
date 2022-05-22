@@ -23,7 +23,7 @@ export function show (marker, expression) {
 		}
 
 		if (end) {
-			instance.clear();
+			instance._clear();
 			destroy_block(marker, end);
 			end = null;
 		}
@@ -34,7 +34,7 @@ export function show (marker, expression) {
 			return;
 		}
 
-		end = instance.run(() => block(marker));
+		end = instance._run(() => block(marker));
 	});
 }
 
@@ -64,7 +64,7 @@ export function each (marker, block, expression) {
 				let item = ref(items[index]);
 				let instance = scope(true);
 
-				parts[index] = [instance, instance.run(() => block(start, item, index)), item];
+				parts[index] = [instance, instance._run(() => block(start, item, index)), item];
 			}
 		}
 
@@ -165,14 +165,14 @@ export function keyed (marker, block, expression) {
 		}
 
 		if (end) {
-			instance.clear();
+			instance._clear();
 			destroy_block(marker, end);
 			end = null;
 		}
 
 		init = true;
 		curr = next;
-		end = instance.run(() => block(marker));
+		end = instance._run(() => block(marker));
 	});
 }
 
@@ -190,9 +190,9 @@ export function dynamic (marker, block, expression) {
 		}
 
 		current = next;
-		instance.clear();
+		instance._clear();
 
-		replace(host, (host = next ? instance.run(() => block(next)) : marker));
+		replace(host, (host = next ? instance._run(() => block(next)) : marker));
 	});
 }
 

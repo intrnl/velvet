@@ -25,7 +25,7 @@ export function effect (fn, scheduler) {
 	let instance = new Effect(fn, scheduler);
 
 	if (!scheduler) {
-		instance.run();
+		instance._run();
 	}
 
 	return instance;
@@ -33,20 +33,20 @@ export function effect (fn, scheduler) {
 
 export function cleanup (fn) {
 	if (is_function(fn)) {
-		curr_scope.c.push(fn);
+		curr_scope._cleanups.push(fn);
 	}
 }
 
 export function ref (value) {
 	let instance = new Ref(value);
-	let bound = instance.run.bind(instance);
+	let bound = instance._run.bind(instance);
 
 	return bound;
 }
 
 export function computed (getter) {
 	let instance = new Computed(getter);
-	let bound = instance.run.bind(instance);
+	let bound = instance._run.bind(instance);
 
 	return bound;
 }
@@ -54,31 +54,31 @@ export function computed (getter) {
 
 class Scope {
 	/** @type {?true} disabled */
-	d;
+	_disabled;
 
 	/** @type {?Scope} parent scope */
-	p;
+	_parent;
 	/** @type {?number} index on parent scope */
-	i;
+	_parent_idx;
 
 	/** @type {Effect[]} child effects */
-	e = [];
+	_effects = [];
 	/** @type {(() => void)[]} child cleanups */
-	c = [];
+	_cleanups = [];
 	/** @type {Scope[]} child scopes */
-	s = [];
+	_scopes = [];
 
 	constructor (detached) {
 		let _this = this;
 
 		if (!detached && curr_scope) {
-			_this.p = curr_scope;
-			_this.i = curr_scope.s.push(_this) - 1;
+			_this._parent = curr_scope;
+			_this._parent_idx = curr_scope._scopes.push(_this) - 1;
 		}
 	}
 
-	run (fn) {
-		if (this.d) {
+	_run (fn) {
+		if (this._disabled) {
 			return;
 		}
 
@@ -93,15 +93,15 @@ class Scope {
 		}
 	}
 
-	clear () {
+	_clear () {
 		let _this = this;
 
-		let effects = _this.e;
-		let cleanups = _this.c;
-		let scopes = _this.s;
+		let effects = _this._effects;
+		let cleanups = _this._cleanups;
+		let scopes = _this._scopes;
 
 		for (let effect of effects) {
-			effect.stop();
+			effect._stop();
 		}
 
 		for (let cleanup of cleanups) {
@@ -109,7 +109,7 @@ class Scope {
 		}
 
 		for (let scope of scopes) {
-			scope.stop(true);
+			scope._stop(true);
 		}
 
 		effects.length = 0;
@@ -117,20 +117,20 @@ class Scope {
 		scopes.length = 0;
 	}
 
-	stop (from_parent) {
+	_stop (from_parent) {
 		let _this = this;
-		let parent = !from_parent && _this.p;
+		let parent = !from_parent && _this._parent;
 
-		_this.d = true;
-		_this.clear();
+		_this._disabled = true;
+		_this._clear();
 
 		if (parent) {
-			let last = parent.s.pop();
-			let idx = _this.i;
+			let last = parent._scopes.pop();
+			let idx = _this._parent_idx;
 
 			if (last && last !== _this) {
-				parent.s[idx] = last;
-				last.i = idx;
+				parent._scopes[idx] = last;
+				last._parent_idx = idx;
 			}
 		}
 	}
@@ -138,26 +138,26 @@ class Scope {
 
 class Effect {
 	/** ref dependencies */
-	d = [];
+	_dependencies = [];
 	/** fn */
-	f;
+	_fn;
 	/** scheduler */
-	s;
+	_scheduler;
 
 	constructor (fn, scheduler) {
 		let _this = this;
 
-		_this.f = fn;
-		_this.s = scheduler;
+		_this._fn = fn;
+		_this._scheduler = scheduler;
 
-		curr_scope?.e.push(_this);
+		curr_scope?._effects.push(_this);
 	}
 
-	run () {
+	_run () {
 		let _this = this;
 		let prev_effect = curr_effect;
 
-		let deps = _this.d;
+		let deps = _this._dependencies;
 
 		if (active_effects.has(_this)) {
 			return;
@@ -175,10 +175,10 @@ class Effect {
 				}
 			}
 			else {
-				_this.stop();
+				_this._stop();
 			}
 
-			return _this.f();
+			return _this._fn();
 		}
 		finally {
 			if (curr_track_depth <= max_track_bits) {
@@ -207,9 +207,9 @@ class Effect {
 		}
 	}
 
-	stop () {
+	_stop () {
 		let _this = this;
-		let deps = _this.d;
+		let deps = _this._dependencies;
 
 		for (let i = 0; i < deps.length; i++) {
 			deps[i].delete(_this);
@@ -221,28 +221,28 @@ class Effect {
 
 class Ref {
 	/** effect dependencies */
-	d = create_dep();
+	_dependencies = create_dep();
 	/** current value */
-	v;
+	_value;
 
 	constructor (value) {
-		this.v = value;
+		this._value = value;
 	}
 
-	run (next, effect = true) {
+	_run (next, effect = true) {
 		let _this = this;
-		let deps = _this.d;
-		let prev = _this.v;
+		let deps = _this._dependencies;
+		let prev = _this._value;
 
 		if (next === access) {
 			if (effect) {
 				track_effect(deps);
 			}
 
-			return _this.v;
+			return _this._value;
 		}
 		else {
-			_this.v = next;
+			_this._value = next;
 
 			if (effect && !is(prev, next)) {
 				trigger_effect(deps);
@@ -255,45 +255,45 @@ class Ref {
 
 class Computed {
 	/** effect dependencies */
-	d = create_dep();
+	_dependencies = create_dep();
 	/** dirty */
-	r = true;
+	_dirty = true;
 	/** current value */
-	v;
+	_value;
 	/** effect */
-	e;
+	_effect;
 
 	constructor (getter) {
 		let _this = this;
 
-		_this.e = effect(getter, () => {
-			if (!_this.r) {
-				_this.r = true;
-				trigger_effect(_this.d);
+		_this._effect = effect(getter, () => {
+			if (!_this._dirty) {
+				_this._dirty = true;
+				trigger_effect(_this._dependencies);
 			}
 		});
 
-		_this.run(access);
+		_this._run(access);
 	}
 
-	run (next) {
+	_run (next) {
 		let _this = this;
-		let deps = _this.d;
-		let prev = _this.v;
+		let deps = _this._dependencies;
+		let prev = _this._value;
 
 		if (next === access) {
 			track_effect(deps);
 
-			if (_this.r) {
-				_this.r = false;
-				_this.v = _this.e.run();
+			if (_this._dirty) {
+				_this._dirty = false;
+				_this._value = _this._effect.run();
 			}
 
-			return _this.v;
+			return _this._value;
 		}
 		else {
-			_this.r = false;
-			_this.v = next;
+			_this._dirty = false;
+			_this._value = next;
 
 			if (!is(prev, next)) {
 				trigger_effect(deps);
@@ -326,7 +326,7 @@ function track_effect (dep) {
 
 	if (should_track) {
 		dep.add(curr_effect);
-		curr_effect.d.push(dep);
+		curr_effect._dependencies.push(dep);
 	}
 }
 
@@ -335,11 +335,11 @@ function track_effect (dep) {
  */
 function trigger_effect (dep) {
 	for (let effect of dep) {
-		if (effect.s) {
-			effect.s();
+		if (effect._scheduler) {
+			effect._scheduler();
 		}
 		else {
-			effect.run();
+			effect._run();
 		}
 	}
 }

@@ -62,7 +62,7 @@ export class VelvetComponent extends HTMLElement {
 
 			try {
 				curr_host = host;
-				instance.run(() => setup(root, host));
+				instance._run(() => setup(root, host));
 
 				if (document.adoptedStyleSheets) {
 					if (init_ccss) {
@@ -79,7 +79,7 @@ export class VelvetComponent extends HTMLElement {
 					let ret = hook();
 
 					if (is_function(ret)) {
-						instance.c.push(ret);
+						instance._cleanups.push(ret);
 					}
 				}
 
@@ -95,7 +95,7 @@ export class VelvetComponent extends HTMLElement {
 		let host = this;
 
 		if (host.$m) {
-			host.$c.clear();
+			host.$c._clear();
 			host.shadowRoot.innerHTML = '';
 
 			host.$m = false;
