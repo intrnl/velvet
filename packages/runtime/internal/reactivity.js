@@ -118,6 +118,7 @@ class Scope {
 		let _this = this;
 		let parent = !from_parent && _this.p;
 
+		_this.d = true;
 		_this.clear();
 
 		if (parent) {
