@@ -16,11 +16,17 @@ function* _compile (source, options = {}) {
 		prefix = 'x',
 		filename,
 		name = componentize(filename, prefix),
+		transformers = [],
 		css,
 		path = '@intrnl/velvet/internal',
 	} = options;
 
 	let template = parse_template(source);
+
+	// run transformers
+	for (let transformer of transformers) {
+		transformer(template);
+	}
 
 	// collect specialities
 	let module_node;
