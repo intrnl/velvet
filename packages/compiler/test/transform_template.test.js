@@ -333,6 +333,19 @@ describe('attribute', () => {
 
 		expect(print(program)).toMatchSnapshot();
 	});
+
+	it('class object expression 2', () => {
+		let template = `
+			<li><a class={{ selected: visibility === 'all' }} href='#/'>All</a></li>
+			<li><a class={{ selected: visibility === 'active' }} href='#/active'>Active</a></li>
+			<li><a class={{ selected: visibility === 'completed' }} href='#/completed'>Completed</a></li>
+		`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
 });
 
 describe('element', () => {

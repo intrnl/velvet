@@ -149,9 +149,23 @@ $: @toggle(%child0, \\"readonly\\", true);
 exports[`attribute > class object expression 1`] = `
 "let %%template0 = @html(\\"<div></div>\\");
 let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
 @attr(%child0, \\"class\\", \\"foo\\");
 $: @class_toggle(%child0, \\"baz\\", baz);
 @class_toggle(%child0, computed, true);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`attribute > class object expression 2 1`] = `
+"let %%template0 = @html(\\"<li><a href=#/>All</a></li> <li><a href=#/active>Active</a></li> <li><a href=#/completed>Completed</a></li>\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0, 0]);
+let %child1 = @traverse(%fragment0, [2, 0]);
+let %child2 = @traverse(%fragment0, [4, 0]);
+$: @class_toggle(%child0, \\"selected\\", visibility === 'all');
+$: @class_toggle(%child1, \\"selected\\", visibility === 'active');
+$: @class_toggle(%child2, \\"selected\\", visibility === 'completed');
 @append($$root, %fragment0);
 "
 `;
@@ -264,6 +278,7 @@ $: @assign(%child0, props);
 exports[`attribute > style object expression 1`] = `
 "let %%template0 = @html(\\"<div></div>\\");
 let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
 @attr(%child0, \\"style\\", \\"color:red\\");
 $: @style_set(%child0, \\"background\\", bg);
 $: @style_set(%child0, \\"--baz\\", baz);

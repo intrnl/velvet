@@ -722,6 +722,7 @@ export function transform_template (template, source) {
 									);
 								}
 
+								need_ident = true;
 								exprs.push(class_expr);
 							}
 
@@ -734,6 +735,7 @@ export function transform_template (template, source) {
 									]),
 								);
 
+								need_ident = true;
 								curr_scope.expressions.push(class_expr);
 							}
 
@@ -790,6 +792,7 @@ export function transform_template (template, source) {
 									);
 								}
 
+								need_ident = true;
 								exprs.push(style_expr);
 							}
 
@@ -802,6 +805,7 @@ export function transform_template (template, source) {
 									]),
 								);
 
+								need_ident = true;
 								curr_scope.expressions.push(style_expr);
 							}
 
