@@ -481,17 +481,15 @@ export function transform_script (program, source) {
 						return;
 					}
 
+					let holder = '%d' + (d_count++);
+
 					// we perform a walk here, because we won't be seeing it again.
 					let prev_scope = curr_scope;
 					right = walk(right, this, node);
 					curr_scope = prev_scope;
 
-					// if right-hand is still an identifier, we can use that directly.
-					let is_direct = right.type === 'Identifier';
-					let holder = is_direct ? right.name : '%d' + (d_count++);
-
 					let holder_decl = t.variable_declaration('let', [
-						!is_direct && t.variable_declarator(t.identifier(holder), right),
+						t.variable_declarator(t.identifier(holder), right),
 						t.variable_declarator(left, t.identifier(holder)),
 					]);
 
