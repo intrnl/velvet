@@ -337,7 +337,7 @@ export function variable_declaration (kind, declarations) {
 	return {
 		type: 'VariableDeclaration',
 		kind,
-		declarations,
+		declarations: declarations.filter((decl) => !!decl),
 	};
 }
 
