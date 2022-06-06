@@ -1,5 +1,5 @@
 import { walk } from './utils/walker.js';
-import { analyze, is_reference } from './utils/js_utils.js';
+import { analyze, extract_identifiers, is_reference } from './utils/js_utils.js';
 import * as t from './utils/js_types.js';
 import { create_error } from './utils/error.js';
 
@@ -13,8 +13,12 @@ export function transform_script (program, source) {
 	let props = new Map();
 	let props_idx = [];
 
+	let d_count = 0;
+
 	// [ident, [scope, reference]][]
 	let deferred_stores = [];
+	// [reference, [...declarations]][]
+	let deferred_placeholders = [];
 
 	// - throw on declaring $ and $$ variables
 	// - mark variables that have mutable operations
@@ -47,26 +51,29 @@ export function transform_script (program, source) {
 			}
 
 			// mark mutable variables
-			if (node.type === 'AssignmentExpression' && node.left.type === 'Identifier') {
-				let left = node.left;
-				let name = left.name;
+			if (node.type === 'AssignmentExpression') {
+				let identifiers = extract_identifiers(node.left, false);
 
-				if (name[0] === '$' && name[1] === '$' && name[2] !== '$') {
-					throw create_error(
-						'tried reassignment to $$-prefixed variables',
-						source,
-						node.start,
-						node.end,
-					);
-				}
+				for (let id of identifiers) {
+					let name = id.name;
 
-				let own_scope = curr_scope.find_owner(name);
+					if (name[0] === '$' && name[1] === '$' && name[2] !== '$') {
+						throw create_error(
+							'tried reassignment to $$-prefixed variables',
+							source,
+							node.start,
+							node.end,
+						);
+					}
 
-				if (own_scope) {
-					let ident = own_scope.declarations.get(name);
+					let own_scope = curr_scope.find_owner(name);
 
-					if (own_scope === root_scope || ident.velvet?.computed) {
-						(ident.velvet ||= {}).mutable = true;
+					if (own_scope) {
+						let ident = own_scope.declarations.get(name);
+
+						if (own_scope === root_scope || ident.velvet?.computed) {
+							(ident.velvet ||= {}).mutable = true;
+						}
 					}
 				}
 
@@ -165,18 +172,42 @@ export function transform_script (program, source) {
 				node.type === 'LabeledStatement' &&
 				node.label.name === '$' &&
 				node.body.type === 'ExpressionStatement' &&
-				node.body.expression.type === 'AssignmentExpression' &&
-				node.body.expression.left.type === 'Identifier'
+				node.body.expression.type === 'AssignmentExpression'
 			) {
-				let identifier = node.body.expression.left;
-				let right = node.body.expression.right;
+				let expression = node.body.expression;
 
-				let expression = t.variable_declaration('let', [t.variable_declarator(identifier, right)]);
+				let left = expression.left;
+				let right = expression.right;
 
-				(identifier.velvet ||= {}).computed = true;
-				curr_scope.add_declaration(expression);
+				if (left.type === 'Identifier') {
+					let expr = t.variable_declaration('let', [t.variable_declarator(left, right)]);
 
-				return expression;
+					(left.velvet ||= {}).computed = true;
+					curr_scope.add_declaration(expr);
+					return expr;
+				}
+
+				let identifiers = extract_identifiers(left, false);
+				let declarators = [];
+
+				if (identifiers.length < 1) {
+					return;
+				}
+
+				for (let id of identifiers) {
+					let ident = t.identifier(id.name);
+					ident.velvet = { mutable: true };
+
+					let declarator =  t.variable_declarator(ident);
+					declarators.push(declarator);
+				}
+
+				let declaration =  t.variable_declaration('let', declarators);
+
+				curr_scope.add_declaration(declaration);
+				deferred_placeholders.push([node, [declaration]]);
+
+				return t.labeled_statement(t.identifier('$'), t.block_statement([t.expression_statement(expression)]));
 			}
 
 			// mark stores
@@ -212,7 +243,7 @@ export function transform_script (program, source) {
 				let actual = name.slice(1);
 
 				let defined_scope = curr_scope.find_owner(actual) || root_scope;
-				let ref_scope = find_reference_scope(curr_scope);
+				let ref_scope = find_store_scope(curr_scope);
 
 				let map = defined_scope._stores ||= Object.create(null);
 				let def = map[actual];
@@ -227,7 +258,7 @@ export function transform_script (program, source) {
 						def[0] = ref_scope;
 					}
 					else if (curr.depth === ref_scope.depth) {
-						def[0] = find_reference_scope(curr.parent);
+						def[0] = find_store_scope(curr.parent);
 					}
 				}
 				else {
@@ -244,40 +275,15 @@ export function transform_script (program, source) {
 		},
 	});
 
-	// prepend store subscriptions
-	for (let [name, [scope, reference]] of deferred_stores) {
-		let ident = t.identifier(name);
-		let actual = name.slice(1);
+	// - add placeholder declarations
+	if (deferred_placeholders.length) {
+		_push_deferred_placeholders(deferred_placeholders);
+		deferred_placeholders = [];
+	}
 
-		let decl = t.variable_declaration('let', [
-			t.variable_declarator(ident),
-		]);
-
-		let expr = t.expression_statement(
-			t.call_expression(t.identifier('@cleanup'), [
-				t.call_expression(t.member_expression_from([actual, 'subscribe']), [ident]),
-			]),
-		);
-
-		ident.velvet = { mutable: true, transformed: true };
-
-		let container = scope.node;
-		let curr = reference;
-
-		while (curr) {
-			let parent = curr.path.parent;
-
-			if (parent === container) {
-				let body = container.body;
-				let index = body.indexOf(curr);
-				body.splice(index, 0, decl, expr);
-				break;
-			}
-
-			curr = parent;
-		}
-
-		scope.add_declaration(decl);
+	// - prepend store subscriptions
+	if (deferred_stores.length) {
+		_push_deferred_stores(deferred_stores);
 	}
 
 	walk(program, {
@@ -358,9 +364,11 @@ export function transform_script (program, source) {
 					return;
 				}
 
+
 				if (parent.type === 'AssignmentExpression' && parent.left === node) {
 					return;
 				}
+
 
 				let own_scope = curr_scope.find_owner(name);
 				let ident = own_scope && own_scope.declarations.get(name);
@@ -380,70 +388,130 @@ export function transform_script (program, source) {
 			}
 
 			// transform setters
-			if (node.type === 'AssignmentExpression' && node.left.type === 'Identifier') {
-				let identifier = node.left;
+			if (node.type === 'AssignmentExpression') {
+				let left = node.left;
 				let right = node.right;
 
-				let name = identifier.name;
+				if (left.type === 'Identifier') {
+					let name = left.name;
 
-				if (name[0] === '$' && name[1] !== '$' && !parent.velvet?.transformed) {
-					let actual_ident = t.identifier(name.slice(1));
+					if (name[0] === '$' && name[1] !== '$' && !parent.velvet?.transformed) {
+						let actual_ident = t.identifier(name.slice(1));
 
-					let expr;
-					let operator = node.operator.slice(0, -1);
+						let expr;
+						let operator = node.operator.slice(0, -1);
 
-					switch (node.operator) {
-						case '=': {
-							expr = right;
-							break;
+						switch (node.operator) {
+							case '=': {
+								expr = right;
+								break;
+							}
+							case '||=': case '&&=': case '??=': {
+								expr = t.logical_expression(left, right, operator);
+								break;
+							}
+							default: {
+								expr = t.binary_expression(left, right, operator);
+								break;
+							}
 						}
-						case '||=': case '&&=': case '??=': {
-							expr = t.logical_expression(identifier, right, operator);
-							break;
-						}
-						default: {
-							expr = t.binary_expression(identifier, right, operator);
-							break;
-						}
+
+						let call_expr = t.call_expression(
+							t.member_expression(actual_ident, t.identifier('set')),
+							[expr],
+						);
+
+						(call_expr.velvet ||= {}).transformed = true;
+						return call_expr;
 					}
 
-					let call_expr = t.call_expression(
-						t.member_expression(actual_ident, t.identifier('set')),
-						[expr],
-					);
+					let own_scope = curr_scope.find_owner(name);
+					let ident = own_scope && own_scope.declarations.get(name);
 
-					(call_expr.velvet ||= {}).transformed = true;
-					return call_expr;
+					if (ident && ident.velvet?.ref) {
+						let expression;
+						let operator = node.operator.slice(0, -1);
+
+						switch (node.operator) {
+							case '=': {
+								expression = t.call_expression(left, [right]);
+								break;
+							}
+							case '||=': case '&&=': case '??=': {
+								let getter = t.call_expression(left, [t.identifier('@access')]);
+								let setter = t.assignment_expression(left, right, '=');
+								expression = t.logical_expression(getter, setter, operator);
+								break;
+							}
+							default: {
+								let getter = t.call_expression(left, [t.identifier('@access')]);
+								let operation = t.binary_expression(getter, right, operator);
+								expression = t.call_expression(left, [operation]);
+								break;
+							}
+						}
+
+						(left.velvet ||= {}).transformed = true;
+						return expression;
+					}
+
+					return;
 				}
 
-				let own_scope = curr_scope.find_owner(name);
-				let ident = own_scope && own_scope.declarations.get(name);
+				if (left.type === 'ObjectPattern' || left.type === 'ArrayPattern') {
+					let statements = [];
+					let identifiers = extract_identifiers(left);
 
-				if (ident && ident.velvet?.ref) {
-					let expression;
-					let operator = node.operator.slice(0, -1);
+					let need_transform = false;
 
-					switch (node.operator) {
-						case '=': {
-							expression = t.call_expression(identifier, [right]);
-							break;
-						}
-						case '||=': case '&&=': case '??=': {
-							let getter = t.call_expression(identifier, [t.identifier('@access')]);
-							let setter = t.assignment_expression(identifier, right, '=');
-							expression = t.logical_expression(getter, setter, operator);
-							break;
-						}
-						default: {
-							let getter = t.call_expression(identifier, [t.identifier('@access')]);
-							let operation = t.binary_expression(getter, right, operator);
-							expression = t.call_expression(identifier, [operation]);
+					for (let id of identifiers) {
+						let name = id.name;
+
+						let own_scope = curr_scope.find_owner(name);
+						let ident = own_scope && own_scope.declarations.get(name);
+
+						need_transform = ident && ident.velvet?.ref;
+
+						if (need_transform) {
 							break;
 						}
 					}
 
-					(identifier.velvet ||= {}).transformed = true;
-					return expression;
+					if (!need_transform) {
+						return;
+					}
+
+					let holder = '%d' + (d_count++);
+
+					// we perform a walk here, because we won't be seeing it again.
+					let holder_decl = t.variable_declaration('let', [
+						t.variable_declarator(t.identifier(holder), walk(right, this, node)),
+						t.variable_declarator(left, t.identifier(holder)),
+					]);
+
+					deferred_placeholders.push([parent, [holder_decl]]);
+
+					for (let id of identifiers) {
+						let parent = id.path.parent;
+
+						if (parent && parent.type === 'Property') {
+							parent.shorthand = false;
+						}
+
+						let curr_name = id.name;
+						let next_name = '%d' + (d_count++);
+
+						let assignment = t.assignment_expression(
+							t.identifier(curr_name),
+							t.identifier(next_name),
+						);
+
+						id.name = next_name;
+						statements.push(assignment);
+					}
+
+					statements.push(t.identifier(holder));
+					return t.sequence_expression(statements);
 				}
 
 				return;
@@ -527,21 +595,28 @@ export function transform_script (program, source) {
 		},
 	});
 
-	// - add bindings for props that are not refs
-	let bind_props = [];
-
-	for (let [local, exported] of potential_props) {
-		if (!props.has(local)) {
-			bind_props.push(t.property(t.identifier(exported), t.identifier(local)));
-		}
+	// - add placeholder declarations
+	if (deferred_placeholders.length) {
+		_push_deferred_placeholders(deferred_placeholders);
 	}
 
-	if (bind_props.length) {
-		let expression = t.expression_statement(
-			t.call_expression(t.identifier('@bind'), [t.object_expression(bind_props)]),
-		);
+	// - add bindings for props that are not refs
+	if (potential_props.size) {
+		let bind_props = [];
 
-		program.body.push(expression);
+		for (let [local, exported] of potential_props) {
+			if (!props.has(local)) {
+				bind_props.push(t.property(t.identifier(exported), t.identifier(local)));
+			}
+		}
+
+		if (bind_props.length) {
+			let expression = t.expression_statement(
+				t.call_expression(t.identifier('@bind'), [t.object_expression(bind_props)]),
+			);
+
+			program.body.push(expression);
+		}
 	}
 
 	return { props, props_idx };
@@ -728,6 +803,98 @@ export function finalize_program (program, mod = '@intrnl/velvet/internal') {
 }
 
 
+function _push_deferred_placeholders (deferred_placeholders) {
+	for (let [reference, declarations] of deferred_placeholders) {
+		let container = reference;
+		let curr = reference;
+
+		while (container) {
+			if (container.type === 'Program') {
+				break;
+			}
+
+			if (container.type === 'BlockStatement') {
+				break;
+			}
+
+			if (container.type === 'ArrowFunctionExpression') {
+				// we reached here, so we know that the BlockStatement check earlier
+				// failed, so we'll turn it into one.
+
+				let expression = container.body;
+				let statement = t.return_statement(expression);
+				let body = t.block_statement([statement]);
+
+				if (curr === container) {
+					curr = statement;
+				}
+
+				expression.path.parent = statement;
+				statement.path = { parent: body };
+				body.path = { parent: container };
+
+				container.body = body;
+				container = body;
+
+				break;
+			}
+
+			container = container.path.parent;
+		}
+
+		while (curr) {
+			let parent = curr.path.parent;
+
+			if (parent === container) {
+				let body = container.body;
+				let index = body.indexOf(curr);
+
+				container.body = body.slice(0, index).concat(declarations, body.slice(index));
+				break;
+			}
+
+			curr = parent;
+		}
+	}
+}
+
+function _push_deferred_stores (deferred_stores) {
+	for (let [name, [scope, reference]] of deferred_stores) {
+		let ident = t.identifier(name);
+		let actual = name.slice(1);
+
+		let decl = t.variable_declaration('let', [
+			t.variable_declarator(ident),
+		]);
+
+		let expr = t.expression_statement(
+			t.call_expression(t.identifier('@cleanup'), [
+				t.call_expression(t.member_expression_from([actual, 'subscribe']), [ident]),
+			]),
+		);
+
+		ident.velvet = { mutable: true, transformed: true };
+
+		let container = scope.node;
+		let curr = reference;
+
+		while (curr) {
+			let parent = curr.path.parent;
+
+			if (parent === container) {
+				let body = container.body;
+				let index = body.indexOf(curr);
+				body.splice(index, 0, decl, expr);
+				break;
+			}
+
+			curr = parent;
+		}
+
+		scope.add_declaration(decl);
+	}
+}
+
 function _find_unique_identifier (name, set) {
 	let local_name = name;
 	let count = 0;
@@ -794,7 +961,7 @@ function _is_primitive (expression, scope) {
 	);
 }
 
-function find_reference_scope (scope) {
+function find_store_scope (scope) {
 	// this is to find the right scope for determining where stores should be placed
 	// - Program
 	// - BlockStatement of ArrowFunctionExpression of VariableDeclarator whose names starts with %

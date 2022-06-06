@@ -71,10 +71,11 @@ export function is_reference (node, parent) {
 
 /**
  * @param {import('estree').Node} param
+ * @param {boolean} [nested_prop=true]
  * @param {import('estree').Identifier[]} nodes
  * @returns {import('estree').Identifier[]}
  */
-export function extract_identifiers (param, nodes = []) {
+export function extract_identifiers (param, nested_prop = true, nodes = []) {
 	switch (param.type) {
 		case 'Identifier': {
 			nodes.push(param);
@@ -82,6 +83,10 @@ export function extract_identifiers (param, nodes = []) {
 		}
 
 		case 'MemberExpression': {
+			if (!nested_prop) {
+				break;
+			}
+
 			let object = param;
 
 			while (object.type === 'MemberExpression') {
@@ -95,10 +100,10 @@ export function extract_identifiers (param, nodes = []) {
 		case 'ObjectPattern': {
 			for (let property of param.properties) {
 				if (property.type === 'RestElement') {
-					extract_identifiers(property.argument);
+					extract_identifiers(property.argument, nested_prop, nodes);
 				}
 				else {
-					extract_identifiers(property.value, nodes);
+					extract_identifiers(property.value, nested_prop, nodes);
 				}
 			}
 
@@ -108,7 +113,7 @@ export function extract_identifiers (param, nodes = []) {
 		case 'ArrayPattern': {
 			for (let element of param.elements) {
 				if (element) {
-					extract_identifiers(element, nodes);
+					extract_identifiers(element, nested_prop, nodes);
 				}
 			}
 
@@ -116,12 +121,12 @@ export function extract_identifiers (param, nodes = []) {
 		}
 
 		case 'RestElement': {
-			extract_identifiers(param.argument, nodes);
+			extract_identifiers(param.argument, nested_prop, nodes);
 			break;
 		}
 
 		case 'AssignmentPattern': {
-			extract_identifiers(param.left, nodes);
+			extract_identifiers(param.left, nested_prop, nodes);
 			break;
 		}
 	}

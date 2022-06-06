@@ -253,6 +253,47 @@ describe('ref', () => {
 		let result = print(program);
 		expect(result).toMatchSnapshot();
 	});
+
+	it('two variables on one declaration, one mutated', () => {
+		let program = parse(`
+			let value1, value2;
+
+			value1 = 100;
+		`);
+
+		transform_script(program);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('two variables on one declaration, two mutated', () => {
+		let program = parse(`
+			let value1, value2;
+
+			value1 = 100;
+			value2 = 200;
+		`);
+
+		transform_script(program);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('variable mutated with spread', () => {
+		let program = parse(`
+			let foo, bar, baz;
+
+			({ foo, b: bar, buzz, ...baz } = obj);
+			({ foo, b: bar, buzz, ...baz } = $obj);
+
+			([foo, buzz, ...bar] = arr);
+			([foo, buzz, ...bar] = $arr.foo);
+		`);
+
+		transform_script(program);
+
+		expect(print(program)).toMatchSnapshot();
+	});
 });
 
 describe('prop', () => {
@@ -560,6 +601,17 @@ describe('computed', () => {
 
 			console.log(value1, computed);
 			console.log(unrelated);
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('object spread from a store', () => {
+		let program = parse(`
+			$: ({ data, loading, error } = $store);
 		`);
 
 		transform_script(program);

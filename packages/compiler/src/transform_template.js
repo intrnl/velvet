@@ -576,7 +576,7 @@ export function transform_template (template, source) {
 										`invalid binding property "${prop_name}" for input element`,
 										source,
 										start,
-										end
+										end,
 									);
 								}
 
@@ -591,7 +591,7 @@ export function transform_template (template, source) {
 									[t.identifier('%event')],
 									t.assignment_expression(
 										t.clone(value_expr),
-										t.member_expression_from(['%event', 'detail'])
+										t.member_expression_from(['%event', 'detail']),
 									),
 								);
 							}
@@ -664,7 +664,7 @@ export function transform_template (template, source) {
 									value_expr,
 								]),
 							),
-						)
+						);
 
 						curr_scope.expressions.push(attr_expr);
 						continue;
@@ -685,7 +685,7 @@ export function transform_template (template, source) {
 										`invalid spread in class expression`,
 										source,
 										start,
-										end
+										end,
 									);
 								}
 
@@ -755,7 +755,7 @@ export function transform_template (template, source) {
 										`invalid spread in style expression`,
 										source,
 										start,
-										end
+										end,
 									);
 								}
 

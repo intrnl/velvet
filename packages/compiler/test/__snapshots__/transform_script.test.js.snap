@@ -87,6 +87,17 @@ console.log(unrelated);
 "
 `;
 
+exports[`computed > object spread from a store 1`] = `
+"let data = @ref(), loading = @ref(), error = @ref();
+let $store = @ref();
+@cleanup(store.subscribe($store));
+@effect(() => {
+  let %d0 = $store(@access), {data: %d1, loading: %d2, error: %d3} = %d0;
+  (data(%d1), loading(%d2), error(%d3), %d0);
+});
+"
+`;
+
 exports[`computed > unmutated variable referencing mutated ref member property 1`] = `
 "let value1 = @ref({
   foo: 123
@@ -420,6 +431,19 @@ exports[`ref > prefix throws 1`] = `
 6:     "
 `;
 
+exports[`ref > two variables on one declaration, one mutated 1`] = `
+"let value1 = @ref(), value2;
+value1(100);
+"
+`;
+
+exports[`ref > two variables on one declaration, two mutated 1`] = `
+"let value1 = @ref(), value2 = @ref();
+value1(100);
+value2(200);
+"
+`;
+
 exports[`ref > unmutated variable accessing member property 1`] = `
 "let state = {
   count: 0
@@ -456,6 +480,23 @@ exports[`ref > unused variables 1`] = `
 "let value1;
 let value2 = 100;
 let value3 = new Date();
+"
+`;
+
+exports[`ref > variable mutated with spread 1`] = `
+"let foo = @ref(), bar = @ref(), baz = @ref();
+let %d0 = obj, {foo: %d1, b: %d2, buzz: %d3, ...%d4} = %d0;
+(foo(%d1), bar(%d2), buzz = %d3, baz(%d4), %d0);
+let $obj = @ref();
+@cleanup(obj.subscribe($obj));
+let %d5 = $obj(@access), {foo: %d6, b: %d7, buzz: %d8, ...%d9} = %d5;
+(foo(%d6), bar(%d7), buzz = %d8, baz(%d9), %d5);
+let %d10 = arr, [%d11, %d12, ...%d13] = %d10;
+(foo(%d11), buzz = %d12, bar(%d13), %d10);
+let $arr = @ref();
+@cleanup(arr.subscribe($arr));
+let %d14 = $arr(@access).foo, [%d15, %d16, ...%d17] = %d14;
+(foo(%d15), buzz = %d16, bar(%d17), %d14);
 "
 `;
 
