@@ -482,7 +482,9 @@ export function transform_script (program, source) {
 					}
 
 					// we perform a walk here, because we won't be seeing it again.
+					let prev_scope = curr_scope;
 					right = walk(right, this, node);
+					curr_scope = prev_scope;
 
 					// if right-hand is still an identifier, we can use that directly.
 					let is_direct = right.type === 'Identifier';
