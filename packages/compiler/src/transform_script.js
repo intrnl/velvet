@@ -486,8 +486,9 @@ export function transform_script (program, source) {
 					right = walk(right, this, node);
 					curr_scope = prev_scope;
 
-					// if right-hand is still an identifier, we can use that directly.
-					let is_direct = right.type === 'Identifier';
+					// if right-hand is still an identifier coming from a local variable,
+					// we can use that directly.
+					let is_direct = right.type === 'Identifier' && curr_scope.has(right.name);
 					let holder = is_direct ? right.name : '%d' + (d_count++);
 
 					let holder_decl = t.variable_declaration('let', [
