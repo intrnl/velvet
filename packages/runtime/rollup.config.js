@@ -10,7 +10,8 @@ let mangleCache = {};
 try {
 	let source = fs.readFileSync(mangleFile, 'utf8');
 	mangleCache = JSON.parse(source);
-} catch {}
+}
+catch {}
 
 let originalMangleCache = mangleCache;
 

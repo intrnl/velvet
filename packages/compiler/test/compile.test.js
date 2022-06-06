@@ -392,7 +392,7 @@ describe('style', () => {
 		});
 
 		expect(result).toMatchSnapshot();
-	})
+	});
 });
 
 it('componentize', () => {

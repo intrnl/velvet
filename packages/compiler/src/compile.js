@@ -110,7 +110,7 @@ function* _compile (source, options = {}) {
 			value = {
 				css: value,
 				dependencies: [],
-			}
+			};
 		}
 
 		style_value = value;

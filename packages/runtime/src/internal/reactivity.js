@@ -31,6 +31,7 @@ export function effect (fn, scheduler) {
 	return instance;
 }
 
+
 export function cleanup (fn) {
 	if (is_function(fn)) {
 		curr_scope._cleanups.push(fn);
@@ -51,6 +52,32 @@ export function computed (getter) {
 	return bound;
 }
 
+export function deferred_effect (fn) {
+	let instance = new Effect(fn, schedule_effect);
+	instance._run();
+
+	return instance;
+}
+
+let pending_effects = [];
+let _resolve = Promise.resolve();
+
+function schedule_effect (effect) {
+	if (!pending_effects.length) {
+		_resolve.then(flush_effects);
+	}
+
+	pending_effects.push(effect);
+}
+
+function flush_effects () {
+	for (let i = 0; i < pending_effects.length; i++) {
+		let effect = pending_effects[i];
+		effect._run();
+	}
+
+	pending_effects.length = 0;
+}
 
 export class Scope {
 	/** @type {?true} disabled */
@@ -336,7 +363,7 @@ function track_effect (dep) {
 function trigger_effect (dep) {
 	for (let effect of dep) {
 		if (effect._scheduler) {
-			effect._scheduler();
+			effect._scheduler(effect);
 		}
 		else {
 			effect._run();

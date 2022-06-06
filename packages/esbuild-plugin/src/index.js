@@ -120,8 +120,8 @@ export default function velvet_plugin (options = {}) {
 
 				build.onLoad({ filter: /./, namespace: 'noop' }, () => {
 					return { contents: '', loader: 'css' };
-				})
-			}
+				});
+			},
 		};
 
 		let result = await build({
