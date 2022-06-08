@@ -478,6 +478,7 @@ export function transform_script (program, source) {
 					let statements = [];
 					let identifiers = extract_identifiers(left);
 
+					let map = new WeakMap();
 					let need_transform = false;
 
 					for (let id of identifiers) {
@@ -486,11 +487,10 @@ export function transform_script (program, source) {
 						let own_scope = curr_scope.find_owner(name);
 						let ident = own_scope && own_scope.declarations.get(name);
 
-						need_transform = ident && ident.velvet?.ref;
+						let need_local_transform = ident && ident.velvet?.ref;
+						need_transform ||= need_local_transform;
 
-						if (need_transform) {
-							break;
-						}
+						map.set(id, need_local_transform);
 					}
 
 					if (!need_transform) {
@@ -514,6 +514,10 @@ export function transform_script (program, source) {
 					statements.push(holder_assign, spread_assign);
 
 					for (let id of identifiers) {
+						if (!map.get(id)) {
+							continue;
+						}
+
 						let parent = id.path.parent;
 
 						if (parent && parent.type === 'Property') {
@@ -541,6 +545,7 @@ export function transform_script (program, source) {
 					statements.push(t.identifier(holder));
 					deferred_placeholders.push([parent, [holder_decl]]);
 
+					(left.velvet ||= {}).transformed = true;
 					return t.sequence_expression(statements);
 				}
 

@@ -504,18 +504,18 @@ let value3 = new Date();
 
 exports[`ref > variable mutated with spread 1`] = `
 "let foo = @ref(), bar = @ref(), baz = @ref();
-let %d0, %d1, %d2, %d3, %d4;
-(%d0 = obj, {foo: %d1, b: %d2, buzz: %d3, ...%d4} = %d0, foo(%d1), bar(%d2), buzz = %d3, baz(%d4), %d0);
+let %d0, %d1, %d2, %d3;
+(%d0 = obj, {foo: %d1, b: %d2, buzz, c: car, ...%d3} = %d0, foo(%d1), bar(%d2), baz(%d3), %d0);
 let $obj = @ref();
 @cleanup(obj.subscribe($obj));
-let %d5, %d6, %d7, %d8, %d9;
-(%d5 = $obj(@access), {foo: %d6, b: %d7, buzz: %d8, ...%d9} = %d5, foo(%d6), bar(%d7), buzz = %d8, baz(%d9), %d5);
-let %d10, %d11, %d12, %d13;
-(%d10 = arr, [%d11, %d12, ...%d13] = %d10, foo(%d11), buzz = %d12, bar(%d13), %d10);
+let %d4, %d5, %d6, %d7;
+(%d4 = $obj(@access), {foo: %d5, b: %d6, buzz, c: car, ...%d7} = %d4, foo(%d5), bar(%d6), baz(%d7), %d4);
+let %d8, %d9, %d10;
+(%d8 = arr, [%d9, buzz, ...%d10] = %d8, foo(%d9), bar(%d10), %d8);
 let $arr = @ref();
 @cleanup(arr.subscribe($arr));
-let %d14, %d15, %d16, %d17;
-(%d14 = $arr(@access).foo, [%d15, %d16, ...%d17] = %d14, foo(%d15), buzz = %d16, bar(%d17), %d14);
+let %d11, %d12, %d13;
+(%d11 = $arr(@access).foo, [%d12, buzz, ...%d13] = %d11, foo(%d12), bar(%d13), %d11);
 "
 `;
 

@@ -296,8 +296,8 @@ describe('ref', () => {
 		let program = parse(`
 			let foo, bar, baz;
 
-			({ foo, b: bar, buzz, ...baz } = obj);
-			({ foo, b: bar, buzz, ...baz } = $obj);
+			({ foo, b: bar, buzz, c: car, ...baz } = obj);
+			({ foo, b: bar, buzz, c: car, ...baz } = $obj);
 
 			([foo, buzz, ...bar] = arr);
 			([foo, buzz, ...bar] = $arr.foo);
