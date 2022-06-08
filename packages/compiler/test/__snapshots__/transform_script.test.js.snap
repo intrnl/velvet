@@ -416,19 +416,38 @@ console.log(value1, value2(@access));
 
 exports[`ref > postfix 1`] = `
 "let count = @ref(0);
-count(count(@access) + 1);
-count(count(@access) - 1);
+let %d0;
+(%d0 = count(@access), count(%d0 + 1), %d0);
+let %d1;
+(%d1 = count(@access), count(%d1 - 1), %d1);
+let %d2;
+let %d3;
+console.log((%d2 = count(@access), count(%d2 + 1), %d2), (%d3 = count(@access), count(%d3 + 1), %d3));
+function increment() {
+  let %d4;
+  let %d5;
+  console.log((%d4 = count(@access), count(%d4 + 1), %d4), (%d5 = count(@access), count(%d5 + 1), %d5));
+  let %d6;
+  return (%d6 = count(@access), count(%d6 + 1), %d6);
+}
+let decrement = () => {
+  let %d7;
+  return (%d7 = count(@access), count(%d7 - 1), %d7);
+};
 "
 `;
 
-exports[`ref > prefix throws 1`] = `
-"postfix update expressions are not supported for refs (4:3)
-2:       let count = 0;
-3: 
-4:       count++;
-         ^
-5:       count--;
-6:     "
+exports[`ref > prefix 1`] = `
+"let count = @ref(0);
+count(count(@access) + 1);
+count(count(@access) - 1);
+console.log(count(count(@access) + 1), count(count(@access) + 1));
+function increment() {
+  console.log(count(count(@access) + 1), count(count(@access) + 1));
+  return count(count(@access) + 1);
+}
+let decrement = () => count(count(@access) - 1);
+"
 `;
 
 exports[`ref > two variables on one declaration, one mutated 1`] = `

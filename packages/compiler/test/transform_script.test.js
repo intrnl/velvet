@@ -205,12 +205,21 @@ describe('ref', () => {
 		expect(result).toMatchSnapshot();
 	});
 
-	it('postfix', () => {
+	it('prefix', () => {
 		let program = parse(`
 			let count = 0;
 
 			++count;
 			--count;
+
+			console.log(++count, ++count);
+
+			function increment () {
+				console.log(++count, ++count);
+				return ++count;
+			}
+
+			let decrement = () => --count;
 		`);
 
 		transform_script(program);
@@ -219,23 +228,27 @@ describe('ref', () => {
 		expect(result).toMatchSnapshot();
 	});
 
-	it('prefix throws', () => {
-		let source = `
+	it('postfix', () => {
+		let program = parse(`
 			let count = 0;
 
 			count++;
 			count--;
-		`;
 
-		let program = parse(source);
+			console.log(count++, count++);
 
-		try {
-			transform_script(program, source);
-			expect.fail();
-		}
-		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
-		}
+			function increment () {
+				console.log(count++, count++);
+				return count++;
+			}
+
+			let decrement = () => count--;
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('mutated variable calling member property', () => {

@@ -91,22 +91,38 @@ export function transform_script (program, source) {
 					let ident = own_scope.declarations.get(name);
 
 					if (own_scope === root_scope || ident.velvet?.computed) {
-						if (!prefix) {
-							throw create_error(
-								'postfix update expressions are not supported for refs',
-								source,
-								node.start,
-								node.end,
-							);
-						}
-
 						(ident.velvet ||= {}).mutable = true;
 
-						let expression = t.assignment_expression(
-							identifier,
-							t.literal(1),
-							node.operator.slice(1) + '=',
-						);
+						let expression;
+
+						if (prefix) {
+							expression = t.assignment_expression(
+								identifier,
+								t.literal(1),
+								node.operator.slice(1) + '=',
+							);
+						}
+						else {
+							let holder = '%d' + (d_count++);
+
+							let var_decl = t.variable_declaration('let', [
+								t.variable_declarator(t.identifier(holder)),
+							]);
+
+							let binary_exp = t.binary_expression(
+								t.identifier(holder),
+								t.literal(1),
+								node.operator.slice(1),
+							);
+
+							expression = t.sequence_expression([
+								t.assignment_expression(t.identifier(holder), identifier),
+								t.assignment_expression(identifier, binary_exp),
+								t.identifier(holder),
+							]);
+
+							deferred_placeholders.push([parent, [var_decl]]);
+						}
 
 						return expression;
 					}
