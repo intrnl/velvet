@@ -474,7 +474,7 @@ export function transform_script (program, source) {
 					return;
 				}
 
-				if (left.type === 'ObjectPattern' || left.type === 'ArrayPattern') {
+				if ((left.type === 'ObjectPattern' || left.type === 'ArrayPattern') && !left.velvet?.transformed) {
 					let statements = [];
 					let identifiers = extract_identifiers(left);
 
@@ -504,12 +504,14 @@ export function transform_script (program, source) {
 					right = walk(right, this, node);
 					curr_scope = prev_scope;
 
-					let holder_decl = t.variable_declaration('let', [
-						t.variable_declarator(t.identifier(holder), right),
-						t.variable_declarator(left, t.identifier(holder)),
-					]);
+					let var_decls = [
+						t.variable_declarator(t.identifier(holder)),
+					];
 
-					deferred_placeholders.push([parent, [holder_decl]]);
+					let holder_assign = t.assignment_expression(t.identifier(holder), right);
+					let spread_assign = t.assignment_expression(left, t.identifier(holder));
+
+					statements.push(holder_assign, spread_assign);
 
 					for (let id of identifiers) {
 						let parent = id.path.parent;
@@ -521,16 +523,24 @@ export function transform_script (program, source) {
 						let curr_name = id.name;
 						let next_name = '%d' + (d_count++);
 
+						let decl = t.variable_declarator(t.identifier(next_name));
+
 						let assignment = t.assignment_expression(
 							t.identifier(curr_name),
 							t.identifier(next_name),
 						);
 
 						id.name = next_name;
+
 						statements.push(assignment);
+						var_decls.push(decl);
 					}
 
+					let holder_decl = t.variable_declaration('let', var_decls);
+
 					statements.push(t.identifier(holder));
+					deferred_placeholders.push([parent, [holder_decl]]);
+
 					return t.sequence_expression(statements);
 				}
 
