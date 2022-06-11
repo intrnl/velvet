@@ -1113,6 +1113,59 @@ exports[`loop logic > throw on non-identifier 2`] = `
 4:       {/each}"
 `;
 
+exports[`miscellaneous > handles implicit table 1`] = `
+"let %%template0 = @html(\\"<!> <!> <!> <!>\\");
+let %fragment0 = @clone(%template0);
+let %marker1 = @traverse(%fragment0, [0]);
+let %marker3 = @traverse(%fragment0, [2]);
+let %marker6 = @traverse(%fragment0, [4]);
+let %marker8 = @traverse(%fragment0, [6]);
+let %block1 = $$root => {
+  let %%template1 = @html(\\"<table> <tbody><tr><td><!></td></tr> </tbody></table>\\");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [0, 1, 0, 0, 0]);
+  let %child0 = @traverse(%fragment1, [0]);
+  @text(%marker0, () => expr);
+  @after($$root, %fragment1);
+  return %child0;
+};
+let %block2 = $$root => {
+  let %%template2 = @html(\\"<table> <tbody><tr><td><!></td></tr> </tbody><tbody></tbody> </table>\\");
+  let %fragment2 = @clone(%template2);
+  let %marker2 = @traverse(%fragment2, [0, 1, 0, 0, 0]);
+  let %child1 = @traverse(%fragment2, [0]);
+  @text(%marker2, () => expr);
+  @after($$root, %fragment2);
+  return %child1;
+};
+let %block3 = $$root => {
+  let %%template3 = @html(\\"<table> <tbody><tr><td><!></td></tr> <tbody></tbody> <tr><td><!></td></tr> </tbody></table>\\");
+  let %fragment3 = @clone(%template3);
+  let %marker4 = @traverse(%fragment3, [0, 1, 0, 0, 0]);
+  let %marker5 = @traverse(%fragment3, [0, 1, 4, 0, 0]);
+  let %child2 = @traverse(%fragment3, [0]);
+  @text(%marker4, () => expr);
+  @text(%marker5, () => expr);
+  @after($$root, %fragment3);
+  return %child2;
+};
+let %block4 = $$root => {
+  let %%template4 = @html(\\"<table> <tbody></tbody> <tbody><tr><td><!></td></tr> </tbody></table>\\");
+  let %fragment4 = @clone(%template4);
+  let %marker7 = @traverse(%fragment4, [0, 3, 0, 0, 0]);
+  let %child3 = @traverse(%fragment4, [0]);
+  @text(%marker7, () => expr);
+  @after($$root, %fragment4);
+  return %child3;
+};
+@keyed(%marker1, %block1, () => 1);
+@keyed(%marker3, %block2, () => 1);
+@keyed(%marker6, %block3, () => 1);
+@keyed(%marker8, %block4, () => 1);
+@append($$root, %fragment0);
+"
+`;
+
 exports[`named expression > unknown named expression 1`] = `
 "unknown named expression: @xyz (1:2)
 1: {@xyz foo}

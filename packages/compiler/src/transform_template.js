@@ -1,5 +1,6 @@
 import { walk } from './utils/walker.js';
 import * as t from './utils/js_types.js';
+import * as tt from './utils/template_types.js';
 import { create_error } from './utils/error.js';
 
 
@@ -49,6 +50,44 @@ export function transform_template (template, source) {
 				if (is_inline) {
 					curr_block.html += '<x>';
 					return;
+				}
+
+				// do some special handling for table, which can create new elements
+				// implicitly
+				if (elem_name === 'table') {
+					let children = node.children;
+
+					let start_idx = -1;
+					let end_idx = -1;
+
+					for (let idx = 0, len = children.length; idx < len; idx++) {
+						let child = children[idx];
+
+						if (child.type !== 'Element') {
+							continue;
+						}
+
+						if (child.name === 'tr') {
+							if (start_idx === -1) {
+								start_idx = idx;
+							}
+
+							end_idx = len;
+						}
+
+						if (child.name === 'tbody') {
+							if (start_idx !== -1) {
+								end_idx = idx - 1;
+							}
+						}
+					}
+
+					if (start_idx !== -1) {
+						let tbody = tt.element('tbody', false, [], null);
+						let implicit_children = children.splice(start_idx, end_idx - start_idx + 1, tbody);
+
+						tbody.children = implicit_children;
+					}
 				}
 
 				curr_block.html += `<${elem_name}`;

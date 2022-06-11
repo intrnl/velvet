@@ -939,3 +939,30 @@ describe('comment', () => {
 		expect(print(program)).toMatchSnapshot();
 	});
 });
+
+describe('miscellaneous', () => {
+	it('handles implicit table', () => {
+		let template = `
+			{#key 1}
+				<table> <tr><td>{expr}</td></tr> </table>
+			{/key}
+
+			{#key 1}
+				<table> <tr><td>{expr}</td></tr> <tbody></tbody> </table>
+			{/key}
+
+			{#key 1}
+				<table> <tr><td>{expr}</td></tr> <tbody></tbody> <tr><td>{expr}</td></tr> </table>
+			{/key}
+
+			{#key 1}
+				<table> <tbody></tbody> <tr><td>{expr}</td></tr> </table>
+			{/key}
+		`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	})
+});
