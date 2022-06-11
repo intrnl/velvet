@@ -624,7 +624,8 @@ describe('computed', () => {
 
 	it('object spread from a store', () => {
 		let program = parse(`
-			$: ({ data, loading, error } = $store);
+			$: ({ scores, unknowns } = calculate($search_params.get('augments')?.split(',') || []));
+			$: console.log({ scores, unknowns })
 		`);
 
 		transform_script(program);

@@ -88,13 +88,17 @@ console.log(unrelated);
 `;
 
 exports[`computed > object spread from a store 1`] = `
-"let data = @ref(), loading = @ref(), error = @ref();
-let $store = @ref();
-@cleanup(store.subscribe($store));
+"let scores = @ref(), unknowns = @ref();
+let $search_params = @ref();
+@cleanup(search_params.subscribe($search_params));
 @effect(() => {
-  let %d0, %d1, %d2, %d3;
-  (%d0 = $store(@access), {data: %d1, loading: %d2, error: %d3} = %d0, data(%d1), loading(%d2), error(%d3), %d0);
+  let %d0, %d1, %d2;
+  (%d0 = calculate($search_params(@access).get('augments')?.split(',') || []), {scores: %d1, unknowns: %d2} = %d0, scores(%d1), unknowns(%d2), %d0);
 });
+@effect(() => console.log({
+  scores: scores(@access),
+  unknowns: unknowns(@access)
+}));
 "
 `;
 

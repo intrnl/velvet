@@ -220,10 +220,15 @@ export function transform_script (program, source) {
 
 				let declaration =  t.variable_declaration('let', declarators);
 
-				curr_scope.add_declaration(declaration);
-				deferred_placeholders.push([node, [declaration]]);
+				let statement = t.labeled_statement(
+					t.identifier('$'),
+					t.block_statement([t.expression_statement(expression)]),
+				);
 
-				return t.labeled_statement(t.identifier('$'), t.block_statement([t.expression_statement(expression)]));
+				curr_scope.add_declaration(declaration);
+				deferred_placeholders.push([statement, [declaration]]);
+
+				return statement;
 			}
 
 			// mark stores
