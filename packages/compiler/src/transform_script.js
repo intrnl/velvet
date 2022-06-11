@@ -995,7 +995,7 @@ function _is_primitive (expression, scope) {
 		(expression.type === 'TemplateLiteral') ||
 		(expression.type === 'UnaryExpression' && _is_primitive(expression.argument, scope)) ||
 		(expression.type === 'BinaryExpression' && _is_primitive(expression.left, scope) && _is_primitive(expression.right, scope)) ||
-		(expression.type === 'MemberExpression' && _is_primitive(expression.object, scope)) ||
+		(expression.type === 'MemberExpression' && _is_primitive(expression.object, scope) && (!expression.computed || _is_primitive(expression.property, scope))) ||
 		(expression.type === 'NewExpression' && _is_primitive(expression.callee, scope) && _is_primitive(expression.arguments, scope)) ||
 		(expression.type === 'CallExpression' && _is_primitive(expression.callee, scope) && _is_primitive(expression.arguments, scope))
 	);

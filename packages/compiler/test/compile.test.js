@@ -337,6 +337,20 @@ describe('let expression', () => {
 		let result = compileSync(template);
 		expect(result).toMatchSnapshot();
 	});
+
+	it('referencing for each', () => {
+		let template = `
+			{#each key of Object.keys(data)}
+				{@let item = data[key]}
+				<option ?disabled={augments.includes(key)} value={key}>
+					{item.name}
+				</option>
+			{/each}
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
+	})
 });
 
 describe('conditional logic', () => {

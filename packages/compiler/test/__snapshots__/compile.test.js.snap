@@ -147,6 +147,31 @@ export default define(null, setup, {}, []);
 "
 `;
 
+exports[`let expression > referencing for each 1`] = `
+"import {html, clone, traverse, computed, access, text, effect, toggle, attr, after, each, append, define} from \\"@intrnl/velvet/internal\\";
+let template0 = html(\\"<!>\\");
+let template1 = html(\\"<option> <!> </option>\\");
+function setup($$root, $$host) {
+  let fragment0 = clone(template0);
+  let marker1 = traverse(fragment0, [0]);
+  let block1 = ($$root, key) => {
+    let fragment1 = clone(template1);
+    let marker0 = traverse(fragment1, [0, 1]);
+    let child0 = traverse(fragment1, [0]);
+    let item = computed(() => data[key(access)]);
+    text(marker0, () => item(access).name);
+    effect(() => toggle(child0, \\"disabled\\", augments.includes(key(access))));
+    effect(() => attr(child0, \\"value\\", key(access)));
+    after($$root, fragment1);
+    return child0;
+  };
+  each(marker1, block1, () => Object.keys(data));
+  append($$root, fragment0);
+}
+export default define(null, setup, {}, []);
+"
+`;
+
 exports[`let expression > unmutated referencing mutated 1`] = `
 "import {ref, html, clone, traverse, computed, access, text, after, show, append, define} from \\"@intrnl/velvet/internal\\";
 let template0 = html(\\"<!>\\");
