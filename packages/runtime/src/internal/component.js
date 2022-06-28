@@ -3,6 +3,13 @@ import { ref, scope, access } from './reactivity.js';
 import { hyphenate, camelize, assign, is_function } from './utils.js';
 import { Symbol, Object } from './globals.js';
 
+let ENABLE_RANDOM_TAGS = false;
+let RANDOM_TAG = 1;
+
+export function use_random_tags () {
+	ENABLE_RANDOM_TAGS = true;
+}
+
 // props are assigned its default values only when it's uncontrolled, so the
 // refs starts with a unique symbol, and we only assign if it's still present.
 
@@ -137,6 +144,10 @@ export function define (tag, setup, definition, styles) {
 				return this.$p[index](next);
 			},
 		});
+	}
+
+	if (ENABLE_RANDOM_TAGS) {
+		tag = 'velvet-' + RANDOM_TAG++;
 	}
 
 	if (tag) {
