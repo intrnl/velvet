@@ -133,8 +133,6 @@ export function promise (marker, pending, resolved, rejected, expression) {
 		catch (err) {
 			error(err);
 			status(3);
-
-			throw err;
 		}
 	});
 
