@@ -22,13 +22,49 @@ export function scope (detached) {
 }
 
 export function effect (fn, scheduler) {
-	let instance = new Effect(fn, scheduler);
+	let instance = new Effect(fn, scheduler || schedule_effect);
 
 	if (!scheduler) {
 		instance._run();
 	}
 
 	return instance;
+}
+
+let pending_effects = [];
+let flushing = false;
+let dirty = false;
+
+export function schedule_effect (effect) {
+	if (!effect._dirty) {
+		if (!flushing) {
+			flushing = true;
+			setTimeout(flush_effects);
+		}
+
+		effect._dirty = dirty = true;
+		pending_effects.push(effect);
+	}
+}
+
+function flush_effects () {
+	let idx = 0;
+	let len = 0;
+
+	while (dirty) {
+		dirty = false;
+		len = pending_effects.length;
+
+		for (; idx < len; idx++) {
+			let effect = pending_effects[idx];
+
+			effect._dirty = false;
+			effect._run();
+		}
+	}
+
+	pending_effects.length = 0;
+	flushing = false;
 }
 
 
@@ -143,6 +179,8 @@ export class Effect {
 	_fn;
 	/** scheduler */
 	_scheduler;
+	/** dirty */
+	_dirty = false;
 
 	constructor (fn, scheduler) {
 		let _this = this;
