@@ -22,7 +22,7 @@ export function scope (detached) {
 }
 
 export function effect (fn, scheduler) {
-	let instance = new Effect(fn, scheduler || schedule_effect);
+	let instance = new Effect(fn, scheduler != null ? scheduler : schedule_effect);
 
 	if (!scheduler) {
 		instance._run();
