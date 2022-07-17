@@ -108,7 +108,7 @@ export function promise (marker, pending, resolved, rejected, expression) {
 	effect(() => {
 		let key = curr = {};
 
-		status(0);
+		status(1);
 		result(null);
 		error(null);
 
@@ -129,12 +129,6 @@ export function promise (marker, pending, resolved, rejected, expression) {
 					}
 				},
 			);
-
-			queueMicrotask(() => {
-				if (curr === key && status(access) === 0) {
-					status(1);
-				}
-			});
 		}
 		catch (err) {
 			error(err);
