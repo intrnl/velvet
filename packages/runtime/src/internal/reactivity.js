@@ -31,10 +31,12 @@ export function effect (fn, scheduler) {
 	return instance;
 }
 
+/** @type {Effect[]} */
 let pending_effects = [];
 let flushing = false;
 let dirty = false;
 
+/** @param {Effect} effect */
 export function schedule_effect (effect) {
 	if (!effect._dirty) {
 		if (!flushing) {
