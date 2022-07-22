@@ -210,7 +210,7 @@ export class Effect {
 			curr_track_bit = 1 << ++curr_track_depth;
 
 			if (curr_track_depth <= max_track_bits) {
-				for (let i = 0; i < deps.length; i++) {
+				for (let i = 0, l = deps.length; i < l; i++) {
 					deps[i].w |= curr_track_bit;
 				}
 			}
@@ -224,7 +224,7 @@ export class Effect {
 			if (curr_track_depth <= max_track_bits) {
 				let pointer = 0;
 
-				for (let i = 0; i < deps.length; i++) {
+				for (let i = 0, l = deps.length; i < l; i++) {
 					let dep = deps[i];
 
 					if (was_tracked(dep) && !new_tracked(dep)) {
@@ -253,7 +253,7 @@ export class Effect {
 
 		_this._disabled = true;
 
-		for (let i = 0; i < deps.length; i++) {
+		for (let i = 0, l = deps.length; i < l; i++) {
 			deps[i].delete(_this);
 		}
 
