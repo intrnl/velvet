@@ -614,8 +614,8 @@ export function transform_template (template, source) {
 									throw create_error(
 										`invalid binding property "${prop_name}" for input element`,
 										source,
-										start,
-										end,
+										attr.start,
+										attr.end,
 									);
 								}
 
@@ -723,8 +723,8 @@ export function transform_template (template, source) {
 									throw create_error(
 										`invalid spread in class expression`,
 										source,
-										start,
-										end,
+										prop.start,
+										prop.end,
 									);
 								}
 
@@ -793,8 +793,8 @@ export function transform_template (template, source) {
 									throw create_error(
 										`invalid spread in style expression`,
 										source,
-										start,
-										end,
+										prop.start,
+										prop.end,
 									);
 								}
 

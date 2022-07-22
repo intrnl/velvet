@@ -350,7 +350,7 @@ describe('let expression', () => {
 
 		let result = compileSync(template);
 		expect(result).toMatchSnapshot();
-	})
+	});
 });
 
 describe('conditional logic', () => {

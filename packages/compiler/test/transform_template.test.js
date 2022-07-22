@@ -964,5 +964,5 @@ describe('miscellaneous', () => {
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
-	})
+	});
 });
