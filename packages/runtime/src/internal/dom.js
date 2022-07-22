@@ -122,9 +122,6 @@ export function style_set (node, name, value) {
 }
 
 export function get_checked_values (array, value, checked) {
-	// this could be an iterable, so we need to spread.
-	array = [...array];
-
 	if (checked) {
 		array.push(value);
 	}
