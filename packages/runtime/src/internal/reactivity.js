@@ -215,7 +215,7 @@ export class Effect {
 				}
 			}
 			else {
-				_this._stop();
+				_this._clear();
 			}
 
 			return _this._fn();
@@ -247,17 +247,22 @@ export class Effect {
 		}
 	}
 
-	_stop () {
+	_clear () {
 		let _this = this;
 		let deps = _this._dependencies;
-
-		_this._disabled = true;
 
 		for (let i = 0, l = deps.length; i < l; i++) {
 			deps[i].delete(_this);
 		}
 
 		deps.length = 0;
+	}
+
+	_stop () {
+		let _this = this;
+
+		_this._disabled = true;
+		_this._clear();
 	}
 }
 
