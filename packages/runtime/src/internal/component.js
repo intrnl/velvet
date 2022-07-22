@@ -1,5 +1,5 @@
 import { append } from './dom.js';
-import { ref, scope, access } from './reactivity.js';
+import { ref, scope, Ref } from './reactivity.js';
 import { hyphenate, camelize, assign, is_function } from './utils.js';
 import { Symbol, Object } from './globals.js';
 
@@ -26,7 +26,7 @@ export class VelvetComponent extends HTMLElement {
 	$m = false;
 	/** scope instance */
 	$c = scope(true);
-	/** props */
+	/** @type {Record<number, Ref>} props */
 	$p = {};
 	/** on mount hooks */
 	$h = [];
@@ -135,13 +135,10 @@ export function define (tag, setup, definition, styles) {
 
 		Object.defineProperty(Component.prototype, prop, {
 			get () {
-				// accessing a property value should NOT trigger effects. two-way
-				// bindings between components should involve events.
-
-				return this.$p[index](access, false);
+				return this.$p[index].v;
 			},
 			set (next) {
-				return this.$p[index](next);
+				this.$p[index].v = next;
 			},
 		});
 	}
@@ -174,14 +171,14 @@ export function css (text) {
 export function prop (index, value) {
 	let state = curr_host.$p[index];
 
-	if (state(access) === default_value) {
+	if (state.v === default_value) {
 		// we're trying to mimic default values in a function parameter, where
 		// values are only instantiated when the argument is undefined.
 
 		// we'd wrap non-primitive values like functions and objects, or if we're
 		// referencing an identifier.
 
-		state(is_function(value) ? value() : value);
+		state.v = is_function(value) ? value() : value;
 	}
 
 	return state;

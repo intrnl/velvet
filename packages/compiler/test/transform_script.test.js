@@ -775,6 +775,10 @@ describe('store', () => {
 	it('setter', () => {
 		let program = parse(`
 			$store = 123;
+			$store ||= 123;
+			$store++;
+			--$store;
+			$store *= 234;
 		`);
 
 		transform_script(program);

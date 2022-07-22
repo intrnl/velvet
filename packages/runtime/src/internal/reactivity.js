@@ -1,6 +1,6 @@
 // Stripped out version of @vue/reactivity, not intended for public usage.
 import { is, is_function } from './utils.js';
-import { Symbol, Set } from './globals.js';
+import { Set } from './globals.js';
 
 
 let curr_track_bit = 1;
@@ -14,7 +14,6 @@ export let curr_effect = null;
 let active_effects = new Set();
 
 let max_track_bits = 30;
-export let access = Symbol();
 
 
 export function scope (detached) {
@@ -78,16 +77,14 @@ export function cleanup (fn) {
 
 export function ref (value) {
 	let instance = new Ref(value);
-	let bound = instance._run.bind(instance);
 
-	return bound;
+	return instance;
 }
 
 export function computed (getter) {
 	let instance = new Computed(getter);
-	let bound = instance._run.bind(instance);
 
-	return bound;
+	return instance;
 }
 
 export class Scope {
@@ -269,26 +266,19 @@ export class Ref {
 		this._value = value;
 	}
 
-	_run (next, effect = true) {
+	get v () {
 		let _this = this;
-		let deps = _this._dependencies;
-		let prev = _this._value;
 
-		if (next === access) {
-			if (effect) {
-				track_effect(deps);
-			}
+		track_effect(_this._dependencies);
+		return _this._value;
+	}
 
-			return _this._value;
-		}
-		else {
+	set v (next) {
+		let _this = this;
+
+		if (!is(_this._value, next)) {
 			_this._value = next;
-
-			if (effect && !is(prev, next)) {
-				trigger_effect(deps);
-			}
-
-			return next;
+			trigger_effect(_this._dependencies);
 		}
 	}
 }
@@ -312,34 +302,27 @@ export class Computed {
 				trigger_effect(_this._dependencies);
 			}
 		});
-
-		_this._run(access);
 	}
 
-	_run (next) {
+	get v () {
 		let _this = this;
-		let deps = _this._dependencies;
-		let prev = _this._value;
 
-		if (next === access) {
-			track_effect(deps);
-
-			if (_this._dirty) {
-				_this._dirty = false;
-				_this._value = _this._effect._run();
-			}
-
-			return _this._value;
+		if (_this._dirty) {
+			_this._value = _this._effect._run();
+			_this._dirty = false;
 		}
-		else {
+
+		track_effect(_this._dependencies);
+		return _this._value;
+	}
+
+	set v (next) {
+		let _this = this;
+
+		if (!is(_this._value, next)) {
 			_this._dirty = false;
 			_this._value = next;
-
-			if (!is(prev, next)) {
-				trigger_effect(deps);
-			}
-
-			return next;
+			trigger_effect(_this._dependencies);
 		}
 	}
 }

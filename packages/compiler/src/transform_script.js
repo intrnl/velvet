@@ -82,7 +82,6 @@ export function transform_script (program, source) {
 
 			if (node.type === 'UpdateExpression' && node.argument.type === 'Identifier') {
 				let identifier = node.argument;
-				let prefix = node.prefix;
 
 				let name = identifier.name;
 				let own_scope = curr_scope.find_owner(name);
@@ -92,39 +91,6 @@ export function transform_script (program, source) {
 
 					if (own_scope === root_scope || ident.velvet?.computed) {
 						(ident.velvet ||= {}).mutable = true;
-
-						let expression;
-
-						if (prefix) {
-							expression = t.assignment_expression(
-								identifier,
-								t.literal(1),
-								node.operator.slice(1) + '=',
-							);
-						}
-						else {
-							let holder = '%d' + (d_count++);
-
-							let var_decl = t.variable_declaration('let', [
-								t.variable_declarator(t.identifier(holder)),
-							]);
-
-							let binary_exp = t.binary_expression(
-								t.identifier(holder),
-								t.literal(1),
-								node.operator.slice(1),
-							);
-
-							expression = t.sequence_expression([
-								t.assignment_expression(t.identifier(holder), identifier),
-								t.assignment_expression(identifier, binary_exp),
-								t.identifier(holder),
-							]);
-
-							deferred_placeholders.push([parent, [var_decl]]);
-						}
-
-						return expression;
 					}
 				}
 
@@ -385,17 +351,11 @@ export function transform_script (program, source) {
 					return;
 				}
 
-
-				if (parent.type === 'AssignmentExpression' && parent.left === node) {
-					return;
-				}
-
-
 				let own_scope = curr_scope.find_owner(name);
 				let ident = own_scope && own_scope.declarations.get(name);
 
 				if (ident && ident.velvet?.ref) {
-					let expression = t.call_expression(node, [t.identifier('@access')]);
+					let expression = t.member_expression(node, t.identifier('v'));
 
 					if (parent.type === 'Property') {
 						parent.shorthand = false;
@@ -409,6 +369,32 @@ export function transform_script (program, source) {
 			}
 
 			// transform setters
+			// if we're dealing with a store, we don't want to actually mutate the
+			// holding ref for the store.
+			if (node.type === 'UpdateExpression' && node.argument.type === 'Identifier') {
+				let argument = node.argument;
+				let prefix = node.prefix;
+				let name = argument.name;
+
+				if (name[0] === '$' && name[1] !== '$' && !parent.velvet?.transformed) {
+					let actual_ident = t.identifier(name.slice(1));
+
+					let expr = !prefix
+						? t.binary_expression(argument, t.literal(1), node.operator.slice(1))
+						: argument;
+
+					let call_expr = t.call_expression(
+						t.member_expression(actual_ident, t.identifier('set')),
+						[expr],
+					);
+
+					(call_expr.velvet ||= {}).transformed = true;
+					return call_expr;
+				}
+
+				return;
+			}
+
 			if (node.type === 'AssignmentExpression') {
 				let left = node.left;
 				let right = node.right;
@@ -444,36 +430,6 @@ export function transform_script (program, source) {
 
 						(call_expr.velvet ||= {}).transformed = true;
 						return call_expr;
-					}
-
-					let own_scope = curr_scope.find_owner(name);
-					let ident = own_scope && own_scope.declarations.get(name);
-
-					if (ident && ident.velvet?.ref) {
-						let expression;
-						let operator = node.operator.slice(0, -1);
-
-						switch (node.operator) {
-							case '=': {
-								expression = t.call_expression(left, [right]);
-								break;
-							}
-							case '||=': case '&&=': case '??=': {
-								let getter = t.call_expression(left, [t.identifier('@access')]);
-								let setter = t.assignment_expression(left, right, '=');
-								expression = t.logical_expression(getter, setter, operator);
-								break;
-							}
-							default: {
-								let getter = t.call_expression(left, [t.identifier('@access')]);
-								let operation = t.binary_expression(getter, right, operator);
-								expression = t.call_expression(left, [operation]);
-								break;
-							}
-						}
-
-						(left.velvet ||= {}).transformed = true;
-						return expression;
 					}
 
 					return;

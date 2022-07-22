@@ -1,4 +1,4 @@
-import { ref, effect, scope, cleanup, access, Scope } from './reactivity.js';
+import { ref, effect, scope, cleanup, Scope } from './reactivity.js';
 import { replace, remove_parts } from './dom.js';
 import { is } from './utils.js';
 
@@ -55,7 +55,7 @@ export function each (marker, block, expression) {
 		for (; index < items_len; index++) {
 			if (parts[index]) {
 				let item = parts[index][2];
-				item(items[index]);
+				item.v = items[index];
 			}
 			else {
 				let prev = parts[index - 1];
@@ -102,15 +102,15 @@ export function promise (marker, pending, resolved, rejected, expression) {
 	let error = ref();
 	let curr;
 
-	resolved &&= resolved.bind(0, result);
-	rejected &&= rejected.bind(0, error);
+	resolved && (resolved = () => resolved(result));
+	rejected && (rejected = () => rejected(error));
 
 	effect(() => {
 		let key = curr = {};
 
-		status(1);
-		result(null);
-		error(null);
+		status.v = 1;
+		result.v = null;
+		error.v = null;
 
 		try {
 			let promise = Promise.resolve(expression());
@@ -118,26 +118,26 @@ export function promise (marker, pending, resolved, rejected, expression) {
 			promise.then(
 				(val) => {
 					if (curr === key) {
-						result(val);
-						status(2);
+						result.v = val;
+						status.v = 2;
 					}
 				},
 				(err) => {
 					if (curr === key) {
-						error(err);
-						status(3);
+						status.v = 3;
+						error.v = err;
 					}
 				},
 			);
 		}
 		catch (err) {
-			error(err);
-			status(3);
+			error.v = err;
+			status.v = 3;
 		}
 	});
 
 	show(marker, () => {
-		let current = status(access);
+		let current = status.v;
 		return current === 1 ? pending : current === 2 ? resolved : current === 3 ? rejected : null;
 	});
 }
