@@ -89,7 +89,7 @@ export function computed (getter) {
 
 export class Scope {
 	/** @type {?true} disabled */
-	_disabled;
+	_disabled = false;
 
 	/** @type {?Scope} parent scope */
 	_parent;
@@ -172,6 +172,9 @@ export class Scope {
 }
 
 export class Effect {
+	/** disabled */
+	_disabled = false;
+
 	/** ref dependencies */
 	_dependencies = [];
 	/** fn */
@@ -196,7 +199,7 @@ export class Effect {
 
 		let deps = _this._dependencies;
 
-		if (active_effects.has(_this)) {
+		if (_this._disabled || active_effects.has(_this)) {
 			return;
 		}
 
@@ -247,6 +250,8 @@ export class Effect {
 	_stop () {
 		let _this = this;
 		let deps = _this._dependencies;
+
+		_this._disabled = true;
 
 		for (let i = 0; i < deps.length; i++) {
 			deps[i].delete(_this);
