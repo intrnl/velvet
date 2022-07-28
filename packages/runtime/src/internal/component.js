@@ -122,8 +122,10 @@ export class VelvetComponent extends HTMLElement {
 
 
 export function define (tag, setup, definition, styles) {
+	let observedAttributes = [];
+
 	class Component extends VelvetComponent {
-		static observedAttributes = Object.keys(definition).map(hyphenate);
+		static observedAttributes = observedAttributes;
 
 		static $c = setup;
 		static $d = definition;
@@ -132,6 +134,8 @@ export function define (tag, setup, definition, styles) {
 
 	for (let prop in definition) {
 		let index = definition[prop];
+
+		observedAttributes.push(hyphenate(prop));
 
 		Object.defineProperty(Component.prototype, prop, {
 			/** @this VelvetComponent */
