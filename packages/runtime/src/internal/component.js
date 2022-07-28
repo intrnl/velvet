@@ -134,10 +134,12 @@ export function define (tag, setup, definition, styles) {
 		let index = definition[prop];
 
 		Object.defineProperty(Component.prototype, prop, {
+			/** @this VelvetComponent */
 			get () {
 				// accessing props here shouldn't trigger effect tracking.
 				return this.$p[index]._value;
 			},
+			/** @this VelvetComponent */
 			set (next) {
 				this.$p[index].v = next;
 			},
