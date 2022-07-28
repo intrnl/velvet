@@ -135,7 +135,8 @@ export function define (tag, setup, definition, styles) {
 
 		Object.defineProperty(Component.prototype, prop, {
 			get () {
-				return this.$p[index].v;
+				// accessing props here shouldn't trigger effect tracking.
+				return this.$p[index]._value;
 			},
 			set (next) {
 				this.$p[index].v = next;
