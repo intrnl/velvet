@@ -105,7 +105,7 @@ export function text (value, decoded = decode_character_references(value)) {
  */
 export function element (name, self_closing, attributes = [], children = []) {
 	let inline = /^[A-Z]|^v:(?:self|component|element)$/.test(name);
-	let component = inline || /^[^-\d]+-.*$/.test(name);
+	let component = inline || /^[^-\d].*-.*$/.test(name);
 
 	return {
 		type: 'Element',
