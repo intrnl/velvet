@@ -29,19 +29,23 @@ function* _compile (source, options = {}) {
 	}
 
 	// collect specialities
+	let options_node;
 	let module_node;
 	let script_node;
 	let style_node;
 	let style_value = null;
 
 	for (let index = 0; index < template.children.length; index++) {
+		/** @type {import('./utils/template_types.js').Node} */
 		let node = template.children[index];
 
 		if (node.type !== 'Element') {
 			continue;
 		}
 
-		if (node.name === 'script') {
+		let name = node.name;
+
+		if (name === 'script') {
 			let context_attr = node.attributes.find((attr) => attr.name === 'context');
 
 			if (context_attr) {
@@ -81,7 +85,7 @@ function* _compile (source, options = {}) {
 			continue;
 		}
 
-		if (node.name === 'style') {
+		if (name === 'style') {
 			if (style_node) {
 				throw create_error(
 					'there can be only one root-level <style> element',
@@ -94,6 +98,71 @@ function* _compile (source, options = {}) {
 			style_node = node;
 			template.children.splice(index--, 1);
 			continue;
+		}
+
+		if (name === 'v:options') {
+			if (options_node) {
+				throw create_error(
+					'there can only be one <v:options> element',
+					source,
+					node.start,
+					node.end,
+				);
+			}
+
+			options_node = node;
+			template.children.splice(index--, 1);
+			continue;
+		}
+	}
+
+	// retrieve component options
+	if (options_node) {
+		for (let attr of options_node.attributes) {
+			if (attr.type === 'AttributeSpread') {
+				throw create_error(
+					`attribute spread not supported on <v:options> element`,
+					source,
+					attr.start,
+					attr.end,
+				);
+			}
+
+			let attr_name = attr.name;
+			let attr_value = attr.value;
+
+			if (attr_name === 'name') {
+				if (!attr_value || attr_value.type !== 'Text') {
+					throw create_error(
+						`<v:options name> must contain a string value`,
+						source,
+						attr.start,
+						attr.end,
+					);
+				}
+
+				let trimmed = attr_value.decoded.trim();
+
+				if (!trimmed) {
+					throw create_error(
+						`<v:options name> must not contain an empty string value`,
+						source,
+						attr.start,
+						attr.end,
+					);
+				}
+
+				if (!(/[^-\d]+-.+/).test(trimmed)) {
+					throw create_error(
+						`invalid custom elements tag provided to <v:options name>`,
+						source,
+						attr.start,
+						attr.end,
+					);
+				}
+
+				name = attr_value.value;
+			}
 		}
 	}
 

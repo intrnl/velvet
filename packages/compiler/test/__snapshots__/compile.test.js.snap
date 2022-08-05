@@ -239,6 +239,25 @@ export default define(null, setup, {}, []);
 "
 `;
 
+exports[`options element > allows for changing element name 1`] = `
+"import {html, clone, append, define} from \\"@intrnl/velvet/internal\\";
+let template0 = html(\\"<div>hello world!</div>\\");
+function setup($$root, $$host) {
+  let fragment0 = clone(template0);
+  append($$root, fragment0);
+}
+export default define(\\"my-greeter\\", setup, {}, []);
+"
+`;
+
+exports[`options element > throws on non root-level usage 1`] = `
+"<v:options> can only be used on root-level (2:8)
+1: 
+2:       <div><v:options name='foo' /></div>
+              ^
+3:     "
+`;
+
 exports[`props > exporting binding and mutable 1`] = `
 "import {prop, html, clone, append, bind, define} from \\"@intrnl/velvet/internal\\";
 let template0 = html(\\"\\");

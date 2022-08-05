@@ -510,6 +510,11 @@ function _parse_element (state) {
 	else if (name === 'v:component' || name === 'v:element') {
 		// left blank
 	}
+	else if (name === 'v:options') {
+		if (state.stack.length > 1) {
+			throw p.error(state, `<v:options> can only be used on root-level`, start, state.index);
+		}
+	}
 	else if (name[0] === 'v' && name[1] === ':') {
 		throw p.error(state, 'unknown special element');
 	}

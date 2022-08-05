@@ -38,6 +38,32 @@ describe('script context', () => {
 	});
 });
 
+describe('options element', () => {
+	it('allows for changing element name', () => {
+		let source = `
+			<v:options name='my-greeter' />
+			<div>hello world!</div>
+		`;
+
+		let result = compileSync(source);
+		expect(result).toMatchSnapshot();
+	});
+
+	it('throws on non root-level usage', () => {
+		let source = `
+			<div><v:options name='foo' /></div>
+		`;
+
+		try {
+			compileSync(source);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
+	});
+});
+
 describe('props', () => {
 	it('throws on two variable exported to one name', () => {
 		let source = `

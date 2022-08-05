@@ -26,7 +26,6 @@ export function fragment (children = []) {
  *   Text |
  *   Element |
  *   Expression |
- *   NamedExpression |
  *   ConditionalStatement |
  *   LoopStatement |
  *   AwaitStatement
@@ -121,7 +120,7 @@ export function element (name, self_closing, attributes = [], children = []) {
 
 /**
  * @typedef {object} Attribute
- * @typedef {'Attribute'} type
+ * @property {'Attribute'} type
  * @property {string} name
  * @property {Text | Expression} [value]
  * @property {number} [start]
