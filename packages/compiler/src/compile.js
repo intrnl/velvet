@@ -141,18 +141,9 @@ function* _compile (source, options = {}) {
 					);
 				}
 
-				let trimmed = attr_value.decoded.trim();
+				let text = attr_value.decoded;
 
-				if (!trimmed) {
-					throw create_error(
-						`<v:options name> must not contain an empty string value`,
-						source,
-						attr.start,
-						attr.end,
-					);
-				}
-
-				if (!(/^[^-\d].*-.*$/).test(trimmed)) {
+				if (!(/^[^-\d].*-.*$/).test(text) || (/[ ]/).test(text)) {
 					throw create_error(
 						`invalid custom elements tag provided to <v:options name>`,
 						source,
@@ -161,7 +152,7 @@ function* _compile (source, options = {}) {
 					);
 				}
 
-				name = attr_value.value;
+				name = text;
 			}
 		}
 	}
