@@ -152,7 +152,7 @@ function* _compile (source, options = {}) {
 					);
 				}
 
-				if (!(/^[^-\d]+-.+$/).test(trimmed)) {
+				if (!(/^[^-\d]+-.*$/).test(trimmed)) {
 					throw create_error(
 						`invalid custom elements tag provided to <v:options name>`,
 						source,
