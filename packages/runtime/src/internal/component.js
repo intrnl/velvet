@@ -1,6 +1,6 @@
 import { append } from './dom.js';
 import { ref, scope, Ref } from './reactivity.js';
-import { hyphenate, camelize, assign, is_function } from './utils.js';
+import { hyphenate, assign, is_function } from './utils.js';
 import { Symbol, Object } from './globals.js';
 
 let ENABLE_RANDOM_TAGS = false;
@@ -19,6 +19,7 @@ export let default_value = Symbol();
 
 export class VelvetComponent extends HTMLElement {
 	// static $c: setup function
+	// static $a: attr to prop definition
 	// static $d: prop definitions
 	// static $s: stylesheets
 
@@ -111,31 +112,37 @@ export class VelvetComponent extends HTMLElement {
 
 	attributeChangedCallback (attr, prev, next) {
 		let host = this;
-		let prop = camelize(attr);
+		let mapping = host.constructor.$d;
 
 		// toggleAttribute: ''
 		// removeAttribute: null
 
-		host[prop] = next === '' ? true : next;
+		if (attr in mapping) {
+			host[mapping[attr]] = next === '' ? true : next;
+		}
 	}
 }
 
 
 export function define (tag, setup, definition, styles) {
-	let observedAttributes = [];
+	let observed_attrs = [];
+	let attr_to_prop = Object.create(null);
 
 	class Component extends VelvetComponent {
-		static observedAttributes = observedAttributes;
+		static observedAttributes = observed_attrs;
 
 		static $c = setup;
+		static $a = attr_to_prop;
 		static $d = definition;
 		static $s = styles;
 	}
 
 	for (let prop in definition) {
 		let index = definition[prop];
+		let hyphen = hyphenate(prop);
 
-		observedAttributes.push(hyphenate(prop));
+		attr_to_prop[hyphen] = prop;
+		observed_attrs.push(hyphen);
 
 		Object.defineProperty(Component.prototype, prop, {
 			/** @this VelvetComponent */
