@@ -2,7 +2,7 @@
 	"type": "module",
 	"name": "@intrnl/esbuild-plugin-velvet",
 	"description": "Velvet plugin for esbuild",
-	"version": "0.3.5",
+	"version": "0.4.0",
 	"author": "intrnl",
 	"license": "MIT",
 	"repository": {
@@ -17,12 +17,12 @@
 		"@intrnl/fs-cache": "^0.2.3"
 	},
 	"peerDependencies": {
-		"@intrnl/velvet-compiler": "workspace:^0.3.22",
+		"@intrnl/velvet-compiler": "workspace:^0.4.0",
 		"esbuild": "^0.14.8"
 	},
 	"devDependencies": {
 		"@intrnl/velvet": "workspace:^0.1.23",
-		"@intrnl/velvet-compiler": "workspace:^0.3.24",
+		"@intrnl/velvet-compiler": "workspace:^0.4.0",
 		"esbuild": "^0.14.38"
 	}
 }
