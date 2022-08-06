@@ -1,4 +1,4 @@
-export let COMPILER_VERSION = '0.3.33';
+export let COMPILER_VERSION = '0.4.0';
 
 export * from './compile.js';
 export * from './parse_template.js';
