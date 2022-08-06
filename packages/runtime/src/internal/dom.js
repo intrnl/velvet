@@ -60,38 +60,23 @@ export function after (ref, node) {
 	ref.after(node);
 }
 
-export function remove (node) {
-	node.remove();
-}
-
-export function remove_all (nodes) {
-	let idx = 0;
-	let len = nodes.length;
-
-	for (; idx < len; idx++) {
-		remove(nodes[idx]);
-	}
-}
-
 export function remove_parts (a, b) {
-	remove_all(get_parts(a, b));
-}
-
-export function get_parts (a, b) {
-	let nodes = [];
 	let node = a;
 
-	while (node) {
-		nodes.push(node);
-
-		if (node === b) {
-			break;
-		}
-
-		node = node.nextSibling;
+	if (b.nextSibling === a) {
+		return;
 	}
 
-	return nodes;
+	while (node) {
+		let curr = node;
+
+		node = node.nextSibling;
+		curr.remove();
+
+		if (curr === b) {
+			break;
+		}
+	}
 }
 
 export function on (node, type, listener, options) {
