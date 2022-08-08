@@ -102,8 +102,8 @@ export function promise (marker, pending, resolved, rejected, expression) {
 	let error = ref();
 	let curr;
 
-	resolved && (resolved = resolved.bind(0, result));
-	rejected && (rejected = rejected.bind(0, error));
+	let resolved_block = resolved && ((marker) => resolved(marker, result));
+	let rejected_block = rejected && ((marker) => rejected(marker, result));
 
 	effect(() => {
 		let key = curr = {};
@@ -138,7 +138,7 @@ export function promise (marker, pending, resolved, rejected, expression) {
 
 	show(marker, () => {
 		let current = status.v;
-		return current === 1 ? pending : current === 2 ? resolved : current === 3 ? rejected : null;
+		return current === 1 ? pending : current === 2 ? resolved_block : current === 3 ? rejected_block : null;
 	});
 }
 
