@@ -102,8 +102,8 @@ export function promise (marker, pending, resolved, rejected, expression) {
 	let error = ref();
 	let curr;
 
-	resolved && (resolved = () => resolved(result));
-	rejected && (rejected = () => rejected(error));
+	resolved && (resolved = resolved.bind(0, result));
+	rejected && (rejected = rejected.bind(0, error));
 
 	effect(() => {
 		let key = curr = {};
