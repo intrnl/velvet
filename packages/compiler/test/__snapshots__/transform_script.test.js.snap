@@ -90,7 +90,7 @@ console.log(unrelated);
 exports[`computed > object spread from a store 1`] = `
 "let scores = @ref(), unknowns = @ref();
 let $search_params = @ref();
-@cleanup(search_params.subscribe($search_params));
+@cleanup(search_params.subscribe(%value => $search_params.v = %value));
 @effect(() => {
   let %d0, %d1, %d2;
   (%d0 = calculate($search_params.v.get('augments')?.split(',') || []), {scores: %d1, unknowns: %d2} = %d0, scores.v = %d1, unknowns.v = %d2, %d0);
@@ -501,13 +501,13 @@ exports[`ref > variable mutated with spread 1`] = `
 let %d0, %d1, %d2, %d3;
 (%d0 = obj, {foo: %d1, b: %d2, buzz, c: car, ...%d3} = %d0, foo.v = %d1, bar.v = %d2, baz.v = %d3, %d0);
 let $obj = @ref();
-@cleanup(obj.subscribe($obj));
+@cleanup(obj.subscribe(%value => $obj.v = %value));
 let %d4, %d5, %d6, %d7;
 (%d4 = $obj.v, {foo: %d5, b: %d6, buzz, c: car, ...%d7} = %d4, foo.v = %d5, bar.v = %d6, baz.v = %d7, %d4);
 let %d8, %d9, %d10;
 (%d8 = arr, [%d9, buzz, ...%d10] = %d8, foo.v = %d9, bar.v = %d10, %d8);
 let $arr = @ref();
-@cleanup(arr.subscribe($arr));
+@cleanup(arr.subscribe(%value => $arr.v = %value));
 let %d11, %d12, %d13;
 (%d11 = $arr.v.foo, [%d12, buzz, ...%d13] = %d11, foo.v = %d12, bar.v = %d13, %d11);
 "
@@ -608,35 +608,35 @@ exports[`reserved > throws on reassigning $$ 1`] = `
 
 exports[`store > binary setter 1`] = `
 "let $store = @ref();
-@cleanup(store.subscribe($store));
+@cleanup(store.subscribe(%value => $store.v = %value));
 store.set($store.v + 123);
 "
 `;
 
 exports[`store > getter 1`] = `
 "let $store = @ref();
-@cleanup(store.subscribe($store));
+@cleanup(store.subscribe(%value => $store.v = %value));
 $store.v;
 "
 `;
 
 exports[`store > getter within computed 1`] = `
 "let $searchParams = @ref();
-@cleanup(searchParams.subscribe($searchParams));
+@cleanup(searchParams.subscribe(%value => $searchParams.v = %value));
 let query = @computed(() => $searchParams.v.query);
 "
 `;
 
 exports[`store > logical setter 1`] = `
 "let $store = @ref();
-@cleanup(store.subscribe($store));
+@cleanup(store.subscribe(%value => $store.v = %value));
 store.set($store.v ?? 123);
 "
 `;
 
 exports[`store > lone block statement 1`] = `
 "let $foo = @ref();
-@cleanup(foo.subscribe($foo));
+@cleanup(foo.subscribe(%value => $foo.v = %value));
 {
   $foo.v;
 }
@@ -645,19 +645,19 @@ exports[`store > lone block statement 1`] = `
 
 exports[`store > multiple getter references 1`] = `
 "let $value1 = @ref();
-@cleanup(value1.subscribe($value1));
+@cleanup(value1.subscribe(%value => $value1.v = %value));
 function increment() {
   console.log($value1.v);
 }
 let $value2 = @ref();
-@cleanup(value2.subscribe($value2));
+@cleanup(value2.subscribe(%value => $value2.v = %value));
 console.log($value2.v);
 "
 `;
 
 exports[`store > multiple setter references 1`] = `
 "let $value1 = @ref();
-@cleanup(value1.subscribe($value1));
+@cleanup(value1.subscribe(%value => $value1.v = %value));
 function increment() {
   value1.set($value1.v + 1);
 }
@@ -667,14 +667,14 @@ value2.set(2);
 
 exports[`store > mutating member property 1`] = `
 "let $foo = @ref();
-@cleanup(foo.subscribe($foo));
+@cleanup(foo.subscribe(%value => $foo.v = %value));
 $foo.v.bar = 123;
 "
 `;
 
 exports[`store > no affecting inner scope 1`] = `
 "let $foo = @ref();
-@cleanup(foo.subscribe($foo));
+@cleanup(foo.subscribe(%value => $foo.v = %value));
 function log() {
   let $bar = 123;
   console.log($bar, $foo.v);
@@ -685,21 +685,21 @@ console.log($foo.v);
 
 exports[`store > only alter single $ 1`] = `
 "let $foo = @ref();
-@cleanup(foo.subscribe($foo));
+@cleanup(foo.subscribe(%value => $foo.v = %value));
 console.log($foo.v, $$, $$$);
 "
 `;
 
 exports[`store > reference store twice 1`] = `
 "let $foo = @ref();
-@cleanup(foo.subscribe($foo));
+@cleanup(foo.subscribe(%value => $foo.v = %value));
 console.log($foo.v, $foo.v);
 "
 `;
 
 exports[`store > retrieving member property 1`] = `
 "let $foo = @ref();
-@cleanup(foo.subscribe($foo));
+@cleanup(foo.subscribe(%value => $foo.v = %value));
 console.log($foo.v.bar);
 "
 `;
@@ -707,7 +707,7 @@ console.log($foo.v.bar);
 exports[`store > setter 1`] = `
 "store.set(123);
 let $store = @ref();
-@cleanup(store.subscribe($store));
+@cleanup(store.subscribe(%value => $store.v = %value));
 store.set($store.v || 123);
 store.set($store.v + 1);
 store.set($store.v);
@@ -719,7 +719,7 @@ exports[`store > subscribing to a ref 1`] = `
 "let value1 = @ref();
 value1.v = get_store();
 let $value1 = @ref();
-@cleanup(value1.v.subscribe($value1));
+@cleanup(value1.v.subscribe(%value => $value1.v = %value));
 console.log($value1.v);
 "
 `;

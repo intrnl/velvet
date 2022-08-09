@@ -863,9 +863,18 @@ function _push_deferred_stores (deferred_stores) {
 			t.variable_declarator(ident),
 		]);
 
+		let subscriber = t.arrow_function_expression(
+			[t.identifier('%value')],
+			t.assignment_expression(
+				t.member_expression(ident, t.identifier('v')),
+				t.identifier('%value'),
+				'=',
+			),
+		);
+
 		let expr = t.expression_statement(
 			t.call_expression(t.identifier('@cleanup'), [
-				t.call_expression(t.member_expression_from([actual, 'subscribe']), [ident]),
+				t.call_expression(t.member_expression_from([actual, 'subscribe']), [subscriber]),
 			]),
 		);
 
