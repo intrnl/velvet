@@ -317,7 +317,7 @@
 						{
 							"begin": "\\G\\s*?(?=\\S)",
 							"end": "(?=(?:^\\s*|\\s+)(as))",
-							"contentName": "meta.embeedded.expression.velvet source.ts",
+							"contentName": "meta.embedded.expression.velvet source.ts",
 							"patterns": [
 								{
 									"include": "source.ts"
