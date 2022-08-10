@@ -316,8 +316,8 @@
 					"patterns": [
 						{
 							"begin": "\\G\\s*?(?=\\S)",
-							"end": "(?=(?:^\\s*|\\s+)(of))",
-							"contentName": "meta.embedded.expression.velvet source.ts",
+							"end": "(?=(?:^\\s*|\\s+)(as))",
+							"contentName": "meta.embeedded.expression.velvet source.ts",
 							"patterns": [
 								{
 									"include": "source.ts"
@@ -325,10 +325,10 @@
 							]
 						},
 						{
-							"begin": "(of)",
+							"begin": "(as)",
 							"beginCaptures": {
 								"1": {
-									"name": "keyword.control.of.velvet"
+									"name": "keyword.control.as.velvet"
 								}
 							},
 							"end": "(?=})",
@@ -360,6 +360,10 @@
 											]
 										}
 									}
+								},
+								{
+									"match": ",",
+									"name": "punctuation.separator.velvet"
 								}
 							]
 						}
