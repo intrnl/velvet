@@ -1,4 +1,5 @@
 {
+	"private": true,
 	"name": "velvet-language-support",
 	"displayName": "Velvet Language Support",
 	"description": "Adds language support for Velvet",
