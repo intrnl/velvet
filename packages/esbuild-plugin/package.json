@@ -2,7 +2,7 @@
 	"type": "module",
 	"name": "@intrnl/esbuild-plugin-velvet",
 	"description": "Velvet plugin for esbuild",
-	"version": "0.4.1",
+	"version": "0.4.2",
 	"author": "intrnl",
 	"license": "MIT",
 	"repository": {
