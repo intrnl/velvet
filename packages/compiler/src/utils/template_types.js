@@ -209,7 +209,6 @@ export function conditional_statement (test, consequent, alternate = null) {
 /**
  * @typedef {object} LoopStatement
  * @property {'LoopStatement'} type
- * @property {'iterable' | 'enumerable'} kind
  * @property {import('estree').Identifier} local
  * @property {import('estree').Identifier} [index]
  * @property {import('estree').Expression} expression
