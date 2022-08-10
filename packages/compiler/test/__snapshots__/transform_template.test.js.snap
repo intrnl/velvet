@@ -4,17 +4,27 @@ exports[`attribute > action expression 1`] = `
 "let %%template0 = @html(\\"<input />\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
-@cleanup(action(%child0));
+@use(%child0, action, null);
 @append($$root, %fragment0);
 "
 `;
 
 exports[`attribute > action expression array 1`] = `
-"let %%template0 = @html(\\"<input />\\");
+"let %%template0 = @html(\\"<time></time>\\");
 let %fragment0 = @clone(%template0);
 let %child0 = @traverse(%fragment0, [0]);
-@cleanup(foo(%child0));
-@cleanup(bar(%child0));
+@use(%child0, relformatter, null);
+@append($$root, %fragment0);
+"
+`;
+
+exports[`attribute > action expression array with options 1`] = `
+"let %%template0 = @html(\\"<time></time>\\");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+@use(%child0, relformatter, () => ({
+  value: Date.now()
+}));
 @append($$root, %fragment0);
 "
 `;
@@ -285,6 +295,18 @@ $: @style_set(%child0, \\"--baz\\", baz);
 @style_set(%child0, computed, false);
 @append($$root, %fragment0);
 "
+`;
+
+exports[`attribute > throws on action expression array with nothing 1`] = `
+"expected #use to have at least 1 argument, but only 0 were passed (1:12)
+1: <time #use={[]}></time>
+               ^"
+`;
+
+exports[`attribute > throws on action expression array with too many options 1`] = `
+"expected #use to have not more than 2 argument, 3 were passed (1:19)
+1: <time #use={[a, b, c]}></time>
+                      ^"
 `;
 
 exports[`await logic > pending 1`] = `

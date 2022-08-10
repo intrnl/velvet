@@ -472,25 +472,47 @@ export function transform_template (template, source) {
 
 						need_ident = true;
 
-						let elements;
+						let identifier;
+						let argument;
 
 						if (value_expr.type === 'ArrayExpression') {
-							elements = value_expr.elements;
+							let elements = value_expr.elements;
+							let length = elements.length;
+
+							if (length < 1) {
+								throw create_error(
+									`expected #use to have at least 1 argument, but only ${length} were passed`,
+									source,
+									value_expr.start,
+									value_expr.end,
+								);
+							}
+							if (length > 2) {
+								throw create_error(
+									`expected #use to have not more than 2 argument, ${length} were passed`,
+									source,
+									elements[2].start,
+									elements[length - 1].end,
+								);
+							}
+
+							identifier = elements[0];
+							argument = length > 1 ? elements[1] : null;
 						}
 						else {
-							elements = [value_expr];
+							identifier = value_expr;
+							argument = null;
 						}
 
-						for (let node of elements) {
-							let use_expr = t.expression_statement(
-								t.call_expression(t.identifier('@cleanup'), [
-									t.call_expression(node, [t.identifier(elem_ident)]),
-								]),
-							);
+						let use_expr = t.expression_statement(
+							t.call_expression(t.identifier('@use'), [
+								t.identifier(elem_ident),
+								identifier,
+								argument ? t.arrow_function_expression([], argument) : t.literal(null),
+							]),
+						);
 
-							curr_scope.expressions.push(use_expr);
-						}
-
+						curr_scope.expressions.push(use_expr);
 						continue;
 					}
 

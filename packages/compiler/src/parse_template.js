@@ -5,6 +5,8 @@ import { is_void, closing_tag_omitted } from './utils/html.js';
 import { create_error } from './utils/error.js';
 
 
+const allow_duped_attributes = new Set(['#use']);
+
 export function parse_template (content) {
 	let state = p.create_state(content);
 
@@ -606,7 +608,7 @@ function _parse_element (state) {
 				break;
 			}
 
-			if (attribute_names.has(attr_name)) {
+			if (!allow_duped_attributes.has(attr_name) && attribute_names.has(attr_name)) {
 				throw p.error(state, `duplicate ${attr_name} attribute`, start, state.index);
 			}
 

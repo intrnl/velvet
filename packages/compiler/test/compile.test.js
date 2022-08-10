@@ -137,6 +137,29 @@ describe('attribute', () => {
 		let result = compileSync(template);
 		expect(result).toMatchSnapshot();
 	});
+
+	it('throws on duplicate attributes', () => {
+		let template = `
+			<hello-world foo={123} foo={234}></hello-world>
+		`;
+
+		try {
+			compileSync(template);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
+	});
+
+	it('allows duplicate #use attributes', () => {
+		let template = `
+			<time #use={relformatter} #use={[relformatter, { locale: 'en' }]}></time>
+		`;
+
+		let result = compileSync(template);
+		expect(result).toMatchSnapshot();
+	})
 });
 
 describe('store', () => {

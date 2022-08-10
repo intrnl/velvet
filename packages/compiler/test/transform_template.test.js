@@ -289,12 +289,47 @@ describe('attribute', () => {
 	});
 
 	it('action expression array', () => {
-		let template = `<input #use={[foo, bar]}>`;
+		let template = `<time #use={[relformatter]}></time>`;
 
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
 		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('action expression array with options', () => {
+		let template = `<time #use={[relformatter, { value: Date.now() }]}></time>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		expect(print(program)).toMatchSnapshot();
+	});
+
+	it('throws on action expression array with nothing', () => {
+		let template = `<time #use={[]}></time>`;
+
+		try {
+			let fragment = parse_template(template);
+			transform_template(fragment, template);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
+	});
+
+	it('throws on action expression array with too many options', () => {
+		let template = `<time #use={[a, b, c]}></time>`;
+
+		try {
+			let fragment = parse_template(template);
+			transform_template(fragment, template);
+			expect.fail();
+		}
+		catch (error) {
+			expect(error.toString()).toMatchSnapshot();
+		}
 	});
 
 

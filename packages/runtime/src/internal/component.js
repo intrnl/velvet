@@ -1,5 +1,5 @@
 import { append } from './dom.js';
-import { ref, scope, Ref } from './reactivity.js';
+import { Ref, ref, scope, cleanup, effect, computed } from './reactivity.js';
 import { hyphenate, assign, is_function } from './utils.js';
 import { Symbol, Object } from './globals.js';
 
@@ -215,4 +215,32 @@ export function event_dispatcher () {
 
 export function bind (obj) {
 	assign(curr_host, obj);
+}
+
+export function use (node, action, getter) {
+	let ref = getter && computed(getter);
+	let instance = action(node, ref && ref.v);
+
+	if (!instance) {
+		return;
+	}
+
+	if (is_function(instance.destroy)) {
+		cleanup(() => instance.destroy());
+	}
+
+	if (ref && ref._effect._dependencies.length > 0 && is_function(instance.update)) {
+		let init = false;
+
+		effect(() => {
+			let next = ref.v;
+
+			if (!init) {
+				init = true;
+				return;
+			}
+
+			instance.update(next);
+		});
+	}
 }
