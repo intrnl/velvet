@@ -209,9 +209,10 @@ export function conditional_statement (test, consequent, alternate = null) {
 /**
  * @typedef {object} LoopStatement
  * @property {'LoopStatement'} type
+ * @property {import('estree').Expression} expression
  * @property {import('estree').Identifier} local
  * @property {import('estree').Identifier} [index]
- * @property {import('estree').Expression} expression
+ * @property {import('estree').Expression} [keyed]
  * @property {Fragment} body
  * @property {number} [start]
  * @property {number} [end]
@@ -220,16 +221,18 @@ export function conditional_statement (test, consequent, alternate = null) {
 /**
  * @param {import('estree').Expression} expression
  * @param {import('estree').Identifier} local
- * @param {import('estree').Identifier} index
+ * @param {import('estree').Identifier} [index]
+ * @param {import('estree').Expression} [keyed]
  * @param {Fragment} body
  * @returns {LoopStatement}
  */
-export function loop_statement (expression, local, index, body) {
+export function loop_statement (expression, local, index, keyed, body) {
 	return {
 		type: 'LoopStatement',
+		expression,
 		local,
 		index,
-		expression,
+		keyed,
 		body,
 	};
 }

@@ -1109,28 +1109,28 @@ let %block1 = ($$root, person) => {
 `;
 
 exports[`loop logic > throw on more than two expression 1`] = `
-"there can only be value and index (2:25)
+"expected closing #each bracket (2:32)
 1: 
-2:       {#each person, index, foo of array}
-                               ^
+2:       {#each array as person, index, foo}
+                                      ^
 3:         <div>{index} - {person.name}</div>
 4:       {/each}"
 `;
 
 exports[`loop logic > throw on non-identifier 1`] = `
-"expected an identifier (2:10)
+"expected a local identifier (2:19)
 1: 
-2:       {#each 123 of array}
-                ^
+2:       {#each array as 123}
+                         ^
 3:         <div>{index} - {person.name}</div>
 4:       {/each}"
 `;
 
 exports[`loop logic > throw on non-identifier 2`] = `
-"expected an identifier (2:16)
+"expected a local identifier (2:19)
 1: 
-2:       {#each (foo, 123) of array}
-                      ^
+2:       {#each array as (foo, 123)}
+                         ^
 3:         <div>{index} - {person.name}</div>
 4:       {/each}"
 `;

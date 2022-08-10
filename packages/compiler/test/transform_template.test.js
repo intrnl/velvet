@@ -806,7 +806,7 @@ describe('conditional logic', () => {
 
 describe('loop logic', () => {
 	it('iteration', () => {
-		let template = `{#each person of array}<div>{person.first} - {person.last}</div>{/each}`;
+		let template = `{#each array as person}<div>{person.first} - {person.last}</div>{/each}`;
 
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
@@ -815,7 +815,7 @@ describe('loop logic', () => {
 	});
 
 	it('index', () => {
-		let template = `{#each person, index of array}<div>{index} - {person.name}</div>{/each}`;
+		let template = `{#each array as person, index}<div>{index} - {person.name}</div>{/each}`;
 
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
@@ -825,7 +825,7 @@ describe('loop logic', () => {
 
 	it('throw on more than two expression', () => {
 		let template1 = `
-			{#each person, index, foo of array}
+			{#each array as person, index, foo}
 				<div>{index} - {person.name}</div>
 			{/each}
 		`;
@@ -841,13 +841,13 @@ describe('loop logic', () => {
 
 	it('throw on non-identifier', () => {
 		let template1 = `
-			{#each 123 of array}
+			{#each array as 123}
 				<div>{index} - {person.name}</div>
 			{/each}
 		`;
 
 		let template2 = `
-			{#each (foo, 123) of array}
+			{#each array as (foo, 123)}
 				<div>{index} - {person.name}</div>
 			{/each}
 		`;

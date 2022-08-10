@@ -389,7 +389,7 @@ describe('let expression', () => {
 
 	it('referencing for each', () => {
 		let template = `
-			{#each key of Object.keys(data)}
+			{#each Object.keys(data) as key}
 				{@let item = data[key]}
 				<option ?disabled={augments.includes(key)} value={key}>
 					{item.name}

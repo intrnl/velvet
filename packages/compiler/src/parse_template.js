@@ -100,65 +100,41 @@ function _parse_expression (state) {
 		if (p.eat(state, 'each')) {
 			p.eat_whitespace(state, true);
 
-			let local = _read_expression(state);
-			let local_index = null;
-
-			if (local.type === 'Identifier') {
-				// do nothing
-			}
-			else if (local.type === 'SequenceExpression') {
-				let expressions = local.expressions;
-
-				for (let index = 0; index < expressions.length; index++) {
-					let expression = expressions[index];
-
-					if (index === 0) {
-						local = expression;
-					}
-					else if (index === 1) {
-						local_index = expression;
-					}
-					else {
-						let last = expressions[expressions.length - 1];
-
-						throw create_error(
-							'there can only be value and index',
-							state.content,
-							expression.start,
-							last.end,
-						);
-					}
-
-					if (expression.type !== 'Identifier') {
-						throw create_error(
-							'expected an identifier',
-							state.content,
-							expression.start,
-							expression.end,
-						);
-					}
-				}
-			}
-			else {
-				throw create_error(
-					'expected an identifier',
-					state.content,
-					local?.start || state.index,
-					local?.end || state.index,
-				);
-			}
-
-			p.eat_whitespace(state, true);
-			p.eat(state, 'of', true);
-			p.eat_whitespace(state, true);
-
 			let expression = _read_expression(state);
 
+			p.eat_whitespace(state, true);
+			p.eat(state, 'as', true);
+			p.eat_whitespace(state, true);
+
+			let local = p.eat_identifier(state);
+			p.assert(state, local !== null, `expected a local identifier`);
 			p.eat_whitespace(state);
+
+			let local_index = null;
+			let keyed = null;
+
+			if (p.eat(state, ',')) {
+				p.eat_whitespace(state);
+
+				local_index = p.eat_identifier(state);
+				p.assert(state, local_index !== null, `expected an index identifier`);
+				p.eat_whitespace(state);
+			}
+
+			if (p.eat(state, '(')) {
+				p.eat_whitespace(state);
+
+				keyed = _read_expression(state);
+				p.eat_whitespace(state);
+
+				p.eat(state, ')', 'closing key parentheses');
+				p.eat_whitespace(state);
+			}
+
 			p.eat(state, '}', 'closing #each bracket');
 
 			let body = t.fragment();
-			let node = t.loop_statement(expression, local, local_index, body);
+			let node = t.loop_statement(expression, local, local_index, keyed, body);
 			node.start = start;
 
 			p.current(state).children.push(node);

@@ -148,6 +148,17 @@ export function eat_identifier (state) {
 
 /**
  * @param {ParserState} state
+ * @param {boolean} condition
+ * @param {string} [message]
+ */
+export function assert (state, condition, message = 'Assertion failed') {
+	if (!condition) {
+		throw error(state, message);
+	}
+}
+
+/**
+ * @param {ParserState} state
  * @param {string} message
  * @returns {object}
  */
