@@ -2,3 +2,4 @@ packages:
   - packages/compiler
   - packages/runtime
   - packages/esbuild-plugin
+  - packages/vscode-extension

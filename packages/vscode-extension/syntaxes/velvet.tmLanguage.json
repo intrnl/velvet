@@ -1,0 +1,918 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Velvet",
+	"scopeName": "source.velvet",
+	"patterns": [
+		{
+			"include": "#scope"
+		}
+	],
+	"repository": {
+		"scope": {
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#special-tags"
+				},
+				{
+					"include": "#tags"
+				},
+				{
+					"include": "#interpolation"
+				},
+				{
+					"begin": "(?<=>|})",
+					"end": "(?=<|{)",
+					"name": "text.velvet"
+				}
+			]
+		},
+		"comments": {
+			"begin": "<!--",
+			"end": "-->",
+			"captures": {
+				"0": {
+					"name": "punctuation.definition.comment.velvet"
+				}
+			},
+			"name": "comment.block.velvet",
+			"patterns": [
+				{
+					"begin": "(@)(component)",
+					"beginCaptures": {
+						"1": {
+							"name": "punctuation.definition.keyword.velvet"
+						},
+						"2": {
+							"name": "storage.type.class.component.velvet keyword.declaration.class.component.velvet"
+						}
+					},
+					"end": "(?=-->)",
+					"contentName": "comment.block.documentation.velvet",
+					"patterns": [
+						{
+							"match": ".*?(?=-->)",
+							"captures": {
+								"0": {
+									"patterns": [
+										{
+											"include": "text.html.markdown"
+										}
+									]
+								}
+							}
+						},
+						{
+							"include": "text.html.markdown"
+						}
+					]
+				},
+				{
+					"match": "\\G-?>|<!--(?!>)|<!-(?=-->)|--!>",
+					"name": "invalid.illegal.characters-not-allowed-here.velvet"
+				}
+			]
+		},
+		"interpolation": {
+			"patterns": [
+				{
+					"begin": "\\{",
+					"end": "\\}",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.section.embedded.begin.velvet"
+						}
+					},
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.section.embedded.end.velvet"
+						}
+					},
+					"contentName": "meta.embedded.expression.velvet source.ts",
+					"patterns": [
+						{
+							"include": "source.ts"
+						}
+					]
+				}
+			]
+		},
+		"special-tags": {
+			"patterns": [
+				{
+					"include": "#special-tags-void"
+				},
+				{
+					"include": "#special-tags-intermediary"
+				},
+				{
+					"include": "#special-tags-begin"
+				},
+				{
+					"include": "#special-tags-end"
+				}
+			]
+		},
+		"special-tags-void": {
+			"begin": "({)\\s*(@([a-z]+))",
+			"end": "(})",
+			"name": "meta.special.$3.velvet meta.special.start.velvet",
+			"beginCaptures": {
+				"1": {
+					"name": "punctuation.definition.block.begin.velvet"
+				},
+				"2": {
+					"patterns": [
+						{
+							"include": "#special-tags-void-keywords"
+						}
+					]
+				}
+			},
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.block.end.velvet"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#special-tags-void-modes"
+				}
+			]
+		},
+		"special-tags-void-keywords": {
+			"match": "(@)([a-z]*)",
+			"captures": {
+				"1": {
+					"name": "keyword.punctuation.definition.keyword.velvet"
+				},
+				"2": {
+					"patterns": [
+						{
+							"match": "\\blog\\b",
+							"name": "keyword.other.debugger.velvet"
+						},
+						{
+							"match": "\\blet\\b",
+							"name": "storage.type.velvet"
+						}
+					]
+				}
+			}
+		},
+		"special-tags-void-modes": {
+			"patterns": [
+				{
+					"begin": "(?<=log.*?)\\G",
+					"end": "(?=})",
+					"name": "meta.embedded.expression.velvet source.ts",
+					"patterns": [
+						{
+							"include": "source.ts"
+						}
+					]
+				},
+				{
+					"begin": "(?<=let.*?)\\G",
+					"end": "(?=})",
+					"name": "meta.embedded.expression.velvet source.ts",
+					"patterns": [
+						{
+							"include": "source.ts"
+						}
+					]
+				}
+			]
+		},
+		"special-tags-intermediary": {
+			"begin": "({)\\s*(:(else\\s+if|[a-z]*))",
+			"beginCaptures": {
+				"1": {
+					"name": "punctuation.definition.block.begin.velvet"
+				},
+				"2": {
+					"patterns": [
+						{
+							"include": "#special-tags-intermediary-keywords"
+						}
+					]
+				}
+			},
+			"end": "\\}",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.block.end.velvet"
+				}
+			},
+			"name": "meta.special.$3.velvet",
+			"patterns": [
+				{
+					"include": "#special-tags-intermediary-modes"
+				}
+			]
+		},
+		"special-tags-intermediary-keywords": {
+			"match": "(:)(else\\s+if|[a-z]*)",
+			"captures": {
+				"1": {
+					"name": "keyword.punctuation.definition.keyword.velvet"
+				},
+				"2": {
+					"patterns": [
+						{
+							"match": "\\b(?:else\\s+if|else)\\b",
+							"name": "keyword.control.conditional.velvet"
+						},
+						{
+							"match": "\\b(?:then|catch)\\b",
+							"name": "keyword.control.flow.velvet"
+						}
+					]
+				}
+			}
+		},
+		"special-tags-intermediary-modes": {
+			"patterns": [
+				{
+					"begin": "(?<=(else\\s+if|then|catch).*?)\\G",
+					"end": "(?=})",
+					"name": "meta.embedded.expression.velvet source.ts",
+					"patterns": [
+						{
+							"include": "source.ts"
+						}
+					]
+				}
+			]
+		},
+		"special-tags-begin": {
+			"begin": "({)\\s*(#([a-z]*))",
+			"end": "(})",
+			"name": "meta.special.$3.velvet meta.special.start.velvet",
+			"beginCaptures": {
+				"1": {
+					"name": "punctuation.definition.block.begin.velvet"
+				},
+				"2": {
+					"patterns": [
+						{
+							"include": "#special-tags-block-keywords"
+						}
+					]
+				}
+			},
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.block.end.velvet"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#special-tags-begin-modes"
+				}
+			]
+		},
+		"special-tags-block-keywords": {
+			"match": "([#/])([a-z]*)",
+			"captures": {
+				"1": {
+					"name": "keyword.punctuation.definition.keyword.velvet"
+				},
+				"2": {
+					"patterns": [
+						{
+							"match": "\\b(?:if)\\b",
+							"name": "keyword.control.conditional.velvet"
+						},
+						{
+							"match": "\\b(?:each|key)\\b",
+							"name": "keyword.control.velvet"
+						},
+						{
+							"match": "\\b(?:await)\\b",
+							"name": "keyword.control.flow.velvet"
+						}
+					]
+				}
+			}
+		},
+		"special-tags-begin-modes": {
+			"patterns": [
+				{
+					"begin": "(?<=(if|key).*?)\\G",
+					"end": "(?=})",
+					"name": "meta.embedded.expression.velvet source.ts",
+					"patterns": [
+						{
+							"include": "source.ts"
+						}
+					]
+				},
+				{
+					"begin": "(?<=each.*?)\\G",
+					"end": "(?=})",
+					"patterns": [
+						{
+							"begin": "\\G\\s*?(?=\\S)",
+							"end": "(?=(?:^\\s*|\\s+)(of))",
+							"contentName": "meta.embedded.expression.velvet source.ts",
+							"patterns": [
+								{
+									"include": "source.ts"
+								}
+							]
+						},
+						{
+							"begin": "(of)",
+							"beginCaptures": {
+								"1": {
+									"name": "keyword.control.of.velvet"
+								}
+							},
+							"end": "(?=})",
+							"patterns": [
+								{
+									"begin": "\\(",
+									"end": "\\)|(?=})",
+									"captures": {
+										"0": {
+											"name": "meta.brace.round.velvet"
+										}
+									},
+									"contentName": "meta.embedded.expression.velvet source.ts",
+									"patterns": [
+										{
+											"include": "source.ts"
+										}
+									]
+								},
+								{
+									"match": "(\\s*([_$[:alpha:]][_$[:alnum:]]*)\\s*)",
+									"captures": {
+										"1": {
+											"name": "meta.embedded.expression.velvet source.ts",
+											"patterns": [
+												{
+													"include": "source.ts"
+												}
+											]
+										}
+									}
+								}
+							]
+						}
+					]
+				},
+				{
+					"begin": "(?<=await.*?)\\G",
+					"end": "(?=})",
+					"patterns": [
+						{
+							"begin": "\\G\\s*?(?=\\S)",
+							"end": "\\s+(then)|(?=})",
+							"endCaptures": {
+								"1": {
+									"name": "keyword.control.flow.velvet"
+								}
+							},
+							"contentName": "meta.embedded.expression.velvet source.ts",
+							"patterns": [
+								{
+									"include": "source.ts"
+								}
+							]
+						},
+						{
+							"begin": "(?<=(?:then|catch)\\b)",
+							"end": "(?=})",
+							"contentName": "meta.embedded.expression.velvet source.ts",
+							"patterns": [
+								{
+									"include": "source.ts"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"special-tags-end": {
+			"begin": "({)\\s*(/([a-z]*))",
+			"end": "(})",
+			"name": "meta.special.$3.velvet meta.special.end.velvet",
+			"beginCaptures": {
+				"1": {
+					"name": "punctuation.definition.block.begin.velvet"
+				},
+				"2": {
+					"patterns": [
+						{
+							"include": "#special-tags-block-keywords"
+						}
+					]
+				}
+			},
+			"endCaptures": {
+				"1": {
+					"name": "punctuation.definition.block.end.velvet"
+				}
+			}
+		},
+		"attributes": {
+			"patterns": [
+				{
+					"include": "#attributes-directives"
+				},
+				{
+					"include": "#attributes-keyvalue"
+				},
+				{
+					"include": "#attributes-interpolated"
+				}
+			]
+		},
+		"attributes-interpolated": {
+			"begin": "(?<!:|=)\\s*({\\.{3})",
+			"end": "(\\})",
+			"captures": {
+				"1": {
+					"name": "entity.other.attribute-name.velvet"
+				}
+			},
+			"contentName": "meta.embedded.expression.velvet source.ts",
+			"patterns": [
+				{
+					"include": "source.ts"
+				}
+			]
+		},
+		"attributes-keyvalue": {
+			"begin": "([_$[:alpha:]][_\\-$[:alnum:]]*(\\?)?)",
+			"beginCaptures": {
+				"1": {
+					"name": "entity.other.attribute-name.html.velvet"
+				},
+				"2": {
+					"name": "keyword.control.velvet"
+				}
+			},
+			"end": "(?=\\s*+[^=\\s])",
+			"name": "meta.attribute.$1.velvet",
+			"patterns": [
+				{
+					"include": "#attributes-value"
+				}
+			]
+		},
+		"attributes-value": {
+			"begin": "=",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.separator.key-value.velvet"
+				}
+			},
+			"end": "(?<=[^\\s=])(?!\\s*=)|(?=/?>)",
+			"patterns": [
+				{
+					"include": "#interpolation"
+				},
+				{
+					"match": "([0-9._]+[\\w]{,4})(?=\\s|/?>)",
+					"name": "constant.numeric.decimal.velvet",
+					"patterns": [
+						{
+							"include": "#interpolation"
+						}
+					]
+				},
+				{
+					"match": "([^\\s\"'=<>`/]|/(?!>))+",
+					"name": "string.unquoted.velvet",
+					"patterns": [
+						{
+							"include": "#interpolation"
+						}
+					]
+				},
+				{
+					"begin": "(['\"])",
+					"end": "\\1",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.velvet"
+						}
+					},
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.velvet"
+						}
+					},
+					"name": "string.quoted.velvet"
+				}
+			]
+		},
+		"attributes-directives": {
+			"begin": "(?<!<)(\\.|\\?|@|:|#)(?:([_$[:alpha:]][_\\-$[:alnum:]]*(?=\\s*=))|([_$[:alpha:]][_\\-$[:alnum:]]*))",
+			"beginCaptures": {
+				"1": {
+					"name": "keyword.control.velvet"
+				},
+				"2": {
+					"name": "entity.name.type.velvet"
+				},
+				"3": {
+					"name": "entity.name.type.velvet"
+				}
+			},
+			"end": "(?=\\s*+[^=\\s])",
+			"patterns": [
+				{
+					"include": "#attributes-value"
+				}
+			]
+		},
+		"tags": {
+			"patterns": [
+				{
+					"include": "#tags-lang"
+				},
+				{
+					"include": "#tags-void"
+				},
+				{
+					"include": "#tags-general-end"
+				},
+				{
+					"include": "#tags-general-start"
+				}
+			]
+		},
+		"tags-name": {
+			"patterns": [
+				{
+					"match": "(v)(:)([a-z][\\w0-9:-]*)",
+					"captures": {
+						"1": {
+							"name": "keyword.control.velvet"
+						},
+						"2": {
+							"name": "punctuation.definition.keyword.velvet"
+						},
+						"3": {
+							"name": "entity.name.tag.velvet"
+						}
+					}
+				},
+				{
+					"match": "[A-Z][a-zA-Z0-9_]*",
+					"name": "support.class.component.velvet"
+				},
+				{
+					"match": "[a-z][\\w0-9:]*-[\\w0-9:-]*",
+					"name": "meta.tag.custom.velvet entity.name.tag.velvet"
+				},
+				{
+					"match": "[a-z][\\w0-9:-]*",
+					"name": "entity.name.tag.velvet"
+				}
+			]
+		},
+		"tags-start-attributes": {
+			"begin": "\\G",
+			"end": "(?=/?>)",
+			"name": "meta.tag.start.velvet",
+			"patterns": [
+				{
+					"include": "#attributes"
+				}
+			]
+		},
+		"tags-lang-start-attributes": {
+			"begin": "\\G",
+			"end": "(?=/>)|>",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.tag.end.velvet"
+				}
+			},
+			"name": "meta.tag.start.velvet",
+			"patterns": [
+				{
+					"include": "#attributes"
+				}
+			]
+		},
+		"tags-start-node": {
+			"match": "(<)([^/\\s>/]*)",
+			"captures": {
+				"1": {
+					"name": "punctuation.definition.tag.begin.velvet"
+				},
+				"2": {
+					"patterns": [
+						{
+							"include": "#tags-name"
+						}
+					]
+				}
+			},
+			"name": "meta.tag.start.velvet"
+		},
+		"tags-end-node": {
+			"match": "(</)(.*?)\\s*(>)|(/>)",
+			"captures": {
+				"1": {
+					"name": "meta.tag.end.velvet punctuation.definition.tag.begin.velvet"
+				},
+				"2": {
+					"name": "meta.tag.end.velvet",
+					"patterns": [
+						{
+							"include": "#tags-name"
+						}
+					]
+				},
+				"3": {
+					"name": "meta.tag.end.velvet punctuation.definition.tag.end.velvet"
+				},
+				"4": {
+					"name": "meta.tag.start.velvet punctuation.definition.tag.end.velvet"
+				}
+			}
+		},
+		"tags-lang": {
+			"begin": "<(script|style)",
+			"end": "</\\1>|/>",
+			"beginCaptures": {
+				"0": {
+					"patterns": [
+						{
+							"include": "#tags-start-node"
+						}
+					]
+				}
+			},
+			"endCaptures": {
+				"0": {
+					"patterns": [
+						{
+							"include": "#tags-end-node"
+						}
+					]
+				}
+			},
+			"name": "meta.$1.velvet",
+			"patterns": [
+				{
+					"begin": "\\G(?=\\s*[^>]*?(type)\\s*=\\s*(['\"]|)(?:text/)?(\\w+)\\2)",
+					"end": "(?=</|/>)",
+					"name": "meta.lang.$3.velvet",
+					"patterns": [
+						{
+							"include": "#tags-lang-start-attributes"
+						}
+					]
+				},
+				{
+					"include": "#tags-lang-start-attributes"
+				}
+			]
+		},
+		"tags-void": {
+			"begin": "(<)(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)(?=\\s|/?>)",
+			"beginCaptures": {
+				"1": {
+					"name": "punctuation.definition.tag.begin.velvet"
+				},
+				"2": {
+					"name": "entity.name.tag.velvet"
+				}
+			},
+			"end": "/?>",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.tag.begin.velvet"
+				}
+			},
+			"name": "meta.tag.void.velvet",
+			"patterns": [
+				{
+					"include": "#attributes"
+				}
+			]
+		},
+		"tags-general-start": {
+			"begin": "(<)([^/\\s>/]*)",
+			"end": "(/?>)",
+			"beginCaptures": {
+				"0": {
+					"patterns": [
+						{
+							"include": "#tags-start-node"
+						}
+					]
+				}
+			},
+			"endCaptures": {
+				"1": {
+					"name": "meta.tag.start.velvet punctuation.definition.tag.end.velvet"
+				}
+			},
+			"name": "meta.scope.tag.$2.velvet",
+			"patterns": [
+				{
+					"include": "#tags-start-attributes"
+				}
+			]
+		},
+		"tags-general-end": {
+			"begin": "(</)([^/\\s>]*)",
+			"end": "(>)",
+			"beginCaptures": {
+				"1": {
+					"name": "meta.tag.end.velvet punctuation.definition.tag.begin.velvet"
+				},
+				"2": {
+					"name": "meta.tag.end.velvet",
+					"patterns": [
+						{
+							"include": "#tags-name"
+						}
+					]
+				}
+			},
+			"endCaptures": {
+				"1": {
+					"name": "meta.tag.end.velvet punctuation.definition.tag.end.velvet"
+				}
+			},
+			"name": "meta.scope.tag.$2.velvet"
+		}
+	},
+	"injections": {
+		"L:meta.script.velvet (meta.lang.js | meta.lang.javascript) - (meta source)": {
+			"patterns": [
+				{
+					"begin": "(?<=>)(?!</)",
+					"end": "(?=</)",
+					"name": "meta.embedded.block.velvet",
+					"contentName": "source.js",
+					"patterns": [
+						{
+							"include": "source.js"
+						}
+					]
+				}
+			]
+		},
+		"L:meta.script.velvet (meta.lang.ts | meta.lang.typescript) - (meta source)": {
+			"patterns": [
+				{
+					"begin": "(?<=>)(?!</)",
+					"end": "(?=</)",
+					"name": "meta.embedded.block.velvet",
+					"contentName": "source.ts",
+					"patterns": [
+						{
+							"include": "source.ts"
+						}
+					]
+				}
+			]
+		},
+		"L:meta.script.velvet - meta.lang - (meta source)": {
+			"patterns": [
+				{
+					"begin": "(?<=>)(?!</)",
+					"end": "(?=</)",
+					"name": "meta.embedded.block.velvet",
+					"contentName": "source.js",
+					"patterns": [
+						{
+							"include": "source.js"
+						}
+					]
+				}
+			]
+		},
+		"L:meta.style.velvet meta.lang.stylus - (meta source)": {
+			"patterns": [
+				{
+					"begin": "(?<=>)(?!</)",
+					"end": "(?=</)",
+					"name": "meta.embedded.block.velvet",
+					"contentName": "source.stylus",
+					"patterns": [
+						{
+							"include": "source.stylus"
+						}
+					]
+				}
+			]
+		},
+		"L:meta.style.velvet meta.lang.sass - (meta source)": {
+			"patterns": [
+				{
+					"begin": "(?<=>)(?!</)",
+					"end": "(?=</)",
+					"name": "meta.embedded.block.velvet",
+					"contentName": "source.sass",
+					"patterns": [
+						{
+							"include": "source.sass"
+						}
+					]
+				}
+			]
+		},
+		"L:meta.style.velvet meta.lang.css - (meta source)": {
+			"patterns": [
+				{
+					"begin": "(?<=>)(?!</)",
+					"end": "(?=</)",
+					"name": "meta.embedded.block.velvet",
+					"contentName": "source.css",
+					"patterns": [
+						{
+							"include": "source.css"
+						}
+					]
+				}
+			]
+		},
+		"L:meta.style.velvet meta.lang.scss - (meta source)": {
+			"patterns": [
+				{
+					"begin": "(?<=>)(?!</)",
+					"end": "(?=</)",
+					"name": "meta.embedded.block.velvet",
+					"contentName": "source.css.scss",
+					"patterns": [
+						{
+							"include": "source.css.scss"
+						}
+					]
+				}
+			]
+		},
+		"L:meta.style.velvet meta.lang.less - (meta source)": {
+			"patterns": [
+				{
+					"begin": "(?<=>)(?!</)",
+					"end": "(?=</)",
+					"name": "meta.embedded.block.velvet",
+					"contentName": "source.css.less",
+					"patterns": [
+						{
+							"include": "source.css.less"
+						}
+					]
+				}
+			]
+		},
+		"L:meta.style.velvet meta.lang.postcss - (meta source)": {
+			"patterns": [
+				{
+					"begin": "(?<=>)(?!</)",
+					"end": "(?=</)",
+					"name": "meta.embedded.block.velvet",
+					"contentName": "source.css.postcss",
+					"patterns": [
+						{
+							"include": "source.css.postcss"
+						}
+					]
+				}
+			]
+		},
+		"L:meta.style.velvet - meta.lang - (meta source)": {
+			"patterns": [
+				{
+					"begin": "(?<=>)(?!</)",
+					"end": "(?=</)",
+					"name": "meta.embedded.block.velvet",
+					"contentName": "source.css",
+					"patterns": [
+						{
+							"include": "source.css"
+						}
+					]
+				}
+			]
+		},
+		"L:(source.ts, source.js, source.coffee)": {
+			"patterns": [
+				{
+					"match": "(?<![_$[:alnum:]])\\$(?=[_[:alpha:]][_$[:alnum:]]*)",
+					"name": "punctuation.accessor.velvet"
+				},
+				{
+					"match": "(?<![_$[:alnum:]])(\\$\\$)(root|host)",
+					"name": "variable.other.constant"
+				}
+			]
+		}
+	}
+}

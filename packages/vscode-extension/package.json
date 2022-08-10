@@ -1,0 +1,41 @@
+{
+	"name": "velvet-language-support",
+	"displayName": "Velvet Language Support",
+	"description": "Adds language support for Velvet",
+	"publisher": "intrnl",
+	"version": "0.0.7",
+	"engines": {
+		"vscode": "^1.63.0"
+	},
+	"categories": [
+		"Programming Languages"
+	],
+	"repository": {
+		"url": "https://github.com/intrnl/velvet-vscode"
+	},
+	"contributes": {
+		"languages": [
+			{
+				"id": "velvet",
+				"aliases": [
+					"Velvet",
+					"velvet"
+				],
+				"extensions": [
+					".velvet"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "velvet",
+				"scopeName": "source.velvet",
+				"path": "./syntaxes/velvet.tmLanguage.json"
+			}
+		]
+	},
+	"devDependencies": {
+		"vsce": "^2.6.3"
+	}
+}
