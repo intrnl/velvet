@@ -11,7 +11,8 @@
 		"Programming Languages"
 	],
 	"repository": {
-		"url": "https://github.com/intrnl/velvet-vscode"
+		"url": "https://codeberg.org/intrnl/velvet",
+		"directory": "packages/vscode-extension"
 	},
 	"contributes": {
 		"languages": [
