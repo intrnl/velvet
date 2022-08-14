@@ -368,6 +368,10 @@ function track_effect (dep) {
  */
 function trigger_effect (dep) {
 	for (let effect of dep) {
+		if (active_effects.has(effect)) {
+			continue;
+		}
+
 		if (effect._scheduler) {
 			effect._scheduler(effect);
 		}
