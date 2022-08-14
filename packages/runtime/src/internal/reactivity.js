@@ -184,13 +184,18 @@ export class Effect {
 	/** dirty */
 	_dirty = false;
 
+	/** @type {?Scope} scope */
+	_scope;
+	/** @type {boolean} is registered to scope */
+	_registered = false;
+
 	constructor (fn, scheduler) {
 		let _this = this;
 
 		_this._fn = fn;
 		_this._scheduler = scheduler;
 
-		curr_scope?._effects.push(_this);
+		_this._scope = curr_scope;
 	}
 
 	_run () {
@@ -198,6 +203,7 @@ export class Effect {
 		let prev_effect = curr_effect;
 
 		let deps = _this._dependencies;
+		let scope = !_this._registered && _this._scope;
 
 		if (_this._disabled || active_effects.has(_this)) {
 			return;
@@ -241,7 +247,14 @@ export class Effect {
 				deps.length = pointer;
 			}
 
+			if (scope && deps.length > 0) {
+				scope._effects.push(_this);
+			}
+
+			_this._registered = true;
+
 			curr_track_bit = 1 << --curr_track_depth;
+
 			curr_effect = prev_effect;
 			active_effects.delete(_this);
 		}
