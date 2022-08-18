@@ -28,10 +28,20 @@
 	},
 	"scripts": {
 		"prepublishOnly": "rm -r dist; pnpm run bundle",
-		"bundle": "rollup -c"
+		"bundle": "wireit"
+	},
+	"wireit": {
+		"bundle": {
+			"command": "rollup -c",
+			"clean": "if-file-deleted",
+			"files": ["src/**/*.js", "rollup.config.js"],
+			"output": ["dist/**/*.js"],
+			"packageLocks": ["pnpm-lock.yaml"]
+		}
 	},
 	"devDependencies": {
 		"esbuild": "^0.14.54",
-		"rollup": "^2.78.0"
+		"rollup": "^2.78.0",
+		"wireit": "^0.7.1"
 	}
 }
