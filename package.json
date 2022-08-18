@@ -6,8 +6,8 @@
 		"lint": "eslint --fix --cache packages/"
 	},
 	"devDependencies": {
-		"eslint": "^8.21.0",
-		"vite": "^3.0.4",
+		"eslint": "^8.22.0",
+		"vite": "^3.0.8",
 		"vitest": "^0.20.3"
 	}
 }
