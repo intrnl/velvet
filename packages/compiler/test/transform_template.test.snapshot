@@ -1,9 +1,12 @@
-attribute > attribute unquoted 1:
+attribute > attribute quoted 1:
 'let %%template0 = @html("<div class=foo></div>");\n' +
   'let %fragment0 = @clone(%template0);\n' +
   '@append($$root, %fragment0);\n'
 #*#*#*#*#*#*#*#*#*#*#*#
-
+attribute > attribute unquoted 1:
+'let %%template0 = @html("<div class=foo></div>");\n' +
+  'let %fragment0 = @clone(%template0);\n' +
+  '@append($$root, %fragment0);\n'
 #*#*#*#*#*#*#*#*#*#*#*#
 attribute > attribute quotations 1:
 `let %%template0 = @html("<div a='foo bar' sq=\\"'\\" dq='\\"'></div>");\n` +

@@ -8,7 +8,7 @@ import { parse, print } from '../src/utils/js_parse.js';
 
 
 describe('ref', () => {
-	it('unused variables', () => {
+	it('unused variables', async () => {
 		let program = parse(`
 			let value1;
 			let value2 = 100;
@@ -17,10 +17,10 @@ describe('ref', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		await assertSnapshot(print(program));
 	});
 
-	it('variables with no mutation', () => {
+	it('variables with no mutation', async () => {
 		let program = parse(`
 			console.log({ value1, value2, value3, value4 });
 
@@ -40,10 +40,10 @@ describe('ref', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		await assertSnapshot(print(program));
 	});
 
-	it('variables with mutation', () => {
+	it('variables with mutation', async () => {
 		let program = parse(`
 			console.log({ value1, value2, value3, value4 });
 
@@ -70,10 +70,10 @@ describe('ref', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		await assertSnapshot(print(program));
 	});
 
-	it('unmutated variable referencing mutated variable', () => {
+	it('unmutated variable referencing mutated variable', async () => {
 		let program = parse(`
 			let value1 = 100;
 			let value2 = value1;
@@ -85,10 +85,10 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('mutated variable, referencing unmutated variable', () => {
+	it('mutated variable, referencing unmutated variable', async () => {
 		let program = parse(`
 			let value1 = 100;
 			let value2 = value1;
@@ -100,10 +100,10 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('variable mutation with logical assignment operators', () => {
+	it('variable mutation with logical assignment operators', async () => {
 		let program = parse(`
 			let value1 = 100;
 
@@ -115,10 +115,10 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('unmutated variable accessing member property', () => {
+	it('unmutated variable accessing member property', async () => {
 		let program = parse(`
 			let state = { count: 0 };
 			let current_date = new Date();
@@ -130,10 +130,10 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('mutated variable accessing member property', () => {
+	it('mutated variable accessing member property', async () => {
 		let program = parse(`
 			console.log(state.count);
 			console.log(current_date.toISOString());
@@ -151,10 +151,10 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('unmutated variable mutating member property', () => {
+	it('unmutated variable mutating member property', async () => {
 		let program = parse(`
 			let state = { count: 0 };
 
@@ -164,10 +164,10 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('mutated variable mutating member property', () => {
+	it('mutated variable mutating member property', async () => {
 		let program = parse(`
 			let state = { count: 0 };
 
@@ -178,10 +178,10 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('unmutated variable calling', () => {
+	it('unmutated variable calling', async () => {
 		let program = parse(`
 			let call = () => 1;
 
@@ -191,10 +191,10 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('mutated variable calling', () => {
+	it('mutated variable calling', async () => {
 		let program = parse(`
 			let call = () => 1;
 
@@ -205,10 +205,10 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('prefix', () => {
+	it('prefix', async () => {
 		let program = parse(`
 			let count = 0;
 
@@ -228,10 +228,10 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('postfix', () => {
+	it('postfix', async () => {
 		let program = parse(`
 			let count = 0;
 
@@ -251,10 +251,10 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('mutated variable calling member property', () => {
+	it('mutated variable calling member property', async () => {
 		let program = parse(`
 			let today = new Date();
 			let formatter = new Intl.DateTimeFormat();
@@ -267,10 +267,10 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('two variables on one declaration, one mutated', () => {
+	it('two variables on one declaration, one mutated', async () => {
 		let program = parse(`
 			let value1, value2;
 
@@ -279,10 +279,10 @@ describe('ref', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		await assertSnapshot(print(program));
 	});
 
-	it('two variables on one declaration, two mutated', () => {
+	it('two variables on one declaration, two mutated', async () => {
 		let program = parse(`
 			let value1, value2;
 
@@ -292,10 +292,10 @@ describe('ref', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		await assertSnapshot(print(program));
 	});
 
-	it('variable mutated with spread', () => {
+	it('variable mutated with spread', async () => {
 		let program = parse(`
 			let foo, bar, baz;
 
@@ -308,12 +308,12 @@ describe('ref', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		await assertSnapshot(print(program));
 	});
 });
 
 describe('prop', () => {
-	it('unused properties', () => {
+	it('unused properties', async () => {
 		let program = parse(`
 			export let value1;
 			export let value2 = 100;
@@ -322,10 +322,10 @@ describe('prop', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		await assertSnapshot(print(program));
 	});
 
-	it('variables with no mutation', () => {
+	it('variables with no mutation', async () => {
 		let program = parse(`
 			export let value1;
 			export let value2 = 100;
@@ -343,10 +343,10 @@ describe('prop', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		await assertSnapshot(print(program));
 	});
 
-	it('variables with mutation', () => {
+	it('variables with mutation', async () => {
 		let program = parse(`
 			console.log({ value1, value2, value3, value4 });
 
@@ -373,10 +373,10 @@ describe('prop', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		await assertSnapshot(print(program));
 	});
 
-	it('variable referencing unmutated ref', () => {
+	it('variable referencing unmutated ref', async () => {
 		let program = parse(`
 			let value1 = 1;
 			let value2 = () => {};
@@ -388,10 +388,10 @@ describe('prop', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('variable referencing mutated ref', () => {
+	it('variable referencing mutated ref', async () => {
 		let program = parse(`
 			let value1 = 1;
 			let value2 = new Date();
@@ -406,10 +406,10 @@ describe('prop', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('handles separate export specifier', () => {
+	it('handles separate export specifier', async () => {
 		let program = parse(`
 			let _count = 0;
 			let foo = 1;
@@ -420,10 +420,10 @@ describe('prop', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('throws on exporting default', () => {
+	it('throws on exporting default', async () => {
 		let source = `
 			export default 123;
 		`;
@@ -435,11 +435,11 @@ describe('prop', () => {
 			assert.fail();
 		}
 		catch (error) {
-			assertSnapshot(error.toString());
+			await assertSnapshot(error.toString());
 		}
 	});
 
-	it('throws on one variable exported twice', () => {
+	it('throws on one variable exported twice', async () => {
 		let source = `
 			let foo = 123;
 
@@ -453,13 +453,13 @@ describe('prop', () => {
 			assert.fail();
 		}
 		catch (error) {
-			assertSnapshot(error.toString());
+			await assertSnapshot(error.toString());
 		}
 	});
 });
 
 describe('computed', () => {
-	it('unused variables', () => {
+	it('unused variables', async () => {
 		let program = parse(`
 			$: value1;
 			$: value2 = 100;
@@ -470,10 +470,10 @@ describe('computed', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('mutated variables', () => {
+	it('mutated variables', async () => {
 		let program = parse(`
 			$: value1;
 			$: value2 = 100;
@@ -489,10 +489,10 @@ describe('computed', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('variable referencing unmutated ref', () => {
+	it('variable referencing unmutated ref', async () => {
 		let program = parse(`
 			let value1 = 100;
 			let value2 = new Date();
@@ -508,10 +508,10 @@ describe('computed', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('variable referencing mutated ref', () => {
+	it('variable referencing mutated ref', async () => {
 		let program = parse(`
 			let value1 = 100;
 			let value2 = new Date();
@@ -530,10 +530,10 @@ describe('computed', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('mutating variable referencing unmutated ref', () => {
+	it('mutating variable referencing unmutated ref', async () => {
 		let program = parse(`
 			let value1 = 100;
 			$: computed = value1;
@@ -549,10 +549,10 @@ describe('computed', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('unmutated variable referencing unmutated ref member property', () => {
+	it('unmutated variable referencing unmutated ref member property', async () => {
 		let program = parse(`
 			let value1 = { foo: 123 };
 			$: computed = value1.foo;
@@ -565,10 +565,10 @@ describe('computed', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('mutated variable referencing unmutated ref member property', () => {
+	it('mutated variable referencing unmutated ref member property', async () => {
 		let program = parse(`
 			let value1 = { foo: 123 };
 			$: computed = value1.foo;
@@ -584,10 +584,10 @@ describe('computed', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('unmutated variable referencing mutated ref member property', () => {
+	it('unmutated variable referencing mutated ref member property', async () => {
 		let program = parse(`
 			let value1 = { foo: 123 };
 			$: computed = value1.foo;
@@ -602,10 +602,10 @@ describe('computed', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('mutated variable referencing mutated ref member property', () => {
+	it('mutated variable referencing mutated ref member property', async () => {
 		let program = parse(`
 			let value1 = { foo: 123 };
 			$: computed = value1.foo;
@@ -622,10 +622,10 @@ describe('computed', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('object spread from a store', () => {
+	it('object spread from a store', async () => {
 		let program = parse(`
 			$: ({ scores, unknowns } = calculate($search_params.get('augments')?.split(',') || []));
 			$: console.log({ scores, unknowns })
@@ -634,12 +634,12 @@ describe('computed', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 });
 
 describe('effect', () => {
-	it('references unmutated refs', () => {
+	it('references unmutated refs', async () => {
 		let program = parse(`
 			$: console.log(value1, value2);
 			foo: console.log(value1, value2);
@@ -674,10 +674,10 @@ describe('effect', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('references mutated refs', () => {
+	it('references mutated refs', async () => {
 		let program = parse(`
 			$: console.log(value1, value2);
 			foo: console.log(value1, value2);
@@ -710,10 +710,10 @@ describe('effect', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('only transform root scope', () => {
+	it('only transform root scope', async () => {
 		let program = parse(`
 			let value = 0;
 			value += 1;
@@ -728,10 +728,10 @@ describe('effect', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('handles direct statements', () => {
+	it('handles direct statements', async () => {
 		let program = parse(`
 			let value = 0;
 			let array = [];
@@ -746,22 +746,22 @@ describe('effect', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 });
 
 describe('store', () => {
-	it('getter', () => {
+	it('getter', async () => {
 		let program = parse(`
 			$store;
 		`);
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		await assertSnapshot(print(program));
 	});
 
-	it('multiple getter references', () => {
+	it('multiple getter references', async () => {
 		let program = parse(`
 			function increment () {
 				console.log($value1);
@@ -772,10 +772,10 @@ describe('store', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		await assertSnapshot(print(program));
 	});
 
-	it('setter', () => {
+	it('setter', async () => {
 		let program = parse(`
 			$store = 123;
 			$store ||= 123;
@@ -786,30 +786,30 @@ describe('store', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		await assertSnapshot(print(program));
 	});
 
-	it('logical setter', () => {
+	it('logical setter', async () => {
 		let program = parse(`
 			$store ??= 123;
 		`);
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		await assertSnapshot(print(program));
 	});
 
-	it('binary setter', () => {
+	it('binary setter', async () => {
 		let program = parse(`
 			$store += 123;
 		`);
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		await assertSnapshot(print(program));
 	});
 
-	it('multiple setter references', () => {
+	it('multiple setter references', async () => {
 		let program = parse(`
 			function increment () {
 				$value1 += 1;
@@ -820,10 +820,10 @@ describe('store', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		await assertSnapshot(print(program));
 	});
 
-	it('subscribing to a ref', () => {
+	it('subscribing to a ref', async () => {
 		let program = parse(`
 			let value1;
 
@@ -833,30 +833,30 @@ describe('store', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		await assertSnapshot(print(program));
 	});
 
-	it('retrieving member property', () => {
+	it('retrieving member property', async () => {
 		let program = parse(`
 			console.log($foo.bar);
 		`);
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		await assertSnapshot(print(program));
 	});
 
-	it('mutating member property', () => {
+	it('mutating member property', async () => {
 		let program = parse(`
 			$foo.bar = 123;
 		`);
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		await assertSnapshot(print(program));
 	});
 
-	it('throws on lone $', () => {
+	it('throws on lone $', async () => {
 		let source = `
 			console.log($);
 		`;
@@ -868,11 +868,11 @@ describe('store', () => {
 			assert.fail();
 		}
 		catch (error) {
-			assertSnapshot(error.toString());
+			await assertSnapshot(error.toString());
 		}
 	});
 
-	it('throws on declaring $ variables', () => {
+	it('throws on declaring $ variables', async () => {
 		let source = `
 			let $foo = 'bar';
 		`;
@@ -884,11 +884,11 @@ describe('store', () => {
 			assert.fail();
 		}
 		catch (error) {
-			assertSnapshot(error.toString());
+			await assertSnapshot(error.toString());
 		}
 	});
 
-	it('only alter single $', () => {
+	it('only alter single $', async () => {
 		let program = parse(`
 			console.log($foo, $$, $$$);
 		`);
@@ -896,10 +896,10 @@ describe('store', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('no affecting inner scope', () => {
+	it('no affecting inner scope', async () => {
 		let program = parse(`
 			function log () {
 				let $bar = 123;
@@ -912,10 +912,10 @@ describe('store', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('reference store twice', () => {
+	it('reference store twice', async () => {
 		let program = parse(`
 			console.log($foo, $foo);
 		`);
@@ -923,10 +923,10 @@ describe('store', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('getter within computed', () => {
+	it('getter within computed', async () => {
 		let program = parse(`
 			$: query = $searchParams.query;
 		`);
@@ -934,10 +934,10 @@ describe('store', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('lone block statement', () => {
+	it('lone block statement', async () => {
 		let program = parse(`
 			{ $foo; }
 		`);
@@ -945,12 +945,12 @@ describe('store', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 });
 
 describe('bind', () => {
-	it('const and function exports', () => {
+	it('const and function exports', async () => {
 		let program = parse(`
 			export const magic = 420;
 
@@ -964,10 +964,10 @@ describe('bind', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('separate export specifier', () => {
+	it('separate export specifier', async () => {
 		let program = parse(`
 			const magic = 420;
 
@@ -983,10 +983,10 @@ describe('bind', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('only one specifier for a bind', () => {
+	it('only one specifier for a bind', async () => {
 		let source = `
 			export const magic = 420;
 
@@ -1000,13 +1000,13 @@ describe('bind', () => {
 			assert.fail();
 		}
 		catch (error) {
-			assertSnapshot(error.toString());
+			await assertSnapshot(error.toString());
 		}
 	});
 });
 
 describe('reserved', () => {
-	it('throws on declaring $$', () => {
+	it('throws on declaring $$', async () => {
 		let source = `
 			export let $$foo = 'bar';
 		`;
@@ -1018,11 +1018,11 @@ describe('reserved', () => {
 			assert.fail();
 		}
 		catch (error) {
-			assertSnapshot(error.toString());
+			await assertSnapshot(error.toString());
 		}
 	});
 
-	it('throws on reassigning $$', () => {
+	it('throws on reassigning $$', async () => {
 		let source = `
 			$$root = null;
 		`;
@@ -1034,11 +1034,11 @@ describe('reserved', () => {
 			assert.fail();
 		}
 		catch (error) {
-			assertSnapshot(error.toString());
+			await assertSnapshot(error.toString());
 		}
 	});
 
-	it('can declare $$$ variables', () => {
+	it('can declare $$$ variables', async () => {
 		let program = parse(`
 			export let $$$foo = 123;
 			let $$$bar = 333;
@@ -1047,12 +1047,12 @@ describe('reserved', () => {
 		assert.doesNotThrow(() => transform_script(program));
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 });
 
 describe('program finalizer', () => {
-	it('props test', () => {
+	it('props test', async () => {
 		let program = parse(`
 			export let count = -1;
 			let magic = 420;
@@ -1064,10 +1064,10 @@ describe('program finalizer', () => {
 		finalize_program(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 
-	it('hoists imports', () => {
+	it('hoists imports', async () => {
 		let program = parse(`
 			import foo from 'foo';
 			import { bar } from 'bar';
@@ -1080,6 +1080,6 @@ describe('program finalizer', () => {
 		finalize_program(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		await assertSnapshot(result);
 	});
 });
