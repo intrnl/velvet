@@ -1,23 +1,24 @@
-import { vi, describe, it, expect } from 'vitest';
+import { describe, it } from 'node:test';
+import * as assert from 'node:assert/strict';
+
+import { spy } from 'nanospy';
+import { assertSpy } from './utils.js';
 
 import { writable, readable, derived, get } from '../src/store/index.js';
 
-
 describe('writable', () => {
 	it('creates a writable store', () => {
-		let fn = vi.fn();
+		let fn = spy();
 		let store = writable(2);
 
 		store.subscribe(fn);
-		expect(fn).toHaveBeenNthCalledWith(1, 2);
+		assertSpy(fn, 1, [2]);
 
 		store.set(4);
-		expect(fn).toHaveBeenNthCalledWith(2, 4);
+		assertSpy(fn, 2, [4]);
 
 		store.update((n) => n * 2);
-		expect(fn).toHaveBeenNthCalledWith(3, 8);
-
-		expect(fn).toHaveBeenCalledTimes(3);
+		assertSpy(fn, 3, [8]);
 	});
 
 	it('handles setting up notifier', () => {
@@ -29,35 +30,35 @@ describe('writable', () => {
 		});
 
 		let unsubscribe1 = store.subscribe(() => {});
-		expect(count).toBe(1);
+		assert.equal(count, 1);
 
 		let unsubscribe2 = store.subscribe(() => {});
-		expect(count).toBe(1);
+		assert.equal(count, 1);
 
 		unsubscribe1();
-		expect(count).toBe(1);
+		assert.equal(count, 1);
 
 		unsubscribe2();
-		expect(count).toBe(0);
+		assert.equal(count, 0);
 	});
 
 	it('assumes immutable object', () => {
-		let fn = vi.fn();
+		let fn = spy();
 
 		let obj = {};
 		let store = writable(obj);
 
 		store.subscribe(fn);
-		expect(fn).toHaveBeenNthCalledWith(1, obj);
+		assertSpy(fn, 1, [obj]);
 
 		store.set(obj);
-		expect(fn).toHaveBeenCalledTimes(1);
+		assertSpy(fn, 1);
 
 		store.update((prev) => prev);
-		expect(fn).toHaveBeenCalledTimes(1);
+		assertSpy(fn, 1);
 
 		store.set({});
-		expect(fn).toHaveBeenCalledTimes(2);
+		assertSpy(fn, 2);
 	});
 });
 
@@ -78,48 +79,49 @@ describe('readable', () => {
 			};
 		});
 
-		expect(running).toBeFalsy();
+		assert.equal(running, false);
 
-		let fn = vi.fn();
+		let fn = spy();
 
 		let unsubscribe = store.subscribe(fn);
-		expect(running).toBeTruthy();
+		assert.equal(running, true);
 
-		expect(fn).toHaveBeenNthCalledWith(1, 1);
+		assertSpy(fn, 1, [1]);
 
 		set(2);
-		expect(fn).toHaveBeenNthCalledWith(2, 2);
+		assertSpy(fn, 2, [2]);
 
 		set(4);
-		expect(fn).toHaveBeenNthCalledWith(3, 4);
+		assertSpy(fn, 3, [4]);
 
 		unsubscribe();
-		expect(running).toBeFalsy();
-		expect(fn).toHaveBeenCalledTimes(3);
+
+		assert.equal(running, false);
+		assertSpy(fn, 3);
 	});
 });
 
 describe('derived', () => {
 	it('maps one store', () => {
-		let fn = vi.fn();
+		let fn = spy();
 
 		let count = writable(1);
 		let quad = derived(count, ($count) => $count * 4);
 
 		let unsubscribe = quad.subscribe(fn);
-		expect(fn).toHaveBeenNthCalledWith(1, 4);
+		assertSpy(fn, 1, [4]);
 
 		count.set(2);
-		expect(fn).toHaveBeenNthCalledWith(2, 8);
+		assertSpy(fn, 2, [8]);
 
 		unsubscribe();
 
 		count.set(3);
-		expect(fn).toHaveBeenCalledTimes(2);
+		assertSpy(fn, 2);
 	});
 
 	it('maps two store', () => {
-		let fn = vi.fn();
+		let fn = spy();
 
 		let a = writable(5);
 		let b = writable(2);
@@ -127,22 +129,22 @@ describe('derived', () => {
 		let mul = derived([a, b], ([$a, $b]) => $a * $b);
 
 		let unsubscribe = mul.subscribe(fn);
-		expect(fn).toHaveBeenNthCalledWith(1, 10);
+		assertSpy(fn, 1, [10]);
 
 		a.set(10);
-		expect(fn).toHaveBeenNthCalledWith(2, 20);
+		assertSpy(fn, 2, [20]);
 
 		b.set(3);
-		expect(fn).toHaveBeenNthCalledWith(3, 30);
+		assertSpy(fn, 3, [30]);
 
 		unsubscribe();
 
 		b.set(4);
-		expect(fn).toHaveBeenCalledTimes(3);
+		assertSpy(fn, 3);
 	});
 
 	it('manual derivation', () => {
-		let fn = vi.fn();
+		let fn = spy();
 
 		let count = writable(0);
 		let evens = derived(count, ($count, set) => {
@@ -152,27 +154,27 @@ describe('derived', () => {
 		}, 0);
 
 		let unsubscribe = evens.subscribe(fn);
-		expect(fn).toHaveBeenNthCalledWith(1, 0);
+		assertSpy(fn, 1, [0]);
 
 		count.set(1);
-		expect(fn).toHaveBeenCalledTimes(1);
+		assertSpy(fn, 1);
 
 		count.set(2);
-		expect(fn).toHaveBeenNthCalledWith(2, 2);
+		assertSpy(fn, 2, [2]);
 
 		count.set(3);
-		expect(fn).toHaveBeenCalledTimes(2);
+		assertSpy(fn, 2);
 
 		count.set(4);
-		expect(fn).toHaveBeenNthCalledWith(3, 4);
+		assertSpy(fn, 3, [4]);
 
 		unsubscribe();
 
 		count.set(5);
-		expect(fn).toHaveBeenCalledTimes(3);
+		assertSpy(fn, 3);
 
 		count.set(6);
-		expect(fn).toHaveBeenCalledTimes(3);
+		assertSpy(fn, 3);
 	});
 
 	it('prevents diamond dependency', () => {
@@ -183,26 +185,26 @@ describe('derived', () => {
 
 		let combined = derived([a, b], ([$a, $b]) => $a + $b);
 
-		let fn = vi.fn();
+		let fn = spy();
 
 		let unsubscribe = combined.subscribe(fn);
-		expect(fn).toHaveBeenNthCalledWith(1, 'a0b0');
+		assertSpy(fn, 1, ['a0b0']);
 
 		count.set(1);
-		expect(fn).toHaveBeenNthCalledWith(2, 'a1b1');
+		assertSpy(fn, 2, ['a1b1']);
 
 		count.set(2);
-		expect(fn).toHaveBeenNthCalledWith(3, 'a2b2');
+		assertSpy(fn, 3, ['a2b2']);
 
 		unsubscribe();
 
 		count.set(3);
-		expect(fn).toHaveBeenCalledTimes(3);
+		assertSpy(fn, 3);
 	});
 
 	it('runs cleanup function', () => {
-		let fn = vi.fn();
-		let cleanup = vi.fn();
+		let fn = spy();
+		let cleanup = spy();
 
 		let count = writable(1);
 
@@ -212,24 +214,24 @@ describe('derived', () => {
 		});
 
 		let unsubscribe = double.subscribe(fn);
-		expect(fn).toHaveBeenNthCalledWith(1, 2);
-		expect(cleanup).toHaveBeenCalledTimes(0);
+		assertSpy(fn, 1, [2]);
+		assertSpy(cleanup, 0);
 
 		count.set(2);
-		expect(fn).toHaveBeenNthCalledWith(2, 4);
-		expect(cleanup).toHaveBeenCalledTimes(1);
+		assertSpy(fn, 2, [4]);
+		assertSpy(cleanup, 1);
 
 		count.set(3);
-		expect(fn).toHaveBeenNthCalledWith(3, 6);
-		expect(cleanup).toHaveBeenCalledTimes(2);
+		assertSpy(fn, 3, [6]);
+		assertSpy(cleanup, 2);
 
 		unsubscribe();
-		expect(fn).toHaveBeenCalledTimes(3);
-		expect(cleanup).toHaveBeenCalledTimes(3);
+		assertSpy(fn, 3);
+		assertSpy(cleanup, 3);
 
 		count.set(4);
-		expect(fn).toHaveBeenCalledTimes(3);
-		expect(cleanup).toHaveBeenCalledTimes(3);
+		assertSpy(fn, 3);
+		assertSpy(cleanup, 3);
 	});
 });
 
@@ -237,13 +239,13 @@ describe('get', () => {
 	it('retrieves writable', () => {
 		let store = writable(1);
 
-		expect(get(store)).toBe(1);
+		assert.equal(get(store), 1);
 
 		store.set(2);
-		expect(get(store)).toBe(2);
+		assert.equal(get(store), 2);
 
 		store.update((prev) => prev * 2);
-		expect(get(store)).toBe(4);
+		assert.equal(get(store), 4);
 	});
 
 	it('receives readable', () => {
@@ -253,21 +255,21 @@ describe('get', () => {
 			set(count += 1);
 		});
 
-		expect(get(store)).toBe(1);
-		expect(get(store)).toBe(2);
-		expect(get(store)).toBe(3);
+		assert.equal(get(store), 1);
+		assert.equal(get(store), 2);
+		assert.equal(get(store), 3);
 	});
 
 	it('retrieves derived', () => {
 		let count = writable(1);
 		let double = derived(count, ($count) => $count * 2);
 
-		expect(get(double)).toBe(2);
+		assert.equal(get(double), 2);
 
 		count.set(2);
-		expect(get(double)).toBe(4);
+		assert.equal(get(double), 4);
 
 		count.update((prev) => prev * 2);
-		expect(get(double)).toBe(8);
+		assert.equal(get(double), 8);
 	});
 });

@@ -1,0 +1,582 @@
+module context > allow top level await 1:
+'import {html, clone, traverse, text, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<div>the number is <!></div>");\n' +
+  'let number = await Promise.resolve(420);\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  let marker0 = traverse(fragment0, [0, 1]);\n' +
+  '  text(marker0, () => number);\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+script context > throws on await 1:
+"Acorn error: Cannot use keyword 'await' outside an async function (3:17)\n" +
+  '1: \n' +
+  '2:       <script>\n' +
+  '3:         let number = await Promise.resolve(123);\n' +
+  '                        ^\n' +
+  '4:       </script>\n' +
+  '5: '
+#*#*#*#*#*#*#*#*#*#*#*#
+options element > allows for changing element name 1:
+'import {html, clone, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<div>hello world!</div>");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define("my-greeter", setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+options element > throws on non root-level usage 1:
+'<v:options> can only be used on root-level (2:8)\n' +
+  '1: \n' +
+  "2:       <div><v:options name='foo' /></div>\n" +
+  '              ^\n' +
+  '3:     '
+#*#*#*#*#*#*#*#*#*#*#*#
+props > throws on two variable exported to one name 1:
+"Acorn error: Duplicate export 'baz' (6:31)\n" +
+  '4:       let bar = 2;\n' +
+  '5: \n' +
+  '6:       export { foo as baz, bar as baz };\n' +
+  '                                     ^\n' +
+  '7:       </script>\n' +
+  '8:     '
+#*#*#*#*#*#*#*#*#*#*#*#
+props > exporting binding and mutable 1:
+'import {prop, html, clone, append, bind, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  function greet() {\n' +
+  "    alert('hello!');\n" +
+  '  }\n' +
+  '  const MAGIC_NUMBER = 420;\n' +
+  '  let number = prop(0, 1);\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  append($$root, fragment0);\n' +
+  '  bind({\n' +
+  '    greet,\n' +
+  '    magic: MAGIC_NUMBER\n' +
+  '  });\n' +
+  '}\n' +
+  'export default define(null, setup, {\n' +
+  '  number: 0\n' +
+  '}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+attribute > binding checkbox group 1:
+'import {ref, html, clone, traverse, effect, on, get_checked_values, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<input type=checkbox value=Apple /> <input type=checkbox value=Orange />");\n' +
+  'function setup($$root, $$host) {\n' +
+  "  let selected = ref(['Apple']);\n" +
+  '  let fragment0 = clone(template0);\n' +
+  '  let child0 = traverse(fragment0, [0]);\n' +
+  '  let child1 = traverse(fragment0, [2]);\n' +
+  '  effect(() => child0.checked = selected.v.includes(child0.value));\n' +
+  '  on(child0, "input", () => selected.v = get_checked_values(selected.v, child0.value, child0.checked));\n' +
+  '  effect(() => child1.checked = selected.v.includes(child1.value));\n' +
+  '  on(child1, "input", () => selected.v = get_checked_values(selected.v, child1.value, child1.checked));\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+attribute > binding checkbox group nested 1:
+'import {ref, html, clone, traverse, effect, on, get_checked_values, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<input type=checkbox value=Apple /> <input type=checkbox value=Orange />");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let state = ref({\n' +
+  "    selected: ['Apple']\n" +
+  '  });\n' +
+  '  state.v = {\n' +
+  "    selected: ['Orange']\n" +
+  '  };\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  let child0 = traverse(fragment0, [0]);\n' +
+  '  let child1 = traverse(fragment0, [2]);\n' +
+  '  effect(() => child0.checked = state.v.selected.includes(child0.value));\n' +
+  '  on(child0, "input", () => state.v.selected = get_checked_values(state.v.selected, child0.value, child0.checked));\n' +
+  '  effect(() => child1.checked = state.v.selected.includes(child1.value));\n' +
+  '  on(child1, "input", () => state.v.selected = get_checked_values(state.v.selected, child1.value, child1.checked));\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+attribute > throws on duplicate attributes 1:
+'duplicate foo attribute (2:26)\n' +
+  '1: \n' +
+  '2:       <hello-world foo={123} foo={234}></hello-world>\n' +
+  '                                ^\n' +
+  '3:     '
+#*#*#*#*#*#*#*#*#*#*#*#
+attribute > allows duplicate #use attributes 1:
+'import {html, clone, traverse, use, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<time></time>");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  let child0 = traverse(fragment0, [0]);\n' +
+  '  use(child0, relformatter, null);\n' +
+  '  use(child0, relformatter, () => ({\n' +
+  "    locale: 'en'\n" +
+  '  }));\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > throws on lone $ 1:
+'no singular $ reference (3:15)\n' +
+  '1: \n' +
+  '2:       <script>\n' +
+  '3:       console.log($);\n' +
+  '                     ^\n' +
+  '4:       </script>\n' +
+  '5:     '
+#*#*#*#*#*#*#*#*#*#*#*#
+store > subscription on script and root 1:
+'import {ref, cleanup, html, clone, traverse, text, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<!>");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let $foo = ref();\n' +
+  '  cleanup(foo.subscribe(value => $foo.v = value));\n' +
+  '  console.log($foo.v);\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  let marker0 = traverse(fragment0, [0]);\n' +
+  '  text(marker0, () => $foo.v);\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > subscription on root and conditional 1:
+'import {html, clone, traverse, ref, cleanup, text, after, show, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<!> <!>");\n' +
+  'let template1 = html("<!><!>");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  let marker0 = traverse(fragment0, [0]);\n' +
+  '  let marker3 = traverse(fragment0, [2]);\n' +
+  '  let $foo = ref();\n' +
+  '  cleanup(foo.subscribe(value => $foo.v = value));\n' +
+  '  let block1 = $$root => {\n' +
+  '    let fragment1 = clone(template1);\n' +
+  '    let marker1 = traverse(fragment1, [0]);\n' +
+  '    let marker2 = traverse(fragment1, [1]);\n' +
+  '    text(marker1, () => $foo.v);\n' +
+  '    after($$root, fragment1);\n' +
+  '    return marker2;\n' +
+  '  };\n' +
+  '  text(marker0, () => $foo.v);\n' +
+  '  show(marker3, () => foo ? block1 : null);\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > subscription on conditional 1:
+'import {html, clone, traverse, ref, cleanup, text, after, show, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<!>");\n' +
+  'let template1 = html("<!><!>");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  let marker2 = traverse(fragment0, [0]);\n' +
+  '  let block1 = $$root => {\n' +
+  '    let fragment1 = clone(template1);\n' +
+  '    let marker0 = traverse(fragment1, [0]);\n' +
+  '    let marker1 = traverse(fragment1, [1]);\n' +
+  '    let $foo = ref();\n' +
+  '    cleanup(foo.subscribe(value => $foo.v = value));\n' +
+  '    text(marker0, () => $foo.v);\n' +
+  '    after($$root, fragment1);\n' +
+  '    return marker1;\n' +
+  '  };\n' +
+  '  show(marker2, () => foo ? block1 : null);\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > subscription on conditional with log 1:
+'import {html, clone, traverse, ref, cleanup, text, effect, after, show, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<!>");\n' +
+  'let template1 = html("<!> ");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  let marker1 = traverse(fragment0, [0]);\n' +
+  '  let block1 = $$root => {\n' +
+  '    let fragment1 = clone(template1);\n' +
+  '    let marker0 = traverse(fragment1, [0]);\n' +
+  '    let child0 = traverse(fragment1, [1]);\n' +
+  '    let $foo = ref();\n' +
+  '    cleanup(foo.subscribe(value => $foo.v = value));\n' +
+  '    text(marker0, () => $foo.v);\n' +
+  '    effect(() => console.log($foo.v));\n' +
+  '    after($$root, fragment1);\n' +
+  '    return child0;\n' +
+  '  };\n' +
+  '  show(marker1, () => foo ? block1 : null);\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > subscription on conditional and alternate 1:
+'import {html, clone, traverse, ref, cleanup, text, after, show, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<!>");\n' +
+  'let template1 = html("<!><!>");\n' +
+  'let template2 = html("<!><!>");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  let marker4 = traverse(fragment0, [0]);\n' +
+  '  let $foo = ref();\n' +
+  '  cleanup(foo.subscribe(value => $foo.v = value));\n' +
+  '  let block1 = $$root => {\n' +
+  '    let fragment1 = clone(template1);\n' +
+  '    let marker0 = traverse(fragment1, [0]);\n' +
+  '    let marker1 = traverse(fragment1, [1]);\n' +
+  '    text(marker0, () => $foo.v);\n' +
+  '    after($$root, fragment1);\n' +
+  '    return marker1;\n' +
+  '  };\n' +
+  '  let block2 = $$root => {\n' +
+  '    let fragment2 = clone(template2);\n' +
+  '    let marker2 = traverse(fragment2, [0]);\n' +
+  '    let marker3 = traverse(fragment2, [1]);\n' +
+  '    text(marker2, () => $foo.v);\n' +
+  '    after($$root, fragment2);\n' +
+  '    return marker3;\n' +
+  '  };\n' +
+  '  show(marker4, () => foo ? block1 : block2);\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > subscription on nested conditional 1:
+'import {html, clone, traverse, ref, cleanup, text, after, show, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<!>");\n' +
+  'let template1 = html("<!> <!><!>");\n' +
+  'let template2 = html("<!><!>");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  let marker5 = traverse(fragment0, [0]);\n' +
+  '  let block1 = $$root => {\n' +
+  '    let fragment1 = clone(template1);\n' +
+  '    let marker0 = traverse(fragment1, [0]);\n' +
+  '    let marker3 = traverse(fragment1, [2]);\n' +
+  '    let marker4 = traverse(fragment1, [3]);\n' +
+  '    let $foo = ref();\n' +
+  '    cleanup(foo.subscribe(value => $foo.v = value));\n' +
+  '    let block2 = $$root => {\n' +
+  '      let fragment2 = clone(template2);\n' +
+  '      let marker1 = traverse(fragment2, [0]);\n' +
+  '      let marker2 = traverse(fragment2, [1]);\n' +
+  '      text(marker1, () => $foo.v);\n' +
+  '      after($$root, fragment2);\n' +
+  '      return marker2;\n' +
+  '    };\n' +
+  '    text(marker0, () => $foo.v);\n' +
+  '    show(marker3, () => foo ? block2 : null);\n' +
+  '    after($$root, fragment1);\n' +
+  '    return marker4;\n' +
+  '  };\n' +
+  '  show(marker5, () => foo ? block1 : null);\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > subscription on await resolve 1:
+'import {html, clone, traverse, ref, cleanup, text, after, promise as promise$1, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<!>");\n' +
+  'let template1 = html("<!><!>");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  let marker2 = traverse(fragment0, [0]);\n' +
+  '  let block1 = ($$root, result) => {\n' +
+  '    let fragment1 = clone(template1);\n' +
+  '    let marker0 = traverse(fragment1, [0]);\n' +
+  '    let marker1 = traverse(fragment1, [1]);\n' +
+  '    let $result = ref();\n' +
+  '    cleanup(result.v.subscribe(value => $result.v = value));\n' +
+  '    text(marker0, () => $result.v);\n' +
+  '    after($$root, fragment1);\n' +
+  '    return marker1;\n' +
+  '  };\n' +
+  '  promise$1(marker2, null, block1, null, () => promise);\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > subscription on await pending and resolve 1:
+'import {html, clone, traverse, ref, cleanup, text, after, promise as promise$1, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<!>");\n' +
+  'let template1 = html("<!><!>");\n' +
+  'let template2 = html("<!><!>");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  let marker4 = traverse(fragment0, [0]);\n' +
+  '  let block1 = $$root => {\n' +
+  '    let fragment1 = clone(template1);\n' +
+  '    let marker0 = traverse(fragment1, [0]);\n' +
+  '    let marker1 = traverse(fragment1, [1]);\n' +
+  '    let $foo = ref();\n' +
+  '    cleanup(foo.subscribe(value => $foo.v = value));\n' +
+  '    text(marker0, () => $foo.v);\n' +
+  '    after($$root, fragment1);\n' +
+  '    return marker1;\n' +
+  '  };\n' +
+  '  let block2 = ($$root, foo) => {\n' +
+  '    let fragment2 = clone(template2);\n' +
+  '    let marker2 = traverse(fragment2, [0]);\n' +
+  '    let marker3 = traverse(fragment2, [1]);\n' +
+  '    let $foo = ref();\n' +
+  '    cleanup(foo.v.subscribe(value => $foo.v = value));\n' +
+  '    text(marker2, () => $foo.v);\n' +
+  '    after($$root, fragment2);\n' +
+  '    return marker3;\n' +
+  '  };\n' +
+  '  promise$1(marker4, block1, block2, null, () => promise);\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > subscription on root and await pending and resolve 1:
+'import {html, clone, traverse, ref, cleanup, text, after, promise as promise$1, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<!> <!>");\n' +
+  'let template1 = html("<!><!>");\n' +
+  'let template2 = html("<!><!>");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  let marker4 = traverse(fragment0, [0]);\n' +
+  '  let marker5 = traverse(fragment0, [2]);\n' +
+  '  let $foo = ref();\n' +
+  '  cleanup(foo.subscribe(value => $foo.v = value));\n' +
+  '  let block1 = $$root => {\n' +
+  '    let fragment1 = clone(template1);\n' +
+  '    let marker0 = traverse(fragment1, [0]);\n' +
+  '    let marker1 = traverse(fragment1, [1]);\n' +
+  '    text(marker0, () => $foo.v);\n' +
+  '    after($$root, fragment1);\n' +
+  '    return marker1;\n' +
+  '  };\n' +
+  '  let block2 = ($$root, foo) => {\n' +
+  '    let fragment2 = clone(template2);\n' +
+  '    let marker2 = traverse(fragment2, [0]);\n' +
+  '    let marker3 = traverse(fragment2, [1]);\n' +
+  '    let $foo = ref();\n' +
+  '    cleanup(foo.v.subscribe(value => $foo.v = value));\n' +
+  '    text(marker2, () => $foo.v);\n' +
+  '    after($$root, fragment2);\n' +
+  '    return marker3;\n' +
+  '  };\n' +
+  '  promise$1(marker4, block1, block2, null, () => promise);\n' +
+  '  text(marker5, () => $foo.v);\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > subscription on conditional with let 1:
+'import {html, clone, traverse, ref, cleanup, computed, text, after, show, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<!>");\n' +
+  'let template1 = html("<!><!>");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  let marker2 = traverse(fragment0, [0]);\n' +
+  '  let block1 = $$root => {\n' +
+  '    let fragment1 = clone(template1);\n' +
+  '    let marker0 = traverse(fragment1, [0]);\n' +
+  '    let marker1 = traverse(fragment1, [1]);\n' +
+  '    let $favorite = ref();\n' +
+  '    cleanup(favorite.subscribe(value => $favorite.v = value));\n' +
+  '    let is_favorited = computed(() => $favorite.v.favorited);\n' +
+  '    text(marker0, () => is_favorited.v);\n' +
+  '    after($$root, fragment1);\n' +
+  '    return marker1;\n' +
+  '  };\n' +
+  '  show(marker2, () => show_favorite ? block1 : null);\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+element > throws on improper closing tag 1:
+'</button> attempted to close an element that was not open (1:13)\n' +
+  '1: <legend>Title</button>\n' +
+  '                ^'
+#*#*#*#*#*#*#*#*#*#*#*#
+let expression > unmutated referencing unmutated 1:
+'import {html, clone, traverse, text, after, show, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<!>");\n' +
+  'let template1 = html("<!> <!><!>");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let count = 0;\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  let marker3 = traverse(fragment0, [0]);\n' +
+  '  let block1 = $$root => {\n' +
+  '    let fragment1 = clone(template1);\n' +
+  '    let marker0 = traverse(fragment1, [0]);\n' +
+  '    let marker1 = traverse(fragment1, [2]);\n' +
+  '    let marker2 = traverse(fragment1, [3]);\n' +
+  '    let doubled = count * 2;\n' +
+  '    text(marker0, () => count);\n' +
+  '    text(marker1, () => doubled);\n' +
+  '    after($$root, fragment1);\n' +
+  '    return marker2;\n' +
+  '  };\n' +
+  '  show(marker3, () => foo ? block1 : null);\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+let expression > unmutated referencing mutated 1:
+'import {ref, html, clone, traverse, computed, text, after, show, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<!>");\n' +
+  'let template1 = html("<!> <!><!>");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let count = ref(0);\n' +
+  '  count.v = 2;\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  let marker3 = traverse(fragment0, [0]);\n' +
+  '  let block1 = $$root => {\n' +
+  '    let fragment1 = clone(template1);\n' +
+  '    let marker0 = traverse(fragment1, [0]);\n' +
+  '    let marker1 = traverse(fragment1, [2]);\n' +
+  '    let marker2 = traverse(fragment1, [3]);\n' +
+  '    let doubled = computed(() => count.v * 2);\n' +
+  '    text(marker0, () => count.v);\n' +
+  '    text(marker1, () => doubled.v);\n' +
+  '    after($$root, fragment1);\n' +
+  '    return marker2;\n' +
+  '  };\n' +
+  '  show(marker3, () => foo ? block1 : null);\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+let expression > mutated referencing unmutated 1:
+'import {html, clone, traverse, ref, text, after, show, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<!>");\n' +
+  'let template1 = html("<!> <!><!>");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let count = 0;\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  let marker3 = traverse(fragment0, [0]);\n' +
+  '  let block1 = $$root => {\n' +
+  '    let fragment1 = clone(template1);\n' +
+  '    let marker0 = traverse(fragment1, [0]);\n' +
+  '    let marker1 = traverse(fragment1, [2]);\n' +
+  '    let marker2 = traverse(fragment1, [3]);\n' +
+  '    let doubled = ref(count * 2);\n' +
+  '    text(marker0, () => count);\n' +
+  '    text(marker1, () => doubled.v = 2);\n' +
+  '    after($$root, fragment1);\n' +
+  '    return marker2;\n' +
+  '  };\n' +
+  '  show(marker3, () => foo ? block1 : null);\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+let expression > mutated referencing mutated 1:
+'import {ref, html, clone, traverse, computed, text, after, show, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<!>");\n' +
+  'let template1 = html("<!> <!><!>");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let count = ref(0);\n' +
+  '  count.v = 2;\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  let marker3 = traverse(fragment0, [0]);\n' +
+  '  let block1 = $$root => {\n' +
+  '    let fragment1 = clone(template1);\n' +
+  '    let marker0 = traverse(fragment1, [0]);\n' +
+  '    let marker1 = traverse(fragment1, [2]);\n' +
+  '    let marker2 = traverse(fragment1, [3]);\n' +
+  '    let doubled = computed(() => count.v * 2);\n' +
+  '    text(marker0, () => count.v);\n' +
+  '    text(marker1, () => doubled.v = 2);\n' +
+  '    after($$root, fragment1);\n' +
+  '    return marker2;\n' +
+  '  };\n' +
+  '  show(marker3, () => foo ? block1 : null);\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+let expression > referencing for each 1:
+'import {html, clone, traverse, computed, text, effect, toggle, attr, after, each, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<!>");\n' +
+  'let template1 = html("<option> <!> </option>");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  let marker1 = traverse(fragment0, [0]);\n' +
+  '  let block1 = ($$root, key) => {\n' +
+  '    let fragment1 = clone(template1);\n' +
+  '    let marker0 = traverse(fragment1, [0, 1]);\n' +
+  '    let child0 = traverse(fragment1, [0]);\n' +
+  '    let item = computed(() => data[key.v]);\n' +
+  '    text(marker0, () => item.v.name);\n' +
+  '    effect(() => toggle(child0, "disabled", augments.includes(key.v)));\n' +
+  '    effect(() => attr(child0, "value", key.v));\n' +
+  '    after($$root, fragment1);\n' +
+  '    return child0;\n' +
+  '  };\n' +
+  '  each(marker1, block1, () => Object.keys(data));\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+conditional logic > consequent 1:
+'import {html, clone, traverse, after, show, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<!>");\n' +
+  'let template1 = html("<div>foo</div>");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  let marker0 = traverse(fragment0, [0]);\n' +
+  '  let block1 = $$root => {\n' +
+  '    let fragment1 = clone(template1);\n' +
+  '    let child0 = traverse(fragment1, [0]);\n' +
+  '    after($$root, fragment1);\n' +
+  '    return child0;\n' +
+  '  };\n' +
+  '  show(marker0, () => foo ? block1 : null);\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+conditional logic > consequent and alternate 1:
+'import {html, clone, traverse, after, show, append, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<!>");\n' +
+  'let template1 = html("<div>foo</div>");\n' +
+  'let template2 = html("<div>bar</div>");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  let marker0 = traverse(fragment0, [0]);\n' +
+  '  let block1 = $$root => {\n' +
+  '    let fragment1 = clone(template1);\n' +
+  '    let child0 = traverse(fragment1, [0]);\n' +
+  '    after($$root, fragment1);\n' +
+  '    return child0;\n' +
+  '  };\n' +
+  '  let block2 = $$root => {\n' +
+  '    let fragment2 = clone(template2);\n' +
+  '    let child1 = traverse(fragment2, [0]);\n' +
+  '    after($$root, fragment2);\n' +
+  '    return child1;\n' +
+  '  };\n' +
+  '  show(marker0, () => foo ? block1 : block2);\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+style > inline 1:
+'import {html, clone, append, css, define} from "@intrnl/velvet/internal";\n' +
+  'let template0 = html("<div class=foo>Hello</div>");\n' +
+  'let style0 = css(".foo { color: red; }");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, [style0]);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+style > imports 1:
+'import {html, clone, append, css, define} from "@intrnl/velvet/internal";\n' +
+  'import style0 from "./reset.css";\n' +
+  'let template0 = html("<div class=foo>Hello</div>");\n' +
+  'let style1 = css(".foo { color: blue }");\n' +
+  'function setup($$root, $$host) {\n' +
+  '  let fragment0 = clone(template0);\n' +
+  '  append($$root, fragment0);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, [style0, style1]);\n'

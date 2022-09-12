@@ -1,4 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it } from 'node:test';
+import * as assert from 'node:assert/strict';
+
+import { assertSnapshot } from './utils.js';
 
 import { compileSync, componentize } from '../src/compile.js';
 
@@ -14,7 +17,7 @@ describe('module context', () => {
 		`;
 
 		let result = compileSync(source);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 });
 
@@ -30,10 +33,10 @@ describe('script context', () => {
 
 		try {
 			compileSync(source);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 	});
 });
@@ -46,7 +49,7 @@ describe('options element', () => {
 		`;
 
 		let result = compileSync(source);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 
 	it('throws on non root-level usage', () => {
@@ -56,10 +59,10 @@ describe('options element', () => {
 
 		try {
 			compileSync(source);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 	});
 });
@@ -77,10 +80,10 @@ describe('props', () => {
 
 		try {
 			compileSync(source);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 	});
 
@@ -99,7 +102,7 @@ describe('props', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 });
 
@@ -115,7 +118,7 @@ describe('attribute', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 
 	it('binding checkbox group nested', () => {
@@ -135,7 +138,7 @@ describe('attribute', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 
 	it('throws on duplicate attributes', () => {
@@ -145,10 +148,10 @@ describe('attribute', () => {
 
 		try {
 			compileSync(template);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 	});
 
@@ -158,7 +161,7 @@ describe('attribute', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 });
 
@@ -172,10 +175,10 @@ describe('store', () => {
 
 		try {
 			compileSync(source);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 	});
 
@@ -189,7 +192,7 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 
 	it('subscription on root and conditional', () => {
@@ -201,7 +204,7 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 
 	it('subscription on conditional', () => {
@@ -212,7 +215,7 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 
 	it('subscription on conditional with log', () => {
@@ -224,7 +227,7 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 
 	it('subscription on conditional and alternate', () => {
@@ -237,7 +240,7 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 
 	it('subscription on nested conditional', () => {
@@ -251,7 +254,7 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 
 	it('subscription on await resolve', () => {
@@ -262,7 +265,7 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 
 	it('subscription on await pending and resolve', () => {
@@ -275,7 +278,7 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 
 	it('subscription on root and await pending and resolve', () => {
@@ -290,7 +293,7 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 
 	it('subscription on conditional with let', () => {
@@ -302,7 +305,7 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 });
 
@@ -312,10 +315,10 @@ describe('element', () => {
 
 		try {
 			compileSync(template);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 	});
 });
@@ -334,7 +337,7 @@ describe('let expression', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 
 	it('unmutated referencing mutated', () => {
@@ -351,7 +354,7 @@ describe('let expression', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 
 	it('mutated referencing unmutated', () => {
@@ -367,7 +370,7 @@ describe('let expression', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 
 	it('mutated referencing mutated', () => {
@@ -384,7 +387,7 @@ describe('let expression', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 
 	it('referencing for each', () => {
@@ -398,7 +401,7 @@ describe('let expression', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 });
 
@@ -411,7 +414,7 @@ describe('conditional logic', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 
 	it('consequent and alternate', () => {
@@ -424,7 +427,7 @@ describe('conditional logic', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 });
 
@@ -436,7 +439,7 @@ describe('style', () => {
 		`;
 
 		let result = compileSync(template);
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 
 	it('imports', () => {
@@ -454,12 +457,12 @@ describe('style', () => {
 			},
 		});
 
-		expect(result).toMatchSnapshot();
+		assertSnapshot(result);
 	});
 });
 
 it('componentize', () => {
-	expect(componentize('foo.js', 'x')).toBe('x-foo');
-	expect(componentize('HomePage.js', 'x')).toBe('x-home-page');
-	expect(componentize('button group.js', 'x')).toBe('x-button-group');
+	assert.equal(componentize('foo.js', 'x'), 'x-foo');
+	assert.equal(componentize('HomePage.js', 'x'), 'x-home-page');
+	assert.equal(componentize('button group.js', 'x'), 'x-button-group');
 });

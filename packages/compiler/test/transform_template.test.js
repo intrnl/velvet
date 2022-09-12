@@ -1,4 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it } from 'node:test';
+import * as assert from 'node:assert/strict';
+
+import { assertSnapshot } from './utils.js';
 
 import { parse_template } from '../src/parse_template.js';
 import { transform_template } from '../src/transform_template.js';
@@ -12,7 +15,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('attribute unquoted', () => {
@@ -21,7 +24,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('attribute quotations', () => {
@@ -30,7 +33,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('attribute expression', () => {
@@ -39,7 +42,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it.skip('attribute expression pure', () => {
@@ -48,7 +51,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('attribute none', () => {
@@ -57,7 +60,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('fails on attribute with invalid expression', () => {
@@ -65,10 +68,10 @@ describe('attribute', () => {
 
 		try {
 			parse_template(template);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 	});
 
@@ -78,7 +81,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 
@@ -88,7 +91,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it.skip('boolean expression pure', () => {
@@ -97,7 +100,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('boolean none', () => {
@@ -106,7 +109,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 
@@ -116,7 +119,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it.skip('property expression pure', () => {
@@ -125,7 +128,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('property none', () => {
@@ -134,7 +137,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('property checkbox group', () => {
@@ -143,7 +146,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('property select value', () => {
@@ -152,7 +155,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 
@@ -162,7 +165,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 
@@ -172,7 +175,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('binding member expression', () => {
@@ -181,7 +184,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('binding component expression', () => {
@@ -190,7 +193,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('binding checkbox expression', () => {
@@ -199,7 +202,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('binding checkbox group', () => {
@@ -208,7 +211,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('binding select value', () => {
@@ -217,7 +220,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('binding input number', () => {
@@ -226,7 +229,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('fails on binding with no value', () => {
@@ -235,10 +238,10 @@ describe('attribute', () => {
 		try {
 			let fragment = parse_template(template);
 			transform_template(fragment, template);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 	});
 
@@ -248,10 +251,10 @@ describe('attribute', () => {
 		try {
 			let fragment = parse_template(template);
 			transform_template(fragment, template);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 	});
 
@@ -261,10 +264,10 @@ describe('attribute', () => {
 		try {
 			let fragment = parse_template(template);
 			transform_template(fragment, template);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 	});
 
@@ -275,7 +278,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 
@@ -285,7 +288,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('action expression array', () => {
@@ -294,7 +297,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('action expression array with options', () => {
@@ -303,7 +306,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('throws on action expression array with nothing', () => {
@@ -312,10 +315,10 @@ describe('attribute', () => {
 		try {
 			let fragment = parse_template(template);
 			transform_template(fragment, template);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 	});
 
@@ -325,10 +328,10 @@ describe('attribute', () => {
 		try {
 			let fragment = parse_template(template);
 			transform_template(fragment, template);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 	});
 
@@ -339,7 +342,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('ifdef attributes', () => {
@@ -348,7 +351,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('class object expression', () => {
@@ -357,7 +360,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('style object expression', () => {
@@ -366,7 +369,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('class object expression 2', () => {
@@ -379,7 +382,7 @@ describe('attribute', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 });
 
@@ -390,7 +393,7 @@ describe('element', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('v:element', () => {
@@ -399,7 +402,7 @@ describe('element', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('v:element with children', () => {
@@ -408,7 +411,7 @@ describe('element', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('multiple v:element', () => {
@@ -417,7 +420,7 @@ describe('element', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('throws on improper closing tag', () => {
@@ -426,10 +429,10 @@ describe('element', () => {
 		try {
 			let fragment = parse_template(template);
 			transform_template(fragment, template);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 	});
 
@@ -439,7 +442,7 @@ describe('element', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('throws on script closing tag whitespace', () => {
@@ -448,10 +451,10 @@ describe('element', () => {
 		try {
 			let fragment = parse_template(template);
 			transform_template(fragment, template);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 	});
 });
@@ -463,7 +466,7 @@ describe('component', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('v:component', () => {
@@ -472,7 +475,7 @@ describe('component', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('v:component with children', () => {
@@ -481,7 +484,7 @@ describe('component', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('multiple component', () => {
@@ -490,7 +493,7 @@ describe('component', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('multiple v:component', () => {
@@ -499,7 +502,7 @@ describe('component', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 });
 
@@ -510,7 +513,7 @@ describe('expression', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('component', () => {
@@ -519,7 +522,7 @@ describe('expression', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('fails on invalid expression', () => {
@@ -527,10 +530,10 @@ describe('expression', () => {
 
 		try {
 			parse_template(template);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 	});
 
@@ -540,7 +543,7 @@ describe('expression', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('multiple expressions', () => {
@@ -549,7 +552,7 @@ describe('expression', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 });
 
@@ -561,10 +564,10 @@ describe('named expression', () => {
 
 		try {
 			transform_template(fragment, template);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 	});
 });
@@ -576,7 +579,7 @@ describe('log expression', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('multiple', () => {
@@ -585,7 +588,7 @@ describe('log expression', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('values', () => {
@@ -594,7 +597,7 @@ describe('log expression', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('in conditional', () => {
@@ -603,7 +606,7 @@ describe('log expression', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('in conditional with text', () => {
@@ -612,7 +615,7 @@ describe('log expression', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 });
 
@@ -625,37 +628,37 @@ describe('let expression', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('throws on incorrect definition', () => {
 		try {
 			let template = `{@let }`;
 			parse_template(template);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 
 		try {
 			let template = `{@let foo}`;
 			let fragment = parse_template(template);
 			transform_template(fragment, template);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 
 		try {
 			let template = `{@let foo.bar = 123}`;
 			let fragment = parse_template(template);
 			transform_template(fragment, template);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 	});
 });
@@ -667,7 +670,7 @@ describe('conditional logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('consequent and alternate', () => {
@@ -676,7 +679,7 @@ describe('conditional logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('consequent and alternate test', () => {
@@ -685,7 +688,7 @@ describe('conditional logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('nested consequent', () => {
@@ -694,7 +697,7 @@ describe('conditional logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('conditional before expression', () => {
@@ -709,7 +712,7 @@ describe('conditional logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('conditional containing expression', () => {
@@ -722,7 +725,7 @@ describe('conditional logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('conditional containing two expressions', () => {
@@ -735,7 +738,7 @@ describe('conditional logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('conditional containing component', () => {
@@ -748,7 +751,7 @@ describe('conditional logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('conditional containing v:component', () => {
@@ -761,7 +764,7 @@ describe('conditional logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('conditional containing v:element', () => {
@@ -774,7 +777,7 @@ describe('conditional logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('conditional containing v:self', () => {
@@ -787,7 +790,7 @@ describe('conditional logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('conditional containing two elements', () => {
@@ -800,7 +803,7 @@ describe('conditional logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 });
 
@@ -811,7 +814,7 @@ describe('loop logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('index', () => {
@@ -820,7 +823,7 @@ describe('loop logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('throw on more than two expression', () => {
@@ -832,10 +835,10 @@ describe('loop logic', () => {
 
 		try {
 			parse_template(template1);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 	});
 
@@ -854,18 +857,18 @@ describe('loop logic', () => {
 
 		try {
 			parse_template(template1);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 
 		try {
 			parse_template(template2);
-			expect.fail();
+			assert.fail();
 		}
 		catch (error) {
-			expect(error.toString()).toMatchSnapshot();
+			assertSnapshot(error.toString());
 		}
 	});
 });
@@ -877,7 +880,7 @@ describe('await logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('resolved', () => {
@@ -886,7 +889,7 @@ describe('await logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('resolved with local', () => {
@@ -895,7 +898,7 @@ describe('await logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('rejected', () => {
@@ -904,7 +907,7 @@ describe('await logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('rejected with local', () => {
@@ -913,7 +916,7 @@ describe('await logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('pending and resolved', () => {
@@ -922,7 +925,7 @@ describe('await logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('pending and resolved with local', () => {
@@ -931,7 +934,7 @@ describe('await logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('pending and rejected', () => {
@@ -940,7 +943,7 @@ describe('await logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 
 	it('pending and rejected with local', () => {
@@ -949,7 +952,7 @@ describe('await logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 });
 
@@ -960,7 +963,7 @@ describe('keyed logic', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 });
 
@@ -971,7 +974,7 @@ describe('comment', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 });
 
@@ -998,6 +1001,6 @@ describe('miscellaneous', () => {
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
 
-		expect(print(program)).toMatchSnapshot();
+		assertSnapshot(print(program));
 	});
 });

@@ -28,7 +28,8 @@
 	},
 	"scripts": {
 		"prepublishOnly": "rm -r dist; pnpm run bundle",
-		"bundle": "wireit"
+		"bundle": "wireit",
+		"test": "node --test test/"
 	},
 	"wireit": {
 		"bundle": {
@@ -47,7 +48,9 @@
 		}
 	},
 	"devDependencies": {
+		"@sinonjs/fake-timers": "^9.1.2",
 		"esbuild": "^0.15.7",
+		"nanospy": "^0.5.0",
 		"rollup": "^2.79.0",
 		"wireit": "^0.7.1"
 	}

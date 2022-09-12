@@ -1,0 +1,602 @@
+ref > unused variables 1:
+'let value1;\nlet value2 = 100;\nlet value3 = new Date();\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+ref > variables with no mutation 1:
+'console.log({\n' +
+  '  value1,\n' +
+  '  value2,\n' +
+  '  value3,\n' +
+  '  value4\n' +
+  '});\n' +
+  'let value1;\n' +
+  'let value2 = 100;\n' +
+  'let value3 = new Date();\n' +
+  'let value4 = value2;\n' +
+  'console.log({\n' +
+  '  value1,\n' +
+  '  value2,\n' +
+  '  value3,\n' +
+  '  value4\n' +
+  '});\n' +
+  'function increment() {\n' +
+  '  let value4 = 200;\n' +
+  '  console.log({\n' +
+  '    value1,\n' +
+  '    value2,\n' +
+  '    value3,\n' +
+  '    value4\n' +
+  '  });\n' +
+  '}\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+ref > variables with mutation 1:
+'console.log({\n' +
+  '  value1,\n' +
+  '  value2,\n' +
+  '  value3,\n' +
+  '  value4\n' +
+  '});\n' +
+  'let value1 = @ref();\n' +
+  'let value2 = @ref(100);\n' +
+  'let value3 = @ref(new Date());\n' +
+  'let value4 = @ref(value2.v);\n' +
+  'value1.v += 1;\n' +
+  'value2.v += 2;\n' +
+  'value3.v += 3;\n' +
+  'value4.v += 4;\n' +
+  'console.log({\n' +
+  '  value1: value1.v,\n' +
+  '  value2: value2.v,\n' +
+  '  value3: value3.v,\n' +
+  '  value4: value4.v\n' +
+  '});\n' +
+  'function increment() {\n' +
+  '  let value4 = 200;\n' +
+  '  value4 += 4;\n' +
+  '  console.log({\n' +
+  '    value1: value1.v,\n' +
+  '    value2: value2.v,\n' +
+  '    value3: value3.v,\n' +
+  '    value4\n' +
+  '  });\n' +
+  '}\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+ref > unmutated variable referencing mutated variable 1:
+'let value1 = @ref(100);\n' +
+  'let value2 = value1.v;\n' +
+  'value1.v = 200;\n' +
+  'console.log(value1.v, value2);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+ref > mutated variable, referencing unmutated variable 1:
+'let value1 = 100;\n' +
+  'let value2 = @ref(value1);\n' +
+  'value2.v = 200;\n' +
+  'console.log(value1, value2.v);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+ref > variable mutation with logical assignment operators 1:
+'let value1 = @ref(100);\n' +
+  'value1.v ??= 200;\n' +
+  'value1.v ||= 300;\n' +
+  'value1.v &&= 300;\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+ref > unmutated variable accessing member property 1:
+'let state = {\n' +
+  '  count: 0\n' +
+  '};\n' +
+  'let current_date = new Date();\n' +
+  'console.log(state.count);\n' +
+  'console.log(current_date.toISOString());\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+ref > mutated variable accessing member property 1:
+'console.log(state.count);\n' +
+  'console.log(current_date.toISOString());\n' +
+  'let state = @ref({\n' +
+  '  count: 0\n' +
+  '});\n' +
+  'let current_date = @ref(new Date());\n' +
+  'console.log(state.v.count);\n' +
+  'console.log(current_date.v.toISOString());\n' +
+  'state.v = {\n' +
+  '  count: 0\n' +
+  '};\n' +
+  'current_date.v = new Date();\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+ref > unmutated variable mutating member property 1:
+'let state = {\n  count: 0\n};\nstate.count += 1;\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+ref > mutated variable mutating member property 1:
+'let state = @ref({\n' +
+  '  count: 0\n' +
+  '});\n' +
+  'state.v = {\n' +
+  '  count: 1\n' +
+  '};\n' +
+  'console.log(state.v.count += 1);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+ref > unmutated variable calling 1:
+'let call = () => 1;\ncall();\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+ref > mutated variable calling 1:
+'let call = @ref(() => 1);\ncall.v = () => 2;\ncall.v();\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+ref > prefix 1:
+'let count = @ref(0);\n' +
+  '++count.v;\n' +
+  '--count.v;\n' +
+  'console.log(++count.v, ++count.v);\n' +
+  'function increment() {\n' +
+  '  console.log(++count.v, ++count.v);\n' +
+  '  return ++count.v;\n' +
+  '}\n' +
+  'let decrement = () => --count.v;\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+ref > postfix 1:
+'let count = @ref(0);\n' +
+  'count.v++;\n' +
+  'count.v--;\n' +
+  'console.log(count.v++, count.v++);\n' +
+  'function increment() {\n' +
+  '  console.log(count.v++, count.v++);\n' +
+  '  return count.v++;\n' +
+  '}\n' +
+  'let decrement = () => count.v--;\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+ref > mutated variable calling member property 1:
+'let today = new Date();\n' +
+  'let formatter = @ref(new Intl.DateTimeFormat());\n' +
+  "console.log('Today is ' + formatter.v.format(today));\n" +
+  'formatter.v = null;\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+ref > two variables on one declaration, one mutated 1:
+'let value1 = @ref(), value2;\nvalue1.v = 100;\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+ref > two variables on one declaration, two mutated 1:
+'let value1 = @ref(), value2 = @ref();\nvalue1.v = 100;\nvalue2.v = 200;\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+ref > variable mutated with spread 1:
+'let foo = @ref(), bar = @ref(), baz = @ref();\n' +
+  'let %d0, %d1, %d2, %d3;\n' +
+  '(%d0 = obj, {foo: %d1, b: %d2, buzz, c: car, ...%d3} = %d0, foo.v = %d1, bar.v = %d2, baz.v = %d3, %d0);\n' +
+  'let $obj = @ref();\n' +
+  '@cleanup(obj.subscribe(%value => $obj.v = %value));\n' +
+  'let %d4, %d5, %d6, %d7;\n' +
+  '(%d4 = $obj.v, {foo: %d5, b: %d6, buzz, c: car, ...%d7} = %d4, foo.v = %d5, bar.v = %d6, baz.v = %d7, %d4);\n' +
+  'let %d8, %d9, %d10;\n' +
+  '(%d8 = arr, [%d9, buzz, ...%d10] = %d8, foo.v = %d9, bar.v = %d10, %d8);\n' +
+  'let $arr = @ref();\n' +
+  '@cleanup(arr.subscribe(%value => $arr.v = %value));\n' +
+  'let %d11, %d12, %d13;\n' +
+  '(%d11 = $arr.v.foo, [%d12, buzz, ...%d13] = %d11, foo.v = %d12, bar.v = %d13, %d11);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+prop > unused properties 1:
+'let value1 = @prop(0);\n' +
+  'let value2 = @prop(1, 100);\n' +
+  'let value3 = @prop(2, () => new Date());\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+prop > variables with no mutation 1:
+'let value1 = @prop(0);\n' +
+  'let value2 = @prop(1, 100);\n' +
+  'let value3 = @prop(2, () => new Date());\n' +
+  'let value4 = @prop(3, () => value2.v);\n' +
+  'console.log({\n' +
+  '  value1: value1.v,\n' +
+  '  value2: value2.v,\n' +
+  '  value3: value3.v,\n' +
+  '  value4: value4.v\n' +
+  '});\n' +
+  'function increment() {\n' +
+  '  let value4 = 200;\n' +
+  '  console.log({\n' +
+  '    value1: value1.v,\n' +
+  '    value2: value2.v,\n' +
+  '    value3: value3.v,\n' +
+  '    value4\n' +
+  '  });\n' +
+  '}\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+prop > variables with mutation 1:
+'console.log({\n' +
+  '  value1,\n' +
+  '  value2,\n' +
+  '  value3,\n' +
+  '  value4\n' +
+  '});\n' +
+  'let value1 = @prop(0);\n' +
+  'let value2 = @prop(1, 100);\n' +
+  'let value3 = @prop(2, () => new Date());\n' +
+  'let value4 = @prop(3, () => value2.v);\n' +
+  'value1.v += 1;\n' +
+  'value2.v += 2;\n' +
+  'value3.v += 3;\n' +
+  'value4.v += 4;\n' +
+  'console.log({\n' +
+  '  value1: value1.v,\n' +
+  '  value2: value2.v,\n' +
+  '  value3: value3.v,\n' +
+  '  value4: value4.v\n' +
+  '});\n' +
+  'function increment() {\n' +
+  '  let value4 = 200;\n' +
+  '  value4 += 4;\n' +
+  '  console.log({\n' +
+  '    value1: value1.v,\n' +
+  '    value2: value2.v,\n' +
+  '    value3: value3.v,\n' +
+  '    value4\n' +
+  '  });\n' +
+  '}\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+prop > variable referencing unmutated ref 1:
+'let value1 = 1;\n' +
+  'let value2 = () => {\n' +
+  '};\n' +
+  'let value3 = @prop(0, () => value1);\n' +
+  'let value4 = @prop(1, () => value2);\n' +
+  'let value5 = @prop(2, () => value1 + value2);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+prop > variable referencing mutated ref 1:
+'let value1 = @ref(1);\n' +
+  'let value2 = @ref(new Date());\n' +
+  'let value3 = @prop(0, () => value1.v);\n' +
+  'let value4 = @prop(1, () => value2.v);\n' +
+  'let value5 = @prop(2, () => value1.v + value2.v);\n' +
+  'value1.v = 3;\n' +
+  'value2.v *= 4;\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+prop > handles separate export specifier 1:
+'let _count = @prop(0, 0);\nlet foo = @prop(1, 1);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+prop > throws on exporting default 1:
+'export default is reserved for component definition (2:3)\n' +
+  '1: \n' +
+  '2:       export default 123;\n' +
+  '         ^\n' +
+  '3:     '
+#*#*#*#*#*#*#*#*#*#*#*#
+prop > throws on one variable exported twice 1:
+'tried to export something that has already been exported (4:24)\n' +
+  '2:       let foo = 123;\n' +
+  '3: \n' +
+  '4:       export { foo as bar, foo as baz };\n' +
+  '                              ^\n' +
+  '5:     '
+#*#*#*#*#*#*#*#*#*#*#*#
+computed > unused variables 1:
+'$: value1;\nlet value2 = 100;\nlet value3 = new Date();\nfoo: unrelated = 3;\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+computed > mutated variables 1:
+'$: value1;\n' +
+  'let value2 = @ref(100);\n' +
+  'let value3 = @ref(new Date());\n' +
+  'foo: unrelated = 2;\n' +
+  'value1 = 1;\n' +
+  'value2.v = 2;\n' +
+  'value3.v = 3;\n' +
+  'unrelated = 4;\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+computed > variable referencing unmutated ref 1:
+'let value1 = 100;\n' +
+  'let value2 = new Date();\n' +
+  'let computed1 = value1 * 2;\n' +
+  'let computed2 = value2;\n' +
+  'foo: unrelated = value1 + value2;\n' +
+  'console.log(value1, computed1);\n' +
+  'console.log(value2, computed2);\n' +
+  'console.log(unrelated);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+computed > variable referencing mutated ref 1:
+'let value1 = @ref(100);\n' +
+  'let value2 = @ref(new Date());\n' +
+  'let computed1 = @computed(() => value1.v * 2);\n' +
+  'let computed2 = @computed(() => value2.v);\n' +
+  'foo: unrelated = value1.v + value2.v;\n' +
+  'value1.v = 200;\n' +
+  'value2.v = Date.now();\n' +
+  'console.log(value1.v, computed1.v);\n' +
+  'console.log(value2.v, computed2.v);\n' +
+  'console.log(unrelated);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+computed > mutating variable referencing unmutated ref 1:
+'let value1 = 100;\n' +
+  'let computed = @ref(value1);\n' +
+  'foo: unrelated = value1;\n' +
+  'computed.v = 200;\n' +
+  'unrelated = 300;\n' +
+  'console.log(value1, computed.v);\n' +
+  'console.log(unrelated);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+computed > unmutated variable referencing unmutated ref member property 1:
+'let value1 = {\n' +
+  '  foo: 123\n' +
+  '};\n' +
+  'let computed = value1.foo;\n' +
+  'let unrelated = value1.foo;\n' +
+  'console.log(value1, computed);\n' +
+  'console.log(unrelated);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+computed > mutated variable referencing unmutated ref member property 1:
+'let value1 = {\n' +
+  '  foo: 123\n' +
+  '};\n' +
+  'let computed = @ref(value1.foo);\n' +
+  'foo: unrelated = value1.foo;\n' +
+  'computed.v = 234;\n' +
+  'unrelated = 345;\n' +
+  'console.log(value1, computed.v);\n' +
+  'console.log(unrelated);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+computed > unmutated variable referencing mutated ref member property 1:
+'let value1 = @ref({\n' +
+  '  foo: 123\n' +
+  '});\n' +
+  'let computed = @computed(() => value1.v.foo);\n' +
+  'foo: unrelated = value1.v.foo;\n' +
+  'value1.v = {\n' +
+  '  foo: 234\n' +
+  '};\n' +
+  'console.log(value1.v, computed.v);\n' +
+  'console.log(unrelated);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+computed > mutated variable referencing mutated ref member property 1:
+'let value1 = @ref({\n' +
+  '  foo: 123\n' +
+  '});\n' +
+  'let computed = @computed(() => value1.v.foo);\n' +
+  'foo: unrelated = value1.v.foo;\n' +
+  'value1.v = {\n' +
+  '  foo: 234\n' +
+  '};\n' +
+  'computed.v = 345;\n' +
+  'unrelated = 123;\n' +
+  'console.log(value1.v, computed.v);\n' +
+  'console.log(unrelated);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+computed > object spread from a store 1:
+'let scores = @ref(), unknowns = @ref();\n' +
+  'let $search_params = @ref();\n' +
+  '@cleanup(search_params.subscribe(%value => $search_params.v = %value));\n' +
+  '@effect(() => {\n' +
+  '  let %d0, %d1, %d2;\n' +
+  "  (%d0 = calculate($search_params.v.get('augments')?.split(',') || []), {scores: %d1, unknowns: %d2} = %d0, scores.v = %d1, unknowns.v = %d2, %d0);\n" +
+  '});\n' +
+  '@effect(() => console.log({\n' +
+  '  scores: scores.v,\n' +
+  '  unknowns: unknowns.v\n' +
+  '}));\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+effect > references unmutated refs 1:
+'$: console.log(value1, value2);\n' +
+  'foo: console.log(value1, value2);\n' +
+  '$: {\n' +
+  '  console.log(value1);\n' +
+  '  console.log(value2);\n' +
+  '}\n' +
+  'foo: {\n' +
+  '  console.log(value1);\n' +
+  '  console.log(value2);\n' +
+  '}\n' +
+  'let value1 = {\n' +
+  '  foo: 123\n' +
+  '};\n' +
+  'let value2 = 123;\n' +
+  '$: console.log(value1, value2);\n' +
+  'foo: console.log(value1, value2);\n' +
+  '$: {\n' +
+  '  console.log(value1);\n' +
+  '  console.log(value2);\n' +
+  '}\n' +
+  'foo: {\n' +
+  '  console.log(value1);\n' +
+  '  console.log(value2);\n' +
+  '}\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+effect > references mutated refs 1:
+'$: console.log(value1, value2);\n' +
+  'foo: console.log(value1, value2);\n' +
+  '$: {\n' +
+  '  console.log(value1);\n' +
+  '  console.log(value2);\n' +
+  '}\n' +
+  'let value1 = @ref({\n' +
+  '  foo: 123\n' +
+  '});\n' +
+  'let value2 = @ref(123);\n' +
+  'value1.v = {\n' +
+  '  foo: 234\n' +
+  '};\n' +
+  'value2.v = 543;\n' +
+  '@effect(() => console.log(value1.v, value2.v));\n' +
+  'foo: console.log(value1.v, value2.v);\n' +
+  '@effect(() => {\n' +
+  '  console.log(value1.v);\n' +
+  '  console.log(value2.v);\n' +
+  '});\n' +
+  'foo: {\n' +
+  '  console.log(value1.v);\n' +
+  '  console.log(value2.v);\n' +
+  '}\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+effect > only transform root scope 1:
+'let value = @ref(0);\n' +
+  'value.v += 1;\n' +
+  '@effect(() => console.log(value.v));\n' +
+  'function increment() {\n' +
+  '  $: console.log(value.v);\n' +
+  '}\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+effect > handles direct statements 1:
+'let value = @ref(0);\n' +
+  'let array = @ref([]);\n' +
+  'value.v += 1;\n' +
+  'array.v = [1, 2, 3];\n' +
+  '@effect(() => {\n' +
+  "  if (value.v % 2 === 0) console.log('odd!');\n" +
+  '});\n' +
+  '@effect(() => {\n' +
+  '  for (let item of array.v) console.log(item);\n' +
+  '});\n' +
+  '@effect(() => console.log(array.v));\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > getter 1:
+'let $store = @ref();\n' +
+  '@cleanup(store.subscribe(%value => $store.v = %value));\n' +
+  '$store.v;\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > multiple getter references 1:
+'let $value1 = @ref();\n' +
+  '@cleanup(value1.subscribe(%value => $value1.v = %value));\n' +
+  'function increment() {\n' +
+  '  console.log($value1.v);\n' +
+  '}\n' +
+  'let $value2 = @ref();\n' +
+  '@cleanup(value2.subscribe(%value => $value2.v = %value));\n' +
+  'console.log($value2.v);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > setter 1:
+'store.set(123);\n' +
+  'let $store = @ref();\n' +
+  '@cleanup(store.subscribe(%value => $store.v = %value));\n' +
+  'store.set($store.v || 123);\n' +
+  'store.set($store.v + 1);\n' +
+  'store.set($store.v);\n' +
+  'store.set($store.v * 234);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > logical setter 1:
+'let $store = @ref();\n' +
+  '@cleanup(store.subscribe(%value => $store.v = %value));\n' +
+  'store.set($store.v ?? 123);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > binary setter 1:
+'let $store = @ref();\n' +
+  '@cleanup(store.subscribe(%value => $store.v = %value));\n' +
+  'store.set($store.v + 123);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > multiple setter references 1:
+'let $value1 = @ref();\n' +
+  '@cleanup(value1.subscribe(%value => $value1.v = %value));\n' +
+  'function increment() {\n' +
+  '  value1.set($value1.v + 1);\n' +
+  '}\n' +
+  'value2.set(2);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > subscribing to a ref 1:
+'let value1 = @ref();\n' +
+  'value1.v = get_store();\n' +
+  'let $value1 = @ref();\n' +
+  '@cleanup(value1.v.subscribe(%value => $value1.v = %value));\n' +
+  'console.log($value1.v);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > retrieving member property 1:
+'let $foo = @ref();\n' +
+  '@cleanup(foo.subscribe(%value => $foo.v = %value));\n' +
+  'console.log($foo.v.bar);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > mutating member property 1:
+'let $foo = @ref();\n' +
+  '@cleanup(foo.subscribe(%value => $foo.v = %value));\n' +
+  '$foo.v.bar = 123;\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > throws on lone $ 1:
+'no singular $ reference (2:15)\n' +
+  '1: \n' +
+  '2:       console.log($);\n' +
+  '                     ^\n' +
+  '3:     '
+#*#*#*#*#*#*#*#*#*#*#*#
+store > throws on declaring $ variables 1:
+'$ and $$-prefixed variables are reserved and cannot be declared (2:7)\n' +
+  '1: \n' +
+  "2:       let $foo = 'bar';\n" +
+  '             ^\n' +
+  '3:     '
+#*#*#*#*#*#*#*#*#*#*#*#
+store > only alter single $ 1:
+'let $foo = @ref();\n' +
+  '@cleanup(foo.subscribe(%value => $foo.v = %value));\n' +
+  'console.log($foo.v, $$, $$$);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > no affecting inner scope 1:
+'let $foo = @ref();\n' +
+  '@cleanup(foo.subscribe(%value => $foo.v = %value));\n' +
+  'function log() {\n' +
+  '  let $bar = 123;\n' +
+  '  console.log($bar, $foo.v);\n' +
+  '}\n' +
+  'console.log($foo.v);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > reference store twice 1:
+'let $foo = @ref();\n' +
+  '@cleanup(foo.subscribe(%value => $foo.v = %value));\n' +
+  'console.log($foo.v, $foo.v);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > getter within computed 1:
+'let $searchParams = @ref();\n' +
+  '@cleanup(searchParams.subscribe(%value => $searchParams.v = %value));\n' +
+  'let query = @computed(() => $searchParams.v.query);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+store > lone block statement 1:
+'let $foo = @ref();\n' +
+  '@cleanup(foo.subscribe(%value => $foo.v = %value));\n' +
+  '{\n' +
+  '  $foo.v;\n' +
+  '}\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+bind > const and function exports 1:
+'const magic = 420;\n' +
+  'let open = @prop(0, false);\n' +
+  'function toggle() {\n' +
+  '  open.v = !open.v;\n' +
+  '}\n' +
+  '@bind({\n' +
+  '  magic,\n' +
+  '  toggle\n' +
+  '});\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+bind > separate export specifier 1:
+'const magic = 420;\n' +
+  'let open = @prop(0, false);\n' +
+  'function toggle() {\n' +
+  '  open.v = !open.v;\n' +
+  '}\n' +
+  '@bind({\n' +
+  '  MAGIC_NUMBER: magic,\n' +
+  '  toggle\n' +
+  '});\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+bind > only one specifier for a bind 1:
+'tried to export something that has already been exported (4:12)\n' +
+  '2:       export const magic = 420;\n' +
+  '3: \n' +
+  '4:       export { magic as MAGIC_NUMBER };\n' +
+  '                  ^\n' +
+  '5:     '
+#*#*#*#*#*#*#*#*#*#*#*#
+reserved > throws on declaring $$ 1:
+'$ and $$-prefixed variables are reserved and cannot be declared (2:14)\n' +
+  '1: \n' +
+  "2:       export let $$foo = 'bar';\n" +
+  '                    ^\n' +
+  '3:     '
+#*#*#*#*#*#*#*#*#*#*#*#
+reserved > throws on reassigning $$ 1:
+'tried reassignment to $$-prefixed variables (2:3)\n' +
+  '1: \n' +
+  '2:       $$root = null;\n' +
+  '         ^\n' +
+  '3:     '
+#*#*#*#*#*#*#*#*#*#*#*#
+reserved > can declare $$$ variables 1:
+'let $$$foo = @prop(0, 123);\nlet $$$bar = 333;\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+program finalizer > props test 1:
+'import {prop} from "@intrnl/velvet/internal";\n' +
+  'let count = prop(0, -1);\n' +
+  'let magic = prop(1, 420);\n'
+#*#*#*#*#*#*#*#*#*#*#*#
+program finalizer > hoists imports 1:
+'import {define} from "@intrnl/velvet/internal";\n' +
+  "import foo from 'foo';\n" +
+  "import {bar} from 'bar';\n" +
+  'function setup($$root, $$host) {\n' +
+  '  console.log(bar);\n' +
+  '}\n' +
+  'export default define(null, setup, {}, []);\n'

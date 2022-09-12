@@ -12,6 +12,9 @@
 		"src/"
 	],
 	"main": "./src/index.js",
+	"scripts": {
+		"test": "node --test --expose-internals test/"
+	},
 	"peerDependencies": {
 		"@intrnl/velvet": "workspace:^0.3.0"
 	},
