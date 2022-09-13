@@ -108,11 +108,9 @@ export function promise (marker, pending, resolved, rejected, expression) {
 	effect(() => {
 		let key = curr = {};
 
-		batch(() => {
-			status.value = 1;
-			result.value = null;
-			error.value = null;
-		});
+		status.value = 1;
+		result.value = null;
+		error.value = null;
 
 		try {
 			let promise = Promise.resolve(expression());
@@ -137,10 +135,8 @@ export function promise (marker, pending, resolved, rejected, expression) {
 			);
 		}
 		catch (err) {
-			batch(() => {
-				status.value = 3;
-				error.value = err;
-			});
+			status.value = 3;
+			error.value = err;
 		}
 	});
 
