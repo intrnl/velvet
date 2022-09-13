@@ -1,5 +1,13 @@
 # @intrnl/esbuild-plugin-velvet
 
+## 0.5.1
+
+### Patch Changes
+
+- 972091f: Remove wireit dev dependency
+- Updated dependencies [972091f]
+  - @intrnl/velvet-compiler@0.7.1
+
 ## 0.5.0
 
 ### Minor Changes

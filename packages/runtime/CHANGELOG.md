@@ -1,5 +1,11 @@
 # @intrnl/velvet
 
+## 0.4.1
+
+### Patch Changes
+
+- 972091f: Remove wireit dev dependency
+
 ## 0.4.0
 
 ### Minor Changes
