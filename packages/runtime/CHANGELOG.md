@@ -1,5 +1,11 @@
 # @intrnl/velvet
 
+## 0.4.2
+
+### Patch Changes
+
+- 322560f: Fix missing public entrypoint
+
 ## 0.4.1
 
 ### Patch Changes
