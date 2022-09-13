@@ -2,13 +2,27 @@
 
 export {
 	use_random_tags as useRandomTags,
-
 	event_dispatcher as createEventDispatcher,
 
 	on_mount as onMount,
-	cleanup as onDestroy,
+} from './internal/component.js';
 
-	inject,
-	provide,
+export {
 	ContextEvent,
-} from './internal/index.js';
+	inject,
+	provide
+} from './internal/context.js';
+
+export {
+	Scope,
+	Signal,
+
+	signal,
+	computed,
+	effect,
+	batch,
+	scope,
+	cleanup,
+
+	cleanup as onDestroy,
+} from './internal/signals.js';

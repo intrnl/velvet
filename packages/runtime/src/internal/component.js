@@ -1,5 +1,5 @@
 import { append } from './dom.js';
-import { Ref, ref, scope, cleanup, effect, computed } from './reactivity.js';
+import { Signal, signal, computed, effect, scope, cleanup } from './signals.js';
 import { hyphenate, assign, is_function } from './utils.js';
 import { Symbol, Object } from './globals.js';
 
@@ -27,7 +27,7 @@ export class VelvetComponent extends HTMLElement {
 	$m = false;
 	/** scope instance */
 	$c = scope(true);
-	/** @type {Record<number, Ref>} props */
+	/** @type {Record<number, Signal>} props */
 	$p = {};
 	/** on mount hooks */
 	$h = [];
@@ -42,7 +42,7 @@ export class VelvetComponent extends HTMLElement {
 
 		for (let prop in definition) {
 			let index = definition[prop];
-			props[index] = ref(default_value);
+			props[index] = signal(default_value);
 		}
 	}
 
@@ -70,7 +70,7 @@ export class VelvetComponent extends HTMLElement {
 
 			try {
 				curr_host = host;
-				instance._run(() => setup(root, host));
+				instance.run(() => setup(root, host));
 
 				if (document.adoptedStyleSheets) {
 					if (init_ccss) {
@@ -87,7 +87,7 @@ export class VelvetComponent extends HTMLElement {
 					let ret = hook();
 
 					if (is_function(ret)) {
-						instance._cleanups.push(ret);
+						instance.cleanups.push(ret);
 					}
 				}
 
@@ -103,7 +103,7 @@ export class VelvetComponent extends HTMLElement {
 		let host = this;
 
 		if (host.$m) {
-			host.$c._clear();
+			host.$c.clear();
 			host.shadowRoot.innerHTML = '';
 
 			host.$m = false;
@@ -152,7 +152,7 @@ export function define (tag, setup, definition, styles) {
 			},
 			/** @this VelvetComponent */
 			set (next) {
-				this.$p[index].v = next;
+				this.$p[index].value = next;
 			},
 		});
 	}
@@ -185,14 +185,14 @@ export function css (text) {
 export function prop (index, value) {
 	let state = curr_host.$p[index];
 
-	if (state.v === default_value) {
+	if (state.value === default_value) {
 		// we're trying to mimic default values in a function parameter, where
 		// values are only instantiated when the argument is undefined.
 
 		// we'd wrap non-primitive values like functions and objects, or if we're
 		// referencing an identifier.
 
-		state.v = is_function(value) ? value() : value;
+		state.value = is_function(value) ? value() : value;
 	}
 
 	return state;
@@ -218,8 +218,9 @@ export function bind (obj) {
 }
 
 export function use (node, action, getter) {
+	/** @type {Signal | undefined} */
 	let ref = getter && computed(getter);
-	let instance = action(node, ref && ref.v);
+	let instance = action(node, ref && ref.value);
 
 	if (!instance) {
 		return;
@@ -229,11 +230,11 @@ export function use (node, action, getter) {
 		cleanup(() => instance.destroy());
 	}
 
-	if (ref && ref._effect._dependencies.length > 0 && is_function(instance.update)) {
+	if (ref && ref._dependencies.size > 0 && is_function(instance.update)) {
 		let init = false;
 
 		effect(() => {
-			let next = ref.v;
+			let next = ref.value;
 
 			if (!init) {
 				init = true;

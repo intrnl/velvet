@@ -1,4 +1,4 @@
-import { ref, effect, scope, cleanup, Scope } from './reactivity.js';
+import { signal, effect, scope, cleanup, Scope, Signal } from './signals.js';
 import { replace, remove_parts } from './dom.js';
 import { is } from './utils.js';
 
@@ -23,7 +23,7 @@ export function show (marker, expression) {
 		}
 
 		if (end) {
-			instance._clear();
+			instance.clear();
 			destroy_block(marker, end);
 			end = null;
 		}
@@ -34,7 +34,7 @@ export function show (marker, expression) {
 			return;
 		}
 
-		end = instance._run(() => block(marker));
+		end = instance.run(() => block(marker));
 	});
 }
 
@@ -42,7 +42,7 @@ export function each (marker, block, expression) {
 	// we can't make the scope instances ahead of time, a cleanup hook is required
 	// to clean up these detached scopes.
 
-	/** @type {[instance: Scope, marker: Comment, item: any][]} */
+	/** @type {[instance: Scope, marker: Comment, item: Signal][]} */
 	let parts = [];
 
 	effect(() => {
@@ -55,16 +55,16 @@ export function each (marker, block, expression) {
 		for (; index < items_len; index++) {
 			if (parts[index]) {
 				let item = parts[index][2];
-				item.v = items[index];
+				item.value = items[index];
 			}
 			else {
 				let prev = parts[index - 1];
 				let start = prev ? prev[1] : marker;
 
-				let item = ref(items[index]);
+				let item = signal(items[index]);
 				let instance = scope(true);
 
-				parts[index] = [instance, instance._run(() => block(start, item, index)), item];
+				parts[index] = [instance, instance.run(() => block(start, item, index)), item];
 			}
 		}
 
@@ -75,7 +75,7 @@ export function each (marker, block, expression) {
 			let end = parts[parts_len - 1][1];
 
 			for (; index < parts_len; index++) {
-				parts[index][0]._stop();
+				parts[index][0].clear();
 			}
 
 			destroy_block(start, end);
@@ -86,7 +86,7 @@ export function each (marker, block, expression) {
 	cleanup(() => {
 		for (let part of parts) {
 			let instance = part[0];
-			instance._stop();
+			instance.clear();
 		}
 	});
 }
@@ -97,9 +97,9 @@ export function promise (marker, pending, resolved, rejected, expression) {
 	// 2 = resolved
 	// 3 = rejected
 
-	let status = ref();
-	let result = ref();
-	let error = ref();
+	let status = signal();
+	let result = signal();
+	let error = signal();
 	let curr;
 
 	let resolved_block = resolved && ((marker) => resolved(marker, result));
@@ -108,9 +108,9 @@ export function promise (marker, pending, resolved, rejected, expression) {
 	effect(() => {
 		let key = curr = {};
 
-		status.v = 1;
-		result.v = null;
-		error.v = null;
+		status.value = 1;
+		result.value = null;
+		error.value = null;
 
 		try {
 			let promise = Promise.resolve(expression());
@@ -118,21 +118,21 @@ export function promise (marker, pending, resolved, rejected, expression) {
 			promise.then(
 				(val) => {
 					if (curr === key) {
-						result.v = val;
-						status.v = 2;
+						result.value = val;
+						status.value = 2;
 					}
 				},
 				(err) => {
 					if (curr === key) {
-						status.v = 3;
-						error.v = err;
+						status.value = 3;
+						error.value = err;
 					}
 				},
 			);
 		}
 		catch (err) {
-			error.v = err;
-			status.v = 3;
+			error.value = err;
+			status.value = 3;
 		}
 	});
 
@@ -157,14 +157,14 @@ export function keyed (marker, block, expression) {
 		}
 
 		if (end) {
-			instance._clear();
+			instance.clear();
 			destroy_block(marker, end);
 			end = null;
 		}
 
 		init = true;
 		curr = next;
-		end = instance._run(() => block(marker));
+		end = instance.run(() => block(marker));
 	});
 }
 
@@ -182,9 +182,9 @@ export function dynamic (marker, block, expression) {
 		}
 
 		current = next;
-		instance._clear();
+		instance.clear();
 
-		replace(host, (host = next ? instance._run(() => block(next)) : marker));
+		replace(host, (host = next ? instance.run(() => block(next)) : marker));
 	});
 }
 
