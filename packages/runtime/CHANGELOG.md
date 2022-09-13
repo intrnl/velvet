@@ -1,5 +1,11 @@
 # @intrnl/velvet
 
+## 0.4.3
+
+### Patch Changes
+
+- 1d14c7c: Batch promise states
+
 ## 0.4.2
 
 ### Patch Changes
