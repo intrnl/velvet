@@ -19,7 +19,6 @@ export default defineConfig({
 	input: {
 		'public': './src/public.js',
 		'internal': './src/internal/index.js',
-		'store': './src/store/index.js',
 	},
 	output: [
 		{
