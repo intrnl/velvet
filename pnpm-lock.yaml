@@ -45,13 +45,11 @@ importers:
 
   packages/runtime:
     specifiers:
-      '@sinonjs/fake-timers': ^9.1.2
       esbuild: ^0.15.7
       nanospy: ^0.5.0
       rollup: ^2.79.0
       wireit: ^0.7.1
     devDependencies:
-      '@sinonjs/fake-timers': 9.1.2
       esbuild: 0.15.7
       nanospy: 0.5.0
       rollup: 2.79.0
@@ -377,18 +375,6 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.13.0
-    dev: true
-
-  /@sinonjs/commons/1.8.3:
-    resolution: {integrity: sha512-xkNcLAn/wZaX14RPlwizcKicDk9G3F8m2nU3L7Ukm5zBgTwiT0wsoFAHx9Jq56fJA1z/7uKGtCRu16sOUCLIHQ==}
-    dependencies:
-      type-detect: 4.0.8
-    dev: true
-
-  /@sinonjs/fake-timers/9.1.2:
-    resolution: {integrity: sha512-BPS4ynJW/o92PUR4wgriz2Ud5gpST5vz6GQfMixEDK0Z8ZCUv2M7SkBLykH56T++Xs+8ln9zTGbOvNGIe02/jw==}
-    dependencies:
-      '@sinonjs/commons': 1.8.3
     dev: true
 
   /@types/estree/1.0.0:
@@ -2780,11 +2766,6 @@ packages:
     engines: {node: '>= 0.8.0'}
     dependencies:
       prelude-ls: 1.2.1
-    dev: true
-
-  /type-detect/4.0.8:
-    resolution: {integrity: sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==}
-    engines: {node: '>=4'}
     dev: true
 
   /type-fest/0.13.1:
