@@ -302,7 +302,10 @@ function refresh (signal) {
 	pending.delete(signal);
 
 	signal._pending = 0;
+
+	signal._locked = true;
 	signal._updater();
+	signal._locked = false;
 
 	if (commit_error) {
 		let err = commit_error;
