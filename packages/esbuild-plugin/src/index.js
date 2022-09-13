@@ -2,7 +2,7 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 
 import { build } from 'esbuild';
-import { compile, COMPILER_VERSION, CompilerError } from '@intrnl/velvet-compiler';
+import { compile, VERSION as COMPILER_VERSION, CompilerError } from '@intrnl/velvet-compiler';
 
 import { FSCache, getProjectRoot } from '@intrnl/fs-cache';
 
