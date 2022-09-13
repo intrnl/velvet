@@ -27,24 +27,7 @@
 	},
 	"scripts": {
 		"prepublishOnly": "pnpm run bundle",
-		"bundle": "wireit"
-	},
-	"wireit": {
-		"bundle": {
-			"command": "rollup -c",
-			"clean": "if-file-deleted",
-			"files": [
-				"src/**/*.js",
-				"rollup.config.js"
-			],
-			"output": [
-				"dist/**/*.js",
-				"mangle.json"
-			],
-			"packageLocks": [
-				"pnpm-lock.yaml"
-			]
-		}
+		"bundle": "rm -r dist; rollup -c"
 	},
 	"peerDependencies": {
 		"@intrnl/velvet-compiler": "^0.7.0",
@@ -54,7 +37,6 @@
 		"@intrnl/velvet": "workspace:^0.4.0",
 		"@intrnl/velvet-compiler": "workspace:^0.7.0",
 		"esbuild": "^0.15.7",
-		"rollup": "^2.79.0",
-		"wireit": "^0.7.1"
+		"rollup": "^2.79.0"
 	}
 }

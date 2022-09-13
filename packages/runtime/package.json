@@ -24,30 +24,12 @@
 	},
 	"scripts": {
 		"prepublishOnly": "pnpm run bundle",
-		"bundle": "wireit",
+		"bundle": "rm -r dist; rollup -c",
 		"test": "node --test test/"
-	},
-	"wireit": {
-		"bundle": {
-			"command": "rollup -c",
-			"clean": "if-file-deleted",
-			"files": [
-				"src/**/*.js",
-				"rollup.config.js"
-			],
-			"output": [
-				"dist/**/*.js",
-				"mangle.json"
-			],
-			"packageLocks": [
-				"pnpm-lock.yaml"
-			]
-		}
 	},
 	"devDependencies": {
 		"esbuild": "^0.15.7",
 		"nanospy": "^0.5.0",
-		"rollup": "^2.79.0",
-		"wireit": "^0.7.1"
+		"rollup": "^2.79.0"
 	}
 }
