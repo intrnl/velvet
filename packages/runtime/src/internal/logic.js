@@ -1,4 +1,4 @@
-import { signal, effect, scope, cleanup, Scope, Signal } from './signals.js';
+import { signal, effect, scope, cleanup, Scope, Signal, batch } from './signals.js';
 import { replace, remove_parts } from './dom.js';
 import { is } from './utils.js';
 
@@ -108,9 +108,11 @@ export function promise (marker, pending, resolved, rejected, expression) {
 	effect(() => {
 		let key = curr = {};
 
-		status.value = 1;
-		result.value = null;
-		error.value = null;
+		batch(() => {
+			status.value = 1;
+			result.value = null;
+			error.value = null;
+		});
 
 		try {
 			let promise = Promise.resolve(expression());
@@ -118,26 +120,32 @@ export function promise (marker, pending, resolved, rejected, expression) {
 			promise.then(
 				(val) => {
 					if (curr === key) {
-						result.value = val;
-						status.value = 2;
+						batch(() => {
+							status.value = 2;
+							result.value = val;
+						});
 					}
 				},
 				(err) => {
 					if (curr === key) {
-						status.value = 3;
-						error.value = err;
+						batch(() => {
+							status.value = 3;
+							error.value = err;
+						});
 					}
 				},
 			);
 		}
 		catch (err) {
-			error.value = err;
-			status.value = 3;
+			batch(() => {
+				status.value = 3;
+				error.value = err;
+			});
 		}
 	});
 
 	show(marker, () => {
-		let current = status.v;
+		let current = status.value;
 		return current === 1 ? pending : current === 2 ? resolved_block : current === 3 ? rejected_block : null;
 	});
 }
