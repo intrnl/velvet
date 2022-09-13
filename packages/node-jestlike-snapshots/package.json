@@ -1,4 +1,5 @@
 {
+	"private": true,
 	"type": "module",
 	"name": "@intrnl/node-jestlike-snapshots",
 	"version": "0.1.0",
