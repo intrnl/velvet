@@ -36,7 +36,8 @@
 				"rollup.config.js"
 			],
 			"output": [
-				"dist/**/*.js"
+				"dist/**/*.js",
+				"mangle.json"
 			],
 			"packageLocks": [
 				"pnpm-lock.yaml"
