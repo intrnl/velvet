@@ -17,7 +17,10 @@ importers:
       '@types/estree': ^1.0.0
       acorn: ^8.8.0
       astring: ^1.8.3
+      esbuild: ^0.15.7
       gensync: ^1.0.0-beta.2
+      rollup: ^2.79.0
+      wireit: ^0.7.1
     dependencies:
       acorn: 8.8.0
       astring: 1.8.3
@@ -26,6 +29,9 @@ importers:
       '@intrnl/node-jestlike-snapshots': link:../node-jestlike-snapshots
       '@intrnl/velvet': link:../runtime
       '@types/estree': 1.0.0
+      esbuild: 0.15.7
+      rollup: 2.79.0
+      wireit: 0.7.1
 
   packages/esbuild-plugin:
     specifiers:

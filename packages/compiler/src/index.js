@@ -1,4 +1,4 @@
-export let COMPILER_VERSION = '0.6.0';
+export let VERSION = process.env.COMPILER_VERSION;
 
 export * from './compile.js';
 export * from './parse_template.js';
