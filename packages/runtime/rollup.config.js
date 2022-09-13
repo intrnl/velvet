@@ -19,7 +19,6 @@ let originalMangleCache = mangleCache;
 
 export default defineConfig({
 	input: {
-		'public': './src/public.js',
 		'internal': './src/internal/index.js',
 	},
 	output: [
