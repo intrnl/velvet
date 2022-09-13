@@ -1,5 +1,7 @@
 // Exposed public API
 
+export let VERSION = process.env.RUNTIME_VERSION;
+
 export {
 	use_random_tags as useRandomTags,
 	event_dispatcher as createEventDispatcher,

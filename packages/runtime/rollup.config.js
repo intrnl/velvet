@@ -3,6 +3,8 @@ import * as fs from 'node:fs';
 import { defineConfig } from 'rollup';
 import * as esbuild from 'esbuild';
 
+import pkg from './package.json';
+
 
 let mangleFile = './mangle.json';
 let mangleCache = {};
@@ -40,6 +42,9 @@ export default defineConfig({
 					sourcemap: true,
 					mangleProps: /^_/,
 					mangleCache: mangleCache,
+					define: {
+						'process.env.RUNTIME_VERSION': `"v${pkg.version}"`
+					},
 				});
 
 				mangleCache = result.mangleCache;
