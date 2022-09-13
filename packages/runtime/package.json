@@ -23,7 +23,7 @@
 		}
 	},
 	"scripts": {
-		"prepublishOnly": "rm -r dist; pnpm run bundle",
+		"prepublishOnly": "pnpm run bundle",
 		"bundle": "wireit",
 		"test": "node --test test/"
 	},
