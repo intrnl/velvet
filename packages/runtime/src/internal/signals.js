@@ -1,6 +1,9 @@
 // forked version of @preactjs/signals
 // https://github.com/preactjs/signals
 
+import { is_function } from './utils.js';
+
+
 /** @type {?Scope} */
 let current_scope = null;
 /** @type {?Signal} */
@@ -417,7 +420,7 @@ export function effect (callback) {
 }
 
 export function cleanup (fn) {
-	if (current_scope && typeof fn === 'function') {
+	if (current_scope && is_function(fn)) {
 		current_scope.cleanups.push(fn);
 	}
 }
