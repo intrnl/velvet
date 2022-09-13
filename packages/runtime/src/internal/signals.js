@@ -1,6 +1,7 @@
 // forked version of @preactjs/signals
 // https://github.com/preactjs/signals
 
+import { Set } from './globals.js';
 import { is_function } from './utils.js';
 
 
