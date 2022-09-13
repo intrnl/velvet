@@ -1,0 +1,741 @@
+// node-jestlike-snapshot v1
+
+exports[`bind > const and function exports 1`] = `
+const magic = 420;
+let open = @prop(0, false);
+function toggle() {
+  open.v = !open.v;
+}
+@bind({
+  magic,
+  toggle
+});
+
+`
+
+exports[`bind > only one specifier for a bind 1`] = `
+tried to export something that has already been exported (4:12)
+2:       export const magic = 420;
+3: 
+4:       export { magic as MAGIC_NUMBER };
+                  ^
+5:     
+`
+
+exports[`bind > separate export specifier 1`] = `
+const magic = 420;
+let open = @prop(0, false);
+function toggle() {
+  open.v = !open.v;
+}
+@bind({
+  MAGIC_NUMBER: magic,
+  toggle
+});
+
+`
+
+exports[`computed > mutated variable referencing mutated ref member property 1`] = `
+let value1 = @ref({
+  foo: 123
+});
+let computed = @computed(() => value1.v.foo);
+foo: unrelated = value1.v.foo;
+value1.v = {
+  foo: 234
+};
+computed.v = 345;
+unrelated = 123;
+console.log(value1.v, computed.v);
+console.log(unrelated);
+
+`
+
+exports[`computed > mutated variable referencing unmutated ref member property 1`] = `
+let value1 = {
+  foo: 123
+};
+let computed = @ref(value1.foo);
+foo: unrelated = value1.foo;
+computed.v = 234;
+unrelated = 345;
+console.log(value1, computed.v);
+console.log(unrelated);
+
+`
+
+exports[`computed > mutated variables 1`] = `
+$: value1;
+let value2 = @ref(100);
+let value3 = @ref(new Date());
+foo: unrelated = 2;
+value1 = 1;
+value2.v = 2;
+value3.v = 3;
+unrelated = 4;
+
+`
+
+exports[`computed > mutating variable referencing unmutated ref 1`] = `
+let value1 = 100;
+let computed = @ref(value1);
+foo: unrelated = value1;
+computed.v = 200;
+unrelated = 300;
+console.log(value1, computed.v);
+console.log(unrelated);
+
+`
+
+exports[`computed > object spread from a store 1`] = `
+let scores = @ref(), unknowns = @ref();
+let $search_params = @ref();
+@cleanup(search_params.subscribe(%value => $search_params.v = %value));
+@effect(() => {
+  let %d0, %d1, %d2;
+  (%d0 = calculate($search_params.v.get('augments')?.split(',') || []), {scores: %d1, unknowns: %d2} = %d0, scores.v = %d1, unknowns.v = %d2, %d0);
+});
+@effect(() => console.log({
+  scores: scores.v,
+  unknowns: unknowns.v
+}));
+
+`
+
+exports[`computed > unmutated variable referencing mutated ref member property 1`] = `
+let value1 = @ref({
+  foo: 123
+});
+let computed = @computed(() => value1.v.foo);
+foo: unrelated = value1.v.foo;
+value1.v = {
+  foo: 234
+};
+console.log(value1.v, computed.v);
+console.log(unrelated);
+
+`
+
+exports[`computed > unmutated variable referencing unmutated ref member property 1`] = `
+let value1 = {
+  foo: 123
+};
+let computed = value1.foo;
+let unrelated = value1.foo;
+console.log(value1, computed);
+console.log(unrelated);
+
+`
+
+exports[`computed > unused variables 1`] = `
+$: value1;
+let value2 = 100;
+let value3 = new Date();
+foo: unrelated = 3;
+
+`
+
+exports[`computed > variable referencing mutated ref 1`] = `
+let value1 = @ref(100);
+let value2 = @ref(new Date());
+let computed1 = @computed(() => value1.v * 2);
+let computed2 = @computed(() => value2.v);
+foo: unrelated = value1.v + value2.v;
+value1.v = 200;
+value2.v = Date.now();
+console.log(value1.v, computed1.v);
+console.log(value2.v, computed2.v);
+console.log(unrelated);
+
+`
+
+exports[`computed > variable referencing unmutated ref 1`] = `
+let value1 = 100;
+let value2 = new Date();
+let computed1 = value1 * 2;
+let computed2 = value2;
+foo: unrelated = value1 + value2;
+console.log(value1, computed1);
+console.log(value2, computed2);
+console.log(unrelated);
+
+`
+
+exports[`effect > handles direct statements 1`] = `
+let value = @ref(0);
+let array = @ref([]);
+value.v += 1;
+array.v = [1, 2, 3];
+@effect(() => {
+  if (value.v % 2 === 0) console.log('odd!');
+});
+@effect(() => {
+  for (let item of array.v) console.log(item);
+});
+@effect(() => console.log(array.v));
+
+`
+
+exports[`effect > only transform root scope 1`] = `
+let value = @ref(0);
+value.v += 1;
+@effect(() => console.log(value.v));
+function increment() {
+  $: console.log(value.v);
+}
+
+`
+
+exports[`effect > references mutated refs 1`] = `
+$: console.log(value1, value2);
+foo: console.log(value1, value2);
+$: {
+  console.log(value1);
+  console.log(value2);
+}
+let value1 = @ref({
+  foo: 123
+});
+let value2 = @ref(123);
+value1.v = {
+  foo: 234
+};
+value2.v = 543;
+@effect(() => console.log(value1.v, value2.v));
+foo: console.log(value1.v, value2.v);
+@effect(() => {
+  console.log(value1.v);
+  console.log(value2.v);
+});
+foo: {
+  console.log(value1.v);
+  console.log(value2.v);
+}
+
+`
+
+exports[`effect > references unmutated refs 1`] = `
+$: console.log(value1, value2);
+foo: console.log(value1, value2);
+$: {
+  console.log(value1);
+  console.log(value2);
+}
+foo: {
+  console.log(value1);
+  console.log(value2);
+}
+let value1 = {
+  foo: 123
+};
+let value2 = 123;
+$: console.log(value1, value2);
+foo: console.log(value1, value2);
+$: {
+  console.log(value1);
+  console.log(value2);
+}
+foo: {
+  console.log(value1);
+  console.log(value2);
+}
+
+`
+
+exports[`program finalizer > hoists imports 1`] = `
+import {define} from "@intrnl/velvet/internal";
+import foo from 'foo';
+import {bar} from 'bar';
+function setup($$root, $$host) {
+  console.log(bar);
+}
+export default define(null, setup, {}, []);
+
+`
+
+exports[`program finalizer > props test 1`] = `
+import {prop} from "@intrnl/velvet/internal";
+let count = prop(0, -1);
+let magic = prop(1, 420);
+
+`
+
+exports[`prop > handles separate export specifier 1`] = `
+let _count = @prop(0, 0);
+let foo = @prop(1, 1);
+
+`
+
+exports[`prop > throws on exporting default 1`] = `
+export default is reserved for component definition (2:3)
+1: 
+2:       export default 123;
+         ^
+3:     
+`
+
+exports[`prop > throws on one variable exported twice 1`] = `
+tried to export something that has already been exported (4:24)
+2:       let foo = 123;
+3: 
+4:       export { foo as bar, foo as baz };
+                              ^
+5:     
+`
+
+exports[`prop > unused properties 1`] = `
+let value1 = @prop(0);
+let value2 = @prop(1, 100);
+let value3 = @prop(2, () => new Date());
+
+`
+
+exports[`prop > variable referencing mutated ref 1`] = `
+let value1 = @ref(1);
+let value2 = @ref(new Date());
+let value3 = @prop(0, () => value1.v);
+let value4 = @prop(1, () => value2.v);
+let value5 = @prop(2, () => value1.v + value2.v);
+value1.v = 3;
+value2.v *= 4;
+
+`
+
+exports[`prop > variable referencing unmutated ref 1`] = `
+let value1 = 1;
+let value2 = () => {
+};
+let value3 = @prop(0, () => value1);
+let value4 = @prop(1, () => value2);
+let value5 = @prop(2, () => value1 + value2);
+
+`
+
+exports[`prop > variables with mutation 1`] = `
+console.log({
+  value1,
+  value2,
+  value3,
+  value4
+});
+let value1 = @prop(0);
+let value2 = @prop(1, 100);
+let value3 = @prop(2, () => new Date());
+let value4 = @prop(3, () => value2.v);
+value1.v += 1;
+value2.v += 2;
+value3.v += 3;
+value4.v += 4;
+console.log({
+  value1: value1.v,
+  value2: value2.v,
+  value3: value3.v,
+  value4: value4.v
+});
+function increment() {
+  let value4 = 200;
+  value4 += 4;
+  console.log({
+    value1: value1.v,
+    value2: value2.v,
+    value3: value3.v,
+    value4
+  });
+}
+
+`
+
+exports[`prop > variables with no mutation 1`] = `
+let value1 = @prop(0);
+let value2 = @prop(1, 100);
+let value3 = @prop(2, () => new Date());
+let value4 = @prop(3, () => value2.v);
+console.log({
+  value1: value1.v,
+  value2: value2.v,
+  value3: value3.v,
+  value4: value4.v
+});
+function increment() {
+  let value4 = 200;
+  console.log({
+    value1: value1.v,
+    value2: value2.v,
+    value3: value3.v,
+    value4
+  });
+}
+
+`
+
+exports[`ref > mutated variable accessing member property 1`] = `
+console.log(state.count);
+console.log(current_date.toISOString());
+let state = @ref({
+  count: 0
+});
+let current_date = @ref(new Date());
+console.log(state.v.count);
+console.log(current_date.v.toISOString());
+state.v = {
+  count: 0
+};
+current_date.v = new Date();
+
+`
+
+exports[`ref > mutated variable calling 1`] = `
+let call = @ref(() => 1);
+call.v = () => 2;
+call.v();
+
+`
+
+exports[`ref > mutated variable calling member property 1`] = `
+let today = new Date();
+let formatter = @ref(new Intl.DateTimeFormat());
+console.log('Today is ' + formatter.v.format(today));
+formatter.v = null;
+
+`
+
+exports[`ref > mutated variable mutating member property 1`] = `
+let state = @ref({
+  count: 0
+});
+state.v = {
+  count: 1
+};
+console.log(state.v.count += 1);
+
+`
+
+exports[`ref > mutated variable, referencing unmutated variable 1`] = `
+let value1 = 100;
+let value2 = @ref(value1);
+value2.v = 200;
+console.log(value1, value2.v);
+
+`
+
+exports[`ref > postfix 1`] = `
+let count = @ref(0);
+count.v++;
+count.v--;
+console.log(count.v++, count.v++);
+function increment() {
+  console.log(count.v++, count.v++);
+  return count.v++;
+}
+let decrement = () => count.v--;
+
+`
+
+exports[`ref > prefix 1`] = `
+let count = @ref(0);
+++count.v;
+--count.v;
+console.log(++count.v, ++count.v);
+function increment() {
+  console.log(++count.v, ++count.v);
+  return ++count.v;
+}
+let decrement = () => --count.v;
+
+`
+
+exports[`ref > two variables on one declaration, one mutated 1`] = `
+let value1 = @ref(), value2;
+value1.v = 100;
+
+`
+
+exports[`ref > two variables on one declaration, two mutated 1`] = `
+let value1 = @ref(), value2 = @ref();
+value1.v = 100;
+value2.v = 200;
+
+`
+
+exports[`ref > unmutated variable accessing member property 1`] = `
+let state = {
+  count: 0
+};
+let current_date = new Date();
+console.log(state.count);
+console.log(current_date.toISOString());
+
+`
+
+exports[`ref > unmutated variable calling 1`] = `
+let call = () => 1;
+call();
+
+`
+
+exports[`ref > unmutated variable mutating member property 1`] = `
+let state = {
+  count: 0
+};
+state.count += 1;
+
+`
+
+exports[`ref > unmutated variable referencing mutated variable 1`] = `
+let value1 = @ref(100);
+let value2 = value1.v;
+value1.v = 200;
+console.log(value1.v, value2);
+
+`
+
+exports[`ref > unused variables 1`] = `
+let value1;
+let value2 = 100;
+let value3 = new Date();
+
+`
+
+exports[`ref > variable mutated with spread 1`] = `
+let foo = @ref(), bar = @ref(), baz = @ref();
+let %d0, %d1, %d2, %d3;
+(%d0 = obj, {foo: %d1, b: %d2, buzz, c: car, ...%d3} = %d0, foo.v = %d1, bar.v = %d2, baz.v = %d3, %d0);
+let $obj = @ref();
+@cleanup(obj.subscribe(%value => $obj.v = %value));
+let %d4, %d5, %d6, %d7;
+(%d4 = $obj.v, {foo: %d5, b: %d6, buzz, c: car, ...%d7} = %d4, foo.v = %d5, bar.v = %d6, baz.v = %d7, %d4);
+let %d8, %d9, %d10;
+(%d8 = arr, [%d9, buzz, ...%d10] = %d8, foo.v = %d9, bar.v = %d10, %d8);
+let $arr = @ref();
+@cleanup(arr.subscribe(%value => $arr.v = %value));
+let %d11, %d12, %d13;
+(%d11 = $arr.v.foo, [%d12, buzz, ...%d13] = %d11, foo.v = %d12, bar.v = %d13, %d11);
+
+`
+
+exports[`ref > variable mutation with logical assignment operators 1`] = `
+let value1 = @ref(100);
+value1.v ??= 200;
+value1.v ||= 300;
+value1.v &&= 300;
+
+`
+
+exports[`ref > variables with mutation 1`] = `
+console.log({
+  value1,
+  value2,
+  value3,
+  value4
+});
+let value1 = @ref();
+let value2 = @ref(100);
+let value3 = @ref(new Date());
+let value4 = @ref(value2.v);
+value1.v += 1;
+value2.v += 2;
+value3.v += 3;
+value4.v += 4;
+console.log({
+  value1: value1.v,
+  value2: value2.v,
+  value3: value3.v,
+  value4: value4.v
+});
+function increment() {
+  let value4 = 200;
+  value4 += 4;
+  console.log({
+    value1: value1.v,
+    value2: value2.v,
+    value3: value3.v,
+    value4
+  });
+}
+
+`
+
+exports[`ref > variables with no mutation 1`] = `
+console.log({
+  value1,
+  value2,
+  value3,
+  value4
+});
+let value1;
+let value2 = 100;
+let value3 = new Date();
+let value4 = value2;
+console.log({
+  value1,
+  value2,
+  value3,
+  value4
+});
+function increment() {
+  let value4 = 200;
+  console.log({
+    value1,
+    value2,
+    value3,
+    value4
+  });
+}
+
+`
+
+exports[`reserved > can declare $$$ variables 1`] = `
+let $$$foo = @prop(0, 123);
+let $$$bar = 333;
+
+`
+
+exports[`reserved > throws on declaring $$ 1`] = `
+$ and $$-prefixed variables are reserved and cannot be declared (2:14)
+1: 
+2:       export let $$foo = 'bar';
+                    ^
+3:     
+`
+
+exports[`reserved > throws on reassigning $$ 1`] = `
+tried reassignment to $$-prefixed variables (2:3)
+1: 
+2:       $$root = null;
+         ^
+3:     
+`
+
+exports[`store > binary setter 1`] = `
+let $store = @ref();
+@cleanup(store.subscribe(%value => $store.v = %value));
+store.set($store.v + 123);
+
+`
+
+exports[`store > getter 1`] = `
+let $store = @ref();
+@cleanup(store.subscribe(%value => $store.v = %value));
+$store.v;
+
+`
+
+exports[`store > getter within computed 1`] = `
+let $searchParams = @ref();
+@cleanup(searchParams.subscribe(%value => $searchParams.v = %value));
+let query = @computed(() => $searchParams.v.query);
+
+`
+
+exports[`store > logical setter 1`] = `
+let $store = @ref();
+@cleanup(store.subscribe(%value => $store.v = %value));
+store.set($store.v ?? 123);
+
+`
+
+exports[`store > lone block statement 1`] = `
+let $foo = @ref();
+@cleanup(foo.subscribe(%value => $foo.v = %value));
+{
+  $foo.v;
+}
+
+`
+
+exports[`store > multiple getter references 1`] = `
+let $value1 = @ref();
+@cleanup(value1.subscribe(%value => $value1.v = %value));
+function increment() {
+  console.log($value1.v);
+}
+let $value2 = @ref();
+@cleanup(value2.subscribe(%value => $value2.v = %value));
+console.log($value2.v);
+
+`
+
+exports[`store > multiple setter references 1`] = `
+let $value1 = @ref();
+@cleanup(value1.subscribe(%value => $value1.v = %value));
+function increment() {
+  value1.set($value1.v + 1);
+}
+value2.set(2);
+
+`
+
+exports[`store > mutating member property 1`] = `
+let $foo = @ref();
+@cleanup(foo.subscribe(%value => $foo.v = %value));
+$foo.v.bar = 123;
+
+`
+
+exports[`store > no affecting inner scope 1`] = `
+let $foo = @ref();
+@cleanup(foo.subscribe(%value => $foo.v = %value));
+function log() {
+  let $bar = 123;
+  console.log($bar, $foo.v);
+}
+console.log($foo.v);
+
+`
+
+exports[`store > only alter single $ 1`] = `
+let $foo = @ref();
+@cleanup(foo.subscribe(%value => $foo.v = %value));
+console.log($foo.v, $$, $$$);
+
+`
+
+exports[`store > reference store twice 1`] = `
+let $foo = @ref();
+@cleanup(foo.subscribe(%value => $foo.v = %value));
+console.log($foo.v, $foo.v);
+
+`
+
+exports[`store > retrieving member property 1`] = `
+let $foo = @ref();
+@cleanup(foo.subscribe(%value => $foo.v = %value));
+console.log($foo.v.bar);
+
+`
+
+exports[`store > setter 1`] = `
+store.set(123);
+let $store = @ref();
+@cleanup(store.subscribe(%value => $store.v = %value));
+store.set($store.v || 123);
+store.set($store.v + 1);
+store.set($store.v);
+store.set($store.v * 234);
+
+`
+
+exports[`store > subscribing to a ref 1`] = `
+let value1 = @ref();
+value1.v = get_store();
+let $value1 = @ref();
+@cleanup(value1.v.subscribe(%value => $value1.v = %value));
+console.log($value1.v);
+
+`
+
+exports[`store > throws on declaring $ variables 1`] = `
+$ and $$-prefixed variables are reserved and cannot be declared (2:7)
+1: 
+2:       let $foo = 'bar';
+             ^
+3:     
+`
+
+exports[`store > throws on lone $ 1`] = `
+no singular $ reference (2:15)
+1: 
+2:       console.log($);
+                     ^
+3:     
+`

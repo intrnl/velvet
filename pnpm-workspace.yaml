@@ -3,3 +3,4 @@ packages:
   - packages/runtime
   - packages/esbuild-plugin
   - packages/vscode-extension
+  - packages/node-jestlike-snapshots

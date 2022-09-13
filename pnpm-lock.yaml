@@ -10,6 +10,7 @@ importers:
 
   packages/compiler:
     specifiers:
+      '@intrnl/node-jestlike-snapshots': workspace:^0.1.0
       '@intrnl/velvet': workspace:^0.3.1
       '@types/estree': ^1.0.0
       acorn: ^8.8.0
@@ -20,6 +21,7 @@ importers:
       astring: 1.8.3
       gensync: 1.0.0-beta.2
     devDependencies:
+      '@intrnl/node-jestlike-snapshots': link:../node-jestlike-snapshots
       '@intrnl/velvet': link:../runtime
       '@types/estree': 1.0.0
 
@@ -35,6 +37,9 @@ importers:
       '@intrnl/velvet': link:../runtime
       '@intrnl/velvet-compiler': link:../compiler
       esbuild: 0.15.7
+
+  packages/node-jestlike-snapshots:
+    specifiers: {}
 
   packages/runtime:
     specifiers:

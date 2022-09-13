@@ -1,14 +1,15 @@
 import { describe, it } from 'node:test';
 import * as assert from 'node:assert/strict';
 
-import { assertSnapshot } from './utils.js';
+import { assertSnapshot } from '@intrnl/node-jestlike-snapshots';
 
 import { compileSync, componentize } from '../src/compile.js';
 
 
 describe('module context', () => {
-	it('allow top level await', async () => {
+	it('allow top level await', () => {
 		let source = `
+		foo
 			<script context=module>
 				let number = await Promise.resolve(420);
 			</script>
@@ -17,12 +18,12 @@ describe('module context', () => {
 		`;
 
 		let result = compileSync(source);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 });
 
 describe('script context', () => {
-	it('throws on await', async () => {
+	it('throws on await', () => {
 		let source = `
 			<script>
 				let number = await Promise.resolve(123);
@@ -36,23 +37,23 @@ describe('script context', () => {
 			assert.fail();
 		}
 		catch (error) {
-			await assertSnapshot(error.toString());
+			assertSnapshot(error.toString());
 		}
 	});
 });
 
 describe('options element', () => {
-	it('allows for changing element name', async () => {
+	it('allows for changing element name', () => {
 		let source = `
 			<v:options name='my-greeter' />
 			<div>hello world!</div>
 		`;
 
 		let result = compileSync(source);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 
-	it('throws on non root-level usage', async () => {
+	it('throws on non root-level usage', () => {
 		let source = `
 			<div><v:options name='foo' /></div>
 		`;
@@ -62,13 +63,13 @@ describe('options element', () => {
 			assert.fail();
 		}
 		catch (error) {
-			await assertSnapshot(error.toString());
+			assertSnapshot(error.toString());
 		}
 	});
 });
 
 describe('props', () => {
-	it('throws on two variable exported to one name', async () => {
+	it('throws on two variable exported to one name', () => {
 		let source = `
 			<script>
 			let foo = 1;
@@ -83,11 +84,11 @@ describe('props', () => {
 			assert.fail();
 		}
 		catch (error) {
-			await assertSnapshot(error.toString());
+			assertSnapshot(error.toString());
 		}
 	});
 
-	it('exporting binding and mutable', async () => {
+	it('exporting binding and mutable', () => {
 		let template = `
 			<script>
 				export function greet () {
@@ -102,12 +103,12 @@ describe('props', () => {
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 });
 
 describe('attribute', () => {
-	it('binding checkbox group', async () => {
+	it('binding checkbox group', () => {
 		let template = `
 			<script>
 				let selected = ['Apple'];
@@ -118,10 +119,10 @@ describe('attribute', () => {
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 
-	it('binding checkbox group nested', async () => {
+	it('binding checkbox group nested', () => {
 		let template = `
 			<script>
 				let state = {
@@ -138,10 +139,10 @@ describe('attribute', () => {
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 
-	it('throws on duplicate attributes', async () => {
+	it('throws on duplicate attributes', () => {
 		let template = `
 			<hello-world foo={123} foo={234}></hello-world>
 		`;
@@ -151,22 +152,22 @@ describe('attribute', () => {
 			assert.fail();
 		}
 		catch (error) {
-			await assertSnapshot(error.toString());
+			assertSnapshot(error.toString());
 		}
 	});
 
-	it('allows duplicate #use attributes', async () => {
+	it('allows duplicate #use attributes', () => {
 		let template = `
 			<time #use={relformatter} #use={[relformatter, { locale: 'en' }]}></time>
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 });
 
 describe('store', () => {
-	it('throws on lone $', async () => {
+	it('throws on lone $', () => {
 		let source = `
 			<script>
 			console.log($);
@@ -178,11 +179,11 @@ describe('store', () => {
 			assert.fail();
 		}
 		catch (error) {
-			await assertSnapshot(error.toString());
+			assertSnapshot(error.toString());
 		}
 	});
 
-	it('subscription on script and root', async () => {
+	it('subscription on script and root', () => {
 		let template = `
 			<script>
 			  console.log($foo);
@@ -192,10 +193,10 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 
-	it('subscription on root and conditional', async () => {
+	it('subscription on root and conditional', () => {
 		let template = `
 			{$foo}
 			{#if foo}
@@ -204,10 +205,10 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 
-	it('subscription on conditional', async () => {
+	it('subscription on conditional', () => {
 		let template = `
 			{#if foo}
 				{$foo}
@@ -215,10 +216,10 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 
-	it('subscription on conditional with log', async () => {
+	it('subscription on conditional with log', () => {
 		let template = `
 			{#if foo}
 				{$foo}
@@ -227,10 +228,10 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 
-	it('subscription on conditional and alternate', async () => {
+	it('subscription on conditional and alternate', () => {
 		let template = `
 			{#if foo}
 				{$foo}
@@ -240,10 +241,10 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 
-	it('subscription on nested conditional', async () => {
+	it('subscription on nested conditional', () => {
 		let template = `
 			{#if foo}
 			  {$foo}
@@ -254,10 +255,10 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 
-	it('subscription on await resolve', async () => {
+	it('subscription on await resolve', () => {
 		let template = `
 			{#await promise then result}
 				{$result}
@@ -265,10 +266,10 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 
-	it('subscription on await pending and resolve', async () => {
+	it('subscription on await pending and resolve', () => {
 		let template = `
 			{#await promise}
 				{$foo}
@@ -278,10 +279,10 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 
-	it('subscription on root and await pending and resolve', async () => {
+	it('subscription on root and await pending and resolve', () => {
 		let template = `
 			{#await promise}
 				{$foo}
@@ -293,10 +294,10 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 
-	it('subscription on conditional with let', async () => {
+	it('subscription on conditional with let', () => {
 		let template = `
 			{#if show_favorite}
 				{@let is_favorited = $favorite.favorited}
@@ -305,12 +306,12 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 });
 
 describe('element', () => {
-	it('throws on improper closing tag', async () => {
+	it('throws on improper closing tag', () => {
 		let template = `<legend>Title</button>`;
 
 		try {
@@ -318,13 +319,13 @@ describe('element', () => {
 			assert.fail();
 		}
 		catch (error) {
-			await assertSnapshot(error.toString());
+			assertSnapshot(error.toString());
 		}
 	});
 });
 
 describe('let expression', () => {
-	it('unmutated referencing unmutated', async () => {
+	it('unmutated referencing unmutated', () => {
 		let template = `
 			<script>
 				let count = 0;
@@ -337,10 +338,10 @@ describe('let expression', () => {
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 
-	it('unmutated referencing mutated', async () => {
+	it('unmutated referencing mutated', () => {
 		let template = `
 			<script>
 				let count = 0;
@@ -354,10 +355,10 @@ describe('let expression', () => {
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 
-	it('mutated referencing unmutated', async () => {
+	it('mutated referencing unmutated', () => {
 		let template = `
 			<script>
 				let count = 0;
@@ -370,10 +371,10 @@ describe('let expression', () => {
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 
-	it('mutated referencing mutated', async () => {
+	it('mutated referencing mutated', () => {
 		let template = `
 			<script>
 				let count = 0;
@@ -387,10 +388,10 @@ describe('let expression', () => {
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 
-	it('referencing for each', async () => {
+	it('referencing for each', () => {
 		let template = `
 			{#each Object.keys(data) as key}
 				{@let item = data[key]}
@@ -401,12 +402,12 @@ describe('let expression', () => {
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 });
 
 describe('conditional logic', () => {
-	it('consequent', async () => {
+	it('consequent', () => {
 		let template = `
 			{#if foo}
 				<div>foo</div>
@@ -414,10 +415,10 @@ describe('conditional logic', () => {
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 
-	it('consequent and alternate', async () => {
+	it('consequent and alternate', () => {
 		let template = `
 			{#if foo}
 				<div>foo</div>
@@ -427,22 +428,22 @@ describe('conditional logic', () => {
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 });
 
 describe('style', () => {
-	it('inline', async () => {
+	it('inline', () => {
 		let template = `
 			<style>.foo { color: red; }</style>
 			<div class="foo">Hello</div>
 		`;
 
 		let result = compileSync(template);
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 
-	it('imports', async () => {
+	it('imports', () => {
 		let template = `
 			<style>.foo { color: red; }</style>
 			<div class="foo">Hello</div>
@@ -457,7 +458,7 @@ describe('style', () => {
 			},
 		});
 
-		await assertSnapshot(result);
+		assertSnapshot(result);
 	});
 });
 

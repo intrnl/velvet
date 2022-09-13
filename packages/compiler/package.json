@@ -25,6 +25,7 @@
 		"gensync": "^1.0.0-beta.2"
 	},
 	"devDependencies": {
+		"@intrnl/node-jestlike-snapshots": "workspace:^0.1.0",
 		"@intrnl/velvet": "workspace:^0.3.1",
 		"@types/estree": "^1.0.0"
 	}
