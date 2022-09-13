@@ -332,7 +332,7 @@ export function transform_script (program, source) {
 						: prop
 							? t.call_expression(t.identifier('@prop'), [t.literal(prop_idx), initializer])
 							: is_mutable
-								? t.call_expression(t.identifier('@ref'), [init])
+								? t.call_expression(t.identifier('@signal'), [init])
 								: init;
 
 					node.init = expression;
@@ -355,7 +355,7 @@ export function transform_script (program, source) {
 				let ident = own_scope && own_scope.declarations.get(name);
 
 				if (ident && ident.velvet?.ref) {
-					let expression = t.member_expression(node, t.identifier('v'));
+					let expression = t.member_expression(node, t.identifier('value'));
 
 					if (parent.type === 'Property') {
 						parent.shorthand = false;
@@ -866,7 +866,7 @@ function _push_deferred_stores (deferred_stores) {
 		let subscriber = t.arrow_function_expression(
 			[t.identifier('%value')],
 			t.assignment_expression(
-				t.member_expression(ident, t.identifier('v')),
+				t.member_expression(ident, t.identifier('value')),
 				t.identifier('%value'),
 				'=',
 			),
