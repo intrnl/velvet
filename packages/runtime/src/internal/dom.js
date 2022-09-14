@@ -15,12 +15,12 @@ export function clone (template) {
 export function traverse (node, indices) {
 	let ref = node;
 
-	let i;
-	let il;
+	let i = 0;
+	let il = indices.length;
 	let x;
 	let j;
 
-	for (i = 0, il = indices.length; i < il; i++) {
+	for (; i < il; i++) {
 		x = indices[i];
 		ref = ref.firstChild;
 
