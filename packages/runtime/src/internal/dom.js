@@ -1,14 +1,7 @@
-let html_cache = Object.create(null);
-
 export function html (fragment) {
-	if (fragment in html_cache) {
-		return html_cache[fragment];
-	}
-
 	let node = document.createElement('template');
 	node.innerHTML = fragment;
 
-	html_cache[fragment] = node;
 	return node;
 }
 
