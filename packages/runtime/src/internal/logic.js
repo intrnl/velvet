@@ -1,4 +1,4 @@
-import { signal, effect, scope, cleanup, Scope, Signal, batch } from './signals.js';
+import { batch, signal, effect, scope, cleanup, Scope, Signal } from './signals.js';
 import { replace, remove_parts } from './dom.js';
 import { is } from './utils.js';
 
@@ -190,6 +190,18 @@ export function dynamic (marker, block, expression) {
 
 		replace(host, (host = next ? instance.run(() => block(next)) : marker));
 	});
+}
+
+export function subscribe (store) {
+	// If we're dealing with signals, we don't really need to do anything here.
+	if (store instanceof Signal) {
+		return store;
+	}
+
+	let ref = signal();
+	cleanup(store.subscribe((value) => ref.value = value));
+
+	return ref;
 }
 
 

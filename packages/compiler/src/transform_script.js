@@ -311,7 +311,7 @@ export function transform_script (program, source) {
 				// - __ref(value)
 				// - __ref(primitive)
 
-				if (is_mutable || is_computed || prop) {
+				if ((is_mutable || is_computed || prop) && !identifier.velvet?.ref) {
 					let prop_idx;
 
 					if (prop) {
@@ -860,25 +860,13 @@ function _push_deferred_stores (deferred_stores) {
 		let actual = name.slice(1);
 
 		let decl = t.variable_declaration('let', [
-			t.variable_declarator(ident),
+			t.variable_declarator(
+				ident,
+				t.call_expression(t.identifier('@subscribe'), [t.identifier(actual)]),
+			),
 		]);
 
-		let subscriber = t.arrow_function_expression(
-			[t.identifier('%value')],
-			t.assignment_expression(
-				t.member_expression(ident, t.identifier('value')),
-				t.identifier('%value'),
-				'=',
-			),
-		);
-
-		let expr = t.expression_statement(
-			t.call_expression(t.identifier('@cleanup'), [
-				t.call_expression(t.member_expression_from([actual, 'subscribe']), [subscriber]),
-			]),
-		);
-
-		ident.velvet = { mutable: true, transformed: true };
+		ident.velvet = { mutable: true, transformed: true, ref: true };
 
 		let container = scope.node;
 		let curr = reference;
@@ -889,7 +877,7 @@ function _push_deferred_stores (deferred_stores) {
 			if (parent === container) {
 				let body = container.body;
 				let index = body.indexOf(curr);
-				body.splice(index, 0, decl, expr);
+				body.splice(index, 0, decl);
 				break;
 			}
 
