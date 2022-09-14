@@ -252,7 +252,7 @@ function sweep (set) {
 
 			if (--signal._pending === 0) {
 				if (signal._locked) {
-					throw new Error('Cycle detected');
+					continue;
 				}
 
 				signal._dirty = false;

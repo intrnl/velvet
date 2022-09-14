@@ -71,6 +71,21 @@ describe('effect', () => {
 		count.value = 6;
 		assertSpy(fn, 3);
 	});
+
+	it('ignores cycle dependency', () => {
+		let count = signal(1);
+
+		let unsubscribe = effect(() => {
+			count.value += 1;
+		});
+
+		assert.equal(count.value, 2);
+
+		count.value = 6;
+		assert.equal(count.value, 7);
+
+		unsubscribe();
+	});
 });
 
 describe('batch', () => {
