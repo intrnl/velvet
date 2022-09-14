@@ -1,5 +1,13 @@
 # @intrnl/velvet
 
+## 0.4.5
+
+### Patch Changes
+
+- 9c07e0e: Minor code optimization
+- d3758d6: Remove HTML template cache
+- 259dfd7: Store subscription optimization for Signals
+
 ## 0.4.4
 
 ### Patch Changes

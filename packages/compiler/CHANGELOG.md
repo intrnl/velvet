@@ -1,5 +1,15 @@
 # @intrnl/velvet-compiler
 
+## 0.7.2
+
+### Patch Changes
+
+- 259dfd7: Store subscription optimization for Signals
+- Updated dependencies [9c07e0e]
+- Updated dependencies [d3758d6]
+- Updated dependencies [259dfd7]
+  - @intrnl/velvet@0.4.5
+
 ## 0.7.1
 
 ### Patch Changes
