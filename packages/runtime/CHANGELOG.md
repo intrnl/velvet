@@ -1,5 +1,13 @@
 # @intrnl/velvet
 
+## 0.4.4
+
+### Patch Changes
+
+- 31da6c2: Lock signal during eager activation
+- 492b5a0: Don't call batch on top-level promise effect
+- 39f645e: Ignore cyclic dependency instead of throwing
+
 ## 0.4.3
 
 ### Patch Changes
