@@ -116,7 +116,13 @@ export class Signal {
 	 * @returns {T}
 	 */
 	peek () {
-		return this._value;
+		let _this = this;
+
+		if (!_this._active) {
+			activate(_this);
+		}
+
+		return _this._value;
 	}
 
 	/**
