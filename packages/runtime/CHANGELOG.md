@@ -1,5 +1,12 @@
 # @intrnl/velvet
 
+## 0.4.6
+
+### Patch Changes
+
+- 32a72af: Refresh stale value if using peek
+- 842b475: Update Signals implementation to match upstream
+
 ## 0.4.5
 
 ### Patch Changes
