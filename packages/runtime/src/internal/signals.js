@@ -13,10 +13,9 @@ let current_signal = null;
 /** @type {Set<Signal>} */
 let old_deps = new Set();
 
-/** @type {Set<Signal>} */
-let pending = new Set();
-/** @type {number} */
-let batch_pending = 0;
+/** @type {?Set<Signal>} */
+let batch_pending = null;
+
 /** @type {Array<Signal>} */
 let temp_pending = [];
 
@@ -162,24 +161,13 @@ export class Signal {
 		if (_this._value !== next) {
 			_this._value = next;
 
-			let first = pending.size === 0;
-			pending.add(_this);
+			batch(() => {
+				batch_pending.add(_this);
 
-			if (_this._pending === 0) {
-				mark(_this);
-			}
-
-			if (first && batch_pending === 0) {
-				sweep(pending);
-				pending.clear();
-
-				if (commit_error) {
-					let err = commit_error;
-					commit_error = null;
-
-					throw err;
+				if (this._pending === 0) {
+					mark(_this);
 				}
-			}
+			});
 		}
 	}
 
@@ -299,7 +287,9 @@ function unsubscribe (signal, from) {
  * @param {Signal} signal
  */
 function refresh (signal) {
-	pending.delete(signal);
+	if (batch_pending) {
+		batch_pending.delete(signal);
+	}
 
 	signal._pending = 0;
 
@@ -386,7 +376,12 @@ export function computed (compute) {
  * @returns {T}
  */
 export function batch (fn) {
-	batch_pending++;
+	if (batch_pending !== null) {
+		return fn();
+	}
+
+	let pending = new Set();
+	batch_pending = pending;
 
 	try {
 		return fn();
@@ -399,9 +394,15 @@ export function batch (fn) {
 			pending.add(item);
 		}
 
-		if (--batch_pending === 0) {
-			sweep(pending);
-			pending.clear();
+		batch_pending = null;
+
+		sweep(pending);
+
+		if (commit_error) {
+			let err = commit_error;
+			commit_error = null;
+
+			throw err;
 		}
 	}
 }
