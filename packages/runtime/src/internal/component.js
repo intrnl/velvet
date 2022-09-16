@@ -1,5 +1,5 @@
 import { append } from './dom.js';
-import { Signal, signal, computed, effect, scope, cleanup } from './signals.js';
+import { Signal, Computed, signal, computed, effect, scope, cleanup } from './signals.js';
 import { hyphenate, assign, is_function } from './utils.js';
 import { Symbol, Object } from './globals.js';
 
@@ -218,7 +218,7 @@ export function bind (obj) {
 }
 
 export function use (node, action, getter) {
-	/** @type {Signal | undefined} */
+	/** @type {Computed | undefined} */
 	let ref = getter && computed(getter);
 	let instance = action(node, ref && ref.value);
 
@@ -230,7 +230,7 @@ export function use (node, action, getter) {
 		cleanup(() => instance.destroy());
 	}
 
-	if (ref && ref._dependencies.size > 0 && is_function(instance.update)) {
+	if (ref && ref._sources && is_function(instance.update)) {
 		let init = false;
 
 		effect(() => {

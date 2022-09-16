@@ -12,7 +12,7 @@ export {
 export {
 	ContextEvent,
 	inject,
-	provide
+	provide,
 } from './internal/context.js';
 
 export {

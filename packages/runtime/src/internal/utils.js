@@ -13,6 +13,10 @@ export function hyphenate (str) {
 export let is = /*@__PURE__*/ Object.is;
 export let assign = /*@__PURE__*/ Object.assign;
 
+/**
+ * @param {any} x
+ * @returns {x is (...args: any[]) => any}
+ */
 export let is_function = (x) => typeof x === 'function';
 
 export function to_number (value) {

@@ -1,136 +1,313 @@
-// forked version of @preactjs/signals
-// https://github.com/preactjs/signals
+// Code taken mostly as-is from @preact/signals-core, with modifications:
+// - Silently ignore cycles, it should not throw.
+// - Add .set(value) method for use with stores.
+// - Allow overriding values to computed signals.
+// - Addition of scopes for managing effects.
+// - Not using TypeScript, only JSDoc typings.
 
-import { Set } from './globals.js';
+// Based off commit 4a6288a9a974cb8a2104d51639796bf1556ecb40
+
 import { is_function } from './utils.js';
 
+/**
+ * @typedef {object} Node
+ * @property {number} _version
+ * @property {number} _flags
+ * @property {Node | undefined} _rollback
+ *
+ * @property {Signal} _source
+ * @property {Node | undefined} _prev_source
+ * @property {Node | undefined} _next_source
+ *
+ * @property {Computed | Effect} _target
+ * @property {Node | undefined} _prev_target
+ * @property {Node | undefined} _next_target
+ */
 
-/** @type {?Scope} */
-let current_scope = null;
-/** @type {?Signal} */
-let current_signal = null;
+let undefined;
 
-/** @type {Set<Signal>} */
-let old_deps = new Set();
+let RUNNING = 1 << 0;
+let STALE = 1 << 1;
+let NOTIFIED = 1 << 2;
+let HAS_ERROR = 1 << 3;
+let SHOULD_SUBSCRIBE = 1 << 4;
+let SUBSCRIBED = 1 << 5;
 
-/** @type {?Set<Signal>} */
-let batch_pending = null;
+/** @type {Scope | undefined} Currently evaluated scope */
+let eval_scope;
 
-/** @type {Array<Signal>} */
-let temp_pending = [];
+/** @type {Effect | Computed | undefined} Currently evaluted effect or computed */
+let eval_context;
 
-/** @type {?Error} */
-let commit_error = null;
+/** @type {Effect | undefined} Effects collected into a batch */
+let batched_effect;
+/** Current depth of batching */
+let batch_depth = 0;
+/** How many times we've been iterating through batched updates */
+let batch_iteration = 0;
 
-export class Scope {
-	/** @type {?Scope} */
-	parent = null;
+/** Signal global version number as an optimization */
+let global_version = 0;
 
-	/** @type {Scope[]} */
-	scopes = [];
-	/** @type {Array<() => void>} */
-	cleanups = [];
+function start_batch () {
+	batch_depth++;
+}
 
-	/**
-	 * @param {boolean} [detached]
-	 */
-	constructor (detached) {
-		let _this = this;
+function end_batch () {
+	if (batch_depth > 1) {
+		batch_depth--;
+		return;
+	}
 
-		if (!detached && current_scope) {
-			current_scope.scopes.push(_this);
-			_this.parent = current_scope;
+	let error;
+	let has_error = false;
+
+	while (batched_effect) {
+		let effect = batched_effect;
+		batched_effect = undefined;
+		batch_iteration++;
+
+		while (effect) {
+			let next = effect._next;
+			effect._next = undefined;
+			effect._flags &= ~NOTIFIED;
+
+			try {
+				effect._callback();
+			}
+			catch (err) {
+				if (!has_error) {
+					error = err;
+					has_error = true;
+				}
+			}
+
+			effect = next;
 		}
 	}
 
-	/**
-	 * Run callback inside scope
-	 * @template T
-	 * @param {() => T} fn
-	 * @returns {T}
-	 */
-	run (fn) {
-		let prev_scope = current_scope;
+	batch_iteration = 0;
+	batch_depth--;
 
-		try {
-			current_scope = this;
-			return fn();
-		}
-		finally {
-			current_scope = prev_scope;
-		}
-	}
-
-	/**
-	 * Clear scope
-	 */
-	clear () {
-		let _this = this;
-
-		let cleanups = _this.cleanups;
-		let scopes = _this.scopes;
-
-		for (let cleanup of cleanups) {
-			cleanup();
-		}
-
-		for (let scope of scopes) {
-			scope.parent = null;
-			scope.clear();
-		}
-
-		cleanups.length = 0;
-		scopes.length = 0;
+	if (has_error) {
+		throw error;
 	}
 }
 
-/**
- * @template T
- */
+function get_value (signal) {
+	/** @type {Node | undefined} */
+	let node;
+
+	if (eval_context) {
+		node = signal._node;
+
+		if (!node || node._target !== eval_context) {
+			// `signal` is a new dependency. Create a new node dependency node, move it
+			//  to the front of the current context's dependency list.
+			node = {
+				_version: 0,
+				_flags: 0,
+				_rollback: undefined,
+
+				_source: signal,
+				_next_source: eval_context._sources,
+				_prev_source: undefined,
+
+				_target: eval_context,
+				_next_target: undefined,
+				_prev_target: undefined,
+			};
+
+			eval_context._sources = node;
+			signal._node = node;
+
+			// Subscribe to change notifications from this dependency if we're in an effect
+			// OR evaluating a computed signal that in turn has subscribers.
+			if (eval_context._flags & SHOULD_SUBSCRIBE) {
+				signal._subscribe(node);
+			}
+		}
+		else if (node._flags & STALE) {
+			// `signal` is an existing dependency from a previous evaluation. Reuse the dependency
+			// node and move it to the front of the evaluation context's dependency list.
+			node._flags &= ~STALE;
+
+			let head = eval_context._sources;
+			let prev = node._prev_source;
+			let next = node._next_source;
+
+			if (node !== head) {
+				if (prev) {
+					prev._next_source = next;
+				}
+				if (next) {
+					next._prev_source = prev;
+				}
+				if (head) {
+					head._prev_source = node;
+				}
+
+				node._prev_source = undefined;
+				node._next_source = head;
+
+				eval_context._sources = node;
+			}
+
+			// We can assume that the currently evaluated effect / computed signal is already
+			// subscribed to change notifications from `signal` if needed.
+		}
+		else {
+			// `signal` is an existing dependency from current evaluation.
+			node = undefined;
+		}
+	}
+
+	try {
+		return signal.peek();
+	}
+	finally {
+		if (node) {
+			node._version = signal._version;
+		}
+	}
+}
+
+function get_computed (computed) {
+	computed._flags &= ~RUNNING;
+
+	if (computed._flags & HAS_ERROR) {
+		throw computed._value;
+	}
+
+	return computed._value;
+}
+
+function prepare_sources (target) {
+	for (let node = target._sources; node; node = node._next_source) {
+		let rollback = node._source._node;
+
+		if (rollback) {
+			node._rollback = rollback;
+		}
+
+		node._source._node = node;
+		node._flags |= STALE;
+	}
+}
+
+function cleanup_sources (target) {
+	// At this point target._sources is a mishmash of current & former dependencies.
+	// The current dependencies are also in a reverse order of use.
+	// Therefore build a new, reverted list of dependencies containing only the current
+	// dependencies in a proper order of use.
+	// Drop former dependencies from the list and unsubscribe from their change notifications.
+
+	/** @type {Node | undefined} */
+	let node = target._sources;
+	/** @type {Node | undefined} */
+	let sources;
+
+	while (node) {
+		let next = node._next_source;
+
+		if (node._flags & STALE) {
+			node._source._unsubscribe(node);
+			node._next_source = undefined;
+		}
+		else {
+			if (sources) {
+				sources._prev_source = node;
+			}
+
+			node._prev_source = undefined;
+			node._next_source = sources;
+			sources = node;
+		}
+
+		node._source._node = node._rollback;
+
+		if (node._rollback) {
+			node._rollback = undefined;
+		}
+
+		node = next;
+	}
+
+	target._sources = sources;
+}
+
+function end_effect (prev_context) {
+	let _this = this;
+
+	cleanup_sources(_this);
+	eval_context = prev_context;
+
+	end_batch();
+	_this._flags &= ~RUNNING;
+}
+
+/** @template T */
 export class Signal {
-	/** @private @type {T} */
-	_value;
-
-	/** @private @type {Set<Signal>} */
-	_subscribers = new Set();
-	/** @private @type {Set<Signal>} */
-	_dependencies = new Set();
-
-	/** @private @type {number} */
-	_pending = 0;
-	/** @private @type {boolean} */
-	_dirty = false;
-	/** @private @type {boolean} */
-	_active = false;
-	/** @private @type {boolean} */
-	_locked = false;
-
 	/**
 	 * @param {T} value
 	 */
 	constructor (value) {
-		this._value = value;
-	}
-
-	/**
-	 * @returns {T}
-	 */
-	peek () {
 		let _this = this;
 
-		if (!_this._active) {
-			activate(_this);
-		}
-
-		return _this._value;
+		/** @internal @type {number} */
+		_this._version = 0;
+		/** @internal @type {T} */
+		_this._value = value;
+		/** @internal @type {Node | undefined} */
+		_this._node = undefined;
+		/** @internal @type {Node | undefined} */
+		_this._targets = undefined;
 	}
 
 	/**
-	 * @param {T} value
-	 * @returns {T}
+	 * @internal
+	 * @param {Node} node
 	 */
-	set (value) {
-		return this.value = value;
+	_subscribe (node) {
+		let _this = this;
+
+		if (!(node._flags & SUBSCRIBED)) {
+			node._flags |= SUBSCRIBED;
+			node._next_target = _this._targets;
+
+			if (_this._targets) {
+				_this._targets._prev_target = node;
+			}
+
+			_this._targets = node;
+		}
+	}
+
+	/**
+	 * @internal
+	 * @param {Node} node
+	 */
+	_unsubscribe (node) {
+		let _this = this;
+		let prev = node._prev_target;
+		let next = node._next_target;
+
+		if (node._flags & SUBSCRIBED) {
+			node._flags &= ~SUBSCRIBED;
+
+			if (prev) {
+				prev._next_target = next;
+				node._prev_target = undefined;
+			}
+			if (next) {
+				next._prev_target = prev;
+				node._next_target = undefined;
+			}
+
+			if (node === _this._targets) {
+				_this._targets = next;
+			}
+		}
 	}
 
 	/**
@@ -142,296 +319,375 @@ export class Signal {
 	}
 
 	/**
-	 * @type {T}
+	 * @param {T} next
+	 * @returns {T}
 	 */
-	get value () {
-		let _this = this;
+	set (next) {
+		return this.value = next;
+	}
 
-		if (!_this._active) {
-			activate(_this);
-		}
-
-		if (current_signal) {
-			this._subscribers.add(current_signal);
-			current_signal._dependencies.add(_this);
-
-			old_deps.delete(_this);
-		}
-
+	/**
+	 * @returns {T}
+	 */
+	peek () {
 		return this._value;
 	}
 
-	set value (next) {
+	/** @type {T} */
+	get value () {
+		return get_value(this);
+	}
+	set value(value) {
 		let _this = this;
 
-		if (_this._value !== next) {
-			_this._value = next;
+		if (value !== _this._value) {
+			_this._value = value;
 
-			batch(() => {
-				batch_pending.add(_this);
+			if (batch_iteration > 100) {
+				return;
+			}
 
-				if (this._pending === 0) {
-					mark(_this);
+			_this._version++;
+			global_version++;
+			start_batch();
+
+			try {
+				for (let node = _this._targets; node; node = node._next_target) {
+					node._target._notify();
 				}
-			});
+			}
+			finally {
+				end_batch();
+			}
 		}
 	}
+}
 
-	/** @private Update function */
-	_updater () {}
+/** @template T */
+export class Computed extends Signal {
+	/**
+	 * @param {() => T} compute
+	 */
+	constructor (compute) {
+		super(undefined);
+
+		/** @internal @type {() => T} */
+		this._compute = compute;
+		/** @internal @type {Node | undefined} */
+		this._sources = undefined;
+		/** @internal @type {number} */
+		this._flags = STALE;
+		/** @internal @type {number} */
+		this._global_version = global_version - 1;
+	}
 
 	/**
-	 * @private Start read operation
-	 * @returns {(unmark: boolean, cleanup: boolean) => void} Call to end read operation
+	 * @internal
+	 * @param {Node} node
 	 */
-	_setCurrent () {
+	_subscribe (node) {
 		let _this = this;
 
-		let prev_signal = current_signal;
-		let prev_old_deps = old_deps;
+		if (!_this._targets) {
+			_this._flags |= STALE | SHOULD_SUBSCRIBE;
 
-		current_signal = _this;
-		old_deps = _this._dependencies;
+			// A computed signal subscribes lazily to its dependencies when the it
+			// gets its first subscriber.
+			for (let node = _this._sources; node; node = node._next_source) {
+				node._source._subscribe(node);
+			}
+		}
 
-		_this._dependencies = new Set();
+		super._subscribe(node);
+	}
 
-		return (should_unmark, should_cleanup) => {
-			if (should_unmark) {
-				for (let sub of _this._subscribers) {
-					unmark(sub);
+	/**
+	 * @internal
+	 * @param {Node} node
+	 */
+	_unsubscribe (node) {
+		let _this = this;
+
+		super._unsubscribe(node);
+
+		// Computed signal unsubscribes from its dependencies from it loses its last subscriber.
+		if (!_this._targets) {
+			_this._flags &= ~SHOULD_SUBSCRIBE;
+
+			for (let node = _this._sources; node; node = node._next_source) {
+				node._source._unsubscribe(node);
+			}
+		}
+	}
+
+	_notify () {
+		let _this = this;
+
+		if (!(_this._flags & (NOTIFIED | RUNNING))) {
+			_this._flags |= STALE | NOTIFIED;
+
+			for (let node = _this._targets; node; node = node._next_target) {
+				node._target._notify();
+			}
+		}
+	}
+
+	/**
+	 * @returns {T}
+	 */
+	peek () {
+		let _this = this;
+
+		_this._flags &= ~NOTIFIED;
+
+		if (_this._flags & RUNNING) {
+			return _this._value;
+		}
+
+		_this._flags |= RUNNING;
+
+		if ((!(_this._flags & STALE) && _this._targets) || _this._global_version === global_version) {
+			return get_computed(_this);
+		}
+
+		_this._flags &= ~STALE;
+		_this._global_version = global_version;
+
+		if (_this._version > 0) {
+			// Check current dependencies for changes. The dependency list is already in
+			// order of use. Therefore if >1 dependencies have changed only the first used one
+			// is re-evaluated at this point.
+			let node = _this._sources;
+
+			while (node) {
+				if (node._source._version !== node._version) {
+					break;
 				}
-			}
 
-			for (let dep of old_deps) {
-				(should_cleanup ? unsubscribe : subscribe)(_this, dep);
-			}
-
-			old_deps.clear();
-			old_deps = prev_old_deps;
-
-			current_signal = prev_signal;
-		};
-	}
-}
-
-/**
- * @param {Signal} signal
- */
-function mark (signal) {
-	if (signal._pending++ === 0) {
-		for (let sub of signal._subscribers) {
-			mark(sub);
-		}
-	}
-}
-
-/**
- * @param {Signal} signal
- */
-function unmark (signal) {
-	if (!signal._dirty && signal._pending > 0 && --signal._pending === 0) {
-		for (let sub of signal._subscribers) {
-			unmark(sub);
-		}
-	}
-}
-
-/**
- * @param {Set<Signal>} set
- */
-function sweep (set) {
-	for (let signal of set) {
-		if (signal._pending > 0) {
-			signal._dirty = true;
-
-			if (--signal._pending === 0) {
-				if (signal._locked) {
-					continue;
+				try {
+					node._source.peek();
+				}
+				catch {
+					// Failures of current dependencies shouldn't be rethrown here in case the
+					// compute function catches them.
 				}
 
-				signal._dirty = false;
+				if (node._source._version !== node._version) {
+					break;
+				}
 
-				signal._locked = true;
-				signal._updater();
-				signal._locked = false;
-
-				sweep(signal._subscribers);
-			}
-		}
-	}
-}
-
-/**
- * @param {Signal} signal
- * @param {Signal} to
- */
-function subscribe (signal, to) {
-	signal._active = true;
-
-	signal._dependencies.add(to);
-	to._subscribers.add(signal);
-}
-
-/**
- * @param {Signal} signal
- * @param {Signal} from
- */
-function unsubscribe (signal, from) {
-	signal._dependencies.delete(from);
-	from._subscribers.delete(signal);
-
-	if (from._subscribers.size === 0) {
-		from._active = false;
-
-		for (let dep of from._dependencies) {
-			unsubscribe(from, dep);
-		}
-	}
-}
-
-/**
- * @param {Signal} signal
- */
-function refresh (signal) {
-	if (batch_pending) {
-		batch_pending.delete(signal);
-	}
-
-	signal._pending = 0;
-
-	signal._locked = true;
-	signal._updater();
-	signal._locked = false;
-
-	if (commit_error) {
-		let err = commit_error;
-		commit_error = null;
-
-		throw err;
-	}
-
-	for (let sub of signal._subscribers) {
-		if (sub._pending > 0) {
-			if (sub._pending > 1) {
-				sub._pending--;
+				node = node._next_source;
 			}
 
-			temp_pending.push(sub);
+			if (!node) {
+				return get_computed(_this);
+			}
 		}
+
+		let prev_value = _this._value;
+		let prev_flags = _this._flags;
+		let prev_context = eval_context;
+
+		try {
+			eval_context = _this;
+			prepare_sources(_this);
+
+			_this._value = _this._compute();
+			_this._flags &= ~HAS_ERROR;
+
+			if (prev_flags & HAS_ERROR || _this._value !== prev_value || _this._version === 0) {
+				_this._version++;
+			}
+		}
+		catch (err) {
+			_this._value = err;
+			_this._flags |= HAS_ERROR;
+			_this._version++;
+		}
+		finally {
+			cleanup_sources(_this);
+			eval_context = prev_context;
+		}
+
+		return get_computed(_this);
+	}
+
+	/** @type {T} */
+	get value () {
+		let _this = this;
+
+		if (_this._flags & RUNNING) {
+			return _this._value;
+		}
+
+		return get_value(_this);
+	}
+	set value(next) {
+		super.value = next;
 	}
 }
 
-/**
- * @param {Signal} signal
- */
-function activate (signal) {
-	signal._active = true;
-	refresh(signal);
+export class Effect {
+	/**
+	 * @param {() => void} compute
+	 */
+	constructor (compute) {
+		/** @internal @type {() => void} */
+		this._compute = compute;
+		/** @internal @type {Node | undefined} */
+		this._sources = undefined;
+		/** @internal @type {Effect | undefined} */
+		this._next = undefined;
+		/** @internal @type {number} */
+		this._flags = SHOULD_SUBSCRIBE;
+	}
+
+	_callback () {
+		let _this = this;
+
+		if (_this._flags & RUNNING) {
+			return;
+		}
+
+		let finish = _this._start();
+		try {
+			_this._compute();
+		}
+		finally {
+			finish();
+		}
+	}
+
+	_start () {
+		let _this = this;
+
+		let prev_context = eval_context;
+		_this._flags |= RUNNING;
+
+		start_batch();
+		eval_context = _this;
+
+		prepare_sources(_this);
+		return end_effect.bind(_this, prev_context);
+	}
+
+	_notify () {
+		let _this = this;
+
+		if (!(_this._flags & (NOTIFIED | RUNNING))) {
+			_this._flags |= NOTIFIED;
+			_this._next = batched_effect;
+			batched_effect = _this;
+		}
+	}
+
+	_dispose () {
+		let _this = this;
+
+		for (let node = _this._sources; node; node = node._next_source) {
+			node._source._unsubscribe(node);
+		}
+
+		_this._sources = undefined;
+	}
 }
 
+export class Scope {
+	/**
+	 * @param {boolean} [detached]
+	 */
+	constructor (detached) {
+		let _this = this;
 
-/**
- * @param {boolean} [detached]
- * @returns {Scope}
- */
+		/** @type {Scope[]} */
+		_this.scopes = [];
+		/** @type {(() => void)[]} */
+		_this.cleanups = [];
+		/** @type {Scope | undefined} */
+		_this.parent = eval_scope;
+
+		if (!detached && eval_scope) {
+			eval_scope.scopes.push(_this);
+		}
+	}
+
+	/**
+	 * @template {T}
+	 * @param {() => T} callback
+	 * @returns {T}
+	 */
+	run (callback) {
+		let prev_scope = eval_scope;
+
+		try {
+			eval_scope = this;
+			return callback();
+		}
+		finally {
+			eval_scope = prev_scope;
+		}
+	}
+
+	clear () {
+		let _this = this;
+		let scopes = _this.scopes;
+		let cleanups = _this.cleanups;
+
+		for (let scope of scopes) {
+			scope.clear();
+			scope.parent = undefined;
+		}
+
+		for (let cleanup of cleanups) {
+			cleanup();
+		}
+
+		scopes.length = 0;
+		cleanups.length = 0;
+	}
+}
+
 export function scope (detached) {
 	return new Scope(detached);
 }
 
-/**
- * @template T
- * @param {T} value
- * @returns {Signal<T>}
- */
+export function cleanup (callback) {
+	if (is_function(callback) && eval_scope) {
+		eval_scope.cleanups.push(callback);
+	}
+}
+
+export function batch (callback) {
+	if (batch_depth > 0) {
+		return callback();
+	}
+
+	start_batch();
+
+	try {
+		return callback();
+	}
+	finally {
+		end_batch();
+	}
+}
+
 export function signal (value) {
 	return new Signal(value);
 }
 
-/**
- * @template T
- * @param {() => T} compute
- * @returns {Signal<T>}
- */
 export function computed (compute) {
-	let s = new Signal(undefined);
-
-	s._updater = () => {
-		let finish = s._setCurrent();
-
-		try {
-			let ret = compute();
-
-			finish(s._value === ret, true);
-			s._value = ret;
-		}
-		catch (error) {
-			if (!commit_error) {
-				commit_error = error;
-			}
-
-			finish(true, false);
-		}
-	};
-
-	return s;
+	return new Computed(compute);
 }
 
-/**
- * @template T
- * @param {() => T} fn
- * @returns {T}
- */
-export function batch (fn) {
-	if (batch_pending !== null) {
-		return fn();
-	}
+export function effect (compute) {
+	// Return a bound function instead of a wrapper like `() => effect._dispose()`,
+	// because bound functions seem to be just as fast and take up a lot less memory.
+	let effect = new Effect(compute);
+	let dispose = effect._dispose.bind(effect);
 
-	let pending = new Set();
-	batch_pending = pending;
+	effect._callback();
 
-	try {
-		return fn();
-	}
-	finally {
-		/** @type {Signal | undefined} */
-		let item;
-
-		while (item = temp_pending.pop()) {
-			pending.add(item);
-		}
-
-		batch_pending = null;
-
-		sweep(pending);
-
-		if (commit_error) {
-			let err = commit_error;
-			commit_error = null;
-
-			throw err;
-		}
-	}
-}
-
-/**
- * @param {() => void} callback
- * @returns {() => void} Destroy effect
- */
-export function effect (callback) {
-	let s = computed(() => batch(callback));
-	let cleanup = () => s._setCurrent()(true, true);
-
-	activate(s);
-
-	if (current_scope) {
-		current_scope.cleanups.push(cleanup);
-	}
-
-	return cleanup;
-}
-
-export function cleanup (fn) {
-	if (current_scope && is_function(fn)) {
-		current_scope.cleanups.push(fn);
-	}
+	cleanup(dispose);
+	return dispose;
 }
