@@ -19,6 +19,18 @@ describe('signal', () => {
 		count.set(4);
 		assert.equal(count.value, 4);
 	});
+
+	it('peek() should not trigger a read', () => {
+		let count = signal(0);
+
+		let fn = spy(() => count.peek());
+		let dispose = effect(fn);
+
+		count.value = 2;
+		assertSpy(fn, 1);
+
+		dispose();
+	});
 });
 
 describe('computed', () => {
@@ -44,6 +56,16 @@ describe('computed', () => {
 		count.value = 3;
 		assert.equal(double.value, 6);
 		assertSpy(fn, 3);
+	});
+
+	it('allows setting value to a computed', () => {
+		let count = signal(1);
+		let doubled = computed(() => count.value * 2);
+
+		assert.equal(doubled.value, 2);
+
+		doubled.value = 7;
+		assert.equal(doubled.value, 7);
 	});
 });
 
