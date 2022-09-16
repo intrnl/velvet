@@ -43,7 +43,7 @@ export default defineConfig({
 					mangleProps: /^_/,
 					mangleCache: mangleCache,
 					define: {
-						'process.env.RUNTIME_VERSION': `"v${pkg.version}"`
+						'process.env.RUNTIME_VERSION': `"v${pkg.version}"`,
 					},
 				});
 

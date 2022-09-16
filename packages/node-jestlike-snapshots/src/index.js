@@ -19,12 +19,12 @@ function getSnapshotPath () {
 		return path.join(dir, '__snapshots__', `${name}.snap`);
 	}
 
-  if (!process.argv[1]) {
+	if (!process.argv[1]) {
 		throw new Error(`Unexpected snapshot assertion`);
-  }
+	}
 
-  const { dir, name } = path.parse(process.argv[1]);
-  return path.join(dir, '__snapshots__', `${name}.snap`);
+	const { dir, name } = path.parse(process.argv[1]);
+	return path.join(dir, '__snapshots__', `${name}.snap`);
 }
 
 let suites = [];
@@ -50,7 +50,7 @@ Test.prototype.run = async function () {
 	counter = 0;
 
 	return _Test_run.apply(this);
-}
+};
 
 process.once('beforeExit', () => {
 	if (unusedNames.length > 1) {
@@ -91,7 +91,7 @@ function getSnapshot () {
 	}
 
 	if (shouldUpdateSnapshot) {
-		snapshotValue = Object.create(null)
+		snapshotValue = Object.create(null);
 		return snapshotValue;
 	}
 

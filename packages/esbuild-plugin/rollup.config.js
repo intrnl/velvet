@@ -38,7 +38,7 @@ export default defineConfig({
 				let result = esbuild.transformSync(code, {
 					sourcemap: true,
 					define: {
-						'process.env.PLUGIN_VERSION': `"v${pkg.version}"`
+						'process.env.PLUGIN_VERSION': `"v${pkg.version}"`,
 					},
 				});
 
