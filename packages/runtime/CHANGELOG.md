@@ -1,5 +1,12 @@
 # @intrnl/velvet
 
+## 0.4.8
+
+### Patch Changes
+
+- 5baecea: Do not put effect cleanup on scope if nested
+- 1c72867: Add additional way of untracking
+
 ## 0.4.7
 
 ### Patch Changes
