@@ -108,6 +108,33 @@ describe('effect', () => {
 
 		unsubscribe();
 	});
+
+	it('should handle nested effects', () => {
+		let a = signal(0);
+		let b = signal(0);
+
+		let inner = spy(() => {
+			a.value + b.value;
+		});
+
+		let outer = spy(() => {
+			a.value;
+			effect(inner);
+		});
+
+		effect(outer);
+
+		assertSpy(inner, 1);
+		assertSpy(outer, 1);
+
+		b.value = 2;
+		assertSpy(inner, 2);
+		assertSpy(outer, 1);
+
+		a.value = 3;
+		assertSpy(inner, 3);
+		assertSpy(outer, 2);
+	});
 });
 
 describe('batch', () => {
