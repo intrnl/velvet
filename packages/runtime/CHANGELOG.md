@@ -1,5 +1,12 @@
 # @intrnl/velvet
 
+## 0.4.7
+
+### Patch Changes
+
+- 7e7d7fc: Use the new Signals rewrite
+- 72626d4: Update Signals implementation
+
 ## 0.4.6
 
 ### Patch Changes
