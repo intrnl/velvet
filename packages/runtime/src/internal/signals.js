@@ -730,7 +730,10 @@ export function effect (compute) {
 
 	effect._callback();
 
-	cleanup(dispose);
+	if (!eval_context) {
+		cleanup(dispose);
+	}
+
 	return dispose;
 }
 
