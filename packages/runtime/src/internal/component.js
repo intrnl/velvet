@@ -112,7 +112,7 @@ export class VelvetComponent extends HTMLElement {
 
 	attributeChangedCallback (attr, prev, next) {
 		let host = this;
-		let mapping = host.constructor.$a;
+		let mapping = host.constructor.$d;
 
 		// toggleAttribute: ''
 		// removeAttribute: null
