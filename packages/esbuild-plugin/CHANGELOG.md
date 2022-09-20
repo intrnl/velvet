@@ -1,5 +1,11 @@
 # @intrnl/esbuild-plugin-velvet
 
+## 0.5.3
+
+### Patch Changes
+
+- 988a418: Fix broken exports
+
 ## 0.5.2
 
 ### Patch Changes
