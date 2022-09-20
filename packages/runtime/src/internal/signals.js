@@ -694,15 +694,3 @@ export function effect (compute) {
 
 	return dispose;
 }
-
-export function untrack (fn) {
-	let prev_context = eval_context;
-
-	try {
-		eval_context = undefined;
-		return fn();
-	}
-	finally {
-		eval_context = prev_context;
-	}
-}
