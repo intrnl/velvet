@@ -688,9 +688,6 @@ export function effect (compute) {
 
 	effect._callback();
 
-	if (!eval_context) {
-		cleanup(dispose);
-	}
-
+	cleanup(dispose);
 	return dispose;
 }
