@@ -1,5 +1,11 @@
 # @intrnl/velvet
 
+## 0.4.9
+
+### Patch Changes
+
+- 4b67c63: Revert nested effects
+
 ## 0.4.8
 
 ### Patch Changes
