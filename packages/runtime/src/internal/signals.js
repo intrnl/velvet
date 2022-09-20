@@ -5,7 +5,7 @@
 // - Addition of scopes for managing effects.
 // - Not using TypeScript, only JSDoc typings.
 
-// Based off commit 64d0ab0844a4d50ee09d564b8748127e8a957049
+// Based off commit 4a6288a9a974cb8a2104d51639796bf1556ecb40
 
 import { is_function } from './utils.js';
 
@@ -32,7 +32,6 @@ let NOTIFIED = 1 << 2;
 let HAS_ERROR = 1 << 3;
 let SHOULD_SUBSCRIBE = 1 << 4;
 let SUBSCRIBED = 1 << 5;
-let DISPOSED = 1 << 6;
 
 /** @type {Scope | undefined} Currently evaluated scope */
 let eval_scope;
@@ -69,20 +68,17 @@ function end_batch () {
 		batch_iteration++;
 
 		while (effect) {
-			let next = effect._next_batched_effect;
-			effect._next_batched_effect = undefined;
+			let next = effect._next;
+			effect._next = undefined;
 			effect._flags &= ~NOTIFIED;
 
-			if (!(effect._flags & DISPOSED)) {
-
-				try {
-					effect._callback();
-				}
-				catch (err) {
-					if (!has_error) {
-						error = err;
-						has_error = true;
-					}
+			try {
+				effect._callback();
+			}
+			catch (err) {
+				if (!has_error) {
+					error = err;
+					has_error = true;
 				}
 			}
 
@@ -240,10 +236,6 @@ function cleanup_sources (target) {
 	target._sources = sources;
 }
 
-/**
- * @this {Effect}
- * @param {Effect | Computed} [prev_context]
- */
 function end_effect (prev_context) {
 	let _this = this;
 
@@ -252,22 +244,6 @@ function end_effect (prev_context) {
 
 	end_batch();
 	_this._flags &= ~RUNNING;
-}
-
-/**
- * @param {Effect | Computed} context
- */
-function dispose_nested_effect (context) {
-	let effect = context._effects;
-
-	if (effect) {
-		do {
-			effect._dispose();
-			effect = effect._next_nested_effect;
-		} while (effect);
-
-		context._effects = undefined;
-	}
 }
 
 /** @template T */
@@ -399,8 +375,6 @@ export class Computed extends Signal {
 		this._compute = compute;
 		/** @internal @type {Node | undefined} */
 		this._sources = undefined;
-		/** @internal @type {Effect | undefined} */
-		this._effects = undefined;
 		/** @internal @type {number} */
 		this._flags = STALE;
 		/** @internal @type {number} */
@@ -510,8 +484,6 @@ export class Computed extends Signal {
 			}
 		}
 
-		dispose_nested_effect(_this);
-
 		let prev_value = _this._value;
 		let prev_flags = _this._flags;
 		let prev_context = eval_context;
@@ -565,11 +537,7 @@ export class Effect {
 		/** @internal @type {Node | undefined} */
 		this._sources = undefined;
 		/** @internal @type {Effect | undefined} */
-		this._effects = undefined;
-		/** @internal @type {Effect | undefined} */
-		this._next_nested_effect = undefined;
-		/** @internal @type {Effect | undefined} */
-		this._next_batched_effect = undefined;
+		this._next = undefined;
 		/** @internal @type {number} */
 		this._flags = SHOULD_SUBSCRIBE;
 	}
@@ -595,19 +563,11 @@ export class Effect {
 
 		let prev_context = eval_context;
 		_this._flags |= RUNNING;
-		_this._flags &= ~DISPOSED;
 
-		dispose_nested_effect(_this);
 		start_batch();
-
-		if (prev_context) {
-			_this._next_nested_effect = prev_context._effects;
-			prev_context._effects = _this;
-		}
-
 		eval_context = _this;
-		prepare_sources(_this);
 
+		prepare_sources(_this);
 		return end_effect.bind(_this, prev_context);
 	}
 
@@ -616,7 +576,7 @@ export class Effect {
 
 		if (!(_this._flags & (NOTIFIED | RUNNING))) {
 			_this._flags |= NOTIFIED;
-			_this._next_batched_effect = batched_effect;
+			_this._next = batched_effect;
 			batched_effect = _this;
 		}
 	}
@@ -628,9 +588,7 @@ export class Effect {
 			node._source._unsubscribe(node);
 		}
 
-		dispose_nested_effect(_this);
 		_this._sources = undefined;
-		_this._flags |= DISPOSED;
 	}
 }
 
