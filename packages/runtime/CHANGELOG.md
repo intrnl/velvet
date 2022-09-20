@@ -1,5 +1,11 @@
 # @intrnl/velvet
 
+## 0.4.10
+
+### Patch Changes
+
+- a287e8f: Fix broken attribute mapping
+
 ## 0.4.9
 
 ### Patch Changes
