@@ -672,6 +672,18 @@ export function batch (callback) {
 	}
 }
 
+export function untrack (callback) {
+	let prev_context = eval_context;
+
+	try {
+		eval_context = undefined;
+		return callback();
+	}
+	finally {
+		eval_context = prev_context;
+	}
+}
+
 export function signal (value) {
 	return new Signal(value);
 }
