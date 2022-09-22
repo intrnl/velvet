@@ -310,6 +310,17 @@ describe('ref', () => {
 
 		assertSnapshot(print(program));
 	});
+
+	it('handles optional chaining', () => {
+		let program = parse(`
+			let foo = null;
+			foo = { bar: 123 };
+			console.log(foo?.bar);
+		`);
+
+		transform_script(program);
+		assertSnapshot(print(program));
+	});
 });
 
 describe('prop', () => {

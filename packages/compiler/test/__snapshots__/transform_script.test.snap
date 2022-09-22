@@ -367,6 +367,15 @@ function increment() {
 
 `
 
+exports[`ref > handles optional chaining 1`] = `
+let foo = @signal(null);
+foo.value = {
+  bar: 123
+};
+console.log(foo.value?.bar);
+
+`
+
 exports[`ref > mutated variable accessing member property 1`] = `
 console.log(state.count);
 console.log(current_date.toISOString());
