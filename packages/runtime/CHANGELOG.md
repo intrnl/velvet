@@ -1,5 +1,11 @@
 # @intrnl/velvet
 
+## 0.4.12
+
+### Patch Changes
+
+- 3d61874: Reintroduce untrack function
+
 ## 0.4.10
 
 ### Patch Changes

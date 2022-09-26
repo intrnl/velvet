@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"name": "@intrnl/velvet",
-	"version": "0.4.11",
+	"version": "0.4.12",
 	"author": "intrnl",
 	"license": "MIT",
 	"repository": {

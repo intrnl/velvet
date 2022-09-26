@@ -1,5 +1,11 @@
 # @intrnl/esbuild-plugin-velvet
 
+## 0.5.4
+
+### Patch Changes
+
+- b40c3fb: Add additional filter function
+
 ## 0.5.3
 
 ### Patch Changes
