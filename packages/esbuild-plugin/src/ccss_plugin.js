@@ -6,7 +6,7 @@ import * as fs from 'node:fs/promises';
  * @returns {import('esbuild').Plugin}
  */
 export default function ccss_plugin (options = {}) {
-	let { filter = /\.module\.css$/, minify } = options;
+	let { include = /\.module\.css$/, filter, minify } = options;
 
 	return {
 		name: '@intrnl/esbuild-plugin-velvet/ccss',
@@ -15,8 +15,12 @@ export default function ccss_plugin (options = {}) {
 
 			let should_minify = minify ?? build.initialOptions.minify;
 
-			build.onLoad({ filter }, async (args) => {
+			build.onLoad({ filter: include }, async (args) => {
 				let { path: filename } = args;
+
+				if (filter && !filter(args)) {
+					return null;
+				}
 
 				let source = await fs.readFile(filename, 'utf8');
 
