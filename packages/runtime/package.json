@@ -28,8 +28,8 @@
 		"test": "node --test test/"
 	},
 	"devDependencies": {
-		"esbuild": "^0.15.7",
+		"esbuild": "^0.15.9",
 		"nanospy": "^0.5.0",
-		"rollup": "^2.79.0"
+		"rollup": "^2.79.1"
 	}
 }
