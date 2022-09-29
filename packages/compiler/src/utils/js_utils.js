@@ -214,8 +214,8 @@ export function analyze (expression) {
 					map.set(node, (current_scope = new Scope(current_scope, node, true)));
 
 					if (node.param) {
-						for (let node of extract_identifiers(node.param)) {
-							current_scope.declarations.set(node.name, node);
+						for (let ident of extract_identifiers(node.param)) {
+							current_scope.declarations.set(ident.name, ident);
 						}
 					}
 
