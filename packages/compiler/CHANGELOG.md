@@ -1,5 +1,11 @@
 # @intrnl/velvet-compiler
 
+## 0.7.3
+
+### Patch Changes
+
+- 72996c1: Add value binding for textarea element
+
 ## 0.7.2
 
 ### Patch Changes
