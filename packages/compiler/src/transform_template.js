@@ -361,6 +361,10 @@ export function transform_template (template, source) {
 					!is_component && elem_name === 'input'
 				);
 
+				let is_textarea = (
+					!is_component && elem_name === 'textarea'
+				)
+
 				let is_select = (
 					!is_component && elem_name === 'select'
 				);
@@ -635,6 +639,24 @@ export function transform_template (template, source) {
 								if (prop_name !== 'value' && prop_name !== 'checked') {
 									throw create_error(
 										`invalid binding property "${prop_name}" for input element`,
+										source,
+										attr.start,
+										attr.end,
+									);
+								}
+
+								event_fn = t.arrow_function_expression([], t.assignment_expression(
+									t.clone(value_expr),
+									t.member_expression_from([elem_ident, prop_name]),
+								));
+							}
+							// handle textarea
+							else if (is_textarea) {
+								event_name = 'input';
+
+								if (prop_name !== 'value') {
+									throw create_error(
+										`invalid binding property "${prop_name}" for textarea element`,
 										source,
 										attr.start,
 										attr.end,

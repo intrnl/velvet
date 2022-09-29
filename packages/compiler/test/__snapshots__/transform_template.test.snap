@@ -138,6 +138,16 @@ $: @set_select_values(%child0, value);
 
 `
 
+exports[`attribute > binding textarea value 1`] = `
+let %%template0 = @html("<textarea></textarea>");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+$: %child0["value"] = content;
+@on(%child0, "input", () => content = %child0.value);
+@append($$root, %fragment0);
+
+`
+
 exports[`attribute > boolean expression 1`] = `
 let %%template0 = @html("<textarea></textarea>");
 let %fragment0 = @clone(%template0);

@@ -232,6 +232,15 @@ describe('attribute', () => {
 		assertSnapshot(print(program));
 	});
 
+	it('binding textarea value', () => {
+		let template = `<textarea :value={content}></textarea>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		assertSnapshot(print(program));
+	});
+
 	it('fails on binding with no value', () => {
 		let template = `<input :value>`;
 
