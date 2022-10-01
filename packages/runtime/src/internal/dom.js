@@ -7,7 +7,8 @@ export function html (fragment) {
 
 export function clone (template) {
 	/** @type {DocumentFragment} */
-	let fragment = template.content.cloneNode(true);
+	// let fragment = template.content.cloneNode(true);
+	let fragment = document.importNode(template.content, true);
 
 	return fragment;
 }
