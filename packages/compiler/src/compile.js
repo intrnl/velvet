@@ -24,7 +24,8 @@ function* _compile (source, options = {}) {
 	let template = parse_template(source);
 
 	// run transformers
-	for (let transformer of transformers) {
+	for (let i = 0, l = transformers.length; i < l; i++) {
+		let transformer = transformers[i];
 		transformer(template);
 	}
 
@@ -35,9 +36,9 @@ function* _compile (source, options = {}) {
 	let style_node;
 	let style_value = null;
 
-	for (let index = 0; index < template.children.length; index++) {
+	for (let i = 0; i < template.children.length; i++) {
 		/** @type {import('./utils/template_types.js').Node} */
-		let node = template.children[index];
+		let node = template.children[i];
 
 		if (node.type !== 'Element') {
 			continue;
@@ -67,7 +68,7 @@ function* _compile (source, options = {}) {
 				}
 
 				module_node = node;
-				template.children.splice(index--, 1);
+				template.children.splice(i--, 1);
 				continue;
 			}
 
@@ -81,7 +82,7 @@ function* _compile (source, options = {}) {
 			}
 
 			script_node = node;
-			template.children.splice(index--, 1);
+			template.children.splice(i--, 1);
 			continue;
 		}
 
@@ -96,7 +97,7 @@ function* _compile (source, options = {}) {
 			}
 
 			style_node = node;
-			template.children.splice(index--, 1);
+			template.children.splice(i--, 1);
 			continue;
 		}
 
@@ -111,14 +112,18 @@ function* _compile (source, options = {}) {
 			}
 
 			options_node = node;
-			template.children.splice(index--, 1);
+			template.children.splice(i--, 1);
 			continue;
 		}
 	}
 
 	// retrieve component options
 	if (options_node) {
-		for (let attr of options_node.attributes) {
+		let attributes = options_node.attributes;
+
+		for (let i = 0, l = attributes.length; i < l; i++) {
+			let attr = attributes[i];
+
 			if (attr.type === 'AttributeSpread') {
 				throw create_error(
 					`attribute spread not supported on <v:options> element`,

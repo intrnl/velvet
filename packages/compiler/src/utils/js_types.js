@@ -162,8 +162,8 @@ export function member_expression (object, property, computed = false, optional 
 export function member_expression_from (arr) {
 	let result = identifier(arr[0]);
 
-	for (let idx = 1; idx < arr.length; idx++) {
-		result = member_expression(result, identifier(arr[idx]));
+	for (let i = 1, l = arr.length; i < l; i++) {
+		result = member_expression(result, identifier(arr[i]));
 	}
 
 	return result;

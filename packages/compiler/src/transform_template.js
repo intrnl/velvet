@@ -60,8 +60,8 @@ export function transform_template (template, source) {
 					let start_idx = -1;
 					let end_idx = -1;
 
-					for (let idx = 0, len = children.length; idx < len; idx++) {
-						let child = children[idx];
+					for (let i = 0, l = children.length; i < l; i++) {
+						let child = children[i];
 
 						if (child.type !== 'Element') {
 							continue;
@@ -69,15 +69,15 @@ export function transform_template (template, source) {
 
 						if (child.name === 'tr') {
 							if (start_idx === -1) {
-								start_idx = idx;
+								start_idx = i;
 							}
 
-							end_idx = len;
+							end_idx = l;
 						}
 
 						if (child.name === 'tbody') {
 							if (start_idx !== -1) {
-								end_idx = idx - 1;
+								end_idx = i - 1;
 							}
 						}
 					}
@@ -92,7 +92,10 @@ export function transform_template (template, source) {
 
 				curr_block.html += `<${elem_name}`;
 
-				for (let attr of node.attributes) {
+				let attributes = node.attributes;
+				for (let i = 0, l = attributes.length; i < l; i++) {
+					let attr = attributes[i];
+
 					// skip attribute spread
 					if (attr.type === 'AttributeSpread') {
 						continue;
@@ -125,8 +128,8 @@ export function transform_template (template, source) {
 						let has_sq = false;
 						let needs_quote = false;
 
-						for (let idx = 0, len = value.length; idx < len; idx++) {
-							let ch = value[idx];
+						for (let i = 0, l = value.length; i < l; i++) {
+							let ch = value[i];
 
 							if (ch === '"') {
 								has_dq = true;
@@ -380,7 +383,11 @@ export function transform_template (template, source) {
 				);
 
 				// loop through attributes
-				for (let attr of node.attributes) {
+				let attributes = node.attributes;
+
+				for (let i = 0, l = attributes.length; i < l; i++) {
+					let attr = attributes[i];
+
 					// handle attribute spread
 					if (attr.type === 'AttributeSpread') {
 						need_ident = true;
@@ -761,8 +768,11 @@ export function transform_template (template, source) {
 
 							let static_name = '';
 							let exprs = [];
+							let properties = obj.properties;
 
-							for (let prop of obj.properties) {
+							for (let i = 0, l = properties.length; i < l; i++) {
+								let prop = properties[i];
+
 								if (prop.type === 'SpreadElement') {
 									throw create_error(
 										`invalid spread in class expression`,
@@ -831,8 +841,11 @@ export function transform_template (template, source) {
 
 							let static_styles = '';
 							let exprs = [];
+							let properties = obj.properties;
 
-							for (let prop of obj.properties) {
+							for (let i = 0, l = properties.length; i < l; i++) {
+								let prop = properties[i];
+
 								if (prop.type === 'SpreadElement') {
 									throw create_error(
 										`invalid spread in style expression`,
@@ -1268,8 +1281,8 @@ export function transform_template (template, source) {
 
 					let test = null;
 
-					for (let idx = array.length - 1; idx >= 0; idx--) {
-						let next = array[idx];
+					for (let i = array.length - 1; i >= 0; i--) {
+						let next = array[i];
 
 						let consequent_block = fragment_to_block.get(next.consequent);
 						let consequent_ident = t.identifier('%block' + blocks.indexOf(consequent_block));

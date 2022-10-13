@@ -54,7 +54,8 @@ export function transform_script (program, source) {
 			if (node.type === 'AssignmentExpression') {
 				let identifiers = extract_identifiers(node.left, false);
 
-				for (let id of identifiers) {
+				for (let i = 0, l = identifiers.length; i < l; i++) {
+					let id = identifiers[i];
 					let name = id.name;
 
 					if (name[0] === '$' && name[1] === '$' && name[2] !== '$') {
@@ -111,7 +112,10 @@ export function transform_script (program, source) {
 				let declaration = node.declaration;
 
 				if (declaration.type === 'VariableDeclaration') {
-					for (let declarator of declaration.declarations) {
+					let arr = declaration.declarations;
+
+					for (let i = 0, l = arr.length; i < l; i++) {
+						let declarator = arr[i];
 						let identifier = declarator.id;
 						let name = identifier.name;
 
@@ -129,7 +133,10 @@ export function transform_script (program, source) {
 			}
 
 			if (node.type === 'ExportNamedDeclaration' && node.specifiers.length) {
-				for (let specifier of node.specifiers) {
+				let specifiers = node.specifiers;
+
+				for (let i = 0, l = specifiers.length; i < l; i++) {
+					let specifier = specifiers[i];
 					let local_name = specifier.local.name;
 					let exported_name = specifier.exported.name;
 
@@ -176,7 +183,8 @@ export function transform_script (program, source) {
 					return;
 				}
 
-				for (let id of identifiers) {
+				for (let i = 0, l = identifiers.length; i < l; i++) {
+					let id = identifiers[i];
 					let ident = t.identifier(id.name);
 					ident.velvet = { mutable: true };
 
@@ -442,7 +450,8 @@ export function transform_script (program, source) {
 					let map = new WeakMap();
 					let need_transform = false;
 
-					for (let id of identifiers) {
+					for (let i = 0, l = identifiers.length; i < l; i++) {
+						let id = identifiers[i];
 						let name = id.name;
 
 						let own_scope = curr_scope.find_owner(name);
@@ -474,7 +483,9 @@ export function transform_script (program, source) {
 
 					statements.push(holder_assign, spread_assign);
 
-					for (let id of identifiers) {
+					for (let i = 0, l = identifiers.length; i < l; i++) {
+						let id = identifiers[i];
+
 						if (!map.get(id)) {
 							continue;
 						}
@@ -624,8 +635,10 @@ export function finalize_template (program, name, props_idx, style) {
 
 	if (style) {
 		let c = 0;
+		let dependencies = style.dependencies;
 
-		for (let dep of style.dependencies) {
+		for (let i = 0, l = dependencies.length; i < l; i++) {
+			let dep = dependencies[i];
 			let ident = t.identifier('%%style' + (c++));
 
 			let specifier = t.import_default_specifier(ident);
@@ -800,7 +813,12 @@ export function finalize_program (program, mod = '@intrnl/velvet/internal') {
 
 
 function _push_deferred_placeholders (deferred_placeholders) {
-	for (let [reference, declarations] of deferred_placeholders) {
+	for (let i = 0, l = deferred_placeholders.length; i < l; i++) {
+		let placeholder = deferred_placeholders[i];
+
+		let reference = placeholder[0];
+		let declarations = placeholder[1];
+
 		let container = reference;
 		let curr = reference;
 

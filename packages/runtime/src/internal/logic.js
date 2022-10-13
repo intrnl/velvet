@@ -84,7 +84,8 @@ export function each (marker, block, expression) {
 	});
 
 	cleanup(() => {
-		for (let part of parts) {
+		for (let i = 0, l = parts.length; i < l; i++) {
+			let part = parts[i];
 			let instance = part[0];
 			instance.clear();
 		}

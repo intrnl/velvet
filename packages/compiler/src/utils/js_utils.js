@@ -98,7 +98,11 @@ export function extract_identifiers (param, nested_prop = true, nodes = []) {
 		}
 
 		case 'ObjectPattern': {
-			for (let property of param.properties) {
+			let properties = param.properties;
+
+			for (let i = 0, l = properties.length; i < l; i++) {
+				let property = properties[i];
+
 				if (property.type === 'RestElement') {
 					extract_identifiers(property.argument, nested_prop, nodes);
 				}
@@ -111,7 +115,11 @@ export function extract_identifiers (param, nested_prop = true, nodes = []) {
 		}
 
 		case 'ArrayPattern': {
-			for (let element of param.elements) {
+			let elements = param.elements;
+
+			for (let i = 0, l = elements.length; i < l; i++) {
+				let element = elements[i];
+
 				if (element) {
 					extract_identifiers(element, nested_prop, nodes);
 				}
@@ -163,7 +171,10 @@ export function analyze (expression) {
 					break;
 
 				case 'ImportDeclaration':
-					for (let specifier of node.specifiers) {
+					let specifiers = node.specifiers;
+
+					for (let i = 0, l = specifiers.length; i < l; i++) {
+						let specifier = specifiers[i];
 						current_scope.declarations.set(specifier.local.name, specifier.local);
 					}
 
@@ -187,8 +198,13 @@ export function analyze (expression) {
 						}
 					}
 
-					for (let param of node.params) {
-						for (let node of extract_identifiers(param)) {
+					let params = node.params;
+					for (let i = 0, il = params.length; i < il; i++) {
+						let param = params[i];
+						let extracts = extract_identifiers(param);
+
+						for (let j = 0, jl = extracts.length; j < jl; j++) {
+							let node = extracts[j];
 							current_scope.declarations.set(node.name, node);
 						}
 					}
@@ -214,7 +230,10 @@ export function analyze (expression) {
 					map.set(node, (current_scope = new Scope(current_scope, node, true)));
 
 					if (node.param) {
-						for (let ident of extract_identifiers(node.param)) {
+						let extracts = extract_identifiers(node.param);
+
+						for (let i = 0, l = extracts.length; i < l; i++) {
+							let ident = extracts[i];
 							current_scope.declarations.set(ident.name, ident);
 						}
 					}
@@ -231,8 +250,8 @@ export function analyze (expression) {
 		},
 	});
 
-	for (let index = references.length - 1; index >= 0; --index) {
-		let [scope, reference] = references[index];
+	for (let i = references.length - 1; i >= 0; --i) {
+		let [scope, reference] = references[i];
 
 		if (!scope.references.has(reference.name)) {
 			add_reference(scope, reference.name);
@@ -290,8 +309,15 @@ export class Scope {
 				this.parent.add_declaration(node);
 			}
 			else {
-				for (let declarator of node.declarations) {
-					for (let node of extract_identifiers(declarator.id)) {
+				let declarations = node.declarations;
+
+				for (let i = 0, il = declarations.length; i < il; i++) {
+					let declarator = declarations[i];
+					let extracts = extract_identifiers(declarator.id);
+
+					for (let j = 0, jl = extracts.length; j < jl; j++) {
+						let node = extracts[j];
+
 						this.declarations.set(node.name, node);
 
 						if (declarator.init) {

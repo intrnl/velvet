@@ -36,10 +36,10 @@ export function get_line_col (source, target) {
 	let line = 1;
 	let column = 0;
 
-	for (let index = 0; index < source.length; index++) {
-		let char = source[index];
+	for (let i = 0, l = source.length; i < l; i++) {
+		let char = source[i];
 
-		if (index >= target) {
+		if (i >= target) {
 			break;
 		}
 

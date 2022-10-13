@@ -122,21 +122,34 @@ export function get_checked_values (array, value, checked) {
 	return array;
 }
 
+/**
+ * @param {HTMLSelectElement} select
+ * @returns {any | any[]}
+ */
 export function get_select_values (select) {
 	let multiple = select.multiple;
 	let array = [];
 
-	for (let option of select.selectedOptions) {
+	let selected = select.selectedOptions;
+
+	for (let i = 0, l = selected.length; i < l; i++) {
+		let option = selected[i];
 		array.push(option.value);
 	}
 
 	return multiple ? array : array[0];
 }
 
+/**
+ * @param {HTMLSelectElement} select
+ * @param {any} current
+ */
 export function set_select_values (select, current) {
 	let multiple = select.multiple;
+	let options = select.options;
 
-	for (let option of select.options) {
+	for (let i = 0, l = options.length; i < l; i++) {
+		let option = options[i];
 		let selected = multiple ? current.includes(option.value) : (option.value === current);
 
 		option.selected = selected;
