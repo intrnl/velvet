@@ -1,5 +1,14 @@
 # @intrnl/velvet-compiler
 
+## 0.7.5
+
+### Patch Changes
+
+- 224dcd8: Improve for-loops
+- Updated dependencies [224dcd8]
+- Updated dependencies [97b1a28]
+  - @intrnl/velvet@0.4.13
+
 ## 0.7.4
 
 ### Patch Changes

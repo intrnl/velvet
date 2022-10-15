@@ -1,5 +1,12 @@
 # @intrnl/velvet
 
+## 0.4.13
+
+### Patch Changes
+
+- 224dcd8: Improve for-loops
+- 97b1a28: Instantiate custom elements in HTML templates
+
 ## 0.4.12
 
 ### Patch Changes
