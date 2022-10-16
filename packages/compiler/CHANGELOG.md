@@ -1,5 +1,11 @@
 # @intrnl/velvet-compiler
 
+## 0.7.6
+
+### Patch Changes
+
+- 6ac7ded: Adjust location of let expressions
+
 ## 0.7.5
 
 ### Patch Changes
