@@ -280,7 +280,7 @@ export function transform_template (template, source) {
 
 						ident.velvet = { computed: true };
 
-						curr_scope.expressions.push(decl);
+						curr_scope.traversals.push(decl);
 						return walk.remove;
 					}
 

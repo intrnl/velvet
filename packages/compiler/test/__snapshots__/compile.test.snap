@@ -129,10 +129,10 @@ function setup($$root, $$host) {
   let marker3 = traverse(fragment0, [0]);
   let block1 = $$root => {
     let fragment1 = clone(template1);
+    let doubled = computed(() => count.value * 2);
     let marker0 = traverse(fragment1, [0]);
     let marker1 = traverse(fragment1, [2]);
     let marker2 = traverse(fragment1, [3]);
-    let doubled = computed(() => count.value * 2);
     text(marker0, () => count.value);
     text(marker1, () => doubled.value = 2);
     after($$root, fragment1);
@@ -155,10 +155,10 @@ function setup($$root, $$host) {
   let marker3 = traverse(fragment0, [0]);
   let block1 = $$root => {
     let fragment1 = clone(template1);
+    let doubled = signal(count * 2);
     let marker0 = traverse(fragment1, [0]);
     let marker1 = traverse(fragment1, [2]);
     let marker2 = traverse(fragment1, [3]);
-    let doubled = signal(count * 2);
     text(marker0, () => count);
     text(marker1, () => doubled.value = 2);
     after($$root, fragment1);
@@ -180,9 +180,9 @@ function setup($$root, $$host) {
   let marker1 = traverse(fragment0, [0]);
   let block1 = ($$root, key) => {
     let fragment1 = clone(template1);
+    let item = computed(() => data[key.value]);
     let marker0 = traverse(fragment1, [0, 1]);
     let child0 = traverse(fragment1, [0]);
-    let item = computed(() => data[key.value]);
     text(marker0, () => item.value.name);
     effect(() => toggle(child0, "disabled", augments.includes(key.value)));
     effect(() => attr(child0, "value", key.value));
@@ -207,10 +207,10 @@ function setup($$root, $$host) {
   let marker3 = traverse(fragment0, [0]);
   let block1 = $$root => {
     let fragment1 = clone(template1);
+    let doubled = computed(() => count.value * 2);
     let marker0 = traverse(fragment1, [0]);
     let marker1 = traverse(fragment1, [2]);
     let marker2 = traverse(fragment1, [3]);
-    let doubled = computed(() => count.value * 2);
     text(marker0, () => count.value);
     text(marker1, () => doubled.value);
     after($$root, fragment1);
@@ -233,10 +233,10 @@ function setup($$root, $$host) {
   let marker3 = traverse(fragment0, [0]);
   let block1 = $$root => {
     let fragment1 = clone(template1);
+    let doubled = count * 2;
     let marker0 = traverse(fragment1, [0]);
     let marker1 = traverse(fragment1, [2]);
     let marker2 = traverse(fragment1, [3]);
-    let doubled = count * 2;
     text(marker0, () => count);
     text(marker1, () => doubled);
     after($$root, fragment1);
@@ -444,10 +444,10 @@ function setup($$root, $$host) {
   let marker2 = traverse(fragment0, [0]);
   let block1 = $$root => {
     let fragment1 = clone(template1);
-    let marker0 = traverse(fragment1, [0]);
-    let marker1 = traverse(fragment1, [1]);
     let $favorite = subscribe(favorite);
     let is_favorited = computed(() => $favorite.value.favorited);
+    let marker0 = traverse(fragment1, [0]);
+    let marker1 = traverse(fragment1, [1]);
     text(marker0, () => is_favorited.value);
     after($$root, fragment1);
     return marker1;
