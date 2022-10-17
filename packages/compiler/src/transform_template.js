@@ -18,6 +18,7 @@ export function transform_template (template, source) {
 	let fragment_to_scope = new Map();
 
 	let child_to_ident = new Map();
+	let node_offsets = new Map();
 
 	// increment to create unique identifier names
 	let id_c = 0;
@@ -27,7 +28,8 @@ export function transform_template (template, source) {
 		enter (node, parent, key, index) {
 			// handle element node
 			if (node.type === 'Element') {
-				curr_block.indices.push(index);
+				let index_offset = node_offsets.get(parent) || 0;
+				curr_block.indices.push(index + index_offset);
 
 				let elem_name = node.name;
 				let is_inline = node.inline;
@@ -1322,17 +1324,20 @@ export function transform_template (template, source) {
 				// so we'll transform only the toplevel node
 				if (parent.type !== 'ConditionalStatement') {
 					let prev_node = parent.children[index - 1];
-					let is_static_before = false;
+					let after_node = parent.children[index + 1];
 
 					let marker_ident;
+					let index_offset = node_offsets.get(parent) || 0;
 					let need_traverse = false;
 
 					if (
-						prev_node &&
-						(prev_node.type === 'Text' || (prev_node.type === 'Element' && prev_node.name !== 'v:element' && prev_node.name !== 'v:component'))
+						prev_node && (
+							(prev_node.type === 'Text' && (!after_node || after_node.type !== 'Text')) ||
+							(prev_node.type === 'Element' && prev_node.name !== 'v:element' && prev_node.name !== 'v:component')
+						)
 					) {
 						marker_ident = child_to_ident.get(prev_node);
-						is_static_before = true;
+						node_offsets.set(parent, (--index_offset));
 
 						if (!marker_ident) {
 							marker_ident = '%child' + (id_c++);
@@ -1380,7 +1385,7 @@ export function transform_template (template, source) {
 								t.call_expression(t.identifier('@traverse'), [
 									t.identifier(fragment_ident),
 									t.array_expression(
-										[...curr_block.indices, index + (is_static_before ? -1 : 0)].map((i) => t.literal(i))
+										[...curr_block.indices, index + index_offset].map((i) => t.literal(i))
 									),
 								]),
 							),
@@ -1405,17 +1410,20 @@ export function transform_template (template, source) {
 			// handle loop statement node
 			if (node.type === 'LoopStatement') {
 				let prev_node = parent.children[index - 1];
-				let is_static_before = false;
+				let after_node = parent.children[index + 1];
 
 				let marker_ident;
+				let index_offset = node_offsets.get(parent) || 0;
 				let need_traverse = false;
 
 				if (
-					prev_node &&
-					(prev_node.type === 'Text' || (prev_node.type === 'Element' && prev_node.name !== 'v:element' && prev_node.name !== 'v:component'))
+					prev_node && (
+						(prev_node.type === 'Text' && (!after_node || after_node.type !== 'Text')) ||
+						(prev_node.type === 'Element' && prev_node.name !== 'v:element' && prev_node.name !== 'v:component')
+					)
 				) {
 					marker_ident = child_to_ident.get(prev_node);
-					is_static_before = true;
+					node_offsets.set(parent, (--index_offset));
 
 					if (!marker_ident) {
 						marker_ident = '%child' + (id_c++);
@@ -1449,7 +1457,7 @@ export function transform_template (template, source) {
 							t.call_expression(t.identifier('@traverse'), [
 								t.identifier(curr_fragment_ident),
 								t.array_expression(
-									[...curr_block.indices, index + (is_static_before ? -1 : 0)].map((i) => t.literal(i))
+									[...curr_block.indices, index + index_offset].map((i) => t.literal(i))
 								),
 							]),
 						),
@@ -1484,17 +1492,20 @@ export function transform_template (template, source) {
 			// handle await statement node
 			if (node.type === 'AwaitStatement') {
 				let prev_node = parent.children[index - 1];
-				let is_static_before = false;
+				let after_node = parent.children[index + 1];
 
 				let marker_ident;
+				let index_offset = node_offsets.get(parent) || 0;
 				let need_traverse = false;
 
 				if (
-					prev_node &&
-					(prev_node.type === 'Text' || (prev_node.type === 'Element' && prev_node.name !== 'v:element' && prev_node.name !== 'v:component'))
+					prev_node && (
+						(prev_node.type === 'Text' && (!after_node || after_node.type !== 'Text')) ||
+						(prev_node.type === 'Element' && prev_node.name !== 'v:element' && prev_node.name !== 'v:component')
+					)
 				) {
 					marker_ident = child_to_ident.get(prev_node);
-					is_static_before = true;
+					node_offsets.set(parent, (--index_offset));
 
 					if (!marker_ident) {
 						marker_ident = '%child' + (id_c++);
@@ -1597,7 +1608,7 @@ export function transform_template (template, source) {
 							t.call_expression(t.identifier('@traverse'), [
 								t.identifier(fragment_ident),
 								t.array_expression(
-									[...curr_block.indices, index + (is_static_before ? -1 : 0)].map((i) => t.literal(i))
+									[...curr_block.indices, index + index_offset].map((i) => t.literal(i))
 								),
 							]),
 						),
@@ -1623,17 +1634,20 @@ export function transform_template (template, source) {
 			// handle keyed statement node
 			if (node.type === 'KeyedStatement') {
 				let prev_node = parent.children[index - 1];
-				let is_static_before = false;
+				let after_node = parent.children[index + 1];
 
 				let marker_ident;
+				let index_offset = node_offsets.get(parent) || 0;
 				let need_traverse = false;
 
 				if (
-					prev_node &&
-					(prev_node.type === 'Text' || (prev_node.type === 'Element' && prev_node.name !== 'v:element' && prev_node.name !== 'v:component'))
+					prev_node && (
+						(prev_node.type === 'Text' && (!after_node || after_node.type !== 'Text')) ||
+						(prev_node.type === 'Element' && prev_node.name !== 'v:element' && prev_node.name !== 'v:component')
+					)
 				) {
 					marker_ident = child_to_ident.get(prev_node);
-					is_static_before = true;
+					node_offsets.set(parent, (--index_offset));
 
 					if (!marker_ident) {
 						marker_ident = '%child' + (id_c++);
@@ -1661,7 +1675,7 @@ export function transform_template (template, source) {
 							t.call_expression(t.identifier('@traverse'), [
 								t.identifier(curr_fragment_ident),
 								t.array_expression(
-									[...curr_block.indices, index + (is_static_before ? -1 : 0)].map((i) => t.literal(i))
+									[...curr_block.indices, index + index_offset].map((i) => t.literal(i))
 								),
 							]),
 						),
