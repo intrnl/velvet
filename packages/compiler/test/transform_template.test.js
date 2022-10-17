@@ -1021,6 +1021,21 @@ describe('keyed logic', () => {
 
 		assertSnapshot(print(program));
 	});
+
+	it('keyed after static', () => {
+		let template = `
+			<div></div>
+
+			{#key src}
+				<img src={src} />
+			{/key}
+		`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		assertSnapshot(print(program));
+	});
 });
 
 describe('comment', () => {
