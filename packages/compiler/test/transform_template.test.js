@@ -850,6 +850,21 @@ describe('loop logic', () => {
 		assertSnapshot(print(program));
 	});
 
+	it('loop after static', () => {
+		let template = `
+			<div></div>
+
+			{#each array as person}
+				<div>{person.name}</div>
+			{/each}
+		`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		assertSnapshot(print(program));
+	});
+
 	it('throw on more than two expression', () => {
 		let template1 = `
 			{#each array as person, index, foo}
