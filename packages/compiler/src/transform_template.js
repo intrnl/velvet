@@ -1428,7 +1428,31 @@ export function transform_template (template, source) {
 
 			// handle await statement node
 			if (node.type === 'AwaitStatement') {
-				curr_block.html += '<!>';
+				let prev_node = parent.children[index - 1];
+				let is_static_before = false;
+
+				let marker_ident;
+				let need_traverse = false;
+
+				if (
+					prev_node &&
+					(prev_node.type === 'Text' || (prev_node.type === 'Element' && prev_node.name !== 'v:element' && prev_node.name !== 'v:component'))
+				) {
+					marker_ident = child_to_ident.get(prev_node);
+					is_static_before = true;
+
+					if (!marker_ident) {
+						marker_ident = '%child' + (id_c++);
+						child_to_ident.set(prev_node, marker_ident);
+
+						need_traverse = true;
+					}
+				}
+				else {
+					marker_ident = '%marker' + (id_m++);
+					curr_block.html += '<!>';
+					need_traverse = true;
+				}
 
 				let pending_ident = t.literal(null);
 				let resolved_ident = t.literal(null);
@@ -1510,17 +1534,22 @@ export function transform_template (template, source) {
 				}
 
 				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
-				let marker_ident = '%marker' + (id_m++);
 
-				let traverse_def = t.variable_declaration('let', [
-					t.variable_declarator(
-						t.identifier(marker_ident),
-						t.call_expression(t.identifier('@traverse'), [
-							t.identifier(fragment_ident),
-							t.array_expression([...curr_block.indices, index].map((i) => t.literal(i))),
-						]),
-					),
-				]);
+				if (need_traverse) {
+					let traverse_def = t.variable_declaration('let', [
+						t.variable_declarator(
+							t.identifier(marker_ident),
+							t.call_expression(t.identifier('@traverse'), [
+								t.identifier(fragment_ident),
+								t.array_expression(
+									[...curr_block.indices, index + (is_static_before ? -1 : 0)].map((i) => t.literal(i))
+								),
+							]),
+						),
+					]);
+
+					curr_scope.traversals.push(traverse_def);
+				}
 
 				let promies_expr = t.expression_statement(
 					t.call_expression(t.identifier('@promise'), [
@@ -1532,7 +1561,6 @@ export function transform_template (template, source) {
 					]),
 				);
 
-				curr_scope.traversals.push(traverse_def);
 				curr_scope.expressions.push(promies_expr);
 				return;
 			}

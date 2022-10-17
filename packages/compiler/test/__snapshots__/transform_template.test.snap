@@ -320,9 +320,9 @@ expected #use to have not more than 2 argument, 3 were passed (1:19)
 `
 
 exports[`await logic > await after static 1`] = `
-let %%template0 = @html("<div></div> <!>");
+let %%template0 = @html("<div></div> ");
 let %fragment0 = @clone(%template0);
-let %marker1 = @traverse(%fragment0, [2]);
+let %child2 = @traverse(%fragment0, [1]);
 let %block1 = $$root => {
   let %%template1 = @html("<div>pending</div>");
   let %fragment1 = @clone(%template1);
@@ -339,7 +339,7 @@ let %block2 = ($$root, person) => {
   @after($$root, %fragment2);
   return %child1;
 };
-@promise(%marker1, %block1, %block2, null, () => promise);
+@promise(%child2, %block1, %block2, null, () => promise);
 @append($$root, %fragment0);
 
 `
