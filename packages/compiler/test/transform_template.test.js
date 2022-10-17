@@ -829,6 +829,23 @@ describe('conditional logic', () => {
 
 		assertSnapshot(print(program));
 	});
+
+	it('conditional between static sandwich', () => {
+		let template = `
+			<div></div>
+
+			{#if person}
+				<div>hello {person.name}</div>
+			{/if}
+
+			<div>{person}</div>
+		`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		assertSnapshot(print(program));
+	});
 });
 
 describe('loop logic', () => {
@@ -857,6 +874,23 @@ describe('loop logic', () => {
 			{#each array as person}
 				<div>{person.name}</div>
 			{/each}
+		`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		assertSnapshot(print(program));
+	});
+
+	it('loop between static sandwich', () => {
+		let template = `
+			<div></div>
+
+			{#each array as person}
+				<div>{person.name}</div>
+			{/each}
+
+			<div>{array}</div>
 		`;
 
 		let fragment = parse_template(template);
@@ -1010,6 +1044,25 @@ describe('await logic', () => {
 
 		assertSnapshot(print(program));
 	});
+
+	it('await between static sandwich', () => {
+		let template = `
+			<div></div>
+
+			{#await promise}
+				<div>pending</div>
+			{:then person}
+				<div>{person.name}</div>
+			{/await}
+
+			<div>{promise}</div>
+		`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		assertSnapshot(print(program));
+	});
 });
 
 describe('keyed logic', () => {
@@ -1029,6 +1082,23 @@ describe('keyed logic', () => {
 			{#key src}
 				<img src={src} />
 			{/key}
+		`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		assertSnapshot(print(program));
+	});
+
+	it('keyed between static sandwich', () => {
+		let template = `
+			<div></div>
+
+			{#key src}
+				<img src={src} />
+			{/key}
+
+			<div>{src}</div>
 		`;
 
 		let fragment = parse_template(template);

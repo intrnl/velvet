@@ -344,6 +344,33 @@ let %block2 = ($$root, person) => {
 
 `
 
+exports[`await logic > await between static sandwich 1`] = `
+let %%template0 = @html("<div></div>  <div><!></div>");
+let %fragment0 = @clone(%template0);
+let %child2 = @traverse(%fragment0, [1]);
+let %marker1 = @traverse(%fragment0, [4, 0]);
+let %block1 = $$root => {
+  let %%template1 = @html("<div>pending</div>");
+  let %fragment1 = @clone(%template1);
+  let %child0 = @traverse(%fragment1, [0]);
+  @after($$root, %fragment1);
+  return %child0;
+};
+let %block2 = ($$root, person) => {
+  let %%template2 = @html("<div><!></div>");
+  let %fragment2 = @clone(%template2);
+  let %marker0 = @traverse(%fragment2, [0, 0]);
+  let %child1 = @traverse(%fragment2, [0]);
+  @text(%marker0, () => person.name);
+  @after($$root, %fragment2);
+  return %child1;
+};
+@promise(%child2, %block1, %block2, null, () => promise);
+@text(%marker1, () => promise);
+@append($$root, %fragment0);
+
+`
+
 exports[`await logic > pending 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
@@ -643,6 +670,26 @@ let %block1 = $$root => {
 };
 @show(%marker0, () => loading ? %block1 : null);
 @text(%marker1, () => name);
+@append($$root, %fragment0);
+
+`
+
+exports[`conditional logic > conditional between static sandwich 1`] = `
+let %%template0 = @html("<div></div>  <div><!></div>");
+let %fragment0 = @clone(%template0);
+let %child1 = @traverse(%fragment0, [1]);
+let %marker1 = @traverse(%fragment0, [4, 0]);
+let %block1 = $$root => {
+  let %%template1 = @html("<div>hello <!></div>");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [0, 1]);
+  let %child0 = @traverse(%fragment1, [0]);
+  @text(%marker0, () => person.name);
+  @after($$root, %fragment1);
+  return %child0;
+};
+@show(%child1, () => person ? %block1 : null);
+@text(%marker1, () => person);
 @append($$root, %fragment0);
 
 `
@@ -1049,6 +1096,25 @@ let %block1 = $$root => {
 
 `
 
+exports[`keyed logic > keyed between static sandwich 1`] = `
+let %%template0 = @html("<div></div>  <div><!></div>");
+let %fragment0 = @clone(%template0);
+let %child1 = @traverse(%fragment0, [1]);
+let %marker0 = @traverse(%fragment0, [4, 0]);
+let %block1 = $$root => {
+  let %%template1 = @html("<img />");
+  let %fragment1 = @clone(%template1);
+  let %child0 = @traverse(%fragment1, [0]);
+  $: @attr(%child0, "src", src);
+  @after($$root, %fragment1);
+  return %child0;
+};
+@keyed(%child1, %block1, () => src);
+@text(%marker0, () => src);
+@append($$root, %fragment0);
+
+`
+
 exports[`let expression > single 1`] = `
 let %%template0 = @html("");
 let %fragment0 = @clone(%template0);
@@ -1192,6 +1258,26 @@ let %block1 = ($$root, person) => {
   return %child0;
 };
 @each(%child1, %block1, () => array);
+@append($$root, %fragment0);
+
+`
+
+exports[`loop logic > loop between static sandwich 1`] = `
+let %%template0 = @html("<div></div>  <div><!></div>");
+let %fragment0 = @clone(%template0);
+let %child1 = @traverse(%fragment0, [1]);
+let %marker1 = @traverse(%fragment0, [4, 0]);
+let %block1 = ($$root, person) => {
+  let %%template1 = @html("<div><!></div>");
+  let %fragment1 = @clone(%template1);
+  let %marker0 = @traverse(%fragment1, [0, 0]);
+  let %child0 = @traverse(%fragment1, [0]);
+  @text(%marker0, () => person.name);
+  @after($$root, %fragment1);
+  return %child0;
+};
+@each(%child1, %block1, () => array);
+@text(%marker1, () => array);
 @append($$root, %fragment0);
 
 `
