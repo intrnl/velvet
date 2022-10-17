@@ -1,5 +1,14 @@
 # @intrnl/velvet-compiler
 
+## 0.7.7
+
+### Patch Changes
+
+- 75676e6: Check static nodes before conditional logic block
+- c1527a5: Check static nodes before await logic block
+- 093919d: Check static nodes before keyed logic block
+- d133100: Check static nodes before loop logic block
+
 ## 0.7.6
 
 ### Patch Changes
