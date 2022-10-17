@@ -588,6 +588,8 @@ export class Effect {
 			node._source._unsubscribe(node);
 		}
 
+		// running perpetually, doing nothing.
+		_this._flags |= RUNNING;
 		_this._sources = undefined;
 	}
 }
