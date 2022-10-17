@@ -4,6 +4,36 @@ import * as tt from './utils/template_types.js';
 import { create_error } from './utils/error.js';
 
 
+const WHITESPACE_SENSITIVE_TAGS = new Set([
+	// Whitespace-sensitive tags
+	'textarea', 'code', 'pre',
+]);
+
+const TRIM_EDGE_TAGS = new Set([
+	// Content tags
+	'address', 'audio', 'button', 'canvas', 'caption', 'figcaption', 'h1', 'h2',
+	'h3', 'h4', 'h5', 'h6', 'legend', 'meter', 'object', 'option', 'p', 'summary',
+	'video',
+
+	// Content-first tags
+	'dd', 'details', 'dt', 'iframe', 'label', 'li', 'noscript', 'output',
+	'progress', 'slot', 'td', 'template', 'th',
+
+	// Layout tags
+	'article', 'aside', 'blockquote', 'body', 'colgroup', 'datalist', 'dialog',
+	'div', 'dl', 'fieldset', 'figure', 'footer', 'form', 'head', 'header',
+	'hgroup', 'html', 'main', 'map', 'menu', 'nav', 'ol', 'optgroup', 'picture',
+	'section', 'select', 'table', 'tbody', 'tfoot', 'thead', 'tr', 'ul',
+]);
+
+const REMOVE_INNER_TAGS = new Set([
+	// Layout tags
+	'article', 'aside', 'blockquote', 'body', 'colgroup', 'datalist', 'dialog',
+	'div', 'dl', 'fieldset', 'figure', 'footer', 'form', 'head', 'header',
+	'hgroup', 'html', 'main', 'map', 'menu', 'nav', 'ol', 'optgroup', 'picture',
+	'section', 'select', 'table', 'tbody', 'tfoot', 'thead', 'tr', 'ul',
+]);
+
 export function transform_template (template, source) {
 	let blocks = [];
 
@@ -191,72 +221,6 @@ export function transform_template (template, source) {
 				fragment_to_block.set(node, curr_block);
 
 				let children = node.children;
-				let children_len = children.length;
-
-				// retrieve first and last node, trim if they're text nodes
-				let need_filtering = true;
-
-				for (let i = 0; i < children_len; i++) {
-					let child = children[i];
-
-					if (child.type === 'Expression' && child.id && (child.id.name === 'let' || child.id.name === 'log')) {
-						continue;
-					}
-
-					if (child.type !== 'Text') {
-						break;
-					}
-
-					let trimmed = child.value.trimStart();
-
-					if (trimmed) {
-						child.value = trimmed;
-						break;
-					}
-
-					children[i] = null;
-					need_filtering = true;
-				}
-
-				for (let i = children_len - 1; i > -1; i--) {
-					let child = children[i];
-
-					if (!child) {
-						break;
-					}
-
-					if (child.type === 'Expression' && child.id && (child.id.name === 'let' || child.id.name === 'log')) {
-						continue;
-					}
-
-					if (child.type !== 'Text') {
-						break;
-					}
-
-					let trimmed = child.value.trimEnd();
-
-					if (trimmed) {
-						child.value = trimmed;
-						break;
-					}
-
-					children[i] = null;
-					need_filtering = true;
-				}
-
-				if (need_filtering) {
-					let next_children = [];
-
-					for (let i = 0; i < children_len; i++) {
-						let child = children[i];
-
-						if (child !== null) {
-							next_children.push(child);
-						}
-					}
-
-					node.children = next_children;
-				}
 
 				// curr_scope is already set for root fragment
 				if (parent) {
@@ -278,6 +242,8 @@ export function transform_template (template, source) {
 			if (node.type === 'Text' && parent.type !== 'Attribute') {
 				let value = node.value;
 
+				let parent_type = parent.type;
+
 				let next_node = parent.children[index + 1];
 				let next_type = next_node && next_node.type;
 
@@ -298,10 +264,31 @@ export function transform_template (template, source) {
 					}
 				}
 
-				// trim consecutive whitespace
-				// ideally we would only be matching 2 or more instead of 1 or more,
-				// but we also need to normalize the different whitespaces
-				value = value.replace(/\s+/g, ' ');
+				// trim leading and trailing
+				if (parent_type !== 'Element' || TRIM_EDGE_TAGS.has(parent.name)) {
+					let is_first = index === 0;
+					let is_last = index === parent.children.length - 1;
+
+					if (is_first) {
+						value = value.trimStart();
+					}
+					if (is_last) {
+						value = value.trimEnd();
+					}
+				}
+
+				// destroy whitespaces entirely
+				if (
+					(index > 0 && index < parent.children.length) &&
+					parent_type === 'Element' &&
+					REMOVE_INNER_TAGS.has(parent.name)
+				) {
+					value = value.replace(/\s+/g, '');
+				}
+				// normalize whitespace, trim consecutive whitespace
+				else if (parent_type !== 'Element' || !WHITESPACE_SENSITIVE_TAGS.has(parent.name)) {
+					value = value.replace(/\s+/g, ' ');
+				}
 
 				if (!value) {
 					return walk.remove;
