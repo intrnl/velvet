@@ -486,16 +486,16 @@ export default define(null, setup, {}, []);
 exports[`store > subscription on nested conditional 1`] = `
 import {html, clone, traverse, subscribe, text, after, show, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
-let template1 = html("<!> <!><!>");
+let template1 = html("<!> <!>");
 let template2 = html("<!><!>");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
-  let marker5 = traverse(fragment0, [0]);
+  let marker4 = traverse(fragment0, [0]);
   let block1 = $$root => {
     let fragment1 = clone(template1);
     let marker0 = traverse(fragment1, [0]);
-    let marker3 = traverse(fragment1, [2]);
-    let marker4 = traverse(fragment1, [3]);
+    let child0 = traverse(fragment1, [1]);
+    let marker3 = traverse(fragment1, [3]);
     let $foo = subscribe(foo);
     let block2 = $$root => {
       let fragment2 = clone(template2);
@@ -506,11 +506,11 @@ function setup($$root, $$host) {
       return marker2;
     };
     text(marker0, () => $foo.value);
-    show(marker3, () => foo ? block2 : null);
+    show(child0, () => foo ? block2 : null);
     after($$root, fragment1);
-    return marker4;
+    return marker3;
   };
-  show(marker5, () => foo ? block1 : null);
+  show(marker4, () => foo ? block1 : null);
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
@@ -554,12 +554,12 @@ export default define(null, setup, {}, []);
 
 exports[`store > subscription on root and conditional 1`] = `
 import {html, clone, traverse, subscribe, text, after, show, append, define} from "@intrnl/velvet/internal";
-let template0 = html("<!> <!>");
+let template0 = html("<!> ");
 let template1 = html("<!><!>");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
   let marker0 = traverse(fragment0, [0]);
-  let marker3 = traverse(fragment0, [2]);
+  let child0 = traverse(fragment0, [1]);
   let $foo = subscribe(foo);
   let block1 = $$root => {
     let fragment1 = clone(template1);
@@ -570,7 +570,7 @@ function setup($$root, $$host) {
     return marker2;
   };
   text(marker0, () => $foo.value);
-  show(marker3, () => foo ? block1 : null);
+  show(child0, () => foo ? block1 : null);
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
