@@ -1,5 +1,11 @@
 # @intrnl/velvet
 
+## 0.4.14
+
+### Patch Changes
+
+- 7e3a70f: Fix rejected block being given incorrect state
+
 ## 0.4.13
 
 ### Patch Changes
