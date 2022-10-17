@@ -993,6 +993,23 @@ describe('await logic', () => {
 
 		assertSnapshot(print(program));
 	});
+
+	it('await after static', () => {
+		let template = `
+			<div></div>
+
+			{#await promise}
+				<div>pending</div>
+			{:then person}
+				<div>{person.name}</div>
+			{/await}
+		`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		assertSnapshot(print(program));
+	});
 });
 
 describe('keyed logic', () => {
