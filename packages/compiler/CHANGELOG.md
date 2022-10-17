@@ -1,6 +1,6 @@
 # @intrnl/velvet-compiler
 
-## 0.7.7
+## 0.7.8
 
 ### Patch Changes
 
@@ -8,6 +8,9 @@
 - c1527a5: Check static nodes before await logic block
 - 093919d: Check static nodes before keyed logic block
 - d133100: Check static nodes before loop logic block
+- 022e48e: Account for index offsets
+- c75f7a2: Trim text nodes when entering a fragment
+- 05967ad: Aggressive whitespace minification
 
 ## 0.7.6
 
