@@ -814,6 +814,21 @@ describe('conditional logic', () => {
 
 		assertSnapshot(print(program));
 	});
+
+	it('conditional after static', () => {
+		let template = `
+			<div></div>
+
+			{#if person}
+				<div>hello {person.name}</div>
+			{/if}
+		`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		assertSnapshot(print(program));
+	});
 });
 
 describe('loop logic', () => {
