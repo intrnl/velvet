@@ -547,7 +547,7 @@ describe('expression', () => {
 	});
 
 	it('handles parenthesis', () => {
-		let template = `hello {((name))}!`;
+		let template = `<div>hello {((name))}!</div>`;
 
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);
@@ -556,7 +556,7 @@ describe('expression', () => {
 	});
 
 	it('multiple expressions', () => {
-		let template = `hello, {first_name} {last_name}!`;
+		let template = `<div>hello, {first_name} {last_name}!</div>`;
 
 		let fragment = parse_template(template);
 		let program = transform_template(fragment);

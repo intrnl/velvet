@@ -279,9 +279,8 @@ export function transform_template (template, source) {
 
 				// destroy whitespaces entirely
 				if (
-					(index > 0 && index < parent.children.length) &&
-					parent_type === 'Element' &&
-					REMOVE_INNER_TAGS.has(parent.name)
+					parent === template ||
+					((index > 0 && index < parent.children.length) && REMOVE_INNER_TAGS.has(parent.name))
 				) {
 					value = value.replace(/\s+/g, '');
 				}
