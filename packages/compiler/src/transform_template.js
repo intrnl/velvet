@@ -188,6 +188,74 @@ export function transform_template (template, source) {
 				blocks.push(curr_block = create_block());
 				fragment_to_block.set(node, curr_block);
 
+				let children = node.children;
+				let children_len = children.length;
+
+				// retrieve first and last node, trim if they're text nodes
+				let need_filtering = true;
+
+				for (let i = 0; i < children_len; i++) {
+					let child = children[i];
+
+					if (child.type === 'Expression' && child.id && (child.id.name === 'let' || child.id.name === 'log')) {
+						continue;
+					}
+
+					if (child.type !== 'Text') {
+						break;
+					}
+
+					let trimmed = child.value.trimStart();
+
+					if (trimmed) {
+						child.value = trimmed;
+						break;
+					}
+
+					children[i] = null;
+					need_filtering = true;
+				}
+
+				for (let i = children_len - 1; i > -1; i--) {
+					let child = children[i];
+
+					if (!child) {
+						break;
+					}
+
+					if (child.type === 'Expression' && child.id && (child.id.name === 'let' || child.id.name === 'log')) {
+						continue;
+					}
+
+					if (child.type !== 'Text') {
+						break;
+					}
+
+					let trimmed = child.value.trimEnd();
+
+					if (trimmed) {
+						child.value = trimmed;
+						break;
+					}
+
+					children[i] = null;
+					need_filtering = true;
+				}
+
+				if (need_filtering) {
+					let next_children = [];
+
+					for (let i = 0; i < children_len; i++) {
+						let child = children[i];
+
+						if (child !== null) {
+							next_children.push(child);
+						}
+					}
+
+					node.children = next_children;
+				}
+
 				// curr_scope is already set for root fragment
 				if (parent) {
 					scope_stack.push(curr_scope);
@@ -225,19 +293,6 @@ export function transform_template (template, source) {
 					if (next_next_type === 'Text') {
 						next_next_node.value = value + next_next_node.value;
 						return walk.remove;
-					}
-				}
-
-				// trim leading and trailing if parent is fragment, remove if empty
-				if (parent.type === 'Fragment') {
-					let is_first = index === 0;
-					let is_last = index === parent.children.length - 1;
-
-					if (is_first) {
-						value = value.trimStart();
-					}
-					if (is_last) {
-						value = value.trimEnd();
 					}
 				}
 
