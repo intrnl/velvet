@@ -1137,9 +1137,9 @@ let %block1 = ($$root, person) => {
 `
 
 exports[`loop logic > loop after static 1`] = `
-let %%template0 = @html("<div></div> <!>");
+let %%template0 = @html("<div></div> ");
 let %fragment0 = @clone(%template0);
-let %marker1 = @traverse(%fragment0, [2]);
+let %child1 = @traverse(%fragment0, [1]);
 let %block1 = ($$root, person) => {
   let %%template1 = @html("<div><!></div>");
   let %fragment1 = @clone(%template1);
@@ -1149,7 +1149,7 @@ let %block1 = ($$root, person) => {
   @after($$root, %fragment1);
   return %child0;
 };
-@each(%marker1, %block1, () => array);
+@each(%child1, %block1, () => array);
 @append($$root, %fragment0);
 
 `
