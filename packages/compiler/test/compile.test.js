@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import * as assert from 'node:assert/strict';
 
-import { assertSnapshot } from '@intrnl/node-jestlike-snapshots';
+import { assertSnapshot } from './_utils/snapshot.js';
 
 import { compileSync, componentize } from '../src/compile.js';
 

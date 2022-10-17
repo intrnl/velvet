@@ -6,5 +6,3 @@ packages:
   - packages/esbuild-plugin
   # Visual Studio Code
   - packages/vscode-extension
-  # Internal packages
-  - packages/node-jestlike-snapshots

@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import * as assert from 'node:assert/strict';
 
-import { assertSnapshot } from '@intrnl/node-jestlike-snapshots';
+import { assertSnapshot } from './_utils/snapshot.js';
 
 import { parse_template } from '../src/parse_template.js';
 import { transform_template } from '../src/transform_template.js';
