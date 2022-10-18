@@ -1,5 +1,5 @@
-import { describe, it, before, after } from 'node:test';
 import * as assert from 'node:assert/strict';
+import { describe, it } from 'mocha';
 
 import { spy } from 'nanospy';
 import { assertSpy } from '../utils.js';
