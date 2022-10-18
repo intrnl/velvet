@@ -23,6 +23,7 @@ export {
 	computed,
 	effect,
 	batch,
+	untrack,
 	scope,
 	cleanup,
 
