@@ -123,7 +123,7 @@ function getSnapshot () {
 		const source = fs.readFileSync(snapshotPath, 'utf-8');
 
 		const snapshotExports = Object.create(null);
-		const snapshotNames = unusedMap.get(testPath) || new Set();
+		const snapshotNames = new Set();
 		const load = new Function('exports', 'module', 'require', source);
 
 		load(snapshotExports, null, null);
@@ -135,7 +135,9 @@ function getSnapshot () {
 			snapshotExports[name] = removeExtraLinebreaks(value);
 		}
 
-		unusedMap.set(testPath, snapshotNames);
+		if (!unusedMap.has(testPath)) {
+			unusedMap.set(testPath, snapshotNames);
+		}
 
 		snapshotValue = snapshotExports;
 	}
