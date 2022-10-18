@@ -1,5 +1,14 @@
 # @intrnl/velvet
 
+## 0.4.15
+
+### Patch Changes
+
+- d00b5d0: Permanently stop effect when disposing
+- dda020f: Refactor Signal implementation
+- 645b6e4: Expose untrack as public API
+- 94cd82b: Fix list iteration not receiving the right depth
+
 ## 0.4.14
 
 ### Patch Changes
