@@ -313,7 +313,19 @@ export class Signal {
 	 * @returns {() => void}
 	 */
 	subscribe (fn) {
-		return effect(() => fn(this.value));
+		let signal = this;
+
+		return effect(function () {
+			let value = signal.value;
+			let prev_context = eval_context;
+			eval_context = undefined;
+
+			try {
+				return fn(value);
+			} finally {
+				eval_context = prev_context;
+			}
+		});
 	}
 
 	/**
