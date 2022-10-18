@@ -34,6 +34,7 @@ beforeEach(function () {
 				writeSnapshot();
 			}
 
+			snapshotDirty = false;
 			snapshotValue = null;
 		}
 
@@ -59,6 +60,7 @@ after(function () {
 		writeSnapshot();
 	}
 
+	snapshotDirty = false;
 	snapshotValue = null;
 
 	let hasUnused = false;
