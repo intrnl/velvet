@@ -1,5 +1,11 @@
 # @intrnl/velvet
 
+## 0.4.16
+
+### Patch Changes
+
+- e7e9ed2: Revert Signal implementation refactor
+
 ## 0.4.15
 
 ### Patch Changes
