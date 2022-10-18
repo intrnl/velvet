@@ -34,7 +34,7 @@ let HAS_ERROR = 1 << 4;
 let TRACKING = 1 << 5;
 
 /** @type {Scope | undefined} */
-let eval_scope;
+export let eval_scope;
 
 /** @type {Effect | Computed | undefined} Currently evaluating computed or effect */
 let eval_context;

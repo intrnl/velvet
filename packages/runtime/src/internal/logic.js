@@ -1,4 +1,4 @@
-import { batch, signal, effect, scope, cleanup, Scope, Signal } from './signals.js';
+import { batch, signal, effect, scope, cleanup, Scope, Signal, eval_scope } from './signals.js';
 import { replace, remove_parts } from './dom.js';
 import { is } from './utils.js';
 
@@ -44,6 +44,7 @@ export function each (marker, block, expression) {
 
 	/** @type {[instance: Scope, marker: Comment, item: Signal][]} */
 	let parts = [];
+	let depth = eval_scope._depth + 1;
 
 	effect(() => {
 		let items = expression();
@@ -63,6 +64,7 @@ export function each (marker, block, expression) {
 
 				let item = signal(items[index]);
 				let instance = scope(true);
+				instance._depth = depth;
 
 				parts[index] = [instance, instance.run(() => block(start, item, index)), item];
 			}
