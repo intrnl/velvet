@@ -1,5 +1,12 @@
 # @intrnl/velvet
 
+## 0.4.17
+
+### Patch Changes
+
+- 002aecc: Don't retain effects with no dependencies on scope
+- 7a349d1: Subscribe method should not allow subscribing to other values
+
 ## 0.4.16
 
 ### Patch Changes
