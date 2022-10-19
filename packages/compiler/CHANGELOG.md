@@ -1,5 +1,11 @@
 # @intrnl/velvet-compiler
 
+## 0.7.9
+
+### Patch Changes
+
+- 7145950: Do some space-saving technique on the HTML template
+
 ## 0.7.8
 
 ### Patch Changes
