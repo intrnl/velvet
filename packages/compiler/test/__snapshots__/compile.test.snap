@@ -18,7 +18,7 @@ export default define(null, setup, {}, []);
 
 exports[`attribute > binding checkbox group 1`] = `
 import {signal, html, clone, traverse, effect, on, get_checked_values, append, define} from "@intrnl/velvet/internal";
-let template0 = html("<input type=checkbox value=Apple /><input type=checkbox value=Orange />");
+let template0 = html("<input type=checkbox value=Apple><input type=checkbox value=Orange>");
 function setup($$root, $$host) {
   let selected = signal(['Apple']);
   let fragment0 = clone(template0);
@@ -36,7 +36,7 @@ export default define(null, setup, {}, []);
 
 exports[`attribute > binding checkbox group nested 1`] = `
 import {signal, html, clone, traverse, effect, on, get_checked_values, append, define} from "@intrnl/velvet/internal";
-let template0 = html("<input type=checkbox value=Apple /><input type=checkbox value=Orange />");
+let template0 = html("<input type=checkbox value=Apple><input type=checkbox value=Orange>");
 function setup($$root, $$host) {
   let state = signal({
     selected: ['Apple']

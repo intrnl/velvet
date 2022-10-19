@@ -1144,4 +1144,15 @@ describe('miscellaneous', () => {
 
 		assertSnapshot(print(program));
 	});
+
+	it('handles spacing between attributes', () => {
+		let template = `
+			<button style='display: none;' class='window' title='Greet'></button>
+		`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		assertSnapshot(print(program));
+	})
 });

@@ -63,7 +63,6 @@ export function transform_template (template, source) {
 
 				let elem_name = node.name;
 				let is_inline = node.inline;
-				let is_selfclosing = node.self_closing;
 
 				// v:component and v:element lives in a new block
 				if (elem_name === 'v:component' || elem_name === 'v:element') {
@@ -125,6 +124,7 @@ export function transform_template (template, source) {
 				curr_block.html += `<${elem_name}`;
 
 				let attributes = node.attributes;
+				let needs_space = true;
 				for (let i = 0, l = attributes.length; i < l; i++) {
 					let attr = attributes[i];
 
@@ -149,7 +149,7 @@ export function transform_template (template, source) {
 						continue;
 					}
 
-					curr_block.html += ` ${attr_name}`;
+					curr_block.html += `${needs_space ? ' ' : ''}${attr_name}`;
 
 					let value = attr_value && attr_value.value;
 
@@ -196,21 +196,17 @@ export function transform_template (template, source) {
 								wrapper = '"';
 							}
 
+							needs_space = false;
 							curr_block.html += `=${wrapper}${value}${wrapper}`;
 						}
 						else {
+							needs_space = true;
 							curr_block.html += `=${value}`;
 						}
 					}
 				}
 
-				if (is_selfclosing && !is_inline) {
-					curr_block.html += ` />`;
-				}
-				else {
-					curr_block.html += `>`;
-				}
-
+				curr_block.html += `>`;
 				return;
 			}
 
