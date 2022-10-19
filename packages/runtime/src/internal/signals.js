@@ -727,7 +727,7 @@ export function effect (compute) {
 		throw error;
 	}
 
-	if (eval_scope) {
+	if (eval_scope && effect._sources) {
 		effect._depth = eval_scope._depth;
 		eval_scope.cleanups.push(dispose);
 	}
