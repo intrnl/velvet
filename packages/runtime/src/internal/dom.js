@@ -108,14 +108,18 @@ export function style_set (node, name, value) {
 }
 
 export function get_checked_values (array, value, checked) {
+	let next = array.slice();
+
 	if (checked) {
-		array.push(value);
+		next.push(value);
+		return next;
 	}
 	else {
 		let index = array.indexOf(value);
 
 		if (index > -1) {
-			array.splice(index, 1);
+			next.splice(index, 1);
+			return next;
 		}
 	}
 
