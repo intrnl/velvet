@@ -214,6 +214,15 @@ describe('attribute', () => {
 		assertSnapshot(print(program));
 	});
 
+	it('binding radio group', () => {
+		let template = `<input type=radio :group={picked}>`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		assertSnapshot(print(program));
+	})
+
 	it('binding select value', () => {
 		let template = `<select multiple :value={value}></select>`;
 

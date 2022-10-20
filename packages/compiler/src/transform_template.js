@@ -388,42 +388,36 @@ export function transform_template (template, source) {
 				let elem_name = node.name;
 				let is_inline = node.inline;
 				let is_selfclosing = node.self_closing;
-				let is_component = node.component;
 
 				// we only increment child counter if we've indeed used it.
 				let need_ident = false;
 				let elem_ident = '%child' + (id_c);
 				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
 
+				let attributes = node.attributes;
+
 				// holds expression from #this attribute to instantiate v:component
 				let _this_expr;
 
 				// checks for properties and bindings
-				let is_input = (
-					!is_component && elem_name === 'input'
-				);
+				let is_input = elem_name === 'input';
+				let is_textarea = elem_name === 'textarea';
+				let is_select = elem_name === 'select';
 
-				let is_textarea = (
-					!is_component && elem_name === 'textarea'
-				)
+				let input_type = null;
 
-				let is_select = (
-					!is_component && elem_name === 'select'
-				);
+				if (is_input) {
+					for (let i = 0, l = attributes.length; i < l; i++) {
+						let attr = attributes[i];
 
-				let is_input_checkbox = (
-					is_input &&
-					node.attributes.some((attr) => attr.name === 'type' && attr.value?.decoded === 'checkbox')
-				);
-
-				let is_input_number = (
-					is_input && !is_input_checkbox &&
-					node.attributes.some((attr) => attr.name === 'type' && attr.value?.decoded === 'number')
-				);
+						if (attr.name === 'type' && attr.value && attr.value.type === 'Text') {
+							input_type = attr.value.decoded;
+							break;
+						}
+					}
+				}
 
 				// loop through attributes
-				let attributes = node.attributes;
-
 				for (let i = 0, l = attributes.length; i < l; i++) {
 					let attr = attributes[i];
 
@@ -594,7 +588,7 @@ export function transform_template (template, source) {
 						let prop_name = attr_name.slice(1);
 
 						// handle special checkbox group binding
-						if (is_input_checkbox && prop_name === 'group') {
+						if (is_input && input_type === 'checkbox' && prop_name === 'group') {
 							let prop_expr = t.labeled_statement(
 								t.identifier('$'),
 								t.expression_statement(
@@ -603,6 +597,24 @@ export function transform_template (template, source) {
 										t.call_expression(
 											t.member_expression(value_expr, t.identifier('includes')),
 											[t.member_expression_from([elem_ident, 'value'])],
+										),
+									),
+								),
+							);
+
+							curr_scope.expressions.push(prop_expr);
+						}
+						// handle special radio group binding
+						else if (is_input && input_type === 'radio' && prop_name === 'group') {
+							let prop_expr = t.labeled_statement(
+								t.identifier('$'),
+								t.expression_statement(
+									t.assignment_expression(
+										t.member_expression_from([elem_ident, 'checked']),
+										t.binary_expression(
+											value_expr,
+											t.member_expression_from([elem_ident, 'value']),
+											'===',
 										),
 									),
 								),
@@ -644,7 +656,7 @@ export function transform_template (template, source) {
 							let event_fn;
 
 							// handle checkbox group binding
-							if (is_input_checkbox && prop_name === 'group') {
+							if (is_input && input_type === 'checkbox' && prop_name === 'group') {
 								event_name = 'input';
 
 								event_fn = t.arrow_function_expression([], t.assignment_expression(
@@ -654,6 +666,14 @@ export function transform_template (template, source) {
 										t.member_expression_from([elem_ident, 'value']),
 										t.member_expression_from([elem_ident, 'checked']),
 									]),
+								));
+							}
+							else if (is_input && input_type === 'radio' && prop_name === 'group') {
+								event_name = 'input';
+
+								event_fn = t.arrow_function_expression([], t.assignment_expression(
+									t.clone(value_expr),
+									t.member_expression_from([elem_ident, 'value']),
 								));
 							}
 							// handle select value binding
@@ -668,7 +688,7 @@ export function transform_template (template, source) {
 								));
 							}
 							// handle input number binding
-							else if (is_input_number && prop_name === 'value') {
+							else if (is_input && input_type === 'number' && prop_name === 'value') {
 								event_name = 'input';
 
 								event_fn = t.arrow_function_expression([], t.assignment_expression(

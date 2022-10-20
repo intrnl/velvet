@@ -128,6 +128,16 @@ $: %child0["value"] = foo.bar;
 
 `
 
+exports[`attribute > binding radio group 1`] = `
+let %%template0 = @html("<input type=radio>");
+let %fragment0 = @clone(%template0);
+let %child0 = @traverse(%fragment0, [0]);
+$: %child0.checked = picked === %child0.value;
+@on(%child0, "input", () => picked = %child0.value);
+@append($$root, %fragment0);
+
+`
+
 exports[`attribute > binding select value 1`] = `
 let %%template0 = @html("<select multiple></select>");
 let %fragment0 = @clone(%template0);
