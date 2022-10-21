@@ -3,6 +3,9 @@ import * as esbuild from 'esbuild';
 
 import { config } from '../esbuild.config.js';
 
+import compilerPkg from '../node_modules/@intrnl/velvet-compiler/package.json' assert { type: 'json' };
+import runtimePkg from '../node_modules/@intrnl/velvet/package.json' assert { type: 'json' };
+
 
 const args = process.argv.slice(2);
 
@@ -53,6 +56,8 @@ const internal = await esbuild.serve({
 	sourcemap: true,
 	define: {
 		'DEV': 'true',
+		'COMPILER_VERSION': `"v${compilerPkg.version}"`,
+		'RUNTIME_VERSION': `"v${runtimePkg.version}"`,
 		'COMMIT_HASH': '"DEV"',
 	},
 	plugins: [
