@@ -23,8 +23,9 @@
 		}
 	},
 	"scripts": {
-		"prepublishOnly": "pnpm run bundle",
-		"bundle": "rm -r dist; rollup -c",
+		"prepublishOnly": "pnpm run build",
+		"build": "rm -r dist; rollup -c",
+		"watch": "rollup -cw",
 		"test": "mocha --recursive"
 	},
 	"devDependencies": {

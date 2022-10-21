@@ -26,8 +26,9 @@
 		"@intrnl/fs-cache": "^0.2.3"
 	},
 	"scripts": {
-		"prepublishOnly": "pnpm run bundle",
-		"bundle": "rm -r dist; rollup -c"
+		"prepublishOnly": "pnpm run build",
+		"watch": "rollup -cw",
+		"build": "rm -r dist; rollup -c"
 	},
 	"peerDependencies": {
 		"@intrnl/velvet-compiler": "^0.7.1",

@@ -3,7 +3,7 @@
 	"packageManager": "pnpm@7.13.6",
 	"scripts": {
 		"lint": "eslint --fix --cache packages/",
-		"bundle:watch": "pnpm run -r --if-present --parallel bundle -w"
+		"watch": "pnpm run -r --if-present --parallel watch -w"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.25.0",
