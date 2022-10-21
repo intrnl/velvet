@@ -7,6 +7,7 @@ import velvet from '@intrnl/esbuild-plugin-velvet';
 export let config = {
 	entryPoints: [
 		'src/dbmonster/index.js',
+		'src/spiral/index.js',
 		'src/todomvc/index.js',
 	],
 	outdir: 'dist/_assets',

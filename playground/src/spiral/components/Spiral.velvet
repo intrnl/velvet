@@ -1,0 +1,98 @@
+<script>
+	import { onMount, batch } from '@intrnl/velvet';
+
+	import Cursor from './Cursor.velvet';
+
+	const COUNT = 500;
+	const LOOPS = 6;
+
+	let x = 0;
+	let y = 0;
+	let big = false;
+	let counter = 0;
+
+	let stopped = false;
+	let cursors = [];
+
+	$: {
+		let max = COUNT + Math.round(Math.sin((counter / 90) * 2 * Math.PI) * COUNT * 0.5);
+		let next = [];
+
+		for (let i = max; i--;) {
+			let f = (i / max) * LOOPS;
+			let theta = f * 2 * Math.PI;
+			let m = 20 + i * 2;
+			let hue = (f * 255 + counter * 10) % 255;
+
+			next[i] = {
+				color: `hsl(${hue}, 100%, 50%)`,
+				x: (x + Math.sin(theta) * m) | 0,
+				y: (y + Math.cos(theta) * m) | 0,
+			};
+		}
+
+		cursors = next;
+	}
+
+	// The original demo had deferred updates, that really helps a lot because
+	// this event gets spammed a lot when you start moving.
+	const moved = { timeout: false, x: 0, y: 0 };
+
+	function handlePointerMove (ev) {
+		moved.x = ev.x;
+		moved.y = ev.y;
+
+		if (!moved.timeout) {
+			moved.timeout = true;
+
+			requestAnimationFrame(() => (
+				batch(() => {
+					moved.timeout = false;
+					x = ev.x;
+					y = ev.y;
+				})
+			));
+		}
+	}
+
+	function handlePointerDown () {
+		big = true;
+	}
+
+	function handlePointerUp (ev) {
+		big = false;
+	}
+
+	function increment () {
+		if (stopped) {
+			return;
+		}
+
+		counter++;
+		requestAnimationFrame(increment);
+	}
+
+	onMount(() => {
+		window.addEventListener('pointermove', handlePointerMove);
+		window.addEventListener('pointerdown', handlePointerDown);
+		window.addEventListener('pointerup', handlePointerUp);
+
+		requestAnimationFrame(increment);
+
+		return () => {
+			window.removeEventListener('pointermove', handlePointerMove);
+			window.removeEventListener('pointerdown', handlePointerDown);
+			window.removeEventListener('pointerup', handlePointerUp);
+
+			stopped = true;
+		};
+	});
+</script>
+
+<div class='main'>
+	<Cursor .label .x={x} .y={y} .big={big} />
+
+	{#each cursors as cursor}
+		<Cursor .color={cursor.color} .x={cursor.x} .y={cursor.y} .big={big} />
+	{/each}
+</div>

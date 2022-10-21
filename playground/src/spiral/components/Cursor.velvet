@@ -1,0 +1,19 @@
+<script>
+	export let label = false;
+
+	export let x = 0;
+	export let y = 0;
+	export let big = false;
+	export let color = undefined;
+</script>
+
+<div
+	class={{ cursor: true, big, label }}
+	style={{ 'border-color': color, transform: `translate(${x}px, ${y}px) scale(${big ? 2 : 1})` }}
+>
+	{#if label}
+		<span class='label'>
+			{x}, {y}
+		</span>
+	{/if}
+</div>
