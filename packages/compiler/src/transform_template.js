@@ -27,7 +27,7 @@ const HTML_TRIM_EDGE = new Set([
 	'foreignObject',
 ]);
 
-const HTML_REMOVE_INNER = new Set([
+const HTML_TRIM_INNER = new Set([
 	// Layout tags
 	'article', 'aside', 'blockquote', 'body', 'colgroup', 'datalist', 'dialog',
 	'div', 'dl', 'fieldset', 'figure', 'footer', 'form', 'head', 'header',
@@ -41,7 +41,7 @@ const SVG_NO_TRIM_EDGE = new Set([
 	'a', 'altGlyph', 'tspan', 'textPath', 'tref',
 ]);
 
-const SVG_NO_REMOVE_INNER = new Set([
+const SVG_NO_TRIM_INNER = new Set([
 	// Content tags
 	'desc', 'text', 'title',
 
@@ -293,7 +293,7 @@ export function transform_template (template, source) {
 
 				let should_collapse = true;
 				let should_trim_edge = !wrapper;
-				let should_remove_inner = !wrapper;
+				let should_trim_inner = !wrapper;
 
 				let is_first = index === 0;
 				let is_last = index === parent.children.length - 1;
@@ -301,7 +301,7 @@ export function transform_template (template, source) {
 				if (parent === template) {
 					// if we're on root fragment, destroy any sort of whitespaces.
 					should_trim_edge = true;
-					should_remove_inner = true;
+					should_trim_inner = true;
 				}
 				else if (parent_type !== 'Element') {
 					// if we're on any other fragments though, let's just trim the edges
@@ -310,28 +310,32 @@ export function transform_template (template, source) {
 				else if (wrapper === 'svg') {
 					// handle some SVG-specific tags that are used for content or formatting.
 					should_trim_edge = !SVG_NO_TRIM_EDGE.has(parent.name);
-					should_remove_inner = !SVG_NO_REMOVE_INNER.has(parent.name);
+					should_trim_inner = !SVG_NO_TRIM_INNER.has(parent.name);
 				}
 				else if (wrapper === false) {
 					// handle the actual HTML stuff.
 					should_collapse = !HTML_NO_COLLAPSE.has(parent.name);
 					should_trim_edge = HTML_TRIM_EDGE.has(parent.name);
-					should_remove_inner = HTML_REMOVE_INNER.has(parent.name);
+					should_trim_inner = HTML_TRIM_INNER.has(parent.name);
+				}
+
+				if (should_trim_inner && (/^\s+$/).test(value)) {
+					return walk.remove;
 				}
 
 				if (should_trim_edge) {
-					if (is_first) {
+					if (is_first && is_last) {
+						value = value.trim();
+					}
+					else if (is_first) {
 						value = value.trimStart();
 					}
-					if (is_last) {
+					else if (is_last) {
 						value = value.trimEnd();
 					}
 				}
 
-				if (should_remove_inner && !is_first && !is_last) {
-					value = value.replace(/\s+/g, '');
-				}
-				else if (should_collapse) {
+				if (should_collapse) {
 					value = value.replace(/\s+/g, ' ');
 				}
 

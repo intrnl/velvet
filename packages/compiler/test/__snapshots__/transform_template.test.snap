@@ -1240,7 +1240,7 @@ let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
 let %marker2 = @traverse(%fragment0, [0]);
 let %block1 = ($$root, person, index) => {
-  let %%template1 = @html("<div><!>-<!></div>");
+  let %%template1 = @html("<div><!> - <!></div>");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [0, 0]);
   let %marker1 = @traverse(%fragment1, [0, 2]);
@@ -1260,7 +1260,7 @@ let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
 let %marker2 = @traverse(%fragment0, [0]);
 let %block1 = ($$root, person) => {
-  let %%template1 = @html("<div><!>-<!></div>");
+  let %%template1 = @html("<div><!> - <!></div>");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [0, 0]);
   let %marker1 = @traverse(%fragment1, [0, 2]);
