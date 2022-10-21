@@ -201,7 +201,7 @@ export function transform_template (template, source) {
 							}
 
 							if (
-								ch === ' ' || ch === '\t' || ch === '\n' || ch === '\f' || ch === '\r' ||
+								ch === ' ' || ch === '\t' || ch === '\n' || ch === '\r' ||
 								ch === '`' || ch === '=' || ch === '<' || ch === '>'
 							) {
 								needs_quote = true;
