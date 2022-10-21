@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../src/dbmonster/style.css"],
+  "sourcesContent": ["table {\n  font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n  font-size: 14px;\n  line-height: 1.42857143;\n  color: #333;\n  background-color: #fff;\n}\n\n.Query {\n  position: relative;\n}\n\n.Query:hover .popover {\n  left: -100%;\n  width: 100%;\n  display: block;\n}\n"],
+  "mappings": "AAAA,MACE,sDACA,eACA,uBACA,WACA,sBAGF,OACE,kBAGF,sBACE,WACA,WACA",
+  "names": []
+}

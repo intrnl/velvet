@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/main.js"],
+  "sourcesContent": ["const runtimeVersion = document.getElementById('runtime-version');\nruntimeVersion.textContent = RUNTIME_VERSION;\n\nconst compilerVersion = document.getElementById('compiler-version');\ncompilerVersion.textContent = COMPILER_VERSION;\n\nconst commitHash = document.getElementById('commit-hash');\ncommitHash.textContent = COMMIT_HASH;\n"],
+  "mappings": "AAAA,IAAMA,EAAiB,SAAS,eAAe,iBAAiB,EAChEA,EAAe,YAAc,UAE7B,IAAMC,EAAkB,SAAS,eAAe,kBAAkB,EAClEA,EAAgB,YAAc,UAE9B,IAAMC,EAAa,SAAS,eAAe,aAAa,EACxDA,EAAW,YAAc",
+  "names": ["runtimeVersion", "compilerVersion", "commitHash"]
+}
