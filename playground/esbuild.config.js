@@ -6,6 +6,7 @@ import velvet from '@intrnl/esbuild-plugin-velvet';
 /** @type {esbuild.BuildOptions} */
 export let config = {
 	entryPoints: [
+		'src/main.js',
 		'src/dbmonster/index.js',
 		'src/spiral/index.js',
 		'src/todomvc/index.js',

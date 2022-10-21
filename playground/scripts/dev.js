@@ -49,8 +49,12 @@ const internal = await esbuild.serve({
 	...config,
 	format: 'esm',
 	bundle: true,
-	splitting: true,
+	splitting: false,
 	sourcemap: true,
+	define: {
+		'DEV': 'true',
+		'COMMIT_HASH': '"DEV"',
+	},
 	plugins: [
 		...config.plugins || [],
 	],
