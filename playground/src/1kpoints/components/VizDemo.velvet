@@ -1,0 +1,187 @@
+<script context='module'>
+	import { interpolateViridis } from '../viridis.js';
+
+	const Layout = {
+		PHYLLOTAXIS: 0,
+		GRID: 1,
+		WAVE: 2,
+		SPIRAL: 3
+	};
+
+	const LAYOUT_ORDER = [
+		Layout.PHYLLOTAXIS,
+		Layout.SPIRAL,
+		Layout.PHYLLOTAXIS,
+		Layout.GRID,
+		Layout.WAVE,
+	];
+
+	const theta = Math.PI * (3 - Math.sqrt(5));
+
+	function xForLayout (layout) {
+		switch (layout) {
+			case Layout.PHYLLOTAXIS:
+				return 'px';
+			case Layout.GRID:
+				return 'gx';
+			case Layout.WAVE:
+				return 'wx';
+			case Layout.SPIRAL:
+				return 'sx';
+		}
+	}
+
+	function yForLayout (layout) {
+		switch (layout) {
+			case Layout.PHYLLOTAXIS:
+				return 'py';
+			case Layout.GRID:
+				return 'gy';
+			case Layout.WAVE:
+				return 'wy';
+			case Layout.SPIRAL:
+				return 'sy';
+		}
+	}
+
+	function lerp (obj, percent, startProp, endProp) {
+		let px = obj[startProp];
+		return px + (obj[endProp] - px) * percent;
+	}
+
+	function genPhyllotaxis (n) {
+		return (i) => {
+			let r = Math.sqrt(i / n);
+			let th = i * theta;
+			return [r * Math.cos(th), r * Math.sin(th)];
+		};
+	}
+
+	function genGrid (n) {
+		let rowLength = Math.round(Math.sqrt(n));
+		return (i) => [-0.8 + (1.6 / rowLength) * (i % rowLength), -0.8 + (1.6 / rowLength) * Math.floor(i / rowLength)];
+	}
+
+	function genWave (n) {
+		let xScale = 2 / (n - 1);
+		return (i) => {
+			let x = -1 + i * xScale;
+			return [x, Math.sin(x * Math.PI * 3) * 0.3];
+		};
+	}
+
+	function genSpiral (n) {
+		return (i) => {
+			let t = Math.sqrt(i / (n - 1)),
+				phi = t * Math.PI * 10;
+			return [t * Math.cos(phi), t * Math.sin(phi)];
+		};
+	}
+
+	function scale (magnitude, vector) {
+		return vector.map((p) => p * magnitude);
+	}
+
+	function translate (translation, vector) {
+		return vector.map((p, i) => p + translation[i]);
+	}
+
+	function project (vector) {
+		const wh = window.innerHeight / 2;
+		const ww = window.innerWidth / 2;
+		return translate([ww, wh], scale(Math.min(wh, ww), vector));
+	}
+</script>
+
+<script>
+	import { onMount } from '@intrnl/velvet';
+
+	export let count = 1000;
+
+	const NUM_STEPS = 60 * 2;
+
+	let stopped = false;
+	let step = 0;
+	let layout = 0;
+
+	$: phyllotaxis = genPhyllotaxis(count);
+	$: spiral = genSpiral(count);
+	$: grid = genGrid(count);
+	$: wave = genWave(count);
+
+	$: points = makePoints(count);
+
+	onMount(() => {
+		requestAnimationFrame(next);
+
+		return () => {
+			stopped = true;
+		};
+	});
+
+	function next () {
+		if (stopped) {
+			return;
+		}
+
+		let _step = (step + 1) % NUM_STEPS;
+		let _layout = _step === 0 ? (layout + 1) % LAYOUT_ORDER.length : layout;
+
+		layout = _layout;
+		step = _step;
+
+		// Clamp the linear interpolation at 80% for a pause at each finished layout state
+		const pct = Math.min(1, _step / (NUM_STEPS * 0.8));
+
+		const currentLayout = LAYOUT_ORDER[_layout];
+		const nextLayout = LAYOUT_ORDER[(_layout + 1) % LAYOUT_ORDER.length];
+
+		const pxProp = xForLayout(currentLayout);
+    const nxProp = xForLayout(nextLayout);
+    const pyProp = yForLayout(currentLayout);
+    const nyProp = yForLayout(nextLayout);
+
+		points = points.map((point) => {
+			const next = { ...point };
+      next.x = lerp(next, pct, pxProp, nxProp);
+      next.y = lerp(next, pct, pyProp, nyProp);
+
+      return next;
+		});
+
+		requestAnimationFrame(next);
+	}
+
+	function makePoints (count) {
+		const array = [];
+
+		for (let i = 0; i < count; i++) {
+			const [px, py] = project(phyllotaxis(i));
+			const [sx, sy] = project(spiral(i));
+			const [gx, gy] = project(grid(i));
+			const [wx, wy] = project(wave(i));
+
+			array.push({
+				x: 0,
+				y: 0,
+				color: interpolateViridis(i / count),
+				px, py,
+				sx, sy,
+				gx, gy,
+				wx, wy,
+			});
+		}
+
+		return array;
+	}
+</script>
+
+<svg class='demo'>
+	{#each points as point}
+		<rect
+			class='point'
+			transform={`translate(${Math.floor(point.x)}, ${Math.floor(point.y)})`}
+			fill={point.color}
+		/>
+	{/each}
+</svg>

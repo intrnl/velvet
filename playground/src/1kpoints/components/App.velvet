@@ -1,0 +1,20 @@
+<script>
+	import VizDemo from './VizDemo.velvet';
+
+	let count = 1000;
+</script>
+
+<div class='app-wrapper'>
+	<VizDemo .count={count} />
+
+	<div class='controls'>
+		<span># Points</span>
+		<input type='range' min='10' max='10000' :value={count} />
+		<span>{count}</span>
+	</div>
+
+	<span class='about'>
+		Velvet 1k Points demo, based on the
+		<a href='https://dingoeatingfuzz.github.io/glimmer-1k/' target='_blank'>Glimmer demo by Michael Lange</a>
+	</span>
+</div>
