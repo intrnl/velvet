@@ -355,9 +355,47 @@ export function transform_template (template, source) {
 					);
 				}
 
+				let fragment_ident = '%fragment' + blocks.indexOf(curr_block);
+
+				// we don't need to create a marker if we're the only children here.
+				if (parent.type === 'Element' && parent.children.length === 1) {
+					let node_ident = child_to_ident.get(parent);
+					let need_traverse = false;
+
+					if (!node_ident) {
+						node_ident = '%child' + (id_c++);
+						child_to_ident.set(parent, node_ident);
+
+						need_traverse = true;
+					}
+
+					if (need_traverse) {
+						let traverse_def = t.variable_declaration('let', [
+							t.variable_declarator(
+								t.identifier(node_ident),
+								t.call_expression(t.identifier('@traverse'), [
+									t.identifier(fragment_ident),
+									t.array_expression([...curr_block.indices].map((idx) => t.literal(idx))),
+								]),
+							),
+						]);
+
+						curr_scope.traversals.push(traverse_def);
+					}
+
+					let text_expr = t.expression_statement(
+						t.call_expression(t.identifier('@text'), [
+							t.identifier(node_ident),
+							t.arrow_function_expression([], expr),
+						]),
+					);
+
+					curr_scope.expressions.push(text_expr);
+					return;
+				}
+
 				// text expression
-				let fragment_ident ='%fragment' + blocks.indexOf(curr_block);
-				let marker_ident ='%marker' + (id_m++);
+				let marker_ident = '%marker' + (id_m++);
 
 				curr_block.html += '<!>';
 

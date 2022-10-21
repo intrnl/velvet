@@ -4,8 +4,16 @@ import { is } from './utils.js';
 
 
 export function text (marker, expression) {
+	// if we're being given an Element node directly, it means that we're the
+	// only child here, so use textContent which seems to be faster than setting
+	// up a text node.
+	if (marker.nodeType === 1) {
+		effect(() => (marker.textContent = expression()));
+		return;
+	}
+
 	let node = document.createTextNode('');
-	replace(marker, node);
+	replace(marker, node, false);
 
 	effect(() => (node.data = expression()));
 }
@@ -191,7 +199,7 @@ export function dynamic (marker, block, expression) {
 		current = next;
 		instance.clear();
 
-		replace(host, (host = next ? instance.run(() => block(next)) : marker));
+		replace(host, (host = next ? instance.run(() => block(next)) : marker), false);
 	});
 }
 
