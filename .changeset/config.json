@@ -7,5 +7,5 @@
   "access": "restricted",
   "baseBranch": "trunk",
   "updateInternalDependencies": "patch",
-  "ignore": []
+  "ignore": ["velvet-playground"]
 }
