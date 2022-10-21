@@ -48,8 +48,8 @@
 			requestAnimationFrame(() => (
 				batch(() => {
 					moved.timeout = false;
-					x = ev.x;
-					y = ev.y;
+					x = moved.x;
+					y = moved.y;
 				})
 			));
 		}
