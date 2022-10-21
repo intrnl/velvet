@@ -12,382 +12,242 @@ describe('attribute', () => {
 	it('attribute quoted', () => {
 		let template = `<div class='foo'></div>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('attribute unquoted', () => {
 		let template = `<div class=foo></div>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('attribute quotations', () => {
 		let template = `<div a="foo bar" sq="'" dq='"'></div>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('attribute expression', () => {
 		let template = `<div class={className}></div>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it.skip('attribute expression pure', () => {
 		let template = `<div class={/* @static */ className}></div>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('attribute none', () => {
 		let template = `<textarea readonly></textarea>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('fails on attribute with invalid expression', () => {
 		let template = `<div class={.foo}></div>`;
 
-		try {
-			parse_template(template);
-			assert.fail();
-		}
-		catch (error) {
-			assertSnapshot(error.toString());
-		}
+		snap_parse_error(template);
 	});
 
 	it('handles attribute expression with parenthesis', () => {
 		let template = `<div class={(((foo.bar)))}></div>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 
 	it('boolean expression', () => {
 		let template = `<textarea ?readonly={is_readonly}></textarea>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it.skip('boolean expression pure', () => {
 		let template = `<textarea ?readonly={/* @static */ is_readonly}></textarea>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('boolean none', () => {
 		let template = `<textarea ?readonly></textarea>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 
 	it('property expression', () => {
 		let template = `<input .value={value}>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it.skip('property expression pure', () => {
 		let template = `<input .value={/* @static */ value}>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('property none', () => {
 		let template = `<input .value>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('property checkbox group', () => {
 		let template = `<input type=checkbox .group={selected}>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('property select value', () => {
 		let template = `<select multiple .value={value}></select>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 
 	it('event expression', () => {
 		let template = `<button @click={handle_click}></button>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 
 	it('binding expression', () => {
 		let template = `<input :value={value}>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('binding member expression', () => {
 		let template = `<input :value={foo.bar}>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('binding component expression', () => {
 		let template = `<Component :foo={value} />`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('binding checkbox expression', () => {
 		let template = `<input type=checkbox :checked={value}>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('binding checkbox group', () => {
 		let template = `<input type=checkbox :group={selected}>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('binding radio group', () => {
 		let template = `<input type=radio :group={picked}>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	})
 
 	it('binding select value', () => {
 		let template = `<select multiple :value={value}></select>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('binding input number', () => {
 		let template = `<input type=number :value={value}>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('binding textarea value', () => {
 		let template = `<textarea :value={content}></textarea>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('fails on binding with no value', () => {
 		let template = `<input :value>`;
 
-		try {
-			let fragment = parse_template(template);
-			transform_template(fragment, template);
-			assert.fail();
-		}
-		catch (error) {
-			assertSnapshot(error.toString());
-		}
+		snap_transform_error(template)
 	});
 
 	it('fails on binding with invalid expression', () => {
 		let template = `<input :value={  foo()  }>`;
 
-		try {
-			let fragment = parse_template(template);
-			transform_template(fragment, template);
-			assert.fail();
-		}
-		catch (error) {
-			assertSnapshot(error.toString());
-		}
+		snap_transform_error(template);
 	});
 
 	it('fails on binding with optional member expression', () => {
 		let template = `<input :value={foo?.bar}>`;
 
-		try {
-			let fragment = parse_template(template);
-			transform_template(fragment, template);
-			assert.fail();
-		}
-		catch (error) {
-			assertSnapshot(error.toString());
-		}
+		snap_transform_error(template);
 	});
 
 
 	it('ref expression', () => {
 		let template = `<input #ref={input}>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 
 	it('action expression', () => {
 		let template = `<input #use={action}>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('action expression array', () => {
 		let template = `<time #use={[relformatter]}></time>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('action expression array with options', () => {
 		let template = `<time #use={[relformatter, { value: Date.now() }]}></time>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('throws on action expression array with nothing', () => {
 		let template = `<time #use={[]}></time>`;
 
-		try {
-			let fragment = parse_template(template);
-			transform_template(fragment, template);
-			assert.fail();
-		}
-		catch (error) {
-			assertSnapshot(error.toString());
-		}
+		snap_transform_error(template);
 	});
 
 	it('throws on action expression array with too many options', () => {
 		let template = `<time #use={[a, b, c]}></time>`;
 
-		try {
-			let fragment = parse_template(template);
-			transform_template(fragment, template);
-			assert.fail();
-		}
-		catch (error) {
-			assertSnapshot(error.toString());
-		}
+		snap_transform_error(template);
 	});
 
 
 	it('spread expression', () => {
 		let template = `<input {...props}>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('ifdef attributes', () => {
 		let template = `<a target?={target}></a>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('class object expression', () => {
 		let template = `<div class={{ foo: true, bar: false, baz: baz, [computed]: true }}></div>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('style object expression', () => {
 		let template = `<div style={{ color: 'red', background: bg, '--foo': null, '--baz': baz, [computed]: false }}></div>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('class object expression 2', () => {
@@ -397,10 +257,7 @@ describe('attribute', () => {
 			<li><a class={{ selected: visibility === 'completed' }} href='#/completed'>Completed</a></li>
 		`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 });
 
@@ -408,72 +265,43 @@ describe('element', () => {
 	it('selfclosing on a non-void element', () => {
 		let template = `<button />`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('v:element', () => {
 		let template = `<v:element #this={Element}></v:element>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('v:element with children', () => {
 		let template = `<v:element #this={Element}>Hello {name}!</v:element>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('multiple v:element', () => {
 		let template = `<v:element #this={element}>Foo!</v:element><v:element #this={element}>Bar!</v:element>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('throws on improper closing tag', () => {
 		let template = `<legend>Title</button>`;
 
-		try {
-			let fragment = parse_template(template);
-			transform_template(fragment, template);
-			assert.fail();
-		}
-		catch (error) {
-			assertSnapshot(error.toString());
-		}
+		snap_parse_error(template);
 	});
 
 	it('whitespace on closing tag', () => {
 		let template = `<button>Hello</button      >`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('throws on script closing tag whitespace', () => {
 		let template = `<script>console.log('hello')</script    >`;
 
-		try {
-			let fragment = parse_template(template);
-			transform_template(fragment, template);
-			assert.fail();
-		}
-		catch (error) {
-			assertSnapshot(error.toString());
-		}
+		snap_parse_error(template);
 	});
 });
 
@@ -481,46 +309,31 @@ describe('component', () => {
 	it('v:self on a custom element', () => {
 		let template = `<x-app><v:self>hello world!</v:self></x-app>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('v:component', () => {
 		let template = `<v:component #this={Component}></v:component>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('v:component with children', () => {
 		let template = `<v:component #this={Component}>Hello {name}!</v:component>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('multiple component', () => {
 		let template = `<Button>Button</Button><Button href='/'>Link Button</Button>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('multiple v:component', () => {
 		let template = `<v:component #this={Button}>Button 1</v:component><v:component #this={Button}>Button 2</v:component>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 });
 
@@ -528,49 +341,31 @@ describe('expression', () => {
 	it('custom element', () => {
 		let template = `<x-app>hello {name}!</x-app>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('component', () => {
 		let template = `<Main>hello {name}!</Main>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('fails on invalid expression', () => {
 		let template = `hello {name.}!`;
 
-		try {
-			parse_template(template);
-			assert.fail();
-		}
-		catch (error) {
-			assertSnapshot(error.toString());
-		}
+		snap_parse_error(template);
 	});
 
 	it('handles parenthesis', () => {
 		let template = `<div>hello {((name))}!</div>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('multiple expressions', () => {
 		let template = `<div>hello, {first_name} {last_name}!</div>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 });
 
@@ -578,15 +373,8 @@ describe('named expression', () => {
 	it('unknown named expression', () => {
 		let template = `{@xyz foo}`;
 
-		let fragment = parse_template(template);
 
-		try {
-			transform_template(fragment, template);
-			assert.fail();
-		}
-		catch (error) {
-			assertSnapshot(error.toString());
-		}
+		snap_transform_error(template);
 	});
 });
 
@@ -594,90 +382,49 @@ describe('log expression', () => {
 	it('single', () => {
 		let template = `{@log foo}`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('multiple', () => {
 		let template = `{@log foo, bar, baz}`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('values', () => {
 		let template = `{@log 'test', { foo, baz, baz }} {@log [foo, bar, baz]}`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('in conditional', () => {
 		let template = `{#if foo}{@log $$root, foo}{/if}`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('in conditional with text', () => {
 		let template = `{#if foo}{@log $$root, foo} Hello! {/if}`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 });
 
 describe('let expression', () => {
 	it('single', () => {
-		let template = `
-			{@let foo = 123}
-		`;
+		let template = `{@let foo = 123}`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('throws on incorrect definition', () => {
-		try {
-			let template = `{@let }`;
-			parse_template(template);
-			assert.fail();
-		}
-		catch (error) {
-			assertSnapshot(error.toString());
-		}
+		let template1 = `{@let }`;
+		let template2 = `{@let foo}`;
+		let template3 = `{@let foo.bar = 123}`;
 
-		try {
-			let template = `{@let foo}`;
-			let fragment = parse_template(template);
-			transform_template(fragment, template);
-			assert.fail();
-		}
-		catch (error) {
-			assertSnapshot(error.toString());
-		}
-
-		try {
-			let template = `{@let foo.bar = 123}`;
-			let fragment = parse_template(template);
-			transform_template(fragment, template);
-			assert.fail();
-		}
-		catch (error) {
-			assertSnapshot(error.toString());
-		}
+		snap_parse_error(template1);
+		snap_transform_error(template2);
+		snap_transform_error(template3);
 	});
 });
 
@@ -685,37 +432,25 @@ describe('conditional logic', () => {
 	it('consequent', () => {
 		let template = `{#if foo}<div>foo!</div>{/if}`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('consequent and alternate', () => {
 		let template = `{#if foo}<div>foo!</div>{:else}<div>bar!</div>{/if}`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('consequent and alternate test', () => {
 		let template = `{#if foo}<div>foo!</div>{:else if bar}<div>bar!</div>{/if}`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('nested consequent', () => {
 		let template = `{#if foo}<div>foo!</div>{#if bar}<div>bar!</div>{/if}{/if}`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('conditional before expression', () => {
@@ -727,10 +462,7 @@ describe('conditional logic', () => {
 			<div>Hello, {name}!</div>
 		`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('conditional containing expression', () => {
@@ -740,10 +472,7 @@ describe('conditional logic', () => {
 			{/if}
 		`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('conditional containing two expressions', () => {
@@ -753,10 +482,7 @@ describe('conditional logic', () => {
 			{/if}
 		`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('conditional containing component', () => {
@@ -766,10 +492,7 @@ describe('conditional logic', () => {
 			{/if}
 		`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('conditional containing v:component', () => {
@@ -779,10 +502,7 @@ describe('conditional logic', () => {
 			{/if}
 		`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('conditional containing v:element', () => {
@@ -792,10 +512,7 @@ describe('conditional logic', () => {
 			{/if}
 		`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('conditional containing v:self', () => {
@@ -805,10 +522,7 @@ describe('conditional logic', () => {
 			{/if}
 		`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('conditional containing two elements', () => {
@@ -818,10 +532,7 @@ describe('conditional logic', () => {
 			{/if}
 		`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('conditional after static', () => {
@@ -833,10 +544,7 @@ describe('conditional logic', () => {
 			{/if}
 		`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('conditional between static sandwich', () => {
@@ -850,10 +558,7 @@ describe('conditional logic', () => {
 			<div>{person}</div>
 		`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('wraps svg elements properly', () => {
@@ -871,30 +576,21 @@ describe('conditional logic', () => {
 			</svg>
 		`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 });
 
 describe('loop logic', () => {
 	it('iteration', () => {
-		let template = `{#each array as person}<div>{person.first} - {person.last}</div>{/each}`;
+		let template = `{#each array as person}<div>{person.first} - {person.last}</div>{/each}`
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('index', () => {
-		let template = `{#each array as person, index}<div>{index} - {person.name}</div>{/each}`;
+		let template = `{#each array as person, index}<div>{index} - {person.name}</div>{/each}`
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('loop after static', () => {
@@ -906,10 +602,7 @@ describe('loop logic', () => {
 			{/each}
 		`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('loop between static sandwich', () => {
@@ -923,10 +616,7 @@ describe('loop logic', () => {
 			<div>{array}</div>
 		`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('throw on more than two expression', () => {
@@ -936,13 +626,7 @@ describe('loop logic', () => {
 			{/each}
 		`;
 
-		try {
-			parse_template(template1);
-			assert.fail();
-		}
-		catch (error) {
-			assertSnapshot(error.toString());
-		}
+		snap_parse_error(template1);
 	});
 
 	it('throw on non-identifier', () => {
@@ -958,21 +642,8 @@ describe('loop logic', () => {
 			{/each}
 		`;
 
-		try {
-			parse_template(template1);
-			assert.fail();
-		}
-		catch (error) {
-			assertSnapshot(error.toString());
-		}
-
-		try {
-			parse_template(template2);
-			assert.fail();
-		}
-		catch (error) {
-			assertSnapshot(error.toString());
-		}
+		snap_parse_error(template1);
+		snap_parse_error(template2);
 	});
 });
 
@@ -980,82 +651,55 @@ describe('await logic', () => {
 	it('pending', () => {
 		let template = `{#await promise}pending{/await}`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('resolved', () => {
 		let template = `{#await promise then}resolved{/await}`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('resolved with local', () => {
 		let template = `{#await promise then result}the number is {result.value}{/await}`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('rejected', () => {
 		let template = `{#await promise catch}rejected{/await}`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('rejected with local', () => {
 		let template = `{#await promise catch error}error: {error.message}{/await}`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('pending and resolved', () => {
 		let template = `{#await promise}pending{:then}resolved{/await}`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('pending and resolved with local', () => {
 		let template = `{#await promise}pending{:then name}hello, {name}!{/await}`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('pending and rejected', () => {
 		let template = `{#await promise}pending{:catch}rejected{/await}`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('pending and rejected with local', () => {
 		let template = `{#await promise}pending{:catch error}uh, oh! <pre>{error.message}</pre>{/await}`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('await after static', () => {
@@ -1069,10 +713,7 @@ describe('await logic', () => {
 			{/await}
 		`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('await between static sandwich', () => {
@@ -1088,10 +729,7 @@ describe('await logic', () => {
 			<div>{promise}</div>
 		`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 });
 
@@ -1099,10 +737,7 @@ describe('keyed logic', () => {
 	it('keyed', () => {
 		let template = `{#key src}<img src={src} />{/key}`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('keyed after static', () => {
@@ -1114,10 +749,7 @@ describe('keyed logic', () => {
 			{/key}
 		`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('keyed between static sandwich', () => {
@@ -1131,10 +763,7 @@ describe('keyed logic', () => {
 			<div>{src}</div>
 		`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 });
 
@@ -1142,10 +771,7 @@ describe('comment', () => {
 	it('comment inbetween text', () => {
 		let template = `foo  <!-- 1 -->  bar<!-- 2 -->  baz  <!-- 3 -->buzz<!-- 4 -->bazz`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 });
 
@@ -1169,34 +795,65 @@ describe('miscellaneous', () => {
 			{/key}
 		`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	});
 
 	it('handles spacing between attributes', () => {
-		let template = `
-			<button style='display: none;' class='window' title='Greet'></button>
-		`;
+		let template = `<button style='display: none;' class='window' title='Greet'></button>`;
 
-		let fragment = parse_template(template);
-		let program = transform_template(fragment);
-
-		assertSnapshot(print(program));
+		snap(template);
 	})
 
 	it('handles html minification', () => {
-		snap(` <div> </div> <div> </div> `);
-		snap(`<p>  The  quick  brown  fox  jumps  over  the  lazy  dog.  </p>`);
-		snap(`<ul>   <li>A</li>   <li>B</li>   <li>C</li>  </ul>`);
-		snap(`<p>   Hey, I <em>just</em> found   out about this <strong>cool</strong> website!   <sup>[1]</sup> </p>`);
+		let template1 = ` <div> </div> <div> </div> `;
+		let template2 = `<p>  The  quick  brown  fox  jumps  over  the  lazy  dog.  </p>`;
+		let template3 = `<ul>   <li>A</li>   <li>B</li>   <li>C</li>  </ul>`;
+		let template4 = `<p>   Hey, I <em>just</em> found   out about this <strong>cool</strong> website!   <sup>[1]</sup> </p>`;
+
+		snap(template1);
+		snap(template2);
+		snap(template3);
+		snap(template4);
 	});
 });
 
 function snap (template) {
 	let fragment = parse_template(template);
-	let program = transform_template(fragment);
+	let program = transform_template(fragment, template);
 
 	assertSnapshot(print(program));
+}
+
+function snap_parse_error (template) {
+	let has_error = false;
+	let error = null;
+
+	try {
+		parse_template(template);
+	}
+	catch (err) {
+		has_error = true;
+		error = err;
+	}
+
+	assert.ok(has_error, `expected template parse to fail`);
+	assertSnapshot(error.toString());
+}
+
+function snap_transform_error (template) {
+	let has_error = false;
+	let error = null;
+
+	let fragment = parse_template(template);
+
+	try {
+		transform_template(fragment, template);
+	}
+	catch (err) {
+		has_error = true;
+		error = err;
+	}
+
+	assert.ok(has_error, `expected template transform to fail`);
+	assertSnapshot(error.toString());
 }
