@@ -16,6 +16,7 @@ importers:
       '@types/estree': ^1.0.0
       acorn: ^8.8.0
       astring: ^1.8.3
+      esbuild: ^0.15.12
       gensync: ^1.0.0-beta.2
       mocha: ^10.1.0
       rollup: ^3.2.3
@@ -26,6 +27,7 @@ importers:
     devDependencies:
       '@intrnl/velvet': link:../runtime
       '@types/estree': 1.0.0
+      esbuild: 0.15.12
       mocha: 10.1.0
       rollup: 3.2.3
 
@@ -46,10 +48,12 @@ importers:
 
   packages/runtime:
     specifiers:
+      esbuild: ^0.15.12
       mocha: ^10.1.0
       nanospy: ^0.5.0
       rollup: ^3.2.3
     devDependencies:
+      esbuild: 0.15.12
       mocha: 10.1.0
       nanospy: 0.5.0
       rollup: 3.2.3

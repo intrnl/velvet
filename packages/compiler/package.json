@@ -33,6 +33,7 @@
 	"devDependencies": {
 		"@intrnl/velvet": "workspace:^0.4.18",
 		"@types/estree": "^1.0.0",
+		"esbuild": "^0.15.12",
 		"mocha": "^10.1.0",
 		"rollup": "^3.2.3"
 	}
