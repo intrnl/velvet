@@ -3,7 +3,7 @@ import * as fs from 'node:fs';
 import { defineConfig } from 'rollup';
 import * as esbuild from 'esbuild';
 
-import pkg from './package.json';
+import pkg from './package.json' assert { type: 'json' };
 
 
 let mangleFile = './mangle.json';
