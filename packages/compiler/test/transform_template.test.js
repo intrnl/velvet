@@ -1185,4 +1185,18 @@ describe('miscellaneous', () => {
 
 		assertSnapshot(print(program));
 	})
+
+	it('handles html minification', () => {
+		snap(` <div> </div> <div> </div> `);
+		snap(`<p>  The  quick  brown  fox  jumps  over  the  lazy  dog.  </p>`);
+		snap(`<ul>   <li>A</li>   <li>B</li>   <li>C</li>  </ul>`);
+		snap(`<p>   Hey, I <em>just</em> found   out about this <strong>cool</strong> website!   <sup>[1]</sup> </p>`);
+	});
 });
+
+function snap (template) {
+	let fragment = parse_template(template);
+	let program = transform_template(fragment);
+
+	assertSnapshot(print(program));
+}

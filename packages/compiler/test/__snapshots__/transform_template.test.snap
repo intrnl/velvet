@@ -559,7 +559,7 @@ let %block1 = ($$root, result) => {
 `
 
 exports[`comment > comment inbetween text 1`] = `
-let %%template0 = @html("foobarbazbuzzbazz");
+let %%template0 = @html("foo bar baz buzzbazz");
 let %fragment0 = @clone(%template0);
 @append($$root, %fragment0);
 
@@ -763,11 +763,11 @@ let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
 let %marker3 = @traverse(%fragment0, [0]);
 let %block1 = $$root => {
-  let %%template1 = @html("<!> <!><!>");
+  let %%template1 = @html("<!><!><!>");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [0]);
-  let %marker1 = @traverse(%fragment1, [2]);
-  let %marker2 = @traverse(%fragment1, [3]);
+  let %marker1 = @traverse(%fragment1, [1]);
+  let %marker2 = @traverse(%fragment1, [2]);
   @text(%marker0, () => person.first_name);
   @text(%marker1, () => person.last_name);
   @after($$root, %fragment1);
@@ -940,10 +940,10 @@ let %block1 = $$root => {
 `
 
 exports[`conditional logic > wraps svg elements properly 1`] = `
-let %%template0 = @html("<svg> <!> <foreignObject> <!> </foreignObject> </svg>");
+let %%template0 = @html("<svg><!><foreignObject><!></foreignObject></svg>");
 let %fragment0 = @clone(%template0);
-let %marker0 = @traverse(%fragment0, [0, 1]);
-let %marker1 = @traverse(%fragment0, [0, 3, 1]);
+let %marker0 = @traverse(%fragment0, [0, 0]);
+let %marker1 = @traverse(%fragment0, [0, 1, 0]);
 let %block1 = $$root => {
   let %%template1 = @html("<svg><rect></rect></svg>", true);
   let %fragment1 = @clone(%template1);
@@ -1336,6 +1336,34 @@ expected a local identifier (2:19)
                          ^
 3:         <div>{index} - {person.name}</div>
 4:       {/each}
+`
+
+exports[`miscellaneous > handles html minification 1`] = `
+let %%template0 = @html("<div></div><div></div>");
+let %fragment0 = @clone(%template0);
+@append($$root, %fragment0);
+
+`
+
+exports[`miscellaneous > handles html minification 2`] = `
+let %%template0 = @html("<p>The quick brown fox jumps over the lazy dog.</p>");
+let %fragment0 = @clone(%template0);
+@append($$root, %fragment0);
+
+`
+
+exports[`miscellaneous > handles html minification 3`] = `
+let %%template0 = @html("<ul><li>A</li><li>B</li><li>C</li></ul>");
+let %fragment0 = @clone(%template0);
+@append($$root, %fragment0);
+
+`
+
+exports[`miscellaneous > handles html minification 4`] = `
+let %%template0 = @html("<p>Hey, I <em>just</em> found out about this <strong>cool</strong> website! <sup>[1]</sup></p>");
+let %fragment0 = @clone(%template0);
+@append($$root, %fragment0);
+
 `
 
 exports[`miscellaneous > handles implicit table 1`] = `

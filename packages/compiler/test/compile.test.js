@@ -9,7 +9,6 @@ import { compileSync, componentize } from '../src/compile.js';
 describe('module context', () => {
 	it('allow top level await', () => {
 		let source = `
-		foo
 			<script context=module>
 				let number = await Promise.resolve(420);
 			</script>

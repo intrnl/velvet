@@ -4,12 +4,12 @@ import * as tt from './utils/template_types.js';
 import { create_error } from './utils/error.js';
 
 
-const WHITESPACE_SENSITIVE_TAGS = new Set([
+const HTML_NO_COLLAPSE = new Set([
 	// Whitespace-sensitive tags
 	'textarea', 'code', 'pre',
 ]);
 
-const TRIM_EDGE_TAGS = new Set([
+const HTML_TRIM_EDGE = new Set([
 	// Content tags
 	'address', 'audio', 'button', 'canvas', 'caption', 'figcaption', 'h1', 'h2',
 	'h3', 'h4', 'h5', 'h6', 'legend', 'meter', 'object', 'option', 'p', 'summary',
@@ -24,14 +24,29 @@ const TRIM_EDGE_TAGS = new Set([
 	'div', 'dl', 'fieldset', 'figure', 'footer', 'form', 'head', 'header',
 	'hgroup', 'html', 'main', 'map', 'menu', 'nav', 'ol', 'optgroup', 'picture',
 	'section', 'select', 'table', 'tbody', 'tfoot', 'thead', 'tr', 'ul',
+	'foreignObject',
 ]);
 
-const REMOVE_INNER_TAGS = new Set([
+const HTML_REMOVE_INNER = new Set([
 	// Layout tags
 	'article', 'aside', 'blockquote', 'body', 'colgroup', 'datalist', 'dialog',
 	'div', 'dl', 'fieldset', 'figure', 'footer', 'form', 'head', 'header',
 	'hgroup', 'html', 'main', 'map', 'menu', 'nav', 'ol', 'optgroup', 'picture',
 	'section', 'select', 'table', 'tbody', 'tfoot', 'thead', 'tr', 'ul',
+	'foreignObject',
+]);
+
+const SVG_NO_TRIM_EDGE = new Set([
+	// Formatting tags
+	'a', 'altGlyph', 'tspan', 'textPath', 'tref',
+]);
+
+const SVG_NO_REMOVE_INNER = new Set([
+	// Content tags
+	'desc', 'text', 'title',
+
+	// Formatting tags
+	'a', 'altGlyph', 'tspan', 'textPath', 'tref',
 ]);
 
 export function transform_template (template, source) {
@@ -272,11 +287,39 @@ export function transform_template (template, source) {
 					}
 				}
 
-				// trim leading and trailing
-				if (parent_type !== 'Element' || TRIM_EDGE_TAGS.has(parent.name)) {
-					let is_first = index === 0;
-					let is_last = index === parent.children.length - 1;
+				// default to destroying any sort of whitespace if we're not on HTML.
+				// TODO(intrnl): how should this be applied to MathML?
+				let wrapper = get_current(wrap_stack);
 
+				let should_collapse = true;
+				let should_trim_edge = !wrapper;
+				let should_remove_inner = !wrapper;
+
+				let is_first = index === 0;
+				let is_last = index === parent.children.length - 1;
+
+				if (parent === template) {
+					// if we're on root fragment, destroy any sort of whitespaces.
+					should_trim_edge = true;
+					should_remove_inner = true;
+				}
+				else if (parent_type !== 'Element') {
+					// if we're on any other fragments though, let's just trim the edges
+					should_trim_edge = true;
+				}
+				else if (wrapper === 'svg') {
+					// handle some SVG-specific tags that are used for content or formatting.
+					should_trim_edge = !SVG_NO_TRIM_EDGE.has(parent.name);
+					should_remove_inner = !SVG_NO_REMOVE_INNER.has(parent.name);
+				}
+				else if (wrapper === false) {
+					// handle the actual HTML stuff.
+					should_collapse = !HTML_NO_COLLAPSE.has(parent.name);
+					should_trim_edge = HTML_TRIM_EDGE.has(parent.name);
+					should_remove_inner = HTML_REMOVE_INNER.has(parent.name);
+				}
+
+				if (should_trim_edge) {
 					if (is_first) {
 						value = value.trimStart();
 					}
@@ -285,15 +328,10 @@ export function transform_template (template, source) {
 					}
 				}
 
-				// destroy whitespaces entirely
-				if (
-					parent === template ||
-					((index > 0 && index < parent.children.length) && REMOVE_INNER_TAGS.has(parent.name))
-				) {
+				if (should_remove_inner && !is_first && !is_last) {
 					value = value.replace(/\s+/g, '');
 				}
-				// normalize whitespace, trim consecutive whitespace
-				else if (parent_type !== 'Element' || !WHITESPACE_SENSITIVE_TAGS.has(parent.name)) {
+				else if (should_collapse) {
 					value = value.replace(/\s+/g, ' ');
 				}
 
