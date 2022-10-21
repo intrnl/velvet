@@ -1,13 +1,27 @@
-export function html (fragment) {
+export function html (fragment, is_wrapped) {
 	let node = document.createElement('template');
 	node.innerHTML = fragment;
+
+	if (is_wrapped) {
+		// we remove the wrapper, and move its children directly to fragment
+		let content = node.content;
+		let wrapper = content.childNodes[0];
+
+		let children = wrapper.childNodes;
+		let len = children.length;
+
+		wrapper.remove();
+
+		while (len--) {
+			content.appendChild(children[0]);
+		}
+	}
 
 	return node;
 }
 
 export function clone (template) {
 	/** @type {DocumentFragment} */
-	// let fragment = template.content.cloneNode(true);
 	let fragment = document.importNode(template.content, true);
 
 	return fragment;

@@ -939,6 +939,31 @@ let %block1 = $$root => {
 
 `
 
+exports[`conditional logic > wraps svg elements properly 1`] = `
+let %%template0 = @html("<svg> <!> <foreignObject> <!> </foreignObject> </svg>");
+let %fragment0 = @clone(%template0);
+let %marker0 = @traverse(%fragment0, [0, 1]);
+let %marker1 = @traverse(%fragment0, [0, 3, 1]);
+let %block1 = $$root => {
+  let %%template1 = @html("<svg><rect></rect></svg>", true);
+  let %fragment1 = @clone(%template1);
+  let %child0 = @traverse(%fragment1, [0]);
+  @after($$root, %fragment1);
+  return %child0;
+};
+let %block2 = $$root => {
+  let %%template2 = @html("<div></div>");
+  let %fragment2 = @clone(%template2);
+  let %child1 = @traverse(%fragment2, [0]);
+  @after($$root, %fragment2);
+  return %child1;
+};
+@show(%marker0, () => foo ? %block1 : null);
+@show(%marker1, () => bar ? %block2 : null);
+@append($$root, %fragment0);
+
+`
+
 exports[`element > multiple v:element 1`] = `
 let %%template0 = @html("<!><!>");
 let %fragment0 = @clone(%template0);

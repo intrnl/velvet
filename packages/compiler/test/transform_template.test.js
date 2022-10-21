@@ -855,6 +855,27 @@ describe('conditional logic', () => {
 
 		assertSnapshot(print(program));
 	});
+
+	it('wraps svg elements properly', () => {
+		let template = `
+			<svg>
+				{#if foo}
+					<rect></rect>
+				{/if}
+
+				<foreignObject>
+					{#if bar}
+						<div></div>
+					{/if}
+				</foreignObject>
+			</svg>
+		`;
+
+		let fragment = parse_template(template);
+		let program = transform_template(fragment);
+
+		assertSnapshot(print(program));
+	});
 });
 
 describe('loop logic', () => {

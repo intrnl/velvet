@@ -50,6 +50,8 @@ export function transform_template (template, source) {
 	let child_to_ident = new Map();
 	let node_offsets = new Map();
 
+	let wrap_stack = [false];
+
 	// increment to create unique identifier names
 	let id_c = 0;
 	let id_m = 0;
@@ -63,6 +65,15 @@ export function transform_template (template, source) {
 
 				let elem_name = node.name;
 				let is_inline = node.inline;
+
+				// handle special-handled elements, these needs to be wrapped,
+				// save for `foreignObject` where it's supposed to be handling HTML-in-SVG/XML.
+				if (elem_name === 'svg' || elem_name === 'math') {
+					wrap_stack.push(elem_name);
+				}
+				else if (elem_name === 'foreignObject') {
+					wrap_stack.push(false);
+				}
 
 				// v:component and v:element lives in a new block
 				if (elem_name === 'v:component' || elem_name === 'v:element') {
@@ -121,10 +132,11 @@ export function transform_template (template, source) {
 					}
 				}
 
-				curr_block.html += `<${elem_name}`;
-
 				let attributes = node.attributes;
 				let needs_space = true;
+
+				curr_block.html += `<${elem_name}`;
+
 				for (let i = 0, l = attributes.length; i < l; i++) {
 					let attr = attributes[i];
 
@@ -453,6 +465,11 @@ export function transform_template (template, source) {
 							break;
 						}
 					}
+				}
+
+				if (elem_name === 'svg' || elem_name === 'math' || elem_name === 'foreignObject') {
+					// we're leaving this element, so pop the values we've made earlier
+					wrap_stack.pop();
 				}
 
 				// loop through attributes
@@ -1220,6 +1237,14 @@ export function transform_template (template, source) {
 				// fragment is not a static element or text.
 				let is_static_end = false;
 
+				// if our parent is an svg, then we need to wrap our template, so that
+				// they're parsed appropriately as svg.
+				let wrapper = get_current(wrap_stack);
+
+				if (wrapper) {
+					curr_block.html = `<${wrapper}>` + curr_block.html + `</${wrapper}>`;
+				}
+
 				if (parent) {
 					let child = node.children[node.children.length - 1];
 
@@ -1238,7 +1263,10 @@ export function transform_template (template, source) {
 					t.variable_declarator(
 						// template def has to be hoisted
 						t.identifier('%' + template_ident),
-						t.call_expression(t.identifier('@html'), [t.literal(curr_block.html)]),
+						t.call_expression(t.identifier('@html'), [
+							t.literal(curr_block.html),
+							wrapper && t.literal(!!wrapper),
+						]),
 					),
 				]);
 
@@ -1757,6 +1785,10 @@ function create_block () {
 		html: '',
 		indices: [],
 	};
+}
+
+function get_current (arr, cursor = 0) {
+	return arr[arr.length - 1 - cursor];
 }
 
 function create_scope () {
