@@ -1,11 +1,18 @@
 import Spiral from './components/Spiral.velvet';
 import Cursor from './components/Cursor.velvet';
 
+import * as perfmon from 'perf-monitor';
+
 import './style.css';
 
 
 patchComponent(Spiral);
 patchComponent(Cursor);
+
+if (!(/[&?]perfmon=(false|off|0)\b/).test(location.search)) {
+	perfmon.startFPSMonitor();
+	perfmon.startMemMonitor();
+}
 
 const spiral = new Spiral();
 document.body.appendChild(spiral);

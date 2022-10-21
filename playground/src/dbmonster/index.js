@@ -14,18 +14,31 @@ app.dbs = ENV.generateData().toArray();
 
 document.body.appendChild(app);
 
-perfmon.startFPSMonitor();
-perfmon.startMemMonitor();
-perfmon.initProfiler('view update');
+if (!(/[&?]perfmon=(false|off|0)\b/).test(location.search)) {
+	perfmon.startFPSMonitor();
+	perfmon.startMemMonitor();
+	perfmon.initProfiler('view update');
 
-function redraw () {
-	const next = ENV.generateData().toArray();
+	function redraw () {
+		const next = ENV.generateData().toArray();
 
-	perfmon.startProfile('view update');
-	app.dbs = next;
-	perfmon.endProfile('view update');
+		perfmon.startProfile('view update');
+		app.dbs = next;
+		perfmon.endProfile('view update');
 
-	setTimeout(redraw, ENV.timeout);
+		setTimeout(redraw, ENV.timeout);
+	}
+
+	redraw();
 }
+else {
+	function redraw () {
+		const next = ENV.generateData().toArray();
 
-redraw();
+		app.dbs = next;
+
+		setTimeout(redraw, ENV.timeout);
+	}
+
+	redraw();
+}

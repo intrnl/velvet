@@ -9,8 +9,10 @@ import './style.css';
 patchComponent(App);
 patchComponent(VizDemo);
 
-perfmon.startFPSMonitor();
-perfmon.startMemMonitor();
+if (!(/[&?]perfmon=(false|off|0)\b/).test(location.search)) {
+	perfmon.startFPSMonitor();
+	perfmon.startMemMonitor();
+}
 
 const spiral = new App();
 document.body.appendChild(spiral);
