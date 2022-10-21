@@ -1,5 +1,12 @@
 # @intrnl/velvet
 
+## 0.4.18
+
+### Patch Changes
+
+- efdd122: `get_checked_values` should be immutable
+- 7672a62: Optimize text nodes that are an only child of an element
+
 ## 0.4.17
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"name": "@intrnl/velvet-compiler",
-	"version": "0.7.9",
+	"version": "0.7.10",
 	"author": "intrnl",
 	"license": "MIT",
 	"repository": {
@@ -23,7 +23,7 @@
 		"test": "mocha --recursive"
 	},
 	"peerDependencies": {
-		"@intrnl/velvet": "workspace:^0.4.13"
+		"@intrnl/velvet": "workspace:^0.4.18"
 	},
 	"dependencies": {
 		"acorn": "^8.8.0",
@@ -31,7 +31,7 @@
 		"gensync": "^1.0.0-beta.2"
 	},
 	"devDependencies": {
-		"@intrnl/velvet": "workspace:^0.4.13",
+		"@intrnl/velvet": "workspace:^0.4.18",
 		"@types/estree": "^1.0.0",
 		"esbuild": "^0.15.9",
 		"mocha": "^10.1.0",

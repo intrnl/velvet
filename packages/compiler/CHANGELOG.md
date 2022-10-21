@@ -1,5 +1,15 @@
 # @intrnl/velvet-compiler
 
+## 0.7.10
+
+### Patch Changes
+
+- a2f3e66: Add group binding for radio inputs
+- 7672a62: Optimize text nodes that are an only child of an element
+- Updated dependencies [efdd122]
+- Updated dependencies [7672a62]
+  - @intrnl/velvet@0.4.18
+
 ## 0.7.9
 
 ### Patch Changes
