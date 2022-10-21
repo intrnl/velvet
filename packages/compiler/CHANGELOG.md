@@ -1,5 +1,14 @@
 # @intrnl/velvet-compiler
 
+## 0.7.11
+
+### Patch Changes
+
+- 152d547: Properly handle SVG and MathML in logic blocks
+- Updated dependencies [152d547]
+- Updated dependencies [8ec56e1]
+  - @intrnl/velvet@0.4.19
+
 ## 0.7.10
 
 ### Patch Changes

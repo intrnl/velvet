@@ -1,5 +1,14 @@
 # @intrnl/velvet
 
+## 0.4.19
+
+### Patch Changes
+
+- 152d547: Properly handle SVG and MathML in logic blocks
+- 8ec56e1: Don't set textContent as optimization
+
+  Turns out this is causing a noticeable blip in update time.
+
 ## 0.4.18
 
 ### Patch Changes
