@@ -5,7 +5,7 @@
 		"lint": "eslint --fix --cache packages/"
 	},
 	"devDependencies": {
-		"@changesets/cli": "^2.24.4",
-		"eslint": "^8.24.0"
+		"@changesets/cli": "^2.25.0",
+		"eslint": "^8.25.0"
 	}
 }
