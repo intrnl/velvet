@@ -1,0 +1,156 @@
+<script>
+	const ENTER_KEY = 13;
+	const ESCAPE_KEY = 27;
+
+	const STORAGE_KEY = 'todos';
+
+	const filters = {
+		all: (items) => items,
+		active: (items) => items.filter((item) => !item.completed),
+		completed: (items) => items.filter((item) => item.completed),
+	};
+
+	let items = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+	let visibility = 'all';
+	let editing = null;
+	let editing_ref = null;
+
+	$: filtered_items = filters[visibility](items);
+	$: remaining = filters.active(items).length;
+
+	const toggle_all = (event) => {
+		items = items.map((item) => ({ ...item, completed: event.target.checked }));
+	};
+
+	const clear_completed = () => {
+		items = items.filter((item) => !item.completed);
+	};
+
+	const add_todo = (event) => {
+		if (event.which === ENTER_KEY) {
+			items = items.concat({
+				id: Date.now(),
+				title: event.target.value,
+				completed: false,
+			});
+
+			event.target.value = '';
+		}
+	};
+
+	const remove_todo = (id) => {
+		items = items.filter((item) => item.id !== id);
+	};
+
+	const edit_todo = (next) => {
+		items = items.map((item) => {
+			if (item.id !== next.id) return item;
+			return { ...item, ...next };
+		});
+	};
+
+	const toggle_todo = (id, event) => {
+		edit_todo({ id, completed: event.target.checked });
+	};
+
+	const handle_edit = (event) => {
+		if (event.which === ENTER_KEY) {
+			event.target.blur()
+		}
+		else if (event.which === ESCAPE_KEY) {
+			editing = null;
+			editing_ref = null;
+		}
+	};
+
+	const handle_submit = (event) => {
+		edit_todo({ id: editing, title: event.target.value });
+		editing = null;
+		editing_ref = null;
+	};
+
+	const update_view = () => {
+		let route = window.location.hash.replace(/#\/?/, '');
+
+		if (!filters[route]) {
+			route = 'all';
+		}
+
+		visibility = route;
+	};
+
+	window.addEventListener('hashchange', update_view);
+	update_view();
+
+	$: localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+	$: if (editing_ref) setTimeout(() => editing_ref.focus());
+</script>
+
+<header class='header'>
+	<h1>todos</h1>
+	<input
+		class='new-todo'
+		@keydown={add_todo}
+		placeholder='What needs to be done?'
+		autofocus
+	/>
+</header>
+
+{#if items.length > 0}
+	<section class='main'>
+		<input id='toggle-all' class='toggle-all' type='checkbox' .checked={remaining === 0} @change={toggle_all} />
+		<label for='toggle-all'>Mark all as complete</label>
+
+		<ul class='todo-list'>
+			{#each filtered_items as item}
+				<li class={{ todo: true, completed: item.completed, editing: editing === item.id }}>
+					<div class='view'>
+						<input
+							class='toggle'
+							type='checkbox'
+							.checked={item.completed}
+							@change={(event) => toggle_todo(item.id, event)}
+						/>
+
+						<label @dblclick={() => editing = item.id}>
+							{item.title}
+						</label>
+
+						<button class='destroy' @click={() => remove_todo(item.id)} />
+					</div>
+
+					{#if editing === item.id}
+						<input
+							#ref={editing_ref}
+							class='edit'
+							.value={item.title}
+							@keydown={handle_edit}
+							@blur={handle_submit}
+						/>
+					{/if}
+				</li>
+			{/each}
+		</ul>
+
+		<footer class='footer'>
+			<span class='todo-count'>
+				<strong>{remaining}</strong> {remaining === 1 ? 'item' : 'items'} left
+			</span>
+
+			<ul class='filters'>
+				<li><a class={{ selected: visibility === 'all' }} href='#/'>All</a></li>
+				<li><a class={{ selected: visibility === 'active' }} href='#/active'>Active</a></li>
+				<li><a class={{ selected: visibility === 'completed' }} href='#/completed'>Completed</a></li>
+			</ul>
+
+			{#if items.length > remaining}
+				<button class='clear-completed' @click={clear_completed}>
+					Clear completed
+				</button>
+			{/if}
+		</footer>
+	</section>
+{/if}
+
+<style>
+</style>

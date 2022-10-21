@@ -60,6 +60,21 @@ importers:
     devDependencies:
       vsce: 2.12.0
 
+  playground:
+    specifiers:
+      '@intrnl/esbuild-plugin-velvet': workspace:*
+      '@intrnl/velvet': workspace:*
+      '@intrnl/velvet-compiler': workspace:*
+      esbuild: ^0.15.11
+      perf-monitor: ^0.4.1
+    dependencies:
+      '@intrnl/velvet': link:../packages/runtime
+      perf-monitor: 0.4.1
+    devDependencies:
+      '@intrnl/esbuild-plugin-velvet': link:../packages/esbuild-plugin
+      '@intrnl/velvet-compiler': link:../packages/compiler
+      esbuild: 0.15.12
+
 packages:
 
   /@babel/code-frame/7.18.6:
@@ -2356,6 +2371,10 @@ packages:
   /pend/1.2.0:
     resolution: {integrity: sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==}
     dev: true
+
+  /perf-monitor/0.4.1:
+    resolution: {integrity: sha512-7YEPzus05EdY6YbMlcvzX0iQFyXRd6I4IdRWHmqxFBY3+Hq/vHb4EIYll3n8ufA6lPBUhdkUEuk8/+b8nzbHDg==}
+    dev: false
 
   /picomatch/2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}

@@ -6,3 +6,5 @@ packages:
   - packages/esbuild-plugin
   # Visual Studio Code
   - packages/vscode-extension
+  # Playground
+  - playground

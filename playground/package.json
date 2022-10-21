@@ -1,0 +1,21 @@
+{
+	"private": true,
+	"type": "module",
+	"name": "velvet-playground",
+	"engines": {
+		"node": ">=16.0.0"
+	},
+	"scripts": {
+		"dev": "NODE_ENV=development node ./scripts/dev.js",
+		"build": "NODE_ENV=production node ./scripts/build.js"
+	},
+	"dependencies": {
+		"@intrnl/velvet": "workspace:*",
+		"perf-monitor": "^0.4.1"
+	},
+	"devDependencies": {
+		"@intrnl/esbuild-plugin-velvet": "workspace:*",
+		"@intrnl/velvet-compiler": "workspace:*",
+		"esbuild": "^0.15.11"
+	}
+}
