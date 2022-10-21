@@ -1,19 +1,17 @@
 import { batch, signal, effect, scope, cleanup, Scope, Signal, eval_scope } from './signals.js';
-import { replace, remove_parts } from './dom.js';
+import { replace, remove_parts, append } from './dom.js';
 import { is } from './utils.js';
 
 
 export function text (marker, expression) {
-	// if we're being given an Element node directly, it means that we're the
-	// only child here, so use textContent which seems to be faster than setting
-	// up a text node.
-	if (marker.nodeType === 1) {
-		effect(() => (marker.textContent = expression()));
-		return;
-	}
-
 	let node = document.createTextNode('');
-	replace(marker, node, false);
+
+	if (marker.nodeType === 1) {
+		append(marker, node);
+	}
+	else {
+		replace(marker, node, false);
+	}
 
 	effect(() => (node.data = expression()));
 }
