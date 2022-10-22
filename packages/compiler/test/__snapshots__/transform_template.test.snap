@@ -1366,6 +1366,13 @@ let %fragment0 = @clone(%template0);
 
 `
 
+exports[`miscellaneous > handles html minification 5`] = `
+let %%template0 = @html("<div>x x <div></div> x x <div></div> x x</div>");
+let %fragment0 = @clone(%template0);
+@append($$root, %fragment0);
+
+`
+
 exports[`miscellaneous > handles implicit table 1`] = `
 let %%template0 = @html("<!><!><!><!>");
 let %fragment0 = @clone(%template0);

@@ -809,11 +809,13 @@ describe('miscellaneous', () => {
 		let template2 = `<p>  The  quick  brown  fox  jumps  over  the  lazy  dog.  </p>`;
 		let template3 = `<ul>   <li>A</li>   <li>B</li>   <li>C</li>  </ul>`;
 		let template4 = `<p>   Hey, I <em>just</em> found   out about this <strong>cool</strong> website!   <sup>[1]</sup> </p>`;
+		let template5 = `<div> x x <div></div> x x <div></div> x x </div>`;
 
 		snap(template1);
 		snap(template2);
 		snap(template3);
 		snap(template4);
+		snap(template5);
 	});
 });
 
