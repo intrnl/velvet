@@ -730,16 +730,3 @@ no singular $ reference (2:15)
                      ^
 3:     
 `
-
-exports[`untrack > allows untracking mutated values 1`] = `
-let count = @signal(123);
-count.value = 234;
-count.peek();
-
-`
-
-exports[`untrack > passes through unmutated values 1`] = `
-let count = 234;
-count;
-
-`

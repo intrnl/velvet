@@ -1016,35 +1016,6 @@ describe('bind', () => {
 	});
 });
 
-describe('untrack', () => {
-	it('allows untracking mutated values', () => {
-		let program = parse(`
-			let count = 123;
-
-			count = 234;
-			untrack(count);
-		`);
-
-		transform_script(program);
-
-		let result = print(program);
-		assertSnapshot(result);
-	});
-
-	it('passes through unmutated values', () => {
-		let program = parse(`
-			let count = 234;
-
-			untrack(count);
-		`);
-
-		transform_script(program);
-
-		let result = print(program);
-		assertSnapshot(result);
-	});
-});
-
 describe('reserved', () => {
 	it('throws on declaring $$', () => {
 		let source = `
