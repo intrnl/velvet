@@ -694,6 +694,10 @@ export function batch (callback) {
 }
 
 export function untrack (callback) {
+	if (callback instanceof Signal) {
+		return callback.peek();
+	}
+
 	let prev_context = eval_context;
 
 	try {
