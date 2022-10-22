@@ -363,11 +363,22 @@ export function transform_script (program, source) {
 				let ident = own_scope && own_scope.declarations.get(name);
 
 				if (ident && ident.velvet?.ref) {
-					let expression = t.member_expression(node, t.identifier('value'));
+					if (parent.type === 'CallExpression' && parent.callee.type === 'Identifier' && parent.callee.name === 'untrack') {
+						let own_scope = curr_scope.find_owner('untrack');
+
+						if (!own_scope) {
+							let expression = t.call_expression(t.member_expression(node, t.identifier('peek')));
+
+							(node.velvet ||= {}).transformed = true;
+							return expression;
+						}
+					}
 
 					if (parent.type === 'Property') {
 						parent.shorthand = false;
 					}
+
+					let expression = t.member_expression(node, t.identifier('value'));
 
 					(node.velvet ||= {}).transformed = true;
 					return expression;
@@ -595,9 +606,32 @@ export function transform_script (program, source) {
 				return;
 			}
 		},
+		/**
+		 * @param {import('estree').Node} node
+		 * @param {import('estree').Node} parent
+		 */
 		leave (node) {
 			if (map.has(node)) {
 				curr_scope = curr_scope.parent;
+			}
+
+			if (node.type === 'CallExpression' && node.callee.type === 'Identifier' && node.callee.name === 'untrack') {
+				let own_scope = curr_scope.find_owner('untrack');
+
+				if (!own_scope) {
+					let child = node.arguments[0];
+
+					if (child && child.type === 'SpreadElement') {
+						throw create_error(
+							`spread element cannot be used on $() call`,
+							source,
+							child.start,
+							child.end,
+						);
+					}
+
+					return child;
+				}
 			}
 		},
 	});
