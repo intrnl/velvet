@@ -1,5 +1,11 @@
 # @intrnl/velvet-compiler
 
+## 0.7.13
+
+### Patch Changes
+
+- e4b345d: Incorrect whitespace minification with attributes on a self-closing tag
+
 ## 0.7.12
 
 ### Patch Changes
