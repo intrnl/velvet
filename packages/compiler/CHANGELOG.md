@@ -1,5 +1,17 @@
 # @intrnl/velvet-compiler
 
+## 0.7.12
+
+### Patch Changes
+
+- 96b8472: Move createElement calls to a helper function
+- e17fdbd: Make whitespace removal less aggressive
+- b5a3d1e: Handle SVG self closing tags
+- 5e80fc7: Clean up whitespace removal checks
+- Updated dependencies [96b8472]
+- Updated dependencies [8a6f73f]
+  - @intrnl/velvet@0.4.20
+
 ## 0.7.11
 
 ### Patch Changes

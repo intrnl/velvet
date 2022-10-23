@@ -1,5 +1,12 @@
 # @intrnl/velvet
 
+## 0.4.20
+
+### Patch Changes
+
+- 96b8472: Move createElement calls to a helper function
+- 8a6f73f: Allow passing signals directly to untrack
+
 ## 0.4.19
 
 ### Patch Changes
