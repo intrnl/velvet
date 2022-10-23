@@ -514,14 +514,22 @@ function _parse_element (state) {
 				throw p.error(state, message, start);
 			}
 
-			parent.end = start;
+			if (parent.name === 'svg' || parent.name === 'math' || parent.name === 'foreignObject') {
+				p.pop_mode(state);
+			}
+
 			p.pop(state);
 
+			parent.end = start;
 			parent = p.current(state);
 		}
 
 		parent.end = state.index;
 		p.pop(state);
+
+		if (name === 'svg' || name === 'math' || name === 'foreignObject') {
+			p.pop_mode(state);
+		}
 
 		if (state._last_auto_closed && state.stack.length < state._last_auto_closed.depth) {
 			state._last_auto_closed = null;
@@ -674,18 +682,20 @@ function _parse_element (state) {
 		}
 	}
 
-	let is_element_void = is_void(name);
-	let is_selfclosing = p.eat(state, '/');
+	let mode = p.current_mode(state);
+
+	let has_selfclosing = p.eat(state, '/');
+	let is_selfclosing = mode === false ? is_void(name) : has_selfclosing;
 
 	p.eat(state, '>', 'closing tag bracket');
 
-	let node = t.element(name, is_element_void, attributes);
+	let node = t.element(name, is_selfclosing, attributes);
 	node.start = start;
 	node.end = state.index;
 
 	parent.children.push(node);
 
-	if (is_selfclosing || is_element_void) {
+	if (is_selfclosing || has_selfclosing) {
 		// do nothing
 	}
 	else if (name === 'script' || name === 'style') {
@@ -720,6 +730,13 @@ function _parse_element (state) {
 		node.children.push(text);
 	}
 	else {
+		if (name === 'svg' || name === 'math') {
+			p.push_mode(state, name);
+		}
+		else if (name === 'foreignObject') {
+			p.push_mode(state, false);
+		}
+
 		p.push(state, node);
 	}
 }

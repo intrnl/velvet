@@ -80,6 +80,7 @@ export function transform_template (template, source) {
 
 				let elem_name = node.name;
 				let is_inline = node.inline;
+				let is_selfclosing = node.self_closing;
 
 				// handle special-handled elements, these needs to be wrapped,
 				// save for `foreignObject` where it's supposed to be handling HTML-in-SVG/XML.
@@ -233,7 +234,13 @@ export function transform_template (template, source) {
 					}
 				}
 
-				curr_block.html += `>`;
+				if (is_selfclosing && get_current(wrap_stack) !== false) {
+					curr_block.html += `/>`;
+				}
+				else {
+					curr_block.html += `>`;
+				}
+
 				return;
 			}
 
@@ -242,8 +249,6 @@ export function transform_template (template, source) {
 				block_stack.push(curr_block);
 				blocks.push(curr_block = create_block());
 				fragment_to_block.set(node, curr_block);
-
-				let children = node.children;
 
 				// curr_scope is already set for root fragment
 				if (parent) {

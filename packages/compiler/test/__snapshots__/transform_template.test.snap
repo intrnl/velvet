@@ -1374,7 +1374,7 @@ let %fragment0 = @clone(%template0);
 `;
 
 exports[`miscellaneous > handles html minification 6`] = `
-let %%template0 = @html("<svg><symbol id=icon viewBox='0 0 20 20'fill=currentColor><path d></path></symbol></svg>");
+let %%template0 = @html("<svg><symbol id=icon viewBox='0 0 20 20'fill=currentColor><path d/></symbol></svg>");
 let %fragment0 = @clone(%template0);
 @append($$root, %fragment0);
 

@@ -10,6 +10,11 @@ import * as tt from './template_types.js';
  * @property {string} content
  * @property {number} index
  * @property {tt.StackableNode[]} stack
+ * @property {ParseMode[]} modes
+ */
+
+/**
+ * @typedef {false | 'svg' | 'math'} ParseMode
  */
 
 /**
@@ -25,6 +30,7 @@ export function create_state (content) {
 		content: content,
 		index: 0,
 		stack: [root],
+		modes: [false],
 	};
 
 	return state;
@@ -41,10 +47,28 @@ export function current (state, cursor = 0) {
 
 /**
  * @param {ParserState} state
+ * @param {number} cursor
+ * @returns {ParseMode}
+ */
+export function current_mode (state, cursor = 0) {
+	return state.modes[state.modes.length - 1 - cursor];
+}
+
+/**
+ * @param {ParserState} state
  * @param  {...tt.StackableNode} nodes
  */
 export function push (state, ...nodes) {
 	state.stack.push(...nodes);
+}
+
+/**
+ *
+ * @param {ParserState} state
+ * @param {ParseMode} mode
+ */
+export function push_mode (state, mode) {
+	state.modes.push(mode);
 }
 
 /**
@@ -54,6 +78,13 @@ export function push (state, ...nodes) {
  */
 export function pop (state, amount = 1) {
 	return state.stack.splice(state.stack.length - amount, amount);
+}
+
+/**
+ * @param {ParserState} state
+ */
+export function pop_mode (state) {
+	state.modes.pop();
 }
 
 /**
