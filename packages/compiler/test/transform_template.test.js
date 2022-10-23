@@ -810,7 +810,9 @@ describe('miscellaneous', () => {
 		let template3 = `<ul>   <li>A</li>   <li>B</li>   <li>C</li>  </ul>`;
 		let template4 = `<p>   Hey, I <em>just</em> found   out about this <strong>cool</strong> website!   <sup>[1]</sup> </p>`;
 		let template5 = `<div> x x <div></div> x x <div></div> x x </div>`;
-		let template6 = ` <svg> <symbol id='icon' viewBox='0 0 20 20' fill='currentColor'> <path d='' /> </symbol> </svg> `
+		let template6 = ` <svg> <symbol id='icon' viewBox='0 0 20 20' fill='currentColor'> <path d='' /> </symbol> </svg> `;
+		let template7 = `<input a='foo bar' b c>`;
+		let template8 = `<svg><use href='icons.svg#refresh' /></svg>`;
 
 		snap(template1);
 		snap(template2);
@@ -818,6 +820,8 @@ describe('miscellaneous', () => {
 		snap(template4);
 		snap(template5);
 		snap(template6);
+		snap(template7);
+		snap(template8);
 	});
 });
 

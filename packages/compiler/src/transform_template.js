@@ -232,10 +232,13 @@ export function transform_template (template, source) {
 							curr_block.html += `=${value}`;
 						}
 					}
+					else {
+						needs_space = i !== l - 1;
+					}
 				}
 
 				if (is_selfclosing && get_current(wrap_stack) !== false) {
-					curr_block.html += `/>`;
+					curr_block.html += `${needs_space ? ' ' : ''}/>`;
 				}
 				else {
 					curr_block.html += `>`;

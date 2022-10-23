@@ -1380,6 +1380,20 @@ let %fragment0 = @clone(%template0);
 
 `;
 
+exports[`miscellaneous > handles html minification 7`] = `
+let %%template0 = @html("<input a='foo bar'b c>");
+let %fragment0 = @clone(%template0);
+@append($$root, %fragment0);
+
+`;
+
+exports[`miscellaneous > handles html minification 8`] = `
+let %%template0 = @html("<svg><use href=icons.svg#refresh /></svg>");
+let %fragment0 = @clone(%template0);
+@append($$root, %fragment0);
+
+`;
+
 exports[`miscellaneous > handles implicit table 1`] = `
 let %%template0 = @html("<!><!><!><!>");
 let %fragment0 = @clone(%template0);
