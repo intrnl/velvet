@@ -20,6 +20,10 @@ export function html (fragment, is_wrapped) {
 	return node;
 }
 
+export function create (element) {
+	return document.createElement(element);
+}
+
 export function clone (template) {
 	/** @type {DocumentFragment} */
 	let fragment = document.importNode(template.content, true);

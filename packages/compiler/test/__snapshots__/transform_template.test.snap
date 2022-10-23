@@ -818,7 +818,7 @@ let %block1 = $$root => {
     let %%template2 = @html("Greet, <!>");
     let %fragment2 = @clone(%template2);
     let %marker0 = @traverse(%fragment2, [1]);
-    let %child0 = document.createElement(%component);
+    let %child0 = @create(%component);
     @text(%marker0, () => person.name);
     @append(%child0, %fragment2);
     return %child0;
@@ -972,14 +972,14 @@ let %marker1 = @traverse(%fragment0, [1]);
 let %block1 = %component => {
   let %%template1 = @html("Foo!");
   let %fragment1 = @clone(%template1);
-  let %child0 = document.createElement(%component);
+  let %child0 = @create(%component);
   @append(%child0, %fragment1);
   return %child0;
 };
 let %block2 = %component => {
   let %%template2 = @html("Bar!");
   let %fragment2 = @clone(%template2);
-  let %child1 = document.createElement(%component);
+  let %child1 = @create(%component);
   @append(%child1, %fragment2);
   return %child1;
 };
@@ -1013,7 +1013,7 @@ let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
 let %marker0 = @traverse(%fragment0, [0]);
 let %block1 = %component => {
-  let %child0 = document.createElement(%component);
+  let %child0 = @create(%component);
   return %child0;
 };
 @dynamic(%marker0, %block1, () => Element);
@@ -1029,7 +1029,7 @@ let %block1 = %component => {
   let %%template1 = @html("Hello <!>!");
   let %fragment1 = @clone(%template1);
   let %marker0 = @traverse(%fragment1, [1]);
-  let %child0 = document.createElement(%component);
+  let %child0 = @create(%component);
   @text(%marker0, () => name);
   @append(%child0, %fragment1);
   return %child0;

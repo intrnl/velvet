@@ -1127,10 +1127,7 @@ export function transform_template (template, source) {
 							t.identifier(elem_ident),
 							is_component
 								? t.new_expression(t.identifier('%component'))
-								: t.call_expression(
-									t.member_expression_from(['document', 'createElement']),
-									[t.identifier('%component')],
-								),
+								: t.call_expression(t.identifier('@create'), [t.identifier('%component')]),
 						),
 					]);
 
