@@ -164,6 +164,7 @@ function writeSnapshot () {
 		source += '\n\n';
 		source += `exports[${printBacktickString(key)}] = `;
 		source += printBacktickString(normalizeNewlines(addExtraLinebreaks(snapshotValue[key])));
+		source += ';';
 	}
 
 	source += '\n';

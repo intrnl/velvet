@@ -14,7 +14,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`attribute > binding checkbox group 1`] = `
 import {signal, html, clone, traverse, effect, on, get_checked_values, append, define} from "@intrnl/velvet/internal";
@@ -32,7 +32,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`attribute > binding checkbox group nested 1`] = `
 import {signal, html, clone, traverse, effect, on, get_checked_values, append, define} from "@intrnl/velvet/internal";
@@ -55,7 +55,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`attribute > throws on duplicate attributes 1`] = `
 duplicate foo attribute (2:26)
@@ -63,7 +63,7 @@ duplicate foo attribute (2:26)
 2:       <hello-world foo={123} foo={234}></hello-world>
                                 ^
 3:     
-`
+`;
 
 exports[`conditional logic > consequent 1`] = `
 import {html, clone, traverse, after, show, append, define} from "@intrnl/velvet/internal";
@@ -83,7 +83,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`conditional logic > consequent and alternate 1`] = `
 import {html, clone, traverse, after, show, append, define} from "@intrnl/velvet/internal";
@@ -110,13 +110,13 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`element > throws on improper closing tag 1`] = `
 </button> attempted to close an element that was not open (1:13)
 1: <legend>Title</button>
                 ^
-`
+`;
 
 exports[`let expression > mutated referencing mutated 1`] = `
 import {signal, html, clone, traverse, computed, text, after, show, append, define} from "@intrnl/velvet/internal";
@@ -143,7 +143,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`let expression > mutated referencing unmutated 1`] = `
 import {html, clone, traverse, signal, text, after, show, append, define} from "@intrnl/velvet/internal";
@@ -169,7 +169,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`let expression > referencing for each 1`] = `
 import {html, clone, traverse, computed, text, effect, toggle, attr, after, each, append, define} from "@intrnl/velvet/internal";
@@ -194,7 +194,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`let expression > unmutated referencing mutated 1`] = `
 import {signal, html, clone, traverse, computed, text, after, show, append, define} from "@intrnl/velvet/internal";
@@ -221,7 +221,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`let expression > unmutated referencing unmutated 1`] = `
 import {html, clone, traverse, text, after, show, append, define} from "@intrnl/velvet/internal";
@@ -247,7 +247,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`module context > allow top level await 1`] = `
 import {html, clone, traverse, text, append, define} from "@intrnl/velvet/internal";
@@ -261,7 +261,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`options element > allows for changing element name 1`] = `
 import {html, clone, append, define} from "@intrnl/velvet/internal";
@@ -272,7 +272,7 @@ function setup($$root, $$host) {
 }
 export default define("my-greeter", setup, {}, []);
 
-`
+`;
 
 exports[`options element > throws on non root-level usage 1`] = `
 <v:options> can only be used on root-level (2:8)
@@ -280,7 +280,7 @@ exports[`options element > throws on non root-level usage 1`] = `
 2:       <div><v:options name='foo' /></div>
               ^
 3:     
-`
+`;
 
 exports[`props > exporting binding and mutable 1`] = `
 import {prop, html, clone, append, bind, define} from "@intrnl/velvet/internal";
@@ -302,7 +302,7 @@ export default define(null, setup, {
   number: 0
 }, []);
 
-`
+`;
 
 exports[`props > throws on two variable exported to one name 1`] = `
 Acorn error: Duplicate export 'baz' (6:31)
@@ -312,7 +312,7 @@ Acorn error: Duplicate export 'baz' (6:31)
                                      ^
 7:       </script>
 8:     
-`
+`;
 
 exports[`script context > throws on await 1`] = `
 Acorn error: Cannot use keyword 'await' outside an async function (3:17)
@@ -322,7 +322,7 @@ Acorn error: Cannot use keyword 'await' outside an async function (3:17)
                         ^
 4:       </script>
 5: 
-`
+`;
 
 exports[`store > subscription on await pending and resolve 1`] = `
 import {html, clone, traverse, subscribe, text, after, promise as promise$1, append, define} from "@intrnl/velvet/internal";
@@ -355,7 +355,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`store > subscription on await resolve 1`] = `
 import {html, clone, traverse, subscribe, text, after, promise as promise$1, append, define} from "@intrnl/velvet/internal";
@@ -378,7 +378,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`store > subscription on conditional 1`] = `
 import {html, clone, traverse, subscribe, text, after, show, append, define} from "@intrnl/velvet/internal";
@@ -401,7 +401,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`store > subscription on conditional and alternate 1`] = `
 import {html, clone, traverse, subscribe, text, after, show, append, define} from "@intrnl/velvet/internal";
@@ -433,7 +433,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`store > subscription on conditional with let 1`] = `
 import {html, clone, traverse, subscribe, computed, text, after, show, append, define} from "@intrnl/velvet/internal";
@@ -457,7 +457,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`store > subscription on conditional with log 1`] = `
 import {html, clone, traverse, subscribe, text, effect, after, show, append, define} from "@intrnl/velvet/internal";
@@ -481,7 +481,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`store > subscription on nested conditional 1`] = `
 import {html, clone, traverse, subscribe, text, after, show, append, define} from "@intrnl/velvet/internal";
@@ -515,7 +515,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`store > subscription on root and await pending and resolve 1`] = `
 import {html, clone, traverse, subscribe, text, after, promise as promise$1, append, define} from "@intrnl/velvet/internal";
@@ -550,7 +550,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`store > subscription on root and conditional 1`] = `
 import {html, clone, traverse, subscribe, text, after, show, append, define} from "@intrnl/velvet/internal";
@@ -575,7 +575,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`store > subscription on script and root 1`] = `
 import {subscribe, html, clone, traverse, text, append, define} from "@intrnl/velvet/internal";
@@ -590,7 +590,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, []);
 
-`
+`;
 
 exports[`store > throws on lone $ 1`] = `
 no singular $ reference (3:15)
@@ -600,7 +600,7 @@ no singular $ reference (3:15)
                      ^
 4:       </script>
 5:     
-`
+`;
 
 exports[`style > imports 1`] = `
 import {html, clone, append, css, define} from "@intrnl/velvet/internal";
@@ -613,7 +613,7 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, [style0, style1]);
 
-`
+`;
 
 exports[`style > inline 1`] = `
 import {html, clone, append, css, define} from "@intrnl/velvet/internal";
@@ -625,4 +625,4 @@ function setup($$root, $$host) {
 }
 export default define(null, setup, {}, [style0]);
 
-`
+`;
