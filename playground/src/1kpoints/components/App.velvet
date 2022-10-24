@@ -2,6 +2,18 @@
 	import VizDemo from './VizDemo.velvet';
 
 	let count = 1000;
+
+	$: {
+		const params = new URLSearchParams(location.search);
+
+		if (params.has('count')) {
+			const next = parseInt(params.get('count'));
+
+			if (!Number.isNaN(next) && next >= 10 && next <= 10000) {
+				count = next;
+			}
+		}
+	}
 </script>
 
 <div class='app-wrapper'>
