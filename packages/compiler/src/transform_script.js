@@ -329,7 +329,7 @@ export function transform_script (program, source) {
 
 					let primitive = init && _is_primitive(init, is_computed && curr_scope);
 
-					let initializer = init
+					let initializer = init && (init.type !== 'Identifier' || init.name !== 'undefined')
 						? primitive
 							? init
 							: t.arrow_function_expression([], init)
@@ -950,6 +950,11 @@ function _is_primitive (expression, scope) {
 
 	if (scope && expression.type === 'Identifier') {
 		let name = expression.name;
+
+		if (name === 'undefined') {
+			return true;
+		}
+
 		let own_scope = scope.find_owner(name);
 
 		if (!own_scope) {
@@ -962,7 +967,8 @@ function _is_primitive (expression, scope) {
 	}
 
 	return (
-		(expression.type === 'Literal' && !expression.regex) ||
+		(expression.type === 'Literal') ||
+		(expression.type === 'Identifier' && expression.name === 'undefined') ||
 		(expression.type === 'TemplateLiteral') ||
 		(expression.type === 'UnaryExpression' && _is_primitive(expression.argument, scope)) ||
 		(expression.type === 'BinaryExpression' && _is_primitive(expression.left, scope) && _is_primitive(expression.right, scope)) ||

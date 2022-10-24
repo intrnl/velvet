@@ -13,6 +13,21 @@ function toggle() {
 
 `;
 
+exports[`bind > handles explicit undefined initializer 1`] = `
+let count = @prop(0);
+count.value = 123;
+count.value;
+
+`;
+
+exports[`bind > handles props initialized by another var 1`] = `
+let foo = () => {
+};
+let bar = @prop(0, () => foo);
+bar.value;
+
+`;
+
 exports[`bind > only one specifier for a bind 1`] = `
 tried to export something that has already been exported (4:12)
 2:       export const magic = 420;

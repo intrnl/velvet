@@ -997,6 +997,32 @@ describe('bind', () => {
 		assertSnapshot(result);
 	});
 
+	it('handles explicit undefined initializer', () => {
+		let program = parse(`
+			export let count = undefined;
+			count = 123;
+			count;
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		assertSnapshot(result);
+	});
+
+	it('handles props initialized by another var', () => {
+		let program = parse(`
+			let foo = () => {};
+			export let bar = foo;
+			bar;
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		assertSnapshot(result);
+	});
+
 	it('only one specifier for a bind', () => {
 		let source = `
 			export const magic = 420;
