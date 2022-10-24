@@ -23,30 +23,29 @@ A template like this...
 ...is transformed into a web component with efficient DOM mutations...
 
 ```js
-import { ref, html, clone, traverse, text, on, append, define } from '@intrnl/velvet/internal';
+import { signal, html, clone, traverse, text, on, append, define } from '@intrnl/velvet/internal';
 
-let template0 = html('<button> Clicked <!> times </button>');
+let template0 = html('<button>Clicked <!> times</button>');
 
 function setup ($$root, $$host) {
-  let count = ref(0);
+  let count = signal(0);
 
   function increment () {
-    count.v += 1;
+    count.value += 1;
   }
 
   let fragment0 = clone(template0);
-  
+
   let marker0 = traverse(fragment0, [0, 1]);
   let child0 = traverse(fragment0, [0]);
 
-  text(marker0, () => count.v);
-  
+  text(marker0, () => count.value);
   on(child0, 'click', increment);
-  
+
   append($$root, fragment0);
 }
 
-export default define('x-app', setup, {});
+export default define('x-app', setup, {}, []);
 ```
 
 ## Credits
