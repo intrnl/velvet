@@ -365,11 +365,16 @@ export function transform_script (program, source) {
 				if (ident && ident.velvet?.ref) {
 					let expression = t.member_expression(node, t.identifier('value'));
 
+					(node.velvet ||= {}).transformed = true;
+
 					if (parent.type === 'Property') {
 						parent.shorthand = false;
 					}
 
-					(node.velvet ||= {}).transformed = true;
+					if (parent.type === 'CallExpression' && parent.callee === node) {
+						return t.sequence_expression([t.literal(0), expression]);
+					}
+
 					return expression;
 				}
 

@@ -410,7 +410,7 @@ current_date.value = new Date();
 exports[`ref > mutated variable calling 1`] = `
 let call = @signal(() => 1);
 call.value = () => 2;
-call.value();
+(0, call.value)();
 
 `;
 
