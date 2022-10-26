@@ -31,7 +31,7 @@
 		"@intrnl/fs-cache": "^0.2.3"
 	},
 	"peerDependencies": {
-		"@intrnl/velvet-compiler": "^0.7.1",
+		"@intrnl/velvet-compiler": "workspace:^0.7.1",
 		"esbuild": "^0.14.8 || ^0.15.0"
 	},
 	"devDependencies": {
