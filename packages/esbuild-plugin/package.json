@@ -22,13 +22,13 @@
 			"import": "./dist/esm/ccss_plugin.js"
 		}
 	},
-	"dependencies": {
-		"@intrnl/fs-cache": "^0.2.3"
-	},
 	"scripts": {
 		"prepublishOnly": "pnpm run build",
 		"watch": "rollup -cw",
 		"build": "rm -r dist; rollup -c"
+	},
+	"dependencies": {
+		"@intrnl/fs-cache": "^0.2.3"
 	},
 	"peerDependencies": {
 		"@intrnl/velvet-compiler": "^0.7.1",
