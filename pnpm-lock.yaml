@@ -12,7 +12,7 @@ importers:
 
   packages/compiler:
     specifiers:
-      '@intrnl/velvet': workspace:^0.4.19
+      '@intrnl/velvet': workspace:^0.4.20
       '@types/estree': ^1.0.0
       acorn: ^8.8.0
       astring: ^1.8.3
