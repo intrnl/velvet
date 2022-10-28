@@ -1,5 +1,15 @@
 # @intrnl/velvet-compiler
 
+## 0.7.14
+
+### Patch Changes
+
+- 10c0e1a: Function stored in signals should not have `this` value be the signal
+- a2f7c13: Mark undefined as primitive value
+- 843c408: Allow peeking for component signals
+- Updated dependencies [843c408]
+  - @intrnl/velvet@0.4.21
+
 ## 0.7.13
 
 ### Patch Changes

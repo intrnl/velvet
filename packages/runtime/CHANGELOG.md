@@ -1,5 +1,11 @@
 # @intrnl/velvet
 
+## 0.4.21
+
+### Patch Changes
+
+- 843c408: Allow peeking for component signals
+
 ## 0.4.20
 
 ### Patch Changes
