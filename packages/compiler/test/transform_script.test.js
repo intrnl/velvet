@@ -1088,6 +1088,87 @@ describe('reserved', () => {
 	});
 });
 
+describe('peek', () => {
+	it('removes peek call on unmutated variables', () => {
+		let program = parse(`
+			import { peek } from '@intrnl/velvet';
+
+			let count = 123;
+			peek(count);
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		assertSnapshot(result);
+	});
+
+	it('transforms peek call on mutated variables', () => {
+		let program = parse(`
+			import { peek } from '@intrnl/velvet';
+
+			let count = 123;
+			count = 234;
+			peek(count);
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		assertSnapshot(result);
+	});
+
+	it('ignores variables on non-valid scopes', () => {
+		let program = parse(`
+			import { peek } from '@intrnl/velvet';
+
+			function inner () {
+				let count = 123;
+				count = 234;
+				peek(count);
+			}
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		assertSnapshot(result);
+	});
+
+	it('transforms peek call on computed mutated variables', () => {
+		let program = parse(`
+			import { peek } from '@intrnl/velvet';
+
+			let count = 2;
+			$: doubled = count * 2;
+
+			count = 3;
+			peek(doubled);
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		assertSnapshot(result);
+	});
+
+	it('removes peek call on computed unmutated variables', () => {
+		let program = parse(`
+			import { peek } from '@intrnl/velvet';
+
+			let count = 2;
+			$: doubled = count * 2;
+
+			peek(doubled);
+		`);
+
+		transform_script(program);
+
+		let result = print(program);
+		assertSnapshot(result);
+	});
+});
+
 describe('program finalizer', () => {
 	it('props test', () => {
 		let program = parse(`

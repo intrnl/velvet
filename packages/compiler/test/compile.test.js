@@ -461,6 +461,36 @@ describe('style', () => {
 	});
 });
 
+describe('peek', () => {
+	it('allows peeking of @let variables', () => {
+		let template = `
+			<script>
+				import { peek } from '@intrnl/velvet';
+
+				let count = 2;
+				count = 3;
+			</script>
+
+			{@let doubled = count * 3}
+			{peek(doubled)}
+
+			{@let foo = 123}
+			{peek(foo)}
+
+			{#if count > 2}
+				{@let tripled = count * 4}
+				{peek(tripled)}
+
+				{@let bar = 234}
+				{peek(bar)}
+			{/if}
+		`;
+
+		let result = compileSync(template);
+		assertSnapshot(result);
+	});
+});
+
 it('componentize', () => {
 	assert.equal(componentize('foo.js', 'x'), 'x-foo');
 	assert.equal(componentize('HomePage.js', 'x'), 'x-home-page');

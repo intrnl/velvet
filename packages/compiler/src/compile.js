@@ -18,7 +18,8 @@ function* _compile (source, options = {}) {
 		name = componentize(filename, prefix),
 		transformers = [],
 		css,
-		path = '@intrnl/velvet/internal',
+		modulePath: module_path = '@intrnl/velvet',
+		internalPath: internal_path = `${module_path}/internal`,
 	} = options;
 
 	let template = parse_template(source);
@@ -222,7 +223,7 @@ function* _compile (source, options = {}) {
 		program.body.unshift(...prog.body);
 	}
 
-	finalize_program(program, path);
+	finalize_program(program, internal_path);
 
 	return print(program);
 }

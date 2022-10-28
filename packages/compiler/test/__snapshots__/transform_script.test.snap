@@ -256,6 +256,48 @@ foo: {
 
 `;
 
+exports[`peek > ignores variables on non-valid scopes 1`] = `
+import {peek} from '@intrnl/velvet';
+function inner() {
+  let count = 123;
+  count = 234;
+  peek(count);
+}
+
+`;
+
+exports[`peek > removes peek call on computed unmutated variables 1`] = `
+import {peek} from '@intrnl/velvet';
+let count = 2;
+let doubled = count * 2;
+doubled;
+
+`;
+
+exports[`peek > removes peek call on unmutated variables 1`] = `
+import {peek} from '@intrnl/velvet';
+let count = 123;
+count;
+
+`;
+
+exports[`peek > transforms peek call on computed mutated variables 1`] = `
+import {peek} from '@intrnl/velvet';
+let count = @signal(2);
+let doubled = @computed(() => count.value * 2);
+count.value = 3;
+doubled.peek();
+
+`;
+
+exports[`peek > transforms peek call on mutated variables 1`] = `
+import {peek} from '@intrnl/velvet';
+let count = @signal(123);
+count.value = 234;
+count.peek();
+
+`;
+
 exports[`program finalizer > hoists imports 1`] = `
 import {define} from "@intrnl/velvet/internal";
 import foo from 'foo';

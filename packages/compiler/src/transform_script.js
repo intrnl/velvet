@@ -4,7 +4,7 @@ import * as t from './utils/js_types.js';
 import { create_error } from './utils/error.js';
 
 
-export function transform_script (program, source) {
+export function transform_script (program, source, module_path = '@intrnl/velvet') {
 	let { map, scope: root_scope } = analyze(program);
 	let curr_scope = root_scope;
 
@@ -599,6 +599,48 @@ export function transform_script (program, source) {
 
 				return;
 			}
+
+			if (node.type === 'CallExpression') {
+				let callee = node.callee;
+
+				// we need `path` and it doesn't exist yet, so make one manually.
+				callee.path = { parent: node };
+
+				if (references_import(curr_scope, callee, module_path, 'peek')) {
+					if (node.arguments.length < 1) {
+						return t.identifier('undefined');
+					}
+
+					if (node.arguments.length > 1) {
+						throw create_error(
+							`untrack function only accepts 1 argument`,
+							source,
+							node.arguments[1].start,
+							node.arguments[node.arguments.length - 1].end,
+						);
+					}
+
+					let argument = node.arguments[0];
+					let own_scope;
+
+					if (argument.type !== 'Identifier' || !(own_scope = curr_scope.find_owner(argument.name))) {
+						return;
+					}
+
+					if (own_scope === find_store_scope(own_scope)) {
+						let binding = own_scope.declarations.get(argument.name);
+
+						if (!binding.velvet || !binding.velvet.ref) {
+							return argument;
+						}
+
+						(argument.velvet ||= {}).transformed = true;
+						return t.call_expression(t.member_expression(argument, t.identifier('peek')));
+					}
+				}
+
+				return;
+			}
 		},
 		leave (node) {
 			if (map.has(node)) {
@@ -1014,4 +1056,54 @@ function find_store_scope (scope) {
 	}
 
 	return curr_scope;
+}
+
+/**
+ * @param {import('./utils/js_utils.js').Scope} scope
+ * @param {import('estree').Node} node
+ * @param {string} source
+ * @param {string} imports
+ */
+function references_import (scope, node, source, imports) {
+	let parent = node.path.parent;
+
+	if (!is_reference(node, parent)) {
+		if (node.type === 'MemberExpression') {
+			let object = node.object;
+			let property = node.property;
+			let computed = node.computed;
+
+			if (computed ? property.type === 'Literal' && property.value === imports : property.name === imports) {
+				let object_parent = object.path.parent;
+				return is_reference(object, object_parent) && references_import(scope, object, source, '*');
+			}
+		}
+
+		return false
+	}
+
+	let name = node.name;
+	let own_scope = scope.find_owner(name);
+
+	if (!own_scope) {
+		return false;
+	}
+
+	let binding = own_scope.declarations.get(name);
+	let specifier = binding.path.parent;
+
+	if (!specifier) {
+		return false;
+	}
+
+	if (
+		(specifier.type === 'ImportDefaultSpecifier' && imports === 'default') ||
+		(specifier.type === 'ImportNamespaceSpecifier' && imports === '*') ||
+		(specifier.type === 'ImportSpecifier' && specifier.imported.name === imports)
+	) {
+		let declaration = specifier.path.parent;
+		return declaration.source.value === source;
+	}
+
+	return false;
 }

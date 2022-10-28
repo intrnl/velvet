@@ -21,9 +21,13 @@ export {
 
 	signal,
 	computed,
+
 	effect,
 	batch,
+
 	untrack,
+	peek,
+
 	scope,
 	cleanup,
 

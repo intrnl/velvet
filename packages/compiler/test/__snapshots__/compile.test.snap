@@ -282,6 +282,41 @@ exports[`options element > throws on non root-level usage 1`] = `
 3:     
 `;
 
+exports[`peek > allows peeking of @let variables 1`] = `
+import {signal, html, clone, computed, traverse, text, after, show, append, define} from "@intrnl/velvet/internal";
+import {peek} from '@intrnl/velvet';
+let template0 = html("<!><!><!>");
+let template1 = html("<!><!><!>");
+function setup($$root, $$host) {
+  let count = signal(2);
+  count.value = 3;
+  let fragment0 = clone(template0);
+  let doubled = computed(() => count.value * 3);
+  let marker0 = traverse(fragment0, [0]);
+  let foo = 123;
+  let marker1 = traverse(fragment0, [1]);
+  let marker5 = traverse(fragment0, [2]);
+  let block1 = $$root => {
+    let fragment1 = clone(template1);
+    let tripled = computed(() => count.value * 4);
+    let marker2 = traverse(fragment1, [0]);
+    let bar = 234;
+    let marker3 = traverse(fragment1, [1]);
+    let marker4 = traverse(fragment1, [2]);
+    text(marker2, () => tripled.peek());
+    text(marker3, () => bar);
+    after($$root, fragment1);
+    return marker4;
+  };
+  text(marker0, () => doubled.peek());
+  text(marker1, () => foo);
+  show(marker5, () => count.value > 2 ? block1 : null);
+  append($$root, fragment0);
+}
+export default define(null, setup, {}, []);
+
+`;
+
 exports[`props > exporting binding and mutable 1`] = `
 import {prop, html, clone, append, bind, define} from "@intrnl/velvet/internal";
 let template0 = html("");
