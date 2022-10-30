@@ -284,7 +284,7 @@ exports[`options element > throws on non root-level usage 1`] = `
 
 exports[`peek > allows peeking of @let variables 1`] = `
 import {signal, html, clone, computed, traverse, text, after, show, append, define} from "@intrnl/velvet/internal";
-import {peek} from '@intrnl/velvet';
+import {peek} from '@intrnl/velvet/macro';
 let template0 = html("<!><!><!>");
 let template1 = html("<!><!><!>");
 function setup($$root, $$host) {

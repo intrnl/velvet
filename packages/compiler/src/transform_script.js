@@ -4,7 +4,7 @@ import * as t from './utils/js_types.js';
 import { create_error } from './utils/error.js';
 
 
-export function transform_script (program, source, module_path = '@intrnl/velvet') {
+export function transform_script (program, source, macro_path = '@intrnl/velvet/macro') {
 	let { map, scope: root_scope } = analyze(program);
 	let curr_scope = root_scope;
 
@@ -606,7 +606,7 @@ export function transform_script (program, source, module_path = '@intrnl/velvet
 				// we need `path` and it doesn't exist yet, so make one manually.
 				callee.path = { parent: node };
 
-				if (references_import(curr_scope, callee, module_path, 'peek')) {
+				if (references_import(curr_scope, callee, macro_path, 'peek')) {
 					if (node.arguments.length < 1) {
 						return t.identifier('undefined');
 					}

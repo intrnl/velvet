@@ -19,6 +19,7 @@ function* _compile (source, options = {}) {
 		transformers = [],
 		css,
 		modulePath: module_path = '@intrnl/velvet',
+		macroPath: macro_path = `${module_path}/macro`,
 		internalPath: internal_path = `${module_path}/internal`,
 	} = options;
 
@@ -200,7 +201,7 @@ function* _compile (source, options = {}) {
 		program.body.unshift(...prog.body);
 	}
 
-	let { props_idx } = transform_script(program, source);
+	let { props_idx } = transform_script(program, source, macro_path);
 	finalize_template(program, name, props_idx, style_value);
 
 	if (module_node) {

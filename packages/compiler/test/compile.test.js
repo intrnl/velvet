@@ -465,7 +465,7 @@ describe('peek', () => {
 	it('allows peeking of @let variables', () => {
 		let template = `
 			<script>
-				import { peek } from '@intrnl/velvet';
+				import { peek } from '@intrnl/velvet/macro';
 
 				let count = 2;
 				count = 3;

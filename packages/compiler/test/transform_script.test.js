@@ -1091,7 +1091,7 @@ describe('reserved', () => {
 describe('peek', () => {
 	it('removes peek call on unmutated variables', () => {
 		let program = parse(`
-			import { peek } from '@intrnl/velvet';
+			import { peek } from '@intrnl/velvet/macro';
 
 			let count = 123;
 			peek(count);
@@ -1105,7 +1105,7 @@ describe('peek', () => {
 
 	it('transforms peek call on mutated variables', () => {
 		let program = parse(`
-			import { peek } from '@intrnl/velvet';
+			import { peek } from '@intrnl/velvet/macro';
 
 			let count = 123;
 			count = 234;
@@ -1120,7 +1120,7 @@ describe('peek', () => {
 
 	it('ignores variables on non-valid scopes', () => {
 		let program = parse(`
-			import { peek } from '@intrnl/velvet';
+			import { peek } from '@intrnl/velvet/macro';
 
 			function inner () {
 				let count = 123;
@@ -1137,7 +1137,7 @@ describe('peek', () => {
 
 	it('transforms peek call on computed mutated variables', () => {
 		let program = parse(`
-			import { peek } from '@intrnl/velvet';
+			import { peek } from '@intrnl/velvet/macro';
 
 			let count = 2;
 			$: doubled = count * 2;
@@ -1154,7 +1154,7 @@ describe('peek', () => {
 
 	it('removes peek call on computed unmutated variables', () => {
 		let program = parse(`
-			import { peek } from '@intrnl/velvet';
+			import { peek } from '@intrnl/velvet/macro';
 
 			let count = 2;
 			$: doubled = count * 2;

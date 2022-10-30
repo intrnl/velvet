@@ -20,6 +20,10 @@
 		"./internal": {
 			"import": "./dist/esm/internal.js",
 			"require": "./dist/cjs/internal.js"
+		},
+		"./macro": {
+			"import": "./dist/esm/macro.js",
+			"require": "./dist/cjs/macro.js"
 		}
 	},
 	"scripts": {
