@@ -423,8 +423,8 @@ describe('let expression', () => {
 		let template3 = `{@let foo.bar = 123}`;
 
 		snap_parse_error(template1);
-		snap_transform_error(template2);
-		snap_transform_error(template3);
+		snap_parse_error(template2);
+		snap_parse_error(template3);
 	});
 });
 

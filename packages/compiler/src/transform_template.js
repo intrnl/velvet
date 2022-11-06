@@ -72,6 +72,12 @@ export function transform_template (template, source) {
 	let id_m = 0;
 
 	walk(template, {
+		/**
+		 * @param {import('./utils/template_types.js').Node} node
+		 * @param {import('./utils/template_types.js').Node} parent
+		 * @param {string} key
+		 * @param {number} index
+		 */
 		enter (node, parent, key, index) {
 			// handle element node
 			if (node.type === 'Element') {
@@ -263,6 +269,12 @@ export function transform_template (template, source) {
 				return;
 			}
 		},
+		/**
+		 * @param {import('./utils/template_types.js').Node} node
+		 * @param {import('./utils/template_types.js').Node} parent
+		 * @param {string} key
+		 * @param {number} index
+		 */
 		leave (node, parent, key, index) {
 			// remove comment node
 			if (node.type === 'Comment') {
@@ -362,55 +374,9 @@ export function transform_template (template, source) {
 				// handle named expressions
 				if (node.id) {
 					let id = node.id;
-					let id_name = id.name;
-
-					if (id_name === 'let') {
-						if (expr.type !== 'AssignmentExpression' || expr.left.type !== 'Identifier' || expr.operator !== '=') {
-							throw create_error(
-								'invalid let expression',
-								source,
-								expr.start,
-								expr.end,
-							);
-						}
-
-						let ident = expr.left;
-						let right = expr.right;
-
-						let decl = t.variable_declaration('let', [t.variable_declarator(ident, right)]);
-
-						ident.velvet = { computed: true };
-
-						curr_scope.traversals.push(decl);
-						return walk.remove;
-					}
-
-					if (id_name === 'log') {
-						let params;
-
-						if (expr.type === 'SequenceExpression') {
-							params = expr.expressions;
-						}
-						else {
-							params = [expr];
-						}
-
-						let expression = t.labeled_statement(
-							t.identifier('$'),
-							t.expression_statement(
-								t.call_expression(
-									t.member_expression_from(['console', 'log']),
-									params,
-								),
-							),
-						);
-
-						curr_scope.expressions.push(expression);
-						return walk.remove;
-					}
 
 					throw create_error(
-						`unknown named expression: @${id_name}`,
+						`unknown named expression: @${id.name}`,
 						source,
 						id.start,
 						id.end,
@@ -483,6 +449,37 @@ export function transform_template (template, source) {
 				return;
 			}
 
+			// handle log expression
+			if (node.type === 'LogExpression') {
+				let params = node.expressions;
+
+				let expression = t.labeled_statement(
+					t.identifier('$'),
+					t.expression_statement(
+						t.call_expression(
+							t.member_expression_from(['console', 'log']),
+							params,
+						),
+					),
+				);
+
+				curr_scope.expressions.push(expression);
+				return walk.remove;
+			}
+
+			// handle let expression
+			if (node.type === 'LetExpression') {
+				let id = node.id;
+				let init = node.init;
+
+				let decl = t.variable_declaration('let', [t.variable_declarator(id, init)]);
+
+				id.velvet = { computed: true };
+
+				curr_scope.traversals.push(decl);
+				return walk.remove;
+			}
+
 			// handle element node
 			if (node.type === 'Element') {
 				let elem_name = node.name;
@@ -542,6 +539,26 @@ export function transform_template (template, source) {
 
 						curr_scope.expressions.push(test_expr);
 						continue;
+					}
+
+					// handle log expression
+					if (attr.type === 'LogExpression') {
+						throw create_error(
+							`{@log ...} cannot be used within attributes`,
+							source,
+							attr.start,
+							attr.end,
+						);
+					}
+
+					// handle let expression
+					if (attr.type === 'LetExpression') {
+						throw create_error(
+							`{@let ...} cannot be used within attributes`,
+							source,
+							attr.start,
+							attr.end,
+						);
 					}
 
 					let attr_name = attr.name;

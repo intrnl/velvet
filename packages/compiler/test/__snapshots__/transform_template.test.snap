@@ -1155,21 +1155,21 @@ let foo = 123;
 `;
 
 exports[`let expression > throws on incorrect definition 1`] = `
-Acorn error: Unexpected token (1:6)
+expected {@let ...} to contain an identifier (1:6)
 1: {@let }
          ^
 `;
 
 exports[`let expression > throws on incorrect definition 2`] = `
-invalid let expression (1:6)
+expected {@let foo ...} to contain an initializer (1:9)
 1: {@let foo}
-         ^
+            ^
 `;
 
 exports[`let expression > throws on incorrect definition 3`] = `
-invalid let expression (1:6)
+expected {@let foo ...} to contain an initializer (1:9)
 1: {@let foo.bar = 123}
-         ^
+            ^
 `;
 
 exports[`log expression > in conditional 1`] = `

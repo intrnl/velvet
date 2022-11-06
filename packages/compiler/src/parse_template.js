@@ -393,11 +393,64 @@ function _parse_expression (state) {
 	if (p.eat(state, '@')) {
 		id = p.eat_identifier(state);
 
-		if (!id) {
-			throw p.error(state, 'expected an identifier');
+		p.assert(state, id, `expected an identifier`);
+		p.eat_whitespace(state, true);
+	}
+
+	if (id) {
+		if (id.name === 'log') {
+			let expression = _read_expression(state);
+			let expressions;
+
+			if (!expression) {
+				expressions = [];
+			}
+			else if (expression.type === 'SequenceExpression') {
+				expressions = expression.expressions;
+			}
+			else {
+				expressions = [expression];
+			}
+
+			p.eat_whitespace(state);
+			p.eat(state, '}', 'closing log expression bracket');
+
+			let node = t.log_expression(expressions);
+
+			node.start = start;
+			node.end = state.index;
+
+			p.current(state).children.push(node);
+			return;
 		}
 
-		p.eat_whitespace(state, true);
+		if (id.name === 'let') {
+			let ident = null;
+			let init = null;
+
+			ident = p.eat_identifier(state);
+
+			p.assert(state, ident, `expected {@let ...} to contain an identifier`);
+			p.eat_whitespace(state);
+
+			p.eat(state, '=', `{@let ${ident.name} ...} to contain an initializer`);
+			p.eat_whitespace(state);
+
+			init = _read_expression(state);
+
+			p.assert(state, init, `expected {@let ${ident.name} = ...} to contain an initializer`);
+			p.eat_whitespace(state);
+
+			p.eat(state, '}', `closing let expression bracket`);
+
+			let node = t.let_expression(ident, init);
+
+			node.start = start;
+			node.end = state.index;
+
+			p.current(state).children.push(node);
+			return;
+		}
 	}
 
 	p.eat_whitespace(state);

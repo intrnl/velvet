@@ -26,6 +26,8 @@ export function fragment (children = []) {
  *   Text |
  *   Element |
  *   Expression |
+ *   LogExpression |
+ *   LetExpression |
  *   ConditionalStatement |
  *   LoopStatement |
  *   AwaitStatement
@@ -178,6 +180,47 @@ export function expression (expression, id = null) {
 		type: 'Expression',
 		id,
 		expression,
+	};
+}
+
+/**
+ * @typedef {object} LogExpression
+ * @property {'LogExpression'} type
+ * @property {import('estree').Expression[]} expressions
+ * @property {number} [start]
+ * @property {number} [end]
+ */
+
+/**
+ * @param {import('estree').Expression[]} expressions
+ * @returns {LogExpression}
+ */
+export function log_expression (expressions) {
+	return {
+		type: 'LogExpression',
+		expressions,
+	};
+}
+
+/**
+ * @typedef {object} LetExpression
+ * @property {'LetExpression'} type
+ * @property {import('estree').Identifier} id
+ * @property {import('estree').Expression} [init]
+ * @property {number} [start]
+ * @property {number} [end]
+ */
+
+/**
+ * @param {import('estree').Identifier} id
+ * @param {import('estree').Expression} [init]
+ * @returns {LetExpression}
+ */
+export function let_expression (id, init = null) {
+	return {
+		type: 'LetExpression',
+		id,
+		init,
 	};
 }
 
