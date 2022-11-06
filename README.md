@@ -48,9 +48,86 @@ function setup ($$root, $$host) {
 export default define('x-app', setup, {}, []);
 ```
 
-## Credits
+## Overview
 
-- [Svelte](https://github.com/sveltejs/svelte)  
-  It's pretty much what inspired this project's quest of trying to be small, while also trying to be
-  highly efficient with mutations. Logic templating is also taken from it, as it makes for an easier
-  transition.
+### Hello, world!
+
+Velvet components are self-contained fragments of HTML-like templating along
+with related scripting and styling code for it, written in a `.velvet` file.
+
+```html
+<h1>Hello, world!</h1>
+```
+
+These components are generated into a valid web component, and are named based
+off their file names by default, so `Greeting.velvet` becomes `x-greeting`, and
+you can use it as you would with regular HTML elements.
+
+```html
+<x-greeting name='world'></x-greeting>
+```
+
+```js
+let greet = document.createElement('x-greeting');
+greet.name = 'world';
+```
+
+### Expressions
+
+Our current component looks a little empty, so let's give it some flair by first
+defining a `<script>` element to define our `name` variable in.
+
+```html
+<script>
+  let name = 'world';
+</script>
+
+<h1>Hello, world!</h1>
+```
+
+We can then refer to the name variable within the template:
+
+```html
+<h1>Hello, {name}!</h1>
+```
+
+These curly braces here acts as a window to running JS expressions right within
+the template, so we can do other things like calling a format function like so:
+
+```html
+<script>
+  const today = new Date();
+  const formatter = new Intl.DateTimeFormat('en-US', { weekday: 'long' });
+</script>
+
+<p>Today is {formatter.format(today)}</p>
+```
+
+These curly braces can also be used to control element attributes
+
+```html
+<script>
+  let name = 'Katherine Johnson';
+  let src = 'https://i.imgur.com/MK3eW3As.jpg';
+</script>
+
+<h3>Amazing scientists</h3>
+
+<img src={src} alt={name} />
+```
+
+### Styling
+
+Velvet components can have a `<style>` tag, where all the styling are scoped to
+the component. They can't affect other elements that are elsewhere in your app.
+
+```html
+<p>This is a paragraph.</p>
+
+<style>
+	p {
+		color: purple;
+		font-size: 2em;
+	}
+</style>
+```
