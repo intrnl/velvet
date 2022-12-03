@@ -595,6 +595,8 @@ export class Effect {
 		this._sources = undefined;
 		/** @internal @type {number} */
 		this._flags = TRACKING;
+		/** @internal @type {number} */
+		this._depth = 0;
 	}
 
 	/**
