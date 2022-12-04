@@ -5,15 +5,15 @@ export function html (fragment, is_wrapped) {
 	if (is_wrapped) {
 		// we remove the wrapper, and move its children directly to fragment
 		let content = node.content;
-		let wrapper = content.childNodes[0];
+		let wrapper = content.firstChild;
 
-		let children = wrapper.childNodes;
-		let len = children.length;
+		/** @type {Node | null | undefined} */
+		let child;
 
 		wrapper.remove();
 
-		while (len--) {
-			content.appendChild(children[0]);
+		while ((child = wrapper.firstChild)) {
+			content.appendChild(child);
 		}
 	}
 
@@ -55,11 +55,11 @@ export function replace (ref, node, adopt) {
 	ref.replaceWith(node);
 
 	if (adopt) {
-		let children = ref.childNodes;
-		let len = children.length;
+		/** @type {Node | null | undefined} */
+		let child;
 
-		while (len--) {
-			node.appendChild(children[0]);
+		while ((child = ref.firstChild)) {
+			node.appendChild(child);
 		}
 	}
 }
