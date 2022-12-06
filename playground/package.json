@@ -17,6 +17,6 @@
 	"devDependencies": {
 		"@intrnl/esbuild-plugin-velvet": "workspace:*",
 		"@intrnl/velvet-compiler": "workspace:*",
-		"esbuild": "^0.15.11"
+		"esbuild": "^0.15.18"
 	}
 }

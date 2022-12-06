@@ -27,15 +27,15 @@
 		"@intrnl/velvet": "workspace:^0.4.21"
 	},
 	"dependencies": {
-		"acorn": "^8.8.0",
+		"acorn": "^8.8.1",
 		"astring": "^1.8.3",
 		"gensync": "^1.0.0-beta.2"
 	},
 	"devDependencies": {
 		"@intrnl/velvet": "workspace:^0.4.21",
 		"@types/estree": "^1.0.0",
-		"esbuild": "^0.15.12",
+		"esbuild": "^0.15.18",
 		"mocha": "^10.1.0",
-		"rollup": "^3.2.3"
+		"rollup": "^3.6.0"
 	}
 }
