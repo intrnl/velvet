@@ -20,7 +20,7 @@ await esbuild.build({
 		...config.plugins || [],
 	],
 	define: {
-		'DEV': false,
+		'DEV': 'false',
 		'COMPILER_VERSION': `"v${compilerPkg.version}"`,
 		'RUNTIME_VERSION': `"v${runtimePkg.version}"`,
 		'COMMIT_HASH': `"${COMMIT_HASH.slice(0, 6)}"`,
