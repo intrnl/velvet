@@ -33,9 +33,9 @@
 		"test": "mocha --recursive"
 	},
 	"devDependencies": {
-		"esbuild": "^0.15.18",
+		"esbuild": "^0.16.3",
 		"mocha": "^10.1.0",
 		"nanospy": "^0.5.0",
-		"rollup": "^3.6.0"
+		"rollup": "^3.7.0"
 	}
 }
