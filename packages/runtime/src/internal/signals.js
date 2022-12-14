@@ -262,6 +262,8 @@ export class Signal {
 		let _this = this;
 
 		if (curr_context && _this._node !== curr_context) {
+			// Mark the current context, there's no need to add ourselves again to the
+			// dependency list if we're already in it, will be unset during cleanup
 			_this._node = curr_context
 
 			if (!curr_sources && curr_context._sources[curr_sources_idx] === _this) {
