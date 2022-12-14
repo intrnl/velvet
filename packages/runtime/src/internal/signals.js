@@ -485,7 +485,7 @@ export class Effect {
 		/** @internal @type {Array<Signal>} */
 		this._sources = [];
 		/** @internal @type {number} */
-		this._flags = FLAG_TRACKING | FLAG_OUTDATED;
+		this._flags = FLAG_TRACKING;
 		/** @internal @type {number} */
 		this._depth = 0;
 	}
