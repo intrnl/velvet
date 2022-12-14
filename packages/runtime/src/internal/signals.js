@@ -100,6 +100,8 @@ function needs_recompute (target) {
 		target._flags &= ~FLAG_MAYBE_OUTDATED;
 	}
 
+	// We don't unset `OUTDATED` here, Computed values can't be stale if the new
+	// value is the same as the current one.
 	return (target._flags & FLAG_OUTDATED) !== 0;
 }
 
