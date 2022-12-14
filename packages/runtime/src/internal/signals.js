@@ -331,8 +331,8 @@ export class Computed extends Signal {
 
 		_this._flags &= ~FLAG_NOTIFIED;
 
-		// We hit a cycle
-		if ((_this._flags & FLAG_RUNNING)) {
+		// We hit a cycle, or we've already been used in a context
+		if ((_this._flags & FLAG_RUNNING) || _this._node) {
 			return false;
 		}
 
