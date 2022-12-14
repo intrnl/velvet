@@ -397,7 +397,7 @@ export class Computed extends Signal {
 			let len = sources.length;
 			let idx = 0;
 
-			_this._flags |= FLAG_MAYBE_OUTDATED | FLAG_TRACKING;
+			_this._flags |= FLAG_TRACKING;
 
 			for (; idx < len; idx++) {
 				sources[idx]._subscribe(_this);
