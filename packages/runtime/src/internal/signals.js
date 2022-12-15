@@ -1,34 +1,53 @@
+// Code taken mostly as-is from @preact/signals-core, with modifications:
+// - Silently ignore cycles, it should not throw.
+// - Add .set(value) method for use with stores.
+// - Allow overriding values to computed signals.
+// - Addition of scopes for managing effects.
+// - Effect depth tracking
+// - Not using TypeScript, only JSDoc typings.
+
+// Based off commit fbe2cb8eca144fa4a4659fb78e9373b7a227ab77
+
 import { is_function } from './utils.js';
+
+/**
+ * @typedef {object} Node
+ *
+ * @property {number} _version
+ * @property {Node | undefined} _rollback
+ *
+ * @property {Signal} _source
+ * @property {Node | undefined} _prev_source
+ * @property {Node | undefined} _next_source
+ *
+ * @property {Computed | Effect} _target
+ * @property {Node | undefined} _prev_target
+ * @property {Node | undefined} _next_target
+ */
 
 let undefined;
 
-// `MAYBE_OUTDATED` exists because Computed has an additional check for equality
-// so it can only be stale if the resulting compute results in a different value
+let RUNNING = 1 << 0;
+let NOTIFIED = 1 << 1;
+let OUTDATED = 1 << 2;
+let DISPOSED = 1 << 3;
+let HAS_ERROR = 1 << 4;
+let TRACKING = 1 << 5;
 
-let FLAG_RUNNING = 1 << 0;
-let FLAG_NOTIFIED = 1 << 1;
-let FLAG_OUTDATED = 1 << 2;
-let FLAG_MAYBE_OUTDATED = 1 << 3;
-let FLAG_DISPOSED = 1 << 4;
-let FLAG_TRACKING = 1 << 5;
-let FLAG_HAS_ERROR = 1 << 6;
-
-/** @type {Scope | undefined} */
-export let curr_scope;
-
+/** @type {Scope | undefined} Currently evaluated scope */
+export let eval_scope;
 /** @type {Computed | Effect | undefined} */
-let curr_context;
-/** @type {Array<Signal> | undefined} */
-let curr_sources;
-/** @type {number} */
-let curr_sources_idx = 0;
+let eval_context;
 
-/** @type {Array<Effect> | undefined} */
-let batch_queue;
-/** @type {number} */
+/** @type {Effect[] | undefined} */
+let batched_effects;
+/** current batch depth */
 let batch_depth = 0;
-/** @type {number} */
+/** how many times we've been iterating through batched updates */
 let batch_iteration = 0;
+
+/** fast-path for computed values */
+let global_version = 0;
 
 function start_batch () {
 	batch_depth++;
@@ -43,21 +62,21 @@ function end_batch () {
 	let error;
 	let has_error = false;
 
-	while (batch_queue) {
-		let effects = batch_queue.sort((a, b) => a._depth - b._depth);
+	while (batched_effects) {
+		let effects = batched_effects.sort((a, b) => a._depth - b._depth);
 		let idx = 0;
 		let len = effects.length;
 
-		batch_queue = undefined;
+		batched_effects = undefined;
 		batch_iteration++;
 
 		for (; idx < len; idx++) {
 			let effect = effects[idx];
-			effect._flags &= ~FLAG_NOTIFIED;
+			effect._flags &= ~NOTIFIED;
 
-			if (!(effect._flags & FLAG_DISPOSED) && needs_recompute(effect)) {
+			if (!(effect._flags & DISPOSED) && need_recompute(effect)) {
 				try {
-					effect._run();
+					effect._callback();
 				}
 				catch (err) {
 					if (!has_error) {
@@ -78,106 +97,184 @@ function end_batch () {
 }
 
 /**
+ * @param {Signal} signal
+ * @returns {Node | undefined}
+ */
+function add_dependency (signal) {
+	if (!eval_context) {
+		return undefined;
+	}
+
+	let node = signal._node;
+	if (!node || node._target !== eval_context) {
+		// `signal` is a new dependency. Create a new node dependency node, move it
+		//  to the front of the current context's dependency list.
+		node = {
+			_version: 0,
+			_rollback: node,
+
+			_source: signal,
+			_prev_source: undefined,
+			_next_source: eval_context._sources,
+
+			_target: eval_context,
+			_prev_target: undefined,
+			_next_target: undefined,
+		};
+
+		eval_context._sources = node;
+		signal._node = node;
+
+		// Subscribe to change notifications from this dependency if we're in an effect
+		// OR evaluating a computed signal that in turn has subscribers.
+		if (eval_context._flags & TRACKING) {
+			signal._subscribe(node);
+		}
+
+		return node;
+	}
+	else if (node._version === -1) {
+		// `signal` is an existing dependency from a previous evaluation. Reuse it.
+		node._version = 0;
+
+		// If `node` is not already the current head of the dependency list (i.e.
+		// there is a previous node in the list), then make `node` the new head.
+		if (node._prev_source) {
+			node._prev_source._next_source = node._next_source;
+
+			if (node._next_source) {
+				node._next_source._prev_source = node._prev_source;
+			}
+
+			node._prev_source = undefined;
+			node._next_source = eval_context._sources;
+
+			// evalCotext._sources must be !== undefined (and !== node), because
+			// `node` was originally pointing to some previous node.
+			eval_context._sources._prev_source = node;
+			eval_context._sources = node;
+		}
+
+		// We can assume that the currently evaluated effect / computed signal is already
+		// subscribed to change notifications from `signal` if needed.
+		return node;
+	}
+
+	return undefined;
+}
+
+/**
+ * @param {Computed | Effect} target
+ * @returns {boolean}
+ */
+function need_recompute (target) {
+	// Check the dependencies for changed values. The dependency list is already
+	// in order of use. Therefore if multiple dependencies have changed values, only
+	// the first used dependency is re-evaluated at this point.
+	for (let node = target._sources; node; node = node._next_source) {
+		// If there's a new version of the dependency before or after refreshing,
+		// or the dependency has something blocking it from refreshing at all (e.g. a
+		// dependency cycle), then we need to recompute.
+		if (node._source._version !== node._version || !node._source._refresh() || node._source._version !== node._version) {
+			return true;
+		}
+	}
+
+	// If none of the dependencies have changed values since last recompute then the
+	// there's no need to recompute.
+	return false;
+}
+
+/**
  * @param {Computed | Effect} target
  */
-function needs_recompute (target) {
-	// We've been notified that we *might* be stale, so try asking our sources if
-	// there's anything actually new.
-	if (target._flags & FLAG_MAYBE_OUTDATED) {
-		let sources = target._sources;
-		let len = sources.length;
-		let idx = 0;
+function prepare_sources (target) {
+	for (let node = target._sources; node; node = node._next_source) {
+		let rollback = node._source._node;
 
-		for (; idx < len; idx++) {
-			if (target._flags & FLAG_OUTDATED) {
-				break;
-			}
-
-			sources[idx]._refresh();
+		if (rollback) {
+			node._rollback = rollback;
 		}
 
-		// We're no longer *maybe* stale at this point, unset the flag
-		target._flags &= ~FLAG_MAYBE_OUTDATED;
+		node._source._node = node;
+		node._version = -1;
 	}
-
-	// We don't unset `OUTDATED` here, Computed values can't be stale if the new
-	// value is the same as the current one.
-	return (target._flags & FLAG_OUTDATED) !== 0;
 }
 
-function cleanup_context () {
-	let sources = curr_context._sources;
+/**
+ * @param {Computed | Effect} target
+ */
+function cleanup_sources (target) {
+	// At this point target._sources is a mishmash of current & former dependencies.
+	// The current dependencies are also in a reverse order of use.
+	// Therefore build a new, reverted list of dependencies containing only the current
+	// dependencies in a proper order of use.
+	// Drop former dependencies from the list and unsubscribe from their change notifications.
 
-	if (curr_sources) {
-		prune_context_sources();
+	/** @type {Node | undefined} */
+	let sources = undefined;
+	let node = target._sources;
 
-		if (curr_sources_idx > 0) {
-			let l = curr_sources.length;
-			let i = 0;
+	while (node) {
+		let next = node._next_source;
 
-			sources.length = curr_sources_idx + l;
-
-			for (; i < l; i++) {
-				sources[curr_sources_idx + i] = curr_sources[i];
-			}
+		if (node._version === -1) {
+			node._source._unsubscribe(node);
+			node._next_source = undefined;
 		}
 		else {
-			sources = curr_context._sources = curr_sources;
-		}
-
-		if (curr_context._flags & FLAG_TRACKING) {
-			let len = sources.length;
-			let idx = curr_sources_idx;
-
-			for (; idx < len; idx++) {
-				let source = sources[idx];
-				source._subscribe(curr_context);
-				source._node = undefined;
+			if (sources) {
+				sources._prev_source = node;
 			}
+
+			node._prev_source = undefined;
+			node._next_source = sources;
+			sources = node;
 		}
-	}
-	else if (curr_sources_idx < curr_context._sources.length) {
-		prune_context_sources();
-		sources.length = curr_sources_idx;
+
+		node._source._node = node._rollback;
+
+		if (node._rollback) {
+			node._rollback = undefined;
+		}
+
+		node = next;
 	}
 
-	while (curr_sources_idx--) {
-		let source = sources[curr_sources_idx];
-		source._node = undefined;
-	}
-}
-
-function prune_context_sources () {
-	let sources = curr_context._sources;
-
-	let len = sources.length;
-	let idx = curr_sources_idx;
-
-	for (; idx < len; idx++) {
-		let source = sources[idx];
-		source._unsubscribe(curr_context);
-		source._node = undefined;
-	}
+	target._sources = sources;
 }
 
 /**
  * @param {Effect} effect
  */
 function dispose_effect (effect) {
-	let sources = effect._sources;
-	let len = sources.length;
-	let idx = 0;
-
-	for (; idx < len; idx++) {
-		sources[idx]._unsubscribe(effect);
+	for (let node = effect._sources; node; node = node._next_source) {
+		node._source._unsubscribe(node);
 	}
 
-	sources.length = 0;
+	effect._sources = undefined;
 }
 
 /**
- * @template T
+ * @this {Effect}
+ * @param {Computed | Effect | undefined} prev_context
  */
+function end_effect (prev_context) {
+	let _this = this;
+
+	cleanup_sources(_this);
+	eval_context = prev_context;
+
+	_this._flags &= ~RUNNING;
+
+	if (_this._flags & DISPOSED) {
+		dispose_effect(_this);
+	}
+
+	end_batch();
+}
+
+/** @template T */
 export class Signal {
 	/**
 	 * @param {T} value
@@ -185,10 +282,12 @@ export class Signal {
 	constructor (value) {
 		/** @internal @type {T} */
 		this._value = value;
-		/** @internal @type {Array<Computed | Effect>} */
-		this._targets = [];
-		/** @internal @type {Compueted | Effect | undefined} */
+		/** @internal @type {number} */
+		this._version = 0;
+		/** @internal @type {Node | undefined} */
 		this._node = undefined;
+		/** @internal @type {Node | undefined} */
+		this._targets = undefined;
 	}
 
 	/**
@@ -196,29 +295,49 @@ export class Signal {
 	 * @returns {boolean}
 	 */
 	_refresh () {
-		return false;
+		return true;
 	}
 
 	/**
 	 * @internal
-	 * @param {Computed | Effect} target
+	 * @param {Node} node
 	 */
-	_subscribe (target) {
+	_subscribe (node) {
 		let _this = this;
 
-		_this._targets.push(target);
+		if (_this._targets !== node && !node._prev_target) {
+			node._next_target = _this._targets;
+
+			if (_this._targets) {
+				_this._targets._prev_target = node;
+			}
+
+			_this._targets = node;
+		}
 	}
 
 	/**
 	 * @internal
-	 * @param {Computed | Effect} target
+	 * @param {Node} node
 	 */
-	_unsubscribe (target) {
+	_unsubscribe (node) {
 		let _this = this;
-		let targets = _this._targets;
-		let idx = targets.indexOf(target);
+		let prev = node._prev_target;
+		let next = node._next_target;
 
-		targets.splice(idx, 1);
+		if (prev) {
+			prev._next_target = next;
+			node._prev_target = undefined;
+		}
+
+		if (next) {
+			next._prev_target = prev;
+			node._next_target = undefined;
+		}
+
+		if (node === _this._targets) {
+			_this._targets = next;
+		}
 	}
 
 	/**
@@ -228,15 +347,15 @@ export class Signal {
 		let _this = this;
 
 		return effect(() => {
-			let curr_context = curr_context;
+			let curr_context = eval_context;
 			let value = _this.value;
 
 			try {
-				curr_context = undefined;
+				eval_context = undefined;
 				fn(value);
 			}
 			finally {
-				curr_context = curr_context;
+				eval_context = curr_context;
 			}
 		});
 	}
@@ -260,21 +379,10 @@ export class Signal {
 	/** @type {T} */
 	get value () {
 		let _this = this;
+		let node = add_dependency(_this);
 
-		if (curr_context && _this._node !== curr_context) {
-			// Mark the current context, there's no need to add ourselves again to the
-			// dependency list if we're already in it, will be unset during cleanup
-			_this._node = curr_context
-
-			if (!curr_sources && curr_context._sources[curr_sources_idx] === _this) {
-				curr_sources_idx++;
-			}
-			else if (!curr_sources) {
-				curr_sources = [_this];
-			}
-			else {
-				curr_sources.push(_this);
-			}
+		if (node) {
+			node._version = _this._version;
 		}
 
 		return _this._value;
@@ -284,17 +392,15 @@ export class Signal {
 
 		if (_this._value !== next) {
 			_this._value = next;
+			_this._version++;
+			global_version++;
 
 			if (batch_iteration < 100) {
-				let targets = _this._targets;
-				let len = targets.length;
-				let idx = 0;
-
 				/* @__INLINE__ */ start_batch();
 
 				try {
-					for (; idx < len; idx++) {
-						targets[idx]._notify(FLAG_OUTDATED);
+					for (let node = _this._targets; node; node = node._next_target) {
+						node._target._notify();
 					}
 				}
 				finally {
@@ -318,140 +424,126 @@ export class Computed extends Signal {
 
 		/** @internal @type {() => T} */
 		this._compute = compute;
-		/** @internal @type {Array<Signal>} */
-		this._sources = [];
+		/** @internal @type {Node | undefined} */
+		this._sources = undefined;
 		/** @internal @type {number} */
-		this._flags = FLAG_OUTDATED;
+		this._global_version = global_version - 1;
+		/** @internal @type {number} */
+		this._flags = OUTDATED;
 	}
 
 	/**
 	 * @internal
+	 * @returns {boolean}
 	 */
 	_refresh () {
 		let _this = this;
 
-		let stale = false;
-		let next;
+		_this._flags &= ~NOTIFIED;
 
-		_this._flags &= ~FLAG_NOTIFIED;
-
-		// We hit a cycle, or we've already been used in a context
-		if ((_this._flags & FLAG_RUNNING) || _this._node) {
+		if (_this._flags & RUNNING) {
 			return false;
 		}
 
-		_this._flags |= FLAG_RUNNING;
-
-		// We're currently tracking our sources, so check if there's anything new
-		if ((_this._flags & FLAG_TRACKING) && !needs_recompute(_this)) {
-			_this._flags &= ~FLAG_RUNNING;
-			return false;
+		// If this computed signal has subscribed to updates from its dependencies
+		// (TRACKING flag set) and none of them have notified about changes (OUTDATED
+		// flag not set), then the computed value can't have changed.
+		if ((_this._flags & (OUTDATED | TRACKING)) === TRACKING) {
+			return true;
 		}
 
-		let prev_context = curr_context;
-		let prev_sources = curr_sources;
-		let prev_sources_idx = curr_sources_idx;
+		_this._flags &= ~OUTDATED;
+
+		if (_this._global_version === global_version) {
+			return true;
+		}
+
+		// Mark this computed signal running before checking the dependencies for value
+		// changes, so that the RUNNIN flag can be used to notice cyclical dependencies.
+		_this._flags |= RUNNING;
+		_this._global_version = global_version;
+
+		if (_this._version > 0 && !need_recompute(_this)) {
+			_this._flags &= ~RUNNING;
+			return true;
+		}
+
+		let prev_context = eval_context;
 
 		try {
-			_this._flags &= ~FLAG_OUTDATED;
+			prepare_sources(_this);
+			eval_context = _this;
 
-			curr_context = _this;
-			curr_sources = undefined;
-			curr_sources_idx = 0;
+			let value = _this._compute();
 
-			next = _this._compute();
-			stale = next !== _this._value;
+			if (_this._flags & HAS_ERROR || _this._value !== value || _this._value === 0) {
+				_this._value = value;
+				_this._flags &= ~HAS_ERROR;
+				_this._version++;
+			}
 		}
 		catch (err) {
-			next = err;
-			stale = true;
-
-			_this._flags |= FLAG_HAS_ERROR;
+			_this._value = err;
+			_this._flags |= HAS_ERROR;
+			_this._version++;
 		}
 
-		cleanup_context();
+		eval_context = prev_context;
+		cleanup_sources(_this);
 
-		_this._value = next;
-		_this._flags &= ~FLAG_RUNNING;
+		_this._flags &= ~RUNNING;
+		return true;
+	}
 
-		curr_context = prev_context;
-		curr_sources = prev_sources;
-		curr_sources_idx = prev_sources_idx;
+	/**
+	 * @internal
+	 * @param {Node} node
+	 */
+	_subscribe (node) {
+		let _this = this;
 
-		// We're stale now, mutate our targets to notify that they are indeed outdated
-		if (stale) {
-			let targets = _this._targets;
-			let len = targets.length;
-			let idx = 0;
+		if (!_this._targets) {
+			_this._flags |= OUTDATED | TRACKING;
 
-			for (; idx < len; idx++) {
-				targets[idx]._flags |= FLAG_OUTDATED;
+			// A computed signal subscribes lazily to its dependencies when the it
+			// gets its first subscriber.
+			for (let node = _this._sources; node; node = node._next_source) {
+				node._source._subscribe(node);
+			}
+		}
+
+		super._subscribe(node);
+	}
+
+	/**
+	 * @internal
+	 * @param {Node} node
+	 */
+	_unsubscribe (node) {
+		let _this = this;
+
+		super._unsubscribe(node);
+
+		if (!_this._targets) {
+			_this._flags &= ~TRACKING;
+
+			for (let node = _this._sources; node; node = node._next_source) {
+				node._source._unsubscribe(node);
 			}
 		}
 	}
 
 	/**
 	 * @internal
-	 * @param {Computed | Effect} target
 	 */
-	_subscribe (target) {
+	_notify () {
 		let _this = this;
 
-		// Subscribe to our sources now that we have someone subscribing on us
-		if (_this._targets.length < 1) {
-			let sources = _this._sources;
-			let len = sources.length;
-			let idx = 0;
+		if (!(_this._flags & (NOTIFIED | RUNNING))) {
+			_this._flags |= OUTDATED | NOTIFIED;
 
-			_this._flags |= FLAG_TRACKING;
-
-			for (; idx < len; idx++) {
-				sources[idx]._subscribe(_this);
-			}
-		}
-
-		super._subscribe(target);
-	}
-
-	/**
-	 * @internal
-	 * @param {Computed | Effect} target
-	 */
-	_unsubscribe (target) {
-		let _this = this;
-
-		super._unsubscribe(target);
-
-		// Unsubscribe from our sources since there's no one subscribing to us
-		if (_this._targets.length < 1) {
-			let sources = _this._sources;
-			let len = sources.length;
-			let idx = 0;
-
-			_this._flags &= ~FLAG_TRACKING;
-
-			for (; idx < len; idx++) {
-				sources[idx]._unsubscribe(_this);
-			}
-		}
-	}
-
-	/**
-	 * @internal
-	 * @param {number} flag Either `OUTDATED` or `MAYBE_OUTDATED`
-	 */
-	_notify (flag) {
-		let _this = this;
-
-		if (!(_this._flags & (FLAG_NOTIFIED | FLAG_RUNNING))) {
-			let targets = _this._targets;
-			let len = targets.length;
-			let idx = 0;
-
-			_this._flags |= FLAG_NOTIFIED | flag;
-
-			for (; idx < len; idx++) {
-				targets[idx]._notify(FLAG_MAYBE_OUTDATED);
+			for (let node = _this._targets; node; node = node._next_target) {
+				node._target._notify();
 			}
 		}
 	}
@@ -461,7 +553,7 @@ export class Computed extends Signal {
 
 		_this._refresh();
 
-		if (_this._flags & FLAG_HAS_ERROR) {
+		if (_this._flags & HAS_ERROR) {
 			throw _this._value;
 		}
 
@@ -473,23 +565,36 @@ export class Computed extends Signal {
 
 		_this._refresh();
 
-		if (_this._flags & FLAG_HAS_ERROR) {
-			throw super.value;
+		if (!(_this._flags & RUNNING)) {
+			let node = add_dependency(_this);
+
+			if (node) {
+				node._version = _this._version;
+			}
 		}
 
-		return super.value;
+		if (_this._flags & HAS_ERROR) {
+			throw _this._value;
+		}
+
+		return _this._value;
 	}
-	set value (next) {}
+	set value (next) {
+		super.value = next;
+	}
 }
 
 export class Effect {
+	/**
+	 * @param {() => void} compute
+	 */
 	constructor (compute) {
 		/** @internal @type {() => void} */
 		this._compute = compute;
-		/** @internal @type {Array<Signal>} */
-		this._sources = [];
+		/** @internal @type {Node | undefined} */
+		this._sources = undefined;
 		/** @internal @type {number} */
-		this._flags = FLAG_TRACKING;
+		this._flags = TRACKING;
 		/** @internal @type {number} */
 		this._depth = 0;
 	}
@@ -497,66 +602,60 @@ export class Effect {
 	/**
 	 * @internal
 	 */
-	_run () {
+	_callback () {
 		let _this = this;
 
-		if (_this._flags & FLAG_RUNNING) {
+		if (_this._flags & (RUNNING | DISPOSED)) {
 			return;
 		}
 
-		_this._flags |= FLAG_RUNNING;
-		_this._flags &= ~FLAG_OUTDATED;
-
-		let prev_context = curr_context;
-		let prev_sources = curr_sources;
-		let prev_sources_idx = curr_sources_idx;
+		let finish = _this._start();
 
 		try {
-			/* @__INLINE__ */ start_batch();
-
-			curr_context = _this;
-			curr_sources = undefined;
-			curr_sources_idx = 0;
-
 			_this._compute();
 		}
 		finally {
-			cleanup_context();
+			finish();
+		}
+	}
 
-			curr_context = prev_context;
-			curr_sources = prev_sources;
-			curr_sources_idx = prev_sources_idx;
+	/**
+	 * @internal
+	 * @returns {() => void}
+	 */
+	_start () {
+		let _this = this;
 
-			_this._flags &= ~FLAG_RUNNING;
+		_this._flags |= RUNNING;
+		_this._flags &= ~DISPOSED;
 
-			if (_this._flags & FLAG_DISPOSED) {
-				dispose_effect(_this);
-			}
+		cleanup_sources(_this);
+		prepare_sources(_this);
 
-			end_batch();
+		/* @__INLINE__ */ start_batch();
+
+		let prev_context = eval_context;
+		eval_context = _this;
+
+		return end_effect.bind(_this, prev_context);
+	}
+
+	_notify () {
+		let _this = this;
+
+		if (!(_this._flags & (NOTIFIED | RUNNING))) {
+			_this._flags |= NOTIFIED;
+			(batched_effects ||= []).push(_this);
 		}
 	}
 
 	_dispose () {
 		let _this = this;
 
-		_this._flags |= FLAG_DISPOSED;
+		_this._flags |= DISPOSED;
 
-		if (!(_this._flags & FLAG_RUNNING)) {
+		if (!(_this._flags & RUNNING)) {
 			dispose_effect(_this);
-		}
-	}
-
-	/**
-	 * @internal
-	 * @param {number} flag Either `OUTDATED` or `MAYBE_OUTDATED`
-	 */
-	_notify (flag) {
-		let _this = this;
-
-		if (!(_this._flags & (FLAG_NOTIFIED | FLAG_RUNNING))) {
-			_this._flags |= FLAG_NOTIFIED | flag;
-			(batch_queue ||= []).push(_this);
 		}
 	}
 }
@@ -577,11 +676,11 @@ export class Scope {
 		/** @internal @type {number} */
 		_this._depth = 0;
 
-		if (!detached && curr_scope) {
-			_this.parent = curr_scope;
-			_this._depth = curr_scope._depth + 1;
+		if (!detached && eval_scope) {
+			_this.parent = eval_scope;
+			_this._depth = eval_scope._depth + 1;
 
-			curr_scope.scopes.push(_this);
+			eval_scope.scopes.push(_this);
 		}
 	}
 
@@ -591,14 +690,14 @@ export class Scope {
 	 * @returns {T}
 	 */
 	run (callback) {
-		let prev_scope = curr_scope;
+		let prev_scope = eval_scope;
 
 		try {
-			curr_scope = this;
+			eval_scope = this;
 			return callback();
 		}
 		finally {
-			curr_scope = prev_scope;
+			eval_scope = prev_scope;
 		}
 	}
 
@@ -621,14 +720,13 @@ export class Scope {
 	}
 }
 
-
 export function scope (detached) {
 	return new Scope(detached);
 }
 
 export function cleanup (callback) {
-	if (is_function(callback) && curr_scope) {
-		curr_scope.cleanups.push(callback);
+	if (is_function(callback) && eval_scope) {
+		eval_scope.cleanups.push(callback);
 	}
 }
 
@@ -648,14 +746,14 @@ export function batch (callback) {
 }
 
 export function untrack (callback) {
-	let prev_context = curr_context;
+	let prev_context = eval_context;
 
 	try {
-		curr_context = undefined;
+		eval_context = undefined;
 		return callback();
 	}
 	finally {
-		curr_context = prev_context;
+		eval_context = prev_context;
 	}
 }
 
@@ -692,16 +790,16 @@ export function effect (compute) {
 	let dispose = effect._dispose.bind(effect);
 
 	try {
-		effect._run();
+		effect._callback();
 	}
 	catch (error) {
 		dispose();
 		throw error;
 	}
 
-	if (curr_scope && effect._sources) {
-		effect._depth = curr_scope._depth;
-		curr_scope.cleanups.push(dispose);
+	if (eval_scope && effect._sources) {
+		effect._depth = eval_scope._depth;
+		eval_scope.cleanups.push(dispose);
 	}
 
 	return dispose;
