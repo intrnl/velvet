@@ -58,14 +58,14 @@ describe('computed', () => {
 		assertSpy(fn, 3);
 	});
 
-	it('allows setting value to a computed', () => {
+	it('cannot set values to a computed', () => {
 		let count = signal(1);
 		let doubled = computed(() => count.value * 2);
 
 		assert.equal(doubled.value, 2);
 
 		doubled.value = 7;
-		assert.equal(doubled.value, 7);
+		assert.equal(doubled.value, 2);
 	});
 });
 

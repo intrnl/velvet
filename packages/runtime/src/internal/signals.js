@@ -477,9 +477,7 @@ export class Computed extends Signal {
 
 		return super.value;
 	}
-	set value (next) {
-		super.value = next;
-	}
+	set value (next) {}
 }
 
 export class Effect {
