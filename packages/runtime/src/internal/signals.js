@@ -353,6 +353,8 @@ export class Computed extends Signal {
 		let prev_sources_idx = curr_sources_idx;
 
 		try {
+			_this._flags &= ~FLAG_OUTDATED;
+
 			curr_context = _this;
 			curr_sources = undefined;
 			curr_sources_idx = 0;
