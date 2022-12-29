@@ -116,42 +116,13 @@ export function transform_template (template, source) {
 					return;
 				}
 
-				// do some special handling for table, which can create new elements
-				// implicitly
-				if (elem_name === 'table') {
-					let children = node.children;
-
-					let start_idx = -1;
-					let end_idx = -1;
-
-					for (let i = 0, l = children.length; i < l; i++) {
-						let child = children[i];
-
-						if (child.type !== 'Element') {
-							continue;
-						}
-
-						if (child.name === 'tr') {
-							if (start_idx === -1) {
-								start_idx = i;
-							}
-
-							end_idx = l;
-						}
-
-						if (child.name === 'tbody') {
-							if (start_idx !== -1) {
-								end_idx = i - 1;
-							}
-						}
-					}
-
-					if (start_idx !== -1) {
-						let tbody = tt.element('tbody', false, [], null);
-						let implicit_children = children.splice(start_idx, end_idx - start_idx + 1, tbody);
-
-						tbody.children = implicit_children;
-					}
+				if (parent.type === 'Element' && !validate_tag_placement(parent.name, elem_name)) {
+					throw create_error(
+						`<${elem_name}> cannot be placed directly within <${parent.name}> element`,
+						source,
+						node.start,
+						node.end,
+					);
 				}
 
 				let attributes = node.attributes;
@@ -361,6 +332,15 @@ export function transform_template (template, source) {
 
 				if (!value) {
 					return walk.remove;
+				}
+
+				if (parent.type === 'Element' && !validate_tag_placement(parent.name, '#text')) {
+					throw create_error(
+						`text cannot be placed directly within <${parent.name}> element`,
+						source,
+						node.start,
+						node.end,
+					);
 				}
 
 				curr_block.html += value;
@@ -1875,4 +1855,57 @@ function merge_scope (scope) {
 		...scope.blocks,
 		...scope.expressions,
 	];
+}
+
+/**
+ * Validates if the tag is valid within a specified parent, this will only deal
+ * with tag placements that are very much fatal if not thrown.
+ * @param {string} parent
+ * @param {string} tag
+ */
+function validate_tag_placement (parent, tag) {
+	switch (parent) {
+		// https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-intable
+		case 'table':
+			return (
+				tag === 'caption' ||
+				tag === 'colgroup' ||
+				tag === 'tbody' ||
+				tag === 'tfoot' ||
+				tag === 'thead' ||
+				tag === 'style' ||
+				tag === 'script' ||
+				tag === 'template'
+			);
+		// https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-intr
+		case 'tr':
+			return (
+				tag === 'th' ||
+				tag === 'td' ||
+				tag === 'style' ||
+				tag === 'script' ||
+				tag === 'template'
+			);
+		// https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-intbody
+		case 'tbody':
+		case 'thead':
+		case 'tfoot':
+			return (
+				tag === 'tr' ||
+				tag === 'style' ||
+				tag === 'script' ||
+				tag === 'template'
+			);
+		// https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-incolgroup
+		case 'colgroup':
+			return tag === 'col' || tag === 'template';
+
+		// https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-inselect
+		case 'select':
+			return tag === 'option' || tag === 'optgroup' || tag === '#text';
+		case 'optgroup':
+			return tag === 'option' || tag === '#text';
+	}
+
+	return true;
 }

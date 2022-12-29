@@ -776,28 +776,6 @@ describe('comment', () => {
 });
 
 describe('miscellaneous', () => {
-	it('handles implicit table', () => {
-		let template = `
-			{#key 1}
-				<table> <tr><td>{expr}</td></tr> </table>
-			{/key}
-
-			{#key 1}
-				<table> <tr><td>{expr}</td></tr> <tbody></tbody> </table>
-			{/key}
-
-			{#key 1}
-				<table> <tr><td>{expr}</td></tr> <tbody></tbody> <tr><td>{expr}</td></tr> </table>
-			{/key}
-
-			{#key 1}
-				<table> <tbody></tbody> <tr><td>{expr}</td></tr> </table>
-			{/key}
-		`;
-
-		snap(template);
-	});
-
 	it('handles spacing between attributes', () => {
 		let template = `<button style='display: none;' class='window' title='Greet'></button>`;
 

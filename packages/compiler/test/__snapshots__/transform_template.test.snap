@@ -1394,59 +1394,6 @@ let %fragment0 = @clone(%template0);
 
 `;
 
-exports[`miscellaneous > handles implicit table 1`] = `
-let %%template0 = @html("<!><!><!><!>");
-let %fragment0 = @clone(%template0);
-let %marker0 = @traverse(%fragment0, [0]);
-let %marker1 = @traverse(%fragment0, [1]);
-let %marker2 = @traverse(%fragment0, [2]);
-let %marker3 = @traverse(%fragment0, [3]);
-let %block1 = $$root => {
-  let %%template1 = @html("<table><tbody><tr><td></td></tr></tbody></table>");
-  let %fragment1 = @clone(%template1);
-  let %child0 = @traverse(%fragment1, [0, 0, 0, 0]);
-  let %child1 = @traverse(%fragment1, [0]);
-  @text(%child0, () => expr);
-  @after($$root, %fragment1);
-  return %child1;
-};
-let %block2 = $$root => {
-  let %%template2 = @html("<table><tbody><tr><td></td></tr></tbody><tbody></tbody></table>");
-  let %fragment2 = @clone(%template2);
-  let %child2 = @traverse(%fragment2, [0, 0, 0, 0]);
-  let %child3 = @traverse(%fragment2, [0]);
-  @text(%child2, () => expr);
-  @after($$root, %fragment2);
-  return %child3;
-};
-let %block3 = $$root => {
-  let %%template3 = @html("<table><tbody><tr><td></td></tr><tbody></tbody><tr><td></td></tr></tbody></table>");
-  let %fragment3 = @clone(%template3);
-  let %child4 = @traverse(%fragment3, [0, 0, 0, 0]);
-  let %child5 = @traverse(%fragment3, [0, 0, 2, 0]);
-  let %child6 = @traverse(%fragment3, [0]);
-  @text(%child4, () => expr);
-  @text(%child5, () => expr);
-  @after($$root, %fragment3);
-  return %child6;
-};
-let %block4 = $$root => {
-  let %%template4 = @html("<table><tbody></tbody><tbody><tr><td></td></tr></tbody></table>");
-  let %fragment4 = @clone(%template4);
-  let %child7 = @traverse(%fragment4, [0, 1, 0, 0]);
-  let %child8 = @traverse(%fragment4, [0]);
-  @text(%child7, () => expr);
-  @after($$root, %fragment4);
-  return %child8;
-};
-@keyed(%marker0, %block1, () => 1);
-@keyed(%marker1, %block2, () => 1);
-@keyed(%marker2, %block3, () => 1);
-@keyed(%marker3, %block4, () => 1);
-@append($$root, %fragment0);
-
-`;
-
 exports[`miscellaneous > handles spacing between attributes 1`] = `
 let %%template0 = @html("<button style='display: none;'class=window title=Greet></button>");
 let %fragment0 = @clone(%template0);
