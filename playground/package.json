@@ -15,7 +15,7 @@
 		"perf-monitor": "^0.4.1"
 	},
 	"devDependencies": {
-		"@intrnl/esbuild-plugin-velvet": "workspace:0.6.0",
+		"@intrnl/esbuild-plugin-velvet": "workspace:0.6.1",
 		"@intrnl/velvet-compiler": "workspace:0.8.0",
 		"esbuild": "^0.16.12"
 	}
