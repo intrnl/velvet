@@ -12,7 +12,7 @@ importers:
 
   packages/compiler:
     specifiers:
-      '@intrnl/velvet': workspace:^0.4.21
+      '@intrnl/velvet': workspace:^0.4.22
       '@types/estree': ^1.0.0
       acorn: ^8.8.1
       astring: ^1.8.4
@@ -34,8 +34,8 @@ importers:
   packages/esbuild-plugin:
     specifiers:
       '@intrnl/fs-cache': ^0.2.3
-      '@intrnl/velvet': workspace:^0.4.21
-      '@intrnl/velvet-compiler': workspace:^0.7.14
+      '@intrnl/velvet': workspace:^0.4.22
+      '@intrnl/velvet-compiler': workspace:^0.8.0
       esbuild: ^0.16.12
       rollup: ^3.9.0
     dependencies:
@@ -66,9 +66,9 @@ importers:
 
   playground:
     specifiers:
-      '@intrnl/esbuild-plugin-velvet': workspace:0.5.4
-      '@intrnl/velvet': workspace:0.4.21
-      '@intrnl/velvet-compiler': workspace:0.7.14
+      '@intrnl/esbuild-plugin-velvet': workspace:0.6.0
+      '@intrnl/velvet': workspace:0.4.22
+      '@intrnl/velvet-compiler': workspace:0.8.0
       esbuild: ^0.16.12
       perf-monitor: ^0.4.1
     dependencies:

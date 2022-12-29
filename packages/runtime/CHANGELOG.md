@@ -1,5 +1,14 @@
 # @intrnl/velvet
 
+## 0.4.22
+
+### Patch Changes
+
+- 0ceb7cb: Update Signals implementation
+- 00b9886: Change how child nodes are adopted from one parent to another
+- 6fb9b32: Refactor signal implementation
+- 09403dc: Move macro transformation to a separate export
+
 ## 0.4.21
 
 ### Patch Changes

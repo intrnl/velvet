@@ -1,5 +1,22 @@
 # @intrnl/velvet-compiler
 
+## 0.8.0
+
+### Minor Changes
+
+- 900eef4: Properly validate tag placements, this also removes the implicit wrapping of
+  tr tags that are directly placed within a table
+
+### Patch Changes
+
+- 45ad53d: Handle builtin named expressions in the parser
+- 09403dc: Move macro transformation to a separate export
+- Updated dependencies [0ceb7cb]
+- Updated dependencies [00b9886]
+- Updated dependencies [6fb9b32]
+- Updated dependencies [09403dc]
+  - @intrnl/velvet@0.4.22
+
 ## 0.7.14
 
 ### Patch Changes
