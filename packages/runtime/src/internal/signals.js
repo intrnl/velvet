@@ -6,7 +6,7 @@
 // - Effect depth tracking
 // - Not using TypeScript, only JSDoc typings.
 
-// Based off commit fbe2cb8eca144fa4a4659fb78e9373b7a227ab77
+// Based off commit 9d3ffd9a1f2f2ef94247b5857a42a85df5066a08
 
 import { is_function } from './utils.js';
 
@@ -107,20 +107,32 @@ function add_dependency (signal) {
 
 	let node = signal._node;
 	if (!node || node._target !== eval_context) {
-		// `signal` is a new dependency. Create a new node dependency node, move it
-		//  to the front of the current context's dependency list.
+		// `signal` is a new dependency. Create a new dependency node, and set it
+		// as the tail of the current context's dependency list. e.g:
+		//
+		// { A <-> B       }
+		//         ↑     ↑
+		//        tail  node (new)
+		//               ↓
+		// { A <-> B <-> C }
+		//               ↑
+		//              tail (evalContext._sources)
 		node = {
 			_version: 0,
 			_rollback: node,
 
 			_source: signal,
-			_prev_source: undefined,
-			_next_source: eval_context._sources,
+			_prev_source: eval_context._sources,
+			_next_source: undefined,
 
 			_target: eval_context,
 			_prev_target: undefined,
 			_next_target: undefined,
 		};
+
+		if (eval_context._sources) {
+			eval_context._sources._next_source = node;
+		}
 
 		eval_context._sources = node;
 		signal._node = node;
@@ -137,21 +149,28 @@ function add_dependency (signal) {
 		// `signal` is an existing dependency from a previous evaluation. Reuse it.
 		node._version = 0;
 
-		// If `node` is not already the current head of the dependency list (i.e.
-		// there is a previous node in the list), then make `node` the new head.
-		if (node._prev_source) {
-			node._prev_source._next_source = node._next_source;
+		// If `node` is not already the current tail of the dependency list (i.e.
+		// there is a next node in the list), then make the `node` the new tail. e.g:
+		//
+		// { A <-> B <-> C <-> D }
+		//         ↑           ↑
+		//        node   ┌─── tail (evalContext._sources)
+		//         └─────│─────┐
+		//               ↓     ↓
+		// { A <-> C <-> D <-> B }
+		//                     ↑
+		//                    tail (evalContext._sources)
+		if (node._next_source) {
+			node._next_source._prev_source = node._prev_source;
 
-			if (node._next_source) {
-				node._next_source._prev_source = node._prev_source;
+			if (node._prev_source) {
+				node._prev_source._next_source = node._next_source;
 			}
 
-			node._prev_source = undefined;
-			node._next_source = eval_context._sources;
+			node._prev_source = eval_context._sources;
+			node._next_source = undefined;
 
-			// evalCotext._sources must be !== undefined (and !== node), because
-			// `node` was originally pointing to some previous node.
-			eval_context._sources._prev_source = node;
+			eval_context._sources._next_source = node;
 			eval_context._sources = node;
 		}
 
@@ -180,7 +199,7 @@ function need_recompute (target) {
 		}
 	}
 
-	// If none of the dependencies have changed values since last recompute then the
+	// If none of the dependencies have changed values since last recompute then
 	// there's no need to recompute.
 	return false;
 }
@@ -189,6 +208,17 @@ function need_recompute (target) {
  * @param {Computed | Effect} target
  */
 function prepare_sources (target) {
+	// 1. Mark all current sources as re-usable nodes (version: -1)
+	// 2. Set a rollback node if the current node is being used in a different context
+	// 3. Point 'target._sources' to the tail of the doubly-linked list, e.g:
+	//
+	//    { undefined <- A <-> B <-> C -> undefined }
+	//                   ↑           ↑
+	//                   │           └──────┐
+	// target._sources = A; (node is head)  │
+	//                   ↓                  │
+	// target._sources = C; (node is tail) ─┘
+
 	for (let node = target._sources; node; node = node._next_source) {
 		let rollback = node._source._node;
 
@@ -198,6 +228,11 @@ function prepare_sources (target) {
 
 		node._source._node = node;
 		node._version = -1;
+
+		if (!node._next_source) {
+			target._sources = node;
+			break;
+		}
 	}
 }
 
@@ -205,31 +240,40 @@ function prepare_sources (target) {
  * @param {Computed | Effect} target
  */
 function cleanup_sources (target) {
-	// At this point target._sources is a mishmash of current & former dependencies.
-	// The current dependencies are also in a reverse order of use.
-	// Therefore build a new, reverted list of dependencies containing only the current
-	// dependencies in a proper order of use.
-	// Drop former dependencies from the list and unsubscribe from their change notifications.
-
-	/** @type {Node | undefined} */
-	let sources = undefined;
 	let node = target._sources;
+	let head = undefined;
 
+	// At this point 'target._sources' points to the tail of the doubly-linked list.
+	// It contains all existing sources + new sources in order of use.
+	// Iterate backwards until we find the head node while dropping old dependencies.
 	while (node) {
-		let next = node._next_source;
+		let prev = node._prev_source;
 
+		// The node was not re-used, unsubscribe from its change notifications and remove itself
+		// from the doubly-linked list. e.g:
+		//
+		// { A <-> B <-> C }
+		//         ↓
+		//    { A <-> C }
 		if (node._version === -1) {
 			node._source._unsubscribe(node);
-			node._next_source = undefined;
-		}
-		else {
-			if (sources) {
-				sources._prev_source = node;
-			}
 
-			node._prev_source = undefined;
-			node._next_source = sources;
-			sources = node;
+			if (prev) {
+				prev._next_source = node._next_source;
+			}
+			if (node._next_source) {
+				node._next_source._prev_source = prev;
+			}
+		} else {
+			// The new head is the last node seen which wasn't removed/unsubscribed
+			// from the doubly-linked list. e.g:
+			//
+			// { A <-> B <-> C }
+			//   ↑     ↑     ↑
+			//   │     │     └ head = node
+			//   │     └ head = node
+			//   └ head = node
+			head = node;
 		}
 
 		node._source._node = node._rollback;
@@ -238,10 +282,10 @@ function cleanup_sources (target) {
 			node._rollback = undefined;
 		}
 
-		node = next;
+		node = prev;
 	}
 
-	target._sources = sources;
+	target._sources = head;
 }
 
 /**
@@ -322,21 +366,24 @@ export class Signal {
 	 */
 	_unsubscribe (node) {
 		let _this = this;
-		let prev = node._prev_target;
-		let next = node._next_target;
 
-		if (prev) {
-			prev._next_target = next;
-			node._prev_target = undefined;
-		}
+		if (_this._targets) {
+			let prev = node._prev_target;
+			let next = node._next_target;
 
-		if (next) {
-			next._prev_target = prev;
-			node._next_target = undefined;
-		}
+			if (prev) {
+				prev._next_target = next;
+				node._prev_target = undefined;
+			}
 
-		if (node === _this._targets) {
-			_this._targets = next;
+			if (next) {
+				next._prev_target = prev;
+				node._next_target = undefined;
+			}
+
+			if (node === _this._targets) {
+				_this._targets = next;
+			}
 		}
 	}
 
@@ -459,7 +506,7 @@ export class Computed extends Signal {
 		}
 
 		// Mark this computed signal running before checking the dependencies for value
-		// changes, so that the RUNNIN flag can be used to notice cyclical dependencies.
+		// changes, so that the RUNNING flag can be used to notice cyclical dependencies.
 		_this._flags |= RUNNING;
 		_this._global_version = global_version;
 
@@ -522,13 +569,15 @@ export class Computed extends Signal {
 	_unsubscribe (node) {
 		let _this = this;
 
-		super._unsubscribe(node);
+		if (_this._targets) {
+			super._unsubscribe(node);
 
-		if (!_this._targets) {
-			_this._flags &= ~TRACKING;
+			if (!_this._targets) {
+				_this._flags &= ~TRACKING;
 
-			for (let node = _this._sources; node; node = node._next_source) {
-				node._source._unsubscribe(node);
+				for (let node = _this._sources; node; node = node._next_source) {
+					node._source._unsubscribe(node);
+				}
 			}
 		}
 	}
