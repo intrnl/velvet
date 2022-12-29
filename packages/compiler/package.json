@@ -28,14 +28,14 @@
 	},
 	"dependencies": {
 		"acorn": "^8.8.1",
-		"astring": "^1.8.3",
+		"astring": "^1.8.4",
 		"gensync": "^1.0.0-beta.2"
 	},
 	"devDependencies": {
 		"@intrnl/velvet": "workspace:^0.4.21",
 		"@types/estree": "^1.0.0",
-		"esbuild": "^0.16.3",
-		"mocha": "^10.1.0",
-		"rollup": "^3.7.0"
+		"esbuild": "^0.16.12",
+		"mocha": "^10.2.0",
+		"rollup": "^3.9.0"
 	}
 }
