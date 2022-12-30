@@ -1,8 +1,7 @@
 import * as p from './utils/template_parser.js';
 import * as t from './utils/template_types.js';
 import * as j from './utils/js_parse.js';
-import { is_void, closing_tag_omitted } from './utils/html.js';
-import { create_error } from './utils/error.js';
+import { is_void } from './utils/html.js';
 
 
 const allow_duped_attributes = new Set(['#use']);
@@ -558,23 +557,9 @@ function _parse_element (state) {
 		p.eat_whitespace(state);
 		p.eat(state, '>', 'closing tag bracket');
 
-		while (parent.name !== name) {
-			if (parent.type !== 'Element') {
-				let message = state._last_auto_closed?.name === name
-					? `</${name}> attempted to close <${name}> that were already closed by <${state._last_auto_closed.tag}>`
-					: `</${name}> attempted to close an element that was not open`;
-
-				throw p.error(state, message, start);
-			}
-
-			if (parent.name === 'svg' || parent.name === 'math' || parent.name === 'foreignObject') {
-				p.pop_mode(state);
-			}
-
-			p.pop(state);
-
-			parent.end = start;
-			parent = p.current(state);
+		if (parent.name !== name) {
+			let message = `</${name}> attempted to close an element that was not open`;
+			throw p.error(state, message, start);
 		}
 
 		parent.end = state.index;
@@ -589,16 +574,6 @@ function _parse_element (state) {
 		}
 
 		return;
-	}
-	else if (closing_tag_omitted(parent.name, name)) {
-		parent.end = start;
-		p.pop(state);
-
-		state._last_auto_closed = {
-			name: parent.name,
-			tag: name,
-			depth: state.stack.length,
-		};
 	}
 
 	// attributes parsing

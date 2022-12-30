@@ -1,7 +1,7 @@
 import { walk } from './utils/walker.js';
 import * as t from './utils/js_types.js';
-import * as tt from './utils/template_types.js';
 import { create_error } from './utils/error.js';
+import { update_ancestor_info, validate_dom_nesting } from './utils/validate_dom.js';
 
 
 const HTML_NO_COLLAPSE = new Set([
@@ -66,6 +66,7 @@ export function transform_template (template, source) {
 	let node_offsets = new Map();
 
 	let wrap_stack = [false];
+	let ancestor_info_stack = [update_ancestor_info('#fragment', null)];
 
 	// increment to create unique identifier names
 	let id_c = 0;
@@ -116,14 +117,19 @@ export function transform_template (template, source) {
 					return;
 				}
 
-				if (parent.type === 'Element' && !validate_tag_placement(parent.name, elem_name)) {
+				let prev_ancestor_info = get_current(ancestor_info_stack);
+				let invalid = validate_dom_nesting(elem_name, null, prev_ancestor_info);
+
+				if (invalid) {
 					throw create_error(
-						`<${elem_name}> cannot be placed directly within <${parent.name}> element`,
+						invalid.message,
 						source,
 						node.start,
 						node.end,
-					);
+					)
 				}
+
+				ancestor_info_stack.push(update_ancestor_info(elem_name, prev_ancestor_info));
 
 				let attributes = node.attributes;
 				let needs_space = true;
@@ -334,9 +340,12 @@ export function transform_template (template, source) {
 					return walk.remove;
 				}
 
-				if (parent.type === 'Element' && !validate_tag_placement(parent.name, '#text')) {
+				let ancestor_info = get_current(ancestor_info_stack);
+				let invalid = validate_dom_nesting(null, value, ancestor_info);
+
+				if (invalid) {
 					throw create_error(
-						`text cannot be placed directly within <${parent.name}> element`,
+						invalid.message,
 						source,
 						node.start,
 						node.end,
@@ -497,6 +506,10 @@ export function transform_template (template, source) {
 				if (elem_name === 'svg' || elem_name === 'math' || elem_name === 'foreignObject') {
 					// we're leaving this element, so pop the values we've made earlier
 					wrap_stack.pop();
+				}
+
+				if (!is_inline) {
+					ancestor_info_stack.pop();
 				}
 
 				// loop through attributes
@@ -1855,57 +1868,4 @@ function merge_scope (scope) {
 		...scope.blocks,
 		...scope.expressions,
 	];
-}
-
-/**
- * Validates if the tag is valid within a specified parent, this will only deal
- * with tag placements that are very much fatal if not thrown.
- * @param {string} parent
- * @param {string} tag
- */
-function validate_tag_placement (parent, tag) {
-	switch (parent) {
-		// https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-intable
-		case 'table':
-			return (
-				tag === 'caption' ||
-				tag === 'colgroup' ||
-				tag === 'tbody' ||
-				tag === 'tfoot' ||
-				tag === 'thead' ||
-				tag === 'style' ||
-				tag === 'script' ||
-				tag === 'template'
-			);
-		// https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-intr
-		case 'tr':
-			return (
-				tag === 'th' ||
-				tag === 'td' ||
-				tag === 'style' ||
-				tag === 'script' ||
-				tag === 'template'
-			);
-		// https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-intbody
-		case 'tbody':
-		case 'thead':
-		case 'tfoot':
-			return (
-				tag === 'tr' ||
-				tag === 'style' ||
-				tag === 'script' ||
-				tag === 'template'
-			);
-		// https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-incolgroup
-		case 'colgroup':
-			return tag === 'col' || tag === 'template';
-
-		// https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-inselect
-		case 'select':
-			return tag === 'option' || tag === 'optgroup' || tag === '#text';
-		case 'optgroup':
-			return tag === 'option' || tag === '#text';
-	}
-
-	return true;
 }

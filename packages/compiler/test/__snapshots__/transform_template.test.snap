@@ -1394,6 +1394,30 @@ let %fragment0 = @clone(%template0);
 
 `;
 
+exports[`miscellaneous > handles parsing quirks 1`] = `
+<tr> cannot appear as a child of <table> (1:7)
+1: <table><tr></tr></table>
+          ^
+`;
+
+exports[`miscellaneous > handles parsing quirks 2`] = `
+<div> cannot appear as a child of <table> (1:7)
+1: <table><div></div></table>
+          ^
+`;
+
+exports[`miscellaneous > handles parsing quirks 3`] = `
+<div> cannot appear as a child of <select> (1:8)
+1: <select><div>abc<div>efg</div></div></select>
+           ^
+`;
+
+exports[`miscellaneous > handles parsing quirks 4`] = `
+<div> cannot appear as a descendant of <p> (1:3)
+1: <p><div></div></p>
+      ^
+`;
+
 exports[`miscellaneous > handles spacing between attributes 1`] = `
 let %%template0 = @html("<button style='display: none;'class=window title=Greet></button>");
 let %fragment0 = @clone(%template0);

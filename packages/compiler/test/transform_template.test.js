@@ -801,6 +801,18 @@ describe('miscellaneous', () => {
 		snap(template7);
 		snap(template8);
 	});
+
+	it('handles parsing quirks', () => {
+		let template1 = `<table><tr></tr></table>`;
+		let template2 = `<table><div></div></table>`;
+		let template3 = `<select><div>abc<div>efg</div></div></select>`;
+		let template4 = `<p><div></div></p>`;
+
+		snap_transform_error(template1);
+		snap_transform_error(template2);
+		snap_transform_error(template3);
+		snap_transform_error(template4);
+	})
 });
 
 function snap (template) {
