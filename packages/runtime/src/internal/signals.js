@@ -26,7 +26,10 @@ let batch_depth = 0;
 /** how many times we've been iterating through batched updates */
 let batch_iteration = 0;
 
-let global_version = 0;
+// How "versioning" works here is based around the idea of a logical clock,
+// we can check if a target is stale by comparing its last recorded value of
+// the clock against a source's last recorded value of the clock.
+let clock = 0;
 
 function start_batch () {
 	batch_depth++;
@@ -83,12 +86,12 @@ function need_recompute (target) {
 	let sources = target._sources;
 	let len = sources.length;
 	let idx = 0;
-	let node;
+	let source;
 
 	for (; idx < len; idx++) {
-		node = sources[idx];
+		source = sources[idx];
 
-		if (node._global_version > target._global_version || node._refresh()) {
+		if (source._epoch > target._epoch || source._refresh()) {
 			return true;
 		}
 	}
@@ -181,7 +184,7 @@ export class Signal {
 		/** @internal @type {T} */
 		_this._value = value;
 		/** @internal @type {number} */
-		_this._global_version = -1;
+		_this._epoch = -1;
 		/** @internal @type {Array<Computed | Effect>} */
 		_this._targets = [];
 		/** @internal @type {Computed | Effect | undefined} */
@@ -281,7 +284,7 @@ export class Signal {
 
 		if (_this._value !== next) {
 			_this._value = next;
-			_this._global_version = ++global_version;
+			_this._epoch = ++clock;
 
 			if (batch_iteration < 100) {
 				let targets = _this._targets;
@@ -323,7 +326,7 @@ export class Computed extends Signal {
 		/** @internal @type {number} */
 		_this._flags = OUTDATED;
 		/** @internal @type {number} */
-		_this._world_version = -1;
+		_this._world_epoch = -1;
 	}
 
 	/**
@@ -350,17 +353,17 @@ export class Computed extends Signal {
 
 		// If nothing in the world has been changed, then it's not possible for this
 		// computed value to change.
-		if (_this._world_version === global_version) {
+		if (_this._world_epoch === clock) {
 			return false;
 		}
 
-		_this._world_version = global_version;
+		_this._world_epoch = clock;
 
 		// Mark this computed signal running before checking the dependencies for value
 		// changes, so that the RUNNING flag can be used to notice cyclical dependencies.
 		_this._flags |= RUNNING;
 
-		if (_this._global_version > -1 && !need_recompute(_this)) {
+		if (_this._epoch > -1 && !need_recompute(_this)) {
 			_this._flags &= ~RUNNING;
 			return false;
 		}
@@ -382,7 +385,7 @@ export class Computed extends Signal {
 
 				_this._value = value;
 				_this._flags &= ~HAS_ERROR;
-				_this._global_version = ++global_version;
+				_this._epoch = ++clock;
 			}
 		}
 		catch (err) {
@@ -390,7 +393,7 @@ export class Computed extends Signal {
 
 			_this._value = err;
 			_this._flags |= HAS_ERROR;
-			_this._global_version = ++global_version;
+			_this._epoch = ++clock;
 		}
 
 		cleanup_context();
@@ -506,7 +509,7 @@ export class Effect {
 		/** @internal @type {() => void} */
 		_this._compute = compute;
 		/** @internal @type {number} */
-		_this._global_version = 0;
+		_this._epoch = 0;
 		/** @internal @type {Array<Signal>} */
 		_this._sources = [];
 		/** @internal @type {number} */
@@ -525,7 +528,7 @@ export class Effect {
 			return;
 		}
 
-		_this._global_version = global_version;
+		_this._epoch = clock;
 
 		_this._flags |= RUNNING;
 		_this._flags &= ~OUTDATED;

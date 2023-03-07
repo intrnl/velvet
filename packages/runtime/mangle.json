@@ -1,10 +1,10 @@
 {
 	"_callback": "m",
 	"_compute": "l",
-	"_depth": "e",
+	"_depth": "c",
 	"_dispose": "o",
-	"_flags": "a",
-	"_global_version": "d",
+	"_epoch": "e",
+	"_flags": "d",
 	"_node": "i",
 	"_notify": "k",
 	"_refresh": "h",
@@ -12,6 +12,6 @@
 	"_subscribe": "j",
 	"_targets": "f",
 	"_unsubscribe": "g",
-	"_value": "c",
-	"_world_version": "n"
+	"_value": "a",
+	"_world_epoch": "n"
 }
