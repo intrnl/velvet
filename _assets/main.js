@@ -1,2 +1,2 @@
-var t=document.getElementById("commit-hash");t.textContent="fb1f68";
+var t=document.getElementById("commit-hash");t.textContent="b39fc2";
 //# sourceMappingURL=main.js.map
