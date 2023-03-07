@@ -362,6 +362,7 @@ export class Computed extends Signal {
 			return false;
 		}
 
+		let stale = false;
 		let prev_context = eval_context;
 		let prev_sources = eval_sources;
 		let prev_sources_idx = eval_sources_idx;
@@ -374,12 +375,16 @@ export class Computed extends Signal {
 			let value = _this._compute();
 
 			if (_this._flags & HAS_ERROR || _this._value !== value || _this._value === 0) {
+				stale = true;
+
 				_this._value = value;
 				_this._flags &= ~HAS_ERROR;
 				_this._global_version = ++global_version;
 			}
 		}
 		catch (err) {
+			stale = true;
+
 			_this._value = err;
 			_this._flags |= HAS_ERROR;
 			_this._global_version = ++global_version;
@@ -392,7 +397,7 @@ export class Computed extends Signal {
 		eval_sources_idx = prev_sources_idx;
 
 		_this._flags &= ~RUNNING;
-		return true;
+		return stale;
 	}
 
 	/**
