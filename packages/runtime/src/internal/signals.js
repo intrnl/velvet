@@ -222,14 +222,6 @@ export class Signal {
 	}
 
 	/**
-	 * @param {T} next
-	 * @returns {T}
-	 */
-	set (next) {
-		return this.value = next;
-	}
-
-	/**
 	 * @returns {T}
 	 */
 	peek () {
