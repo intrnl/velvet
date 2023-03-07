@@ -2,15 +2,16 @@
 	"_callback": "m",
 	"_compute": "l",
 	"_depth": "e",
-	"_dispose": "n",
-	"_flags": "c",
+	"_dispose": "o",
+	"_flags": "a",
 	"_global_version": "d",
-	"_node": "g",
+	"_node": "i",
 	"_notify": "k",
-	"_refresh": "i",
+	"_refresh": "h",
 	"_sources": "b",
 	"_subscribe": "j",
 	"_targets": "f",
-	"_unsubscribe": "h",
-	"_value": "a"
+	"_unsubscribe": "g",
+	"_value": "c",
+	"_world_version": "n"
 }

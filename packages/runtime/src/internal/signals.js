@@ -323,7 +323,7 @@ export class Computed extends Signal {
 		/** @internal @type {number} */
 		_this._flags = OUTDATED;
 		/** @internal @type {number} */
-		_this._global_version = -1;
+		_this._world_version = -1;
 	}
 
 	/**
@@ -348,9 +348,13 @@ export class Computed extends Signal {
 
 		_this._flags &= ~OUTDATED;
 
-		if (_this._global_version === global_version) {
+		// If nothing in the world has been changed, then it's not possible for this
+		// computed value to change.
+		if (_this._world_version === global_version) {
 			return false;
 		}
+
+		_this._world_version = global_version;
 
 		// Mark this computed signal running before checking the dependencies for value
 		// changes, so that the RUNNING flag can be used to notice cyclical dependencies.
