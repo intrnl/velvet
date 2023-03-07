@@ -1,5 +1,6 @@
 {
 	"recommendations": [
-		"intrnl.velvet-language-support"
+		"intrnl.velvet-language-support",
+		"dprint.dprint"
 	]
 }

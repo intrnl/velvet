@@ -7,6 +7,7 @@
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.26.0",
+		"dprint": "^0.34.5",
 		"eslint": "^8.35.0"
 	}
 }
