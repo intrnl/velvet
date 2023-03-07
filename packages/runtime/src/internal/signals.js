@@ -222,26 +222,6 @@ export class Signal {
 	}
 
 	/**
-	 * @param {(value: T) => void} fn
-	 */
-	subscribe (fn) {
-		let _this = this;
-
-		return effect(() => {
-			let curr_context = eval_context;
-			let value = _this.value;
-
-			try {
-				eval_context = undefined;
-				fn(value);
-			}
-			finally {
-				eval_context = curr_context;
-			}
-		});
-	}
-
-	/**
 	 * @param {T} next
 	 * @returns {T}
 	 */

@@ -200,18 +200,6 @@ export function dynamic (marker, block, expression) {
 	});
 }
 
-export function subscribe (store) {
-	// If we're dealing with signals, we don't really need to do anything here.
-	if (store instanceof Signal) {
-		return store;
-	}
-
-	let ref = signal();
-	cleanup(store.subscribe((value) => ref.value = value));
-
-	return ref;
-}
-
 function destroy_block (marker, end) {
 	remove_parts(marker.nextSibling, end);
 }

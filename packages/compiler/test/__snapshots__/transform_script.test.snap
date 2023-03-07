@@ -104,7 +104,7 @@ console.log(unrelated);
 
 exports[`computed > object spread from a store 1`] = `
 let scores = @signal(), unknowns = @signal();
-let $search_params = @subscribe(search_params);
+let $search_params = search_params;
 @effect(() => {
   let %d0, %d1, %d2;
   (%d0 = calculate($search_params.value.get('augments')?.split(',') || []), {scores: %d1, unknowns: %d2} = %d0, scores.value = %d1, unknowns.value = %d2, %d0);
@@ -565,12 +565,12 @@ exports[`ref > variable mutated with spread 1`] = `
 let foo = @signal(), bar = @signal(), baz = @signal();
 let %d0, %d1, %d2, %d3;
 (%d0 = obj, {foo: %d1, b: %d2, buzz, c: car, ...%d3} = %d0, foo.value = %d1, bar.value = %d2, baz.value = %d3, %d0);
-let $obj = @subscribe(obj);
+let $obj = obj;
 let %d4, %d5, %d6, %d7;
 (%d4 = $obj.value, {foo: %d5, b: %d6, buzz, c: car, ...%d7} = %d4, foo.value = %d5, bar.value = %d6, baz.value = %d7, %d4);
 let %d8, %d9, %d10;
 (%d8 = arr, [%d9, buzz, ...%d10] = %d8, foo.value = %d9, bar.value = %d10, %d8);
-let $arr = @subscribe(arr);
+let $arr = arr;
 let %d11, %d12, %d13;
 (%d11 = $arr.value.foo, [%d12, buzz, ...%d13] = %d11, foo.value = %d12, bar.value = %d13, %d11);
 
@@ -670,31 +670,31 @@ tried reassignment to $$-prefixed variables (2:3)
 `;
 
 exports[`store > binary setter 1`] = `
-let $store = @subscribe(store);
-store.set($store.value + 123);
+let $store = store;
+$store.value += 123;
 
 `;
 
 exports[`store > getter 1`] = `
-let $store = @subscribe(store);
+let $store = store;
 $store.value;
 
 `;
 
 exports[`store > getter within computed 1`] = `
-let $searchParams = @subscribe(searchParams);
+let $searchParams = searchParams;
 let query = @computed(() => $searchParams.value.query);
 
 `;
 
 exports[`store > logical setter 1`] = `
-let $store = @subscribe(store);
-store.set($store.value ?? 123);
+let $store = store;
+$store.value ??= 123;
 
 `;
 
 exports[`store > lone block statement 1`] = `
-let $foo = @subscribe(foo);
+let $foo = foo;
 {
   $foo.value;
 }
@@ -702,32 +702,32 @@ let $foo = @subscribe(foo);
 `;
 
 exports[`store > multiple getter references 1`] = `
-let $value1 = @subscribe(value1);
+let $value1 = value1;
 function increment() {
   console.log($value1.value);
 }
-let $value2 = @subscribe(value2);
+let $value2 = value2;
 console.log($value2.value);
 
 `;
 
 exports[`store > multiple setter references 1`] = `
-let $value1 = @subscribe(value1);
+let $value1 = value1;
 function increment() {
-  value1.set($value1.value + 1);
+  $value1.value += 1;
 }
-value2.set(2);
+$value2 = 2;
 
 `;
 
 exports[`store > mutating member property 1`] = `
-let $foo = @subscribe(foo);
+let $foo = foo;
 $foo.value.bar = 123;
 
 `;
 
 exports[`store > no affecting inner scope 1`] = `
-let $foo = @subscribe(foo);
+let $foo = foo;
 function log() {
   let $bar = 123;
   console.log($bar, $foo.value);
@@ -737,37 +737,37 @@ console.log($foo.value);
 `;
 
 exports[`store > only alter single $ 1`] = `
-let $foo = @subscribe(foo);
+let $foo = foo;
 console.log($foo.value, $$, $$$);
 
 `;
 
 exports[`store > reference store twice 1`] = `
-let $foo = @subscribe(foo);
+let $foo = foo;
 console.log($foo.value, $foo.value);
 
 `;
 
 exports[`store > retrieving member property 1`] = `
-let $foo = @subscribe(foo);
+let $foo = foo;
 console.log($foo.value.bar);
 
 `;
 
 exports[`store > setter 1`] = `
-store.set(123);
-let $store = @subscribe(store);
-store.set($store.value || 123);
-store.set($store.value + 1);
-store.set($store.value);
-store.set($store.value * 234);
+$store.value = 123;
+let $store = store;
+$store.value ||= 123;
+$store.value++;
+--$store.value;
+$store.value *= 234;
 
 `;
 
 exports[`store > subscribing to a ref 1`] = `
 let value1 = @signal();
 value1.value = get_store();
-let $value1 = @subscribe(value1.value);
+let $value1 = value1.value;
 console.log($value1.value);
 
 `;

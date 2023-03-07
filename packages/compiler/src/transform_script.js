@@ -381,73 +381,9 @@ export function transform_script (program, source, macro_path = '@intrnl/velvet/
 			}
 
 			// transform setters
-			// if we're dealing with a store, we don't want to actually mutate the
-			// holding ref for the store.
-			if (node.type === 'UpdateExpression' && node.argument.type === 'Identifier') {
-				let argument = node.argument;
-				let prefix = node.prefix;
-				let name = argument.name;
-
-				if (name[0] === '$' && name[1] !== '$' && !parent.velvet?.transformed) {
-					let actual_ident = t.identifier(name.slice(1));
-
-					let expr = !prefix
-						? t.binary_expression(argument, t.literal(1), node.operator.slice(1))
-						: argument;
-
-					let call_expr = t.call_expression(
-						t.member_expression(actual_ident, t.identifier('set')),
-						[expr],
-					);
-
-					(call_expr.velvet ||= {}).transformed = true;
-					return call_expr;
-				}
-
-				return;
-			}
-
 			if (node.type === 'AssignmentExpression') {
 				let left = node.left;
 				let right = node.right;
-
-				if (left.type === 'Identifier') {
-					let name = left.name;
-
-					if (name[0] === '$' && name[1] !== '$' && !parent.velvet?.transformed) {
-						let actual_ident = t.identifier(name.slice(1));
-
-						let expr;
-						let operator = node.operator.slice(0, -1);
-
-						switch (node.operator) {
-							case '=': {
-								expr = right;
-								break;
-							}
-							case '||=':
-							case '&&=':
-							case '??=': {
-								expr = t.logical_expression(left, right, operator);
-								break;
-							}
-							default: {
-								expr = t.binary_expression(left, right, operator);
-								break;
-							}
-						}
-
-						let call_expr = t.call_expression(
-							t.member_expression(actual_ident, t.identifier('set')),
-							[expr],
-						);
-
-						(call_expr.velvet ||= {}).transformed = true;
-						return call_expr;
-					}
-
-					return;
-				}
 
 				if ((left.type === 'ObjectPattern' || left.type === 'ArrayPattern') && !left.velvet?.transformed) {
 					let statements = [];
@@ -924,10 +860,7 @@ function _push_deferred_stores (deferred_stores) {
 		let actual = name.slice(1);
 
 		let decl = t.variable_declaration('let', [
-			t.variable_declarator(
-				ident,
-				t.call_expression(t.identifier('@subscribe'), [t.identifier(actual)]),
-			),
+			t.variable_declarator(ident, t.identifier(actual)),
 		]);
 
 		ident.velvet = { mutable: true, transformed: true, ref: true };

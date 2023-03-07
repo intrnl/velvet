@@ -360,7 +360,7 @@ Acorn error: Cannot use keyword 'await' outside an async function (3:17)
 `;
 
 exports[`store > subscription on await pending and resolve 1`] = `
-import {html, clone, traverse, subscribe, text, after, promise as promise$1, append, define} from "@intrnl/velvet/internal";
+import {html, clone, traverse, text, after, promise as promise$1, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<!><!>");
 let template2 = html("<!><!>");
@@ -371,7 +371,7 @@ function setup($$root, $$host) {
     let fragment1 = clone(template1);
     let marker0 = traverse(fragment1, [0]);
     let marker1 = traverse(fragment1, [1]);
-    let $foo = subscribe(foo);
+    let $foo = foo;
     text(marker0, () => $foo.value);
     after($$root, fragment1);
     return marker1;
@@ -380,7 +380,7 @@ function setup($$root, $$host) {
     let fragment2 = clone(template2);
     let marker2 = traverse(fragment2, [0]);
     let marker3 = traverse(fragment2, [1]);
-    let $foo = subscribe(foo.value);
+    let $foo = foo.value;
     text(marker2, () => $foo.value);
     after($$root, fragment2);
     return marker3;
@@ -393,7 +393,7 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`store > subscription on await resolve 1`] = `
-import {html, clone, traverse, subscribe, text, after, promise as promise$1, append, define} from "@intrnl/velvet/internal";
+import {html, clone, traverse, text, after, promise as promise$1, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<!><!>");
 function setup($$root, $$host) {
@@ -403,7 +403,7 @@ function setup($$root, $$host) {
     let fragment1 = clone(template1);
     let marker0 = traverse(fragment1, [0]);
     let marker1 = traverse(fragment1, [1]);
-    let $result = subscribe(result.value);
+    let $result = result.value;
     text(marker0, () => $result.value);
     after($$root, fragment1);
     return marker1;
@@ -416,7 +416,7 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`store > subscription on conditional 1`] = `
-import {html, clone, traverse, subscribe, text, after, show, append, define} from "@intrnl/velvet/internal";
+import {html, clone, traverse, text, after, show, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<!><!>");
 function setup($$root, $$host) {
@@ -426,7 +426,7 @@ function setup($$root, $$host) {
     let fragment1 = clone(template1);
     let marker0 = traverse(fragment1, [0]);
     let marker1 = traverse(fragment1, [1]);
-    let $foo = subscribe(foo);
+    let $foo = foo;
     text(marker0, () => $foo.value);
     after($$root, fragment1);
     return marker1;
@@ -439,14 +439,14 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`store > subscription on conditional and alternate 1`] = `
-import {html, clone, traverse, subscribe, text, after, show, append, define} from "@intrnl/velvet/internal";
+import {html, clone, traverse, text, after, show, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<!><!>");
 let template2 = html("<!><!>");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
   let marker4 = traverse(fragment0, [0]);
-  let $foo = subscribe(foo);
+  let $foo = foo;
   let block1 = $$root => {
     let fragment1 = clone(template1);
     let marker0 = traverse(fragment1, [0]);
@@ -471,7 +471,7 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`store > subscription on conditional with let 1`] = `
-import {html, clone, traverse, subscribe, computed, text, after, show, append, define} from "@intrnl/velvet/internal";
+import {html, clone, traverse, computed, text, after, show, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<!><!>");
 function setup($$root, $$host) {
@@ -479,7 +479,7 @@ function setup($$root, $$host) {
   let marker2 = traverse(fragment0, [0]);
   let block1 = $$root => {
     let fragment1 = clone(template1);
-    let $favorite = subscribe(favorite);
+    let $favorite = favorite;
     let is_favorited = computed(() => $favorite.value.favorited);
     let marker0 = traverse(fragment1, [0]);
     let marker1 = traverse(fragment1, [1]);
@@ -495,7 +495,7 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`store > subscription on conditional with log 1`] = `
-import {html, clone, traverse, subscribe, text, effect, after, show, append, define} from "@intrnl/velvet/internal";
+import {html, clone, traverse, text, effect, after, show, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<!><!>");
 function setup($$root, $$host) {
@@ -505,7 +505,7 @@ function setup($$root, $$host) {
     let fragment1 = clone(template1);
     let marker0 = traverse(fragment1, [0]);
     let marker1 = traverse(fragment1, [1]);
-    let $foo = subscribe(foo);
+    let $foo = foo;
     text(marker0, () => $foo.value);
     effect(() => console.log($foo.value));
     after($$root, fragment1);
@@ -519,7 +519,7 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`store > subscription on nested conditional 1`] = `
-import {html, clone, traverse, subscribe, text, after, show, append, define} from "@intrnl/velvet/internal";
+import {html, clone, traverse, text, after, show, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<!><!><!>");
 let template2 = html("<!><!>");
@@ -531,7 +531,7 @@ function setup($$root, $$host) {
     let marker0 = traverse(fragment1, [0]);
     let marker3 = traverse(fragment1, [1]);
     let marker4 = traverse(fragment1, [2]);
-    let $foo = subscribe(foo);
+    let $foo = foo;
     let block2 = $$root => {
       let fragment2 = clone(template2);
       let marker1 = traverse(fragment2, [0]);
@@ -553,7 +553,7 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`store > subscription on root and await pending and resolve 1`] = `
-import {html, clone, traverse, subscribe, text, after, promise as promise$1, append, define} from "@intrnl/velvet/internal";
+import {html, clone, traverse, text, after, promise as promise$1, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!><!>");
 let template1 = html("<!><!>");
 let template2 = html("<!><!>");
@@ -561,7 +561,7 @@ function setup($$root, $$host) {
   let fragment0 = clone(template0);
   let marker4 = traverse(fragment0, [0]);
   let marker5 = traverse(fragment0, [1]);
-  let $foo = subscribe(foo);
+  let $foo = foo;
   let block1 = $$root => {
     let fragment1 = clone(template1);
     let marker0 = traverse(fragment1, [0]);
@@ -574,7 +574,7 @@ function setup($$root, $$host) {
     let fragment2 = clone(template2);
     let marker2 = traverse(fragment2, [0]);
     let marker3 = traverse(fragment2, [1]);
-    let $foo = subscribe(foo.value);
+    let $foo = foo.value;
     text(marker2, () => $foo.value);
     after($$root, fragment2);
     return marker3;
@@ -588,14 +588,14 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`store > subscription on root and conditional 1`] = `
-import {html, clone, traverse, subscribe, text, after, show, append, define} from "@intrnl/velvet/internal";
+import {html, clone, traverse, text, after, show, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!><!>");
 let template1 = html("<!><!>");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
   let marker0 = traverse(fragment0, [0]);
   let marker3 = traverse(fragment0, [1]);
-  let $foo = subscribe(foo);
+  let $foo = foo;
   let block1 = $$root => {
     let fragment1 = clone(template1);
     let marker1 = traverse(fragment1, [0]);
@@ -613,10 +613,10 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`store > subscription on script and root 1`] = `
-import {subscribe, html, clone, traverse, text, append, define} from "@intrnl/velvet/internal";
+import {html, clone, traverse, text, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 function setup($$root, $$host) {
-  let $foo = subscribe(foo);
+  let $foo = foo;
   console.log($foo.value);
   let fragment0 = clone(template0);
   let marker0 = traverse(fragment0, [0]);
