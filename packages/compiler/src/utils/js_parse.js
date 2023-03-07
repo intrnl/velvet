@@ -3,7 +3,6 @@ import { generate } from 'astring';
 
 import { walk } from './walker.js';
 
-
 /**
  * @param {string} source
  * @returns {import('estree').Program}
@@ -12,11 +11,14 @@ export function parse (source, options) {
 	/** @type {import('estree').Comment[]} */
 	let comments = [];
 
-	let program = acorn.parse(source, Object.assign({
-		onComment: comments,
-		ecmaVersion: 12,
-		sourceType: 'module',
-	}, options));
+	let program = acorn.parse(
+		source,
+		Object.assign({
+			onComment: comments,
+			ecmaVersion: 12,
+			sourceType: 'module',
+		}, options),
+	);
 
 	reattach_comments(program, comments, source);
 	fix_positions(program, options?.start);
@@ -27,11 +29,15 @@ export function parse_expression (source, position = 0, options) {
 	/** @type {import('estree').Comment[]} */
 	let comments = [];
 
-	let node = acorn.parseExpressionAt(source, position, Object.assign({
-		onComment: comments,
-		ecmaVersion: 12,
-		sourceType: 'module',
-	}, options));
+	let node = acorn.parseExpressionAt(
+		source,
+		position,
+		Object.assign({
+			onComment: comments,
+			ecmaVersion: 12,
+			sourceType: 'module',
+		}, options),
+	);
 
 	reattach_comments(node, comments, source);
 	return node;

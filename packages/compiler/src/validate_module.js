@@ -1,6 +1,5 @@
-import { walk } from './utils/walker.js';
 import { create_error } from './utils/error.js';
-
+import { walk } from './utils/walker.js';
 
 export function validate_module (program, source) {
 	walk(program, {

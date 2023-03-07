@@ -1,12 +1,11 @@
-import * as assert from 'node:assert/strict';
 import { describe, it } from 'mocha';
+import * as assert from 'node:assert/strict';
 
 import { assertSnapshot } from './_utils/snapshot.js';
 
 import { parse_template } from '../src/parse_template.js';
 import { transform_template } from '../src/transform_template.js';
 import { print } from '../src/utils/js_parse.js';
-
 
 describe('attribute', () => {
 	it('attribute quoted', () => {
@@ -57,7 +56,6 @@ describe('attribute', () => {
 		snap(template);
 	});
 
-
 	it('boolean expression', () => {
 		let template = `<textarea ?readonly={is_readonly}></textarea>`;
 
@@ -75,7 +73,6 @@ describe('attribute', () => {
 
 		snap(template);
 	});
-
 
 	it('property expression', () => {
 		let template = `<input .value={value}>`;
@@ -107,13 +104,11 @@ describe('attribute', () => {
 		snap(template);
 	});
 
-
 	it('event expression', () => {
 		let template = `<button @click={handle_click}></button>`;
 
 		snap(template);
 	});
-
 
 	it('binding expression', () => {
 		let template = `<input :value={value}>`;
@@ -149,7 +144,7 @@ describe('attribute', () => {
 		let template = `<input type=radio :group={picked}>`;
 
 		snap(template);
-	})
+	});
 
 	it('binding select value', () => {
 		let template = `<select multiple :value={value}></select>`;
@@ -172,7 +167,7 @@ describe('attribute', () => {
 	it('fails on binding with no value', () => {
 		let template = `<input :value>`;
 
-		snap_transform_error(template)
+		snap_transform_error(template);
 	});
 
 	it('fails on binding with invalid expression', () => {
@@ -187,13 +182,11 @@ describe('attribute', () => {
 		snap_transform_error(template);
 	});
 
-
 	it('ref expression', () => {
 		let template = `<input #ref={input}>`;
 
 		snap(template);
 	});
-
 
 	it('action expression', () => {
 		let template = `<input #use={action}>`;
@@ -225,7 +218,6 @@ describe('attribute', () => {
 		snap_transform_error(template);
 	});
 
-
 	it('spread expression', () => {
 		let template = `<input {...props}>`;
 
@@ -245,7 +237,8 @@ describe('attribute', () => {
 	});
 
 	it('style object expression', () => {
-		let template = `<div style={{ color: 'red', background: bg, '--foo': null, '--baz': baz, [computed]: false }}></div>`;
+		let template =
+			`<div style={{ color: 'red', background: bg, '--foo': null, '--baz': baz, [computed]: false }}></div>`;
 
 		snap(template);
 	});
@@ -331,7 +324,8 @@ describe('component', () => {
 	});
 
 	it('multiple v:component', () => {
-		let template = `<v:component #this={Button}>Button 1</v:component><v:component #this={Button}>Button 2</v:component>`;
+		let template =
+			`<v:component #this={Button}>Button 1</v:component><v:component #this={Button}>Button 2</v:component>`;
 
 		snap(template);
 	});
@@ -372,7 +366,6 @@ describe('expression', () => {
 describe('named expression', () => {
 	it('unknown named expression', () => {
 		let template = `{@xyz foo}`;
-
 
 		snap_transform_error(template);
 	});
@@ -582,13 +575,13 @@ describe('conditional logic', () => {
 
 describe('loop logic', () => {
 	it('iteration', () => {
-		let template = `{#each array as person}<div>{person.first} - {person.last}</div>{/each}`
+		let template = `{#each array as person}<div>{person.first} - {person.last}</div>{/each}`;
 
 		snap(template);
 	});
 
 	it('index', () => {
-		let template = `{#each array as person, index}<div>{index} - {person.name}</div>{/each}`
+		let template = `{#each array as person, index}<div>{index} - {person.name}</div>{/each}`;
 
 		snap(template);
 	});
@@ -780,13 +773,14 @@ describe('miscellaneous', () => {
 		let template = `<button style='display: none;' class='window' title='Greet'></button>`;
 
 		snap(template);
-	})
+	});
 
 	it('handles html minification', () => {
 		let template1 = ` <div> </div> <div> </div> `;
 		let template2 = `<p>  The  quick  brown  fox  jumps  over  the  lazy  dog.  </p>`;
 		let template3 = `<ul>   <li>A</li>   <li>B</li>   <li>C</li>  </ul>`;
-		let template4 = `<p>   Hey, I <em>just</em> found   out about this <strong>cool</strong> website!   <sup>[1]</sup> </p>`;
+		let template4 =
+			`<p>   Hey, I <em>just</em> found   out about this <strong>cool</strong> website!   <sup>[1]</sup> </p>`;
 		let template5 = `<div> x x <div></div> x x <div></div> x x </div>`;
 		let template6 = ` <svg> <symbol id='icon' viewBox='0 0 20 20' fill='currentColor'> <path d='' /> </symbol> </svg> `;
 		let template7 = `<input a='foo bar' b c>`;
@@ -812,7 +806,7 @@ describe('miscellaneous', () => {
 		snap_transform_error(template2);
 		snap_transform_error(template3);
 		snap_transform_error(template4);
-	})
+	});
 });
 
 function snap (template) {

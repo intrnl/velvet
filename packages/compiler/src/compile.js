@@ -1,13 +1,12 @@
 import gensync from 'gensync';
 
 import { parse_template } from './parse_template.js';
-import { transform_template } from './transform_template.js';
 import { finalize_program, finalize_template, transform_script } from './transform_script.js';
+import { transform_template } from './transform_template.js';
 import { validate_module } from './validate_module.js';
 
-import { parse, print } from './utils/js_parse.js';
 import { create_error } from './utils/error.js';
-
+import { parse, print } from './utils/js_parse.js';
 
 let wrap = (f) => gensync({ sync: f, async: f });
 
@@ -233,7 +232,6 @@ export let {
 	async: compile,
 	sync: compileSync,
 } = gensync(_compile);
-
 
 export function componentize (filename, prefix = 'x') {
 	if (!filename) {

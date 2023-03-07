@@ -1,7 +1,7 @@
 import { append } from './dom.js';
-import { Signal, Computed, signal, computed, effect, scope, cleanup } from './signals.js';
-import { hyphenate, assign, is_function } from './utils.js';
-import { Symbol, Object } from './globals.js';
+import { Object, Symbol } from './globals.js';
+import { cleanup, Computed, computed, effect, scope, Signal, signal } from './signals.js';
+import { assign, hyphenate, is_function } from './utils.js';
 
 let ENABLE_RANDOM_TAGS = false;
 let RANDOM_TAG = 1;
@@ -122,7 +122,6 @@ export class VelvetComponent extends HTMLElement {
 		}
 	}
 }
-
 
 export function define (tag, setup, definition, styles) {
 	let observed_attrs = [];

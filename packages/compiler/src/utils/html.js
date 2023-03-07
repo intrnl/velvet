@@ -1,10 +1,38 @@
 import { entities } from './entities.js';
 
-
 let windows_1252 = [
-	129, 141, 143, 144, 157, 338, 339, 352, 353, 376, 381, 382, 402, 710, 732,
-	8211, 8212, 8216, 8217, 8218, 8220, 8221, 8222, 8224, 8225, 8226, 8230, 8240,
-	8249, 8250, 8364, 8482,
+	129,
+	141,
+	143,
+	144,
+	157,
+	338,
+	339,
+	352,
+	353,
+	376,
+	381,
+	382,
+	402,
+	710,
+	732,
+	8211,
+	8212,
+	8216,
+	8217,
+	8218,
+	8220,
+	8221,
+	8222,
+	8224,
+	8225,
+	8226,
+	8230,
+	8240,
+	8249,
+	8250,
+	8364,
+	8482,
 ];
 
 let entity_pattern = new RegExp(`&(#?(?:x[\\w\\d]+|\\d+|${Object.keys(entities).join('|')}))(?:;|\\b)`, 'g');
@@ -78,8 +106,22 @@ function validate_code (code) {
 }
 
 let void_elements = new Set([
-	'area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input',
-	'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr',
+	'area',
+	'base',
+	'br',
+	'col',
+	'command',
+	'embed',
+	'hr',
+	'img',
+	'input',
+	'keygen',
+	'link',
+	'meta',
+	'param',
+	'source',
+	'track',
+	'wbr',
 ]);
 
 export function is_void (name) {

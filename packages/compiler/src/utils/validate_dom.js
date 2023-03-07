@@ -176,8 +176,8 @@ let EMPTY_ANCESTOR_INFO = {
  * @returns {AncestorInfo}
  */
 export function update_ancestor_info (tag, prev) {
-	let ancestor_info = {...(prev || EMPTY_ANCESTOR_INFO)};
-	let info = {tag};
+	let ancestor_info = { ...(prev || EMPTY_ANCESTOR_INFO) };
+	let info = { tag };
 
 	if (IN_SCOPE_TAGS.indexOf(tag) !== -1) {
 		ancestor_info.a_tag_in_scope = null;
@@ -438,7 +438,6 @@ function find_invalid_ancestor_for_tag (tag, ancestor_info) {
 }
 
 /**
- *
  * @param {?string} child_tag
  * @param {?string} child_text
  * @param {AncestorInfo} ancestor_info
@@ -495,6 +494,6 @@ export function validate_dom_nesting (child_tag, child_text, ancestor_info = EMP
 	return {
 		message: invalid_parent
 			? `${tag_display_name} cannot appear as a child of <${ancestor_tag}>`
-			: `${tag_display_name} cannot appear as a descendant of <${ancestor_tag}>`
-	}
+			: `${tag_display_name} cannot appear as a descendant of <${ancestor_tag}>`,
+	};
 }

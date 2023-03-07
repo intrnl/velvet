@@ -1,7 +1,6 @@
 import { curr_host } from './component.js';
 import { on } from './dom.js';
 
-
 let event_name = 'context-request';
 
 /**

@@ -1,11 +1,10 @@
-import * as assert from 'node:assert/strict';
 import { describe, it } from 'mocha';
+import * as assert from 'node:assert/strict';
 
 import { assertSnapshot } from './_utils/snapshot.js';
 
 import { finalize_program, finalize_template, transform_script } from '../src/transform_script.js';
 import { parse, print } from '../src/utils/js_parse.js';
-
 
 describe('ref', () => {
 	it('unused variables', () => {

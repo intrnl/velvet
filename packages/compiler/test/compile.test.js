@@ -1,10 +1,9 @@
-import * as assert from 'node:assert/strict';
 import { describe, it } from 'mocha';
+import * as assert from 'node:assert/strict';
 
 import { assertSnapshot } from './_utils/snapshot.js';
 
 import { compileSync, componentize } from '../src/compile.js';
-
 
 describe('module context', () => {
 	it('allow top level await', () => {

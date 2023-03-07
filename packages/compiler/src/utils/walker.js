@@ -1,7 +1,6 @@
 export let SKIP = Symbol('skip');
 export let REMOVE = Symbol('remove');
 
-
 export function walk (node, walker, parent, key, index = -1) {
 	if (Array.isArray(node)) {
 		for (let idx = 0; idx < node.length; idx++) {

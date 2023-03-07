@@ -3,10 +3,9 @@
 export let VERSION = process.env.RUNTIME_VERSION;
 
 export {
-	use_random_tags as useRandomTags,
 	event_dispatcher as createEventDispatcher,
-
 	on_mount as onMount,
+	use_random_tags as useRandomTags,
 } from './internal/component.js';
 
 export {
@@ -16,20 +15,15 @@ export {
 } from './internal/context.js';
 
 export {
-	Scope,
-	Signal,
-
-	signal,
-	computed,
-
-	effect,
 	batch,
-
-	untrack,
-	peek,
-
-	scope,
 	cleanup,
-
 	cleanup as onDestroy,
+	computed,
+	effect,
+	peek,
+	Scope,
+	scope,
+	Signal,
+	signal,
+	untrack,
 } from './internal/signals.js';

@@ -1,11 +1,10 @@
-import processes from 'node:child_process';
 import * as esbuild from 'esbuild';
+import processes from 'node:child_process';
 
 import { config } from '../esbuild.config.js';
 
 import compilerPkg from '../node_modules/@intrnl/velvet-compiler/package.json' assert { type: 'json' };
 import runtimePkg from '../node_modules/@intrnl/velvet/package.json' assert { type: 'json' };
-
 
 const COMMIT_HASH = processes.execSync(`git rev-parse HEAD`, { encoding: 'utf-8' });
 

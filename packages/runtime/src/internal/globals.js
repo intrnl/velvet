@@ -6,6 +6,6 @@ let _Set = Set;
 export {
 	_Array as Array,
 	_Object as Object,
-	_Symbol as Symbol,
 	_Set as Set,
+	_Symbol as Symbol,
 };

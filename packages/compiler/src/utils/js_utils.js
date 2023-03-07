@@ -1,6 +1,5 @@
 import { walk } from './walker.js';
 
-
 /**
  * @param {import('estree').Node} node
  * @param {import('estree').Node} parent
@@ -188,10 +187,10 @@ export function analyze (expression) {
 							current_scope.declarations.set(node.id.name, node);
 						}
 
-						map.set(node, (current_scope = new Scope(current_scope, node, false)));
+						map.set(node, current_scope = new Scope(current_scope, node, false));
 					}
 					else {
-						map.set(node, (current_scope = new Scope(current_scope, node, false)));
+						map.set(node, current_scope = new Scope(current_scope, node, false));
 
 						if (node.type === 'FunctionExpression' && node.id) {
 							current_scope.declarations.set(node.id.name, node);
@@ -214,11 +213,11 @@ export function analyze (expression) {
 				case 'ForStatement':
 				case 'ForInStatement':
 				case 'ForOfStatement':
-					map.set(node, (current_scope = new Scope(current_scope, node, true)));
+					map.set(node, current_scope = new Scope(current_scope, node, true));
 					break;
 
 				case 'BlockStatement':
-					map.set(node, (current_scope = new Scope(current_scope, node, true)));
+					map.set(node, current_scope = new Scope(current_scope, node, true));
 					break;
 
 				case 'ClassDeclaration':
@@ -227,7 +226,7 @@ export function analyze (expression) {
 					break;
 
 				case 'CatchClause':
-					map.set(node, (current_scope = new Scope(current_scope, node, true)));
+					map.set(node, current_scope = new Scope(current_scope, node, true));
 
 					if (node.param) {
 						let extracts = extract_identifiers(node.param);

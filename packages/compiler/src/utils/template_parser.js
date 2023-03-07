@@ -1,9 +1,8 @@
-import { isIdentifierStart, isIdentifierChar } from 'acorn';
+import { isIdentifierChar, isIdentifierStart } from 'acorn';
 
 import { create_error } from './error.js';
 import * as t from './js_types.js';
 import * as tt from './template_types.js';
-
 
 /**
  * @typedef {object} ParserState
@@ -63,7 +62,6 @@ export function push (state, ...nodes) {
 }
 
 /**
- *
  * @param {ParserState} state
  * @param {ParseMode} mode
  */
@@ -170,7 +168,7 @@ export function eat_identifier (state) {
 		index += code <= 0xffff ? 1 : 2;
 	}
 
-	let ident = t.identifier(state.content.slice(state.index, (state.index = index)));
+	let ident = t.identifier(state.content.slice(state.index, state.index = index));
 	ident.start = start_index;
 	ident.end = state.index;
 

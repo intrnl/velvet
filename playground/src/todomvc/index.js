@@ -7,7 +7,7 @@ import './style.css';
 // around like in the cases of benchmark automation.
 App.prototype.attachShadow = function () {
 	return this;
-}
+};
 
 const app = new App();
 document.body.append(app);

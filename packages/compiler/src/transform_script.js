@@ -1,8 +1,7 @@
-import { walk } from './utils/walker.js';
-import { analyze, extract_identifiers, is_reference } from './utils/js_utils.js';
-import * as t from './utils/js_types.js';
 import { create_error } from './utils/error.js';
-
+import * as t from './utils/js_types.js';
+import { analyze, extract_identifiers, is_reference } from './utils/js_utils.js';
+import { walk } from './utils/walker.js';
 
 export function transform_script (program, source, macro_path = '@intrnl/velvet/macro') {
 	let { map, scope: root_scope } = analyze(program);
@@ -188,11 +187,11 @@ export function transform_script (program, source, macro_path = '@intrnl/velvet/
 					let ident = t.identifier(id.name);
 					ident.velvet = { mutable: true };
 
-					let declarator =  t.variable_declarator(ident);
+					let declarator = t.variable_declarator(ident);
 					declarators.push(declarator);
 				}
 
-				let declaration =  t.variable_declaration('let', declarators);
+				let declaration = t.variable_declaration('let', declarators);
 
 				let statement = t.labeled_statement(
 					t.identifier('$'),
@@ -338,10 +337,10 @@ export function transform_script (program, source, macro_path = '@intrnl/velvet/
 					let expression = is_computed && !primitive
 						? t.call_expression(t.identifier('@computed'), [initializer])
 						: prop
-							? t.call_expression(t.identifier('@prop'), [t.literal(prop_idx), initializer])
-							: is_mutable
-								? t.call_expression(t.identifier('@signal'), [init])
-								: init;
+						? t.call_expression(t.identifier('@prop'), [t.literal(prop_idx), initializer])
+						: is_mutable
+						? t.call_expression(t.identifier('@signal'), [init])
+						: init;
 
 					node.init = expression;
 
@@ -426,7 +425,9 @@ export function transform_script (program, source, macro_path = '@intrnl/velvet/
 								expr = right;
 								break;
 							}
-							case '||=': case '&&=': case '??=': {
+							case '||=':
+							case '&&=':
+							case '??=': {
 								expr = t.logical_expression(left, right, operator);
 								break;
 							}
@@ -588,8 +589,8 @@ export function transform_script (program, source, macro_path = '@intrnl/velvet/
 					let statement = body.type === 'ExpressionStatement'
 						? body.expression
 						: body.type === 'BlockStatement'
-							? body
-							: t.block_statement([body]);
+						? body
+						: t.block_statement([body]);
 
 					let effect = t.arrow_function_expression([], statement);
 					let expression = t.call_expression(t.identifier('@effect'), [effect]);
@@ -676,7 +677,6 @@ export function transform_script (program, source, macro_path = '@intrnl/velvet/
 	return { props, props_idx };
 }
 
-
 export function finalize_template (program, name, props_idx, style) {
 	let style_elems = [];
 
@@ -756,7 +756,7 @@ export function finalize_program (program, mod = '@intrnl/velvet/internal') {
 					let set = import_identifiers.get(name);
 
 					if (!set) {
-						import_identifiers.set(name, (set = new Set()));
+						import_identifiers.set(name, set = new Set());
 					}
 
 					set.add(node);
@@ -767,7 +767,7 @@ export function finalize_program (program, mod = '@intrnl/velvet/internal') {
 					let set = hoisted_identifiers.get(name);
 
 					if (!set) {
-						hoisted_identifiers.set(name, (set = new Set()));
+						hoisted_identifiers.set(name, set = new Set());
 					}
 
 					set.add(node);
@@ -857,7 +857,6 @@ export function finalize_program (program, mod = '@intrnl/velvet/internal') {
 		program.body.unshift(import_decl);
 	}
 }
-
 
 function _push_deferred_placeholders (deferred_placeholders) {
 	for (let i = 0, l = deferred_placeholders.length; i < l; i++) {
@@ -1018,10 +1017,18 @@ function _is_primitive (expression, scope) {
 		(expression.type === 'Identifier' && expression.name === 'undefined') ||
 		(expression.type === 'TemplateLiteral') ||
 		(expression.type === 'UnaryExpression' && _is_primitive(expression.argument, scope)) ||
-		(expression.type === 'BinaryExpression' && _is_primitive(expression.left, scope) && _is_primitive(expression.right, scope)) ||
-		(expression.type === 'MemberExpression' && _is_primitive(expression.object, scope) && (!expression.computed || _is_primitive(expression.property, scope))) ||
-		(expression.type === 'NewExpression' && _is_primitive(expression.callee, scope) && _is_primitive(expression.arguments, scope)) ||
-		(expression.type === 'CallExpression' && _is_primitive(expression.callee, scope) && _is_primitive(expression.arguments, scope))
+		(expression.type === 'BinaryExpression' &&
+			_is_primitive(expression.left, scope) &&
+			_is_primitive(expression.right, scope)) ||
+		(expression.type === 'MemberExpression' &&
+			_is_primitive(expression.object, scope) &&
+			(!expression.computed || _is_primitive(expression.property, scope))) ||
+		(expression.type === 'NewExpression' &&
+			_is_primitive(expression.callee, scope) &&
+			_is_primitive(expression.arguments, scope)) ||
+		(expression.type === 'CallExpression' &&
+			_is_primitive(expression.callee, scope) &&
+			_is_primitive(expression.arguments, scope))
 	);
 }
 
@@ -1079,7 +1086,7 @@ function references_import (scope, node, source, imports) {
 			}
 		}
 
-		return false
+		return false;
 	}
 
 	let name = node.name;

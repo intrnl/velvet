@@ -1,52 +1,146 @@
-import { walk } from './utils/walker.js';
-import * as t from './utils/js_types.js';
 import { create_error } from './utils/error.js';
+import * as t from './utils/js_types.js';
 import { update_ancestor_info, validate_dom_nesting } from './utils/validate_dom.js';
-
+import { walk } from './utils/walker.js';
 
 const HTML_NO_COLLAPSE = new Set([
 	// Whitespace-sensitive tags
-	'textarea', 'code', 'pre',
+	'textarea',
+	'code',
+	'pre',
 ]);
 
 const HTML_TRIM_EDGE = new Set([
 	// Content tags
-	'address', 'audio', 'button', 'canvas', 'caption', 'figcaption', 'h1', 'h2',
-	'h3', 'h4', 'h5', 'h6', 'legend', 'meter', 'object', 'option', 'p', 'summary',
+	'address',
+	'audio',
+	'button',
+	'canvas',
+	'caption',
+	'figcaption',
+	'h1',
+	'h2',
+	'h3',
+	'h4',
+	'h5',
+	'h6',
+	'legend',
+	'meter',
+	'object',
+	'option',
+	'p',
+	'summary',
 	'video',
 
 	// Content-first tags
-	'dd', 'details', 'dt', 'iframe', 'label', 'li', 'noscript', 'output',
-	'progress', 'slot', 'td', 'template', 'th',
+	'dd',
+	'details',
+	'dt',
+	'iframe',
+	'label',
+	'li',
+	'noscript',
+	'output',
+	'progress',
+	'slot',
+	'td',
+	'template',
+	'th',
 
 	// Layout tags
-	'article', 'aside', 'blockquote', 'body', 'colgroup', 'datalist', 'dialog',
-	'div', 'dl', 'fieldset', 'figure', 'footer', 'form', 'head', 'header',
-	'hgroup', 'html', 'main', 'map', 'menu', 'nav', 'ol', 'optgroup', 'picture',
-	'section', 'select', 'table', 'tbody', 'tfoot', 'thead', 'tr', 'ul',
+	'article',
+	'aside',
+	'blockquote',
+	'body',
+	'colgroup',
+	'datalist',
+	'dialog',
+	'div',
+	'dl',
+	'fieldset',
+	'figure',
+	'footer',
+	'form',
+	'head',
+	'header',
+	'hgroup',
+	'html',
+	'main',
+	'map',
+	'menu',
+	'nav',
+	'ol',
+	'optgroup',
+	'picture',
+	'section',
+	'select',
+	'table',
+	'tbody',
+	'tfoot',
+	'thead',
+	'tr',
+	'ul',
 	'foreignObject',
 ]);
 
 const HTML_TRIM_INNER = new Set([
 	// Layout tags
-	'article', 'aside', 'blockquote', 'body', 'colgroup', 'datalist', 'dialog',
-	'div', 'dl', 'fieldset', 'figure', 'footer', 'form', 'head', 'header',
-	'hgroup', 'html', 'main', 'map', 'menu', 'nav', 'ol', 'optgroup', 'picture',
-	'section', 'select', 'table', 'tbody', 'tfoot', 'thead', 'tr', 'ul',
+	'article',
+	'aside',
+	'blockquote',
+	'body',
+	'colgroup',
+	'datalist',
+	'dialog',
+	'div',
+	'dl',
+	'fieldset',
+	'figure',
+	'footer',
+	'form',
+	'head',
+	'header',
+	'hgroup',
+	'html',
+	'main',
+	'map',
+	'menu',
+	'nav',
+	'ol',
+	'optgroup',
+	'picture',
+	'section',
+	'select',
+	'table',
+	'tbody',
+	'tfoot',
+	'thead',
+	'tr',
+	'ul',
 	'foreignObject',
 ]);
 
 const SVG_NO_TRIM_EDGE = new Set([
 	// Formatting tags
-	'a', 'altGlyph', 'tspan', 'textPath', 'tref',
+	'a',
+	'altGlyph',
+	'tspan',
+	'textPath',
+	'tref',
 ]);
 
 const SVG_NO_TRIM_INNER = new Set([
 	// Content tags
-	'desc', 'text', 'title',
+	'desc',
+	'text',
+	'title',
 
 	// Formatting tags
-	'a', 'altGlyph', 'tspan', 'textPath', 'tref',
+	'a',
+	'altGlyph',
+	'tspan',
+	'textPath',
+	'tref',
 ]);
 
 export function transform_template (template, source) {
@@ -126,7 +220,7 @@ export function transform_template (template, source) {
 						source,
 						node.start,
 						node.end,
-					)
+					);
 				}
 
 				ancestor_info_stack.push(update_ancestor_info(elem_name, prev_ancestor_info));
@@ -179,24 +273,30 @@ export function transform_template (template, source) {
 								needs_quote = true;
 							}
 
-							if (ch === "'") {
+							if (ch === '\'') {
 								has_sq = true;
 								needs_quote = true;
 							}
 
 							if (
-								ch === ' ' || ch === '\t' || ch === '\n' || ch === '\r' ||
-								ch === '`' || ch === '=' || ch === '<' || ch === '>'
+								ch === ' ' ||
+								ch === '\t' ||
+								ch === '\n' ||
+								ch === '\r' ||
+								ch === '`' ||
+								ch === '=' ||
+								ch === '<' ||
+								ch === '>'
 							) {
 								needs_quote = true;
 							}
 						}
 
 						if (needs_quote) {
-							let wrapper = "'";
+							let wrapper = '\'';
 
 							if (has_dq && has_sq) {
-								wrapper = "'";
+								wrapper = '\'';
 								value = value.replace(/'/g, '&#39;');
 							}
 							else if (has_dq) {
@@ -774,44 +874,56 @@ export function transform_template (template, source) {
 							if (is_input && input_type === 'checkbox' && prop_name === 'group') {
 								event_name = 'input';
 
-								event_fn = t.arrow_function_expression([], t.assignment_expression(
-									t.clone(value_expr),
-									t.call_expression(t.identifier('@get_checked_values'), [
+								event_fn = t.arrow_function_expression(
+									[],
+									t.assignment_expression(
 										t.clone(value_expr),
-										t.member_expression_from([elem_ident, 'value']),
-										t.member_expression_from([elem_ident, 'checked']),
-									]),
-								));
+										t.call_expression(t.identifier('@get_checked_values'), [
+											t.clone(value_expr),
+											t.member_expression_from([elem_ident, 'value']),
+											t.member_expression_from([elem_ident, 'checked']),
+										]),
+									),
+								);
 							}
 							else if (is_input && input_type === 'radio' && prop_name === 'group') {
 								event_name = 'input';
 
-								event_fn = t.arrow_function_expression([], t.assignment_expression(
-									t.clone(value_expr),
-									t.member_expression_from([elem_ident, 'value']),
-								));
+								event_fn = t.arrow_function_expression(
+									[],
+									t.assignment_expression(
+										t.clone(value_expr),
+										t.member_expression_from([elem_ident, 'value']),
+									),
+								);
 							}
 							// handle select value binding
 							else if (is_select && prop_name === 'value') {
 								event_name = 'input';
 
-								event_fn = t.arrow_function_expression([], t.assignment_expression(
-									t.clone(value_expr),
-									t.call_expression(t.identifier('@get_select_values'), [
-										t.identifier(elem_ident),
-									]),
-								));
+								event_fn = t.arrow_function_expression(
+									[],
+									t.assignment_expression(
+										t.clone(value_expr),
+										t.call_expression(t.identifier('@get_select_values'), [
+											t.identifier(elem_ident),
+										]),
+									),
+								);
 							}
 							// handle input number binding
 							else if (is_input && input_type === 'number' && prop_name === 'value') {
 								event_name = 'input';
 
-								event_fn = t.arrow_function_expression([], t.assignment_expression(
-									t.clone(value_expr),
-									t.call_expression(t.identifier('@to_number'), [
-										t.member_expression_from([elem_ident, 'value']),
-									]),
-								));
+								event_fn = t.arrow_function_expression(
+									[],
+									t.assignment_expression(
+										t.clone(value_expr),
+										t.call_expression(t.identifier('@to_number'), [
+											t.member_expression_from([elem_ident, 'value']),
+										]),
+									),
+								);
 							}
 							// handle input
 							else if (is_input) {
@@ -826,10 +938,13 @@ export function transform_template (template, source) {
 									);
 								}
 
-								event_fn = t.arrow_function_expression([], t.assignment_expression(
-									t.clone(value_expr),
-									t.member_expression_from([elem_ident, prop_name]),
-								));
+								event_fn = t.arrow_function_expression(
+									[],
+									t.assignment_expression(
+										t.clone(value_expr),
+										t.member_expression_from([elem_ident, prop_name]),
+									),
+								);
 							}
 							// handle textarea
 							else if (is_textarea) {
@@ -844,10 +959,13 @@ export function transform_template (template, source) {
 									);
 								}
 
-								event_fn = t.arrow_function_expression([], t.assignment_expression(
-									t.clone(value_expr),
-									t.member_expression_from([elem_ident, prop_name]),
-								));
+								event_fn = t.arrow_function_expression(
+									[],
+									t.assignment_expression(
+										t.clone(value_expr),
+										t.member_expression_from([elem_ident, prop_name]),
+									),
+								);
 							}
 							// handle everything else
 							else {
@@ -1149,7 +1267,6 @@ export function transform_template (template, source) {
 						),
 					]);
 
-
 					scope.traversals.push(instantiate_def);
 
 					let block_ident = '%block' + blocks.indexOf(block);
@@ -1307,7 +1424,8 @@ export function transform_template (template, source) {
 
 					if (
 						child &&
-						(child.type === 'Text' || (child.type === 'Element' && child.name !== 'v:element' && child.name !== 'v:component'))
+						(child.type === 'Text' ||
+							(child.type === 'Element' && child.name !== 'v:element' && child.name !== 'v:component'))
 					) {
 						is_static_end = true;
 					}
@@ -1462,7 +1580,7 @@ export function transform_template (template, source) {
 						)
 					) {
 						marker_ident = child_to_ident.get(prev_node);
-						node_offsets.set(parent, (--index_offset));
+						node_offsets.set(parent, --index_offset);
 
 						if (!marker_ident) {
 							marker_ident = '%child' + (id_c++);
@@ -1510,7 +1628,7 @@ export function transform_template (template, source) {
 								t.call_expression(t.identifier('@traverse'), [
 									t.identifier(fragment_ident),
 									t.array_expression(
-										[...curr_block.indices, index + index_offset].map((i) => t.literal(i))
+										[...curr_block.indices, index + index_offset].map((i) => t.literal(i)),
 									),
 								]),
 							),
@@ -1548,7 +1666,7 @@ export function transform_template (template, source) {
 					)
 				) {
 					marker_ident = child_to_ident.get(prev_node);
-					node_offsets.set(parent, (--index_offset));
+					node_offsets.set(parent, --index_offset);
 
 					if (!marker_ident) {
 						marker_ident = '%child' + (id_c++);
@@ -1582,7 +1700,7 @@ export function transform_template (template, source) {
 							t.call_expression(t.identifier('@traverse'), [
 								t.identifier(curr_fragment_ident),
 								t.array_expression(
-									[...curr_block.indices, index + index_offset].map((i) => t.literal(i))
+									[...curr_block.indices, index + index_offset].map((i) => t.literal(i)),
 								),
 							]),
 						),
@@ -1630,7 +1748,7 @@ export function transform_template (template, source) {
 					)
 				) {
 					marker_ident = child_to_ident.get(prev_node);
-					node_offsets.set(parent, (--index_offset));
+					node_offsets.set(parent, --index_offset);
 
 					if (!marker_ident) {
 						marker_ident = '%child' + (id_c++);
@@ -1733,7 +1851,7 @@ export function transform_template (template, source) {
 							t.call_expression(t.identifier('@traverse'), [
 								t.identifier(fragment_ident),
 								t.array_expression(
-									[...curr_block.indices, index + index_offset].map((i) => t.literal(i))
+									[...curr_block.indices, index + index_offset].map((i) => t.literal(i)),
 								),
 							]),
 						),
@@ -1772,7 +1890,7 @@ export function transform_template (template, source) {
 					)
 				) {
 					marker_ident = child_to_ident.get(prev_node);
-					node_offsets.set(parent, (--index_offset));
+					node_offsets.set(parent, --index_offset);
 
 					if (!marker_ident) {
 						marker_ident = '%child' + (id_c++);
@@ -1800,7 +1918,7 @@ export function transform_template (template, source) {
 							t.call_expression(t.identifier('@traverse'), [
 								t.identifier(curr_fragment_ident),
 								t.array_expression(
-									[...curr_block.indices, index + index_offset].map((i) => t.literal(i))
+									[...curr_block.indices, index + index_offset].map((i) => t.literal(i)),
 								),
 							]),
 						),

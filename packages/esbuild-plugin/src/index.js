@@ -1,11 +1,10 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 
+import { compile, CompilerError, VERSION as COMPILER_VERSION } from '@intrnl/velvet-compiler';
 import { build } from 'esbuild';
-import { compile, VERSION as COMPILER_VERSION, CompilerError } from '@intrnl/velvet-compiler';
 
 import { FSCache, getProjectRoot } from '@intrnl/fs-cache';
-
 
 let PLUGIN_VERSION = process.env.PLUGIN_VERSION;
 
@@ -136,7 +135,6 @@ export default function velvet_plugin (options = {}) {
 				external_resolve_plugin,
 			],
 		});
-
 
 		return {
 			css: result.outputFiles[0].text.trimEnd(),

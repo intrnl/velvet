@@ -1,6 +1,5 @@
 import * as fs from 'node:fs/promises';
 
-
 /**
  * @param {*} options
  * @returns {import('esbuild').Plugin}
@@ -29,10 +28,8 @@ export default function ccss_plugin (options = {}) {
 					minify: should_minify,
 				});
 
-				let js = (
-					'import { css } from "@intrnl/velvet/internal";\n' +
-					`export default css(${JSON.stringify(result.code.trim())});\n`
-				);
+				let js = 'import { css } from "@intrnl/velvet/internal";\n' +
+					`export default css(${JSON.stringify(result.code.trim())});\n`;
 
 				return {
 					loader: 'js',

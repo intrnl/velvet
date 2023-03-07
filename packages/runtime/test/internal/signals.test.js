@@ -1,11 +1,10 @@
-import * as assert from 'node:assert/strict';
 import { describe, it } from 'mocha';
+import * as assert from 'node:assert/strict';
 
 import { spy } from 'nanospy';
 import { assertSpy } from '../utils.js';
 
-import { signal, computed, effect, batch, scope } from '../../src/internal/signals.js';
-
+import { batch, computed, effect, scope, signal } from '../../src/internal/signals.js';
 
 describe('signal', () => {
 	it('creates a signal', () => {

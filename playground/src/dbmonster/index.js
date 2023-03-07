@@ -3,7 +3,6 @@ import * as perfmon from 'perf-monitor';
 import App from './App.velvet';
 import './style.css';
 
-
 // we don't need shadow DOM here, make Velvet think it's already been created.
 App.prototype.attachShadow = function () {
 	return this;

@@ -1,17 +1,15 @@
+import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import assert from 'node:assert/strict';
 import util from 'node:util';
 
-import { beforeEach, after } from 'mocha';
-
+import { after, beforeEach } from 'mocha';
 
 const eUpdateSnapshot = process.env.UPDATE_SNAPSHOT;
 const shouldUpdateSnapshot = eUpdateSnapshot && eUpdateSnapshot !== '';
 
 const banner = '// node-jestlike-snapshot v1';
-
 
 let testPath = null;
 let snapshotPath = null;
@@ -39,7 +37,12 @@ beforeEach(function () {
 		}
 
 		testPath = filename;
-		snapshotPath = path.join(filename, '..', '__snapshots__', path.basename(filename).replace(/\.([jt]sx?|mjs|[cm]ts)?$/i, '') + '.snap');
+		snapshotPath = path.join(
+			filename,
+			'..',
+			'__snapshots__',
+			path.basename(filename).replace(/\.([jt]sx?|mjs|[cm]ts)?$/i, '') + '.snap',
+		);
 	}
 
 	while (instance) {
@@ -83,7 +86,6 @@ after(function () {
 		}
 	}
 });
-
 
 export function assertSnapshot (actual) {
 	actual = typeof actual !== 'string' ? util.inspect(actual) : actual;

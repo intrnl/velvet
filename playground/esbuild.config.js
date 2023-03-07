@@ -2,7 +2,6 @@ import * as esbuild from 'esbuild';
 
 import velvet from '@intrnl/esbuild-plugin-velvet';
 
-
 /** @type {esbuild.BuildOptions} */
 export let config = {
 	entryPoints: [

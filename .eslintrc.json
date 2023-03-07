@@ -25,7 +25,17 @@
 		"generator-star-spacing": ["error", { "before": false, "after": true }],
 		"indent": ["error", "tab", { "SwitchCase": 1, "offsetTernaryExpressions": true, "ignoreComments": true }],
 		"keyword-spacing": ["error", { "before": true, "after": true }],
-		"max-len": ["error", { "code": 120, "ignoreUrls": true, "ignoreComments": true, "ignoreRegExpLiterals": true, "ignoreStrings": true, "ignoreTemplateLiterals": true }],
+		"max-len": [
+			"error",
+			{
+				"code": 120,
+				"ignoreUrls": true,
+				"ignoreComments": true,
+				"ignoreRegExpLiterals": true,
+				"ignoreStrings": true,
+				"ignoreTemplateLiterals": true
+			}
+		],
 		"object-curly-spacing": ["error", "always"],
 		"quotes": ["error", "single", { "allowTemplateLiterals": true, "avoidEscape": true }],
 		"semi-spacing": ["error", { "before": false, "after": true }],

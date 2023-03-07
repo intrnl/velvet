@@ -1,6 +1,5 @@
 import { decode_character_references } from './html.js';
 
-
 /**
  * @typedef {object} Fragment
  * @property {'Fragment'} type

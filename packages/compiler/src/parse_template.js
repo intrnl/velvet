@@ -1,8 +1,7 @@
+import { is_void } from './utils/html.js';
+import * as j from './utils/js_parse.js';
 import * as p from './utils/template_parser.js';
 import * as t from './utils/template_types.js';
-import * as j from './utils/js_parse.js';
-import { is_void } from './utils/html.js';
-
 
 const allow_duped_attributes = new Set(['#use']);
 
@@ -609,7 +608,7 @@ function _parse_element (state) {
 			for (; state.index < state.content.length; state.index++) {
 				let char = state.content[state.index];
 
-				if (char === '=' || char === '>' || p.is_whitespace(char) || char === '/' || char === "'" || char === '"') {
+				if (char === '=' || char === '>' || p.is_whitespace(char) || char === '/' || char === '\'' || char === '"') {
 					break;
 				}
 
@@ -628,7 +627,7 @@ function _parse_element (state) {
 
 			p.eat_whitespace(state);
 
-			if (p.eat(state, '"') || p.eat(state, "'")) {
+			if (p.eat(state, '"') || p.eat(state, '\'')) {
 				throw p.error(state, 'expected attribute assignment');
 			}
 			else if (p.eat(state, '=')) {
@@ -636,7 +635,7 @@ function _parse_element (state) {
 
 				let next_char = state.content[state.index];
 				let is_double_quote = next_char === '"';
-				let is_single_quote = !is_double_quote && next_char === "'";
+				let is_single_quote = !is_double_quote && next_char === '\'';
 
 				if (is_double_quote || is_single_quote) {
 					state.index++;
@@ -683,7 +682,14 @@ function _parse_element (state) {
 					for (; state.index < state.content.length; state.index++) {
 						let char = state.content[state.index];
 
-						if (char === '=' || char === '>' || p.is_whitespace(char) || char === '/' || char === "'" || char === '"') {
+						if (
+							char === '=' ||
+							char === '>' ||
+							p.is_whitespace(char) ||
+							char === '/' ||
+							char === '\'' ||
+							char === '"'
+						) {
 							break;
 						}
 
@@ -738,7 +744,8 @@ function _parse_element (state) {
 
 			// match angle brackets first before the name
 			if (
-				char === '<' && state.content[state.index + 1] === '/' &&
+				char === '<' &&
+				state.content[state.index + 1] === '/' &&
 				state.content[state.index + 2 + name_len] === '>' &&
 				state.content.slice(state.index + 2, state.index + 2 + name_len) === name
 			) {

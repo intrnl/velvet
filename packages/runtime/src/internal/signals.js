@@ -356,7 +356,7 @@ export class Computed extends Signal {
 		// Mark this computed signal running before checking the dependencies for value
 		// changes, so that the RUNNING flag can be used to notice cyclical dependencies.
 		_this._flags |= RUNNING;
-		
+
 		if (_this._global_version > -1 && !need_recompute(_this)) {
 			_this._flags &= ~RUNNING;
 			return false;
@@ -490,7 +490,7 @@ export class Computed extends Signal {
 
 export class Effect {
 	/**
-	 * @param {() => void} compute 
+	 * @param {() => void} compute
 	 */
 	constructor (compute) {
 		let _this = this;

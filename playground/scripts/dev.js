@@ -1,11 +1,10 @@
-import * as os from 'os';
 import * as esbuild from 'esbuild';
+import * as os from 'os';
 
 import { config } from '../esbuild.config.js';
 
 import compilerPkg from '../node_modules/@intrnl/velvet-compiler/package.json' assert { type: 'json' };
 import runtimePkg from '../node_modules/@intrnl/velvet/package.json' assert { type: 'json' };
-
 
 const args = process.argv.slice(2);
 
@@ -59,7 +58,7 @@ const context = await esbuild.context({
 	plugins: [
 		...config.plugins || [],
 	],
-})
+});
 
 const internal = await context.serve({
 	servedir: 'dist/',

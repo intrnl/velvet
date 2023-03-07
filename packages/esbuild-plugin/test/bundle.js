@@ -1,7 +1,7 @@
 import { build } from 'esbuild';
 
-import velvetPlugin from '../src/index.js';
 import ccssPlugin from '../src/ccss_plugin.js';
+import velvetPlugin from '../src/index.js';
 
 await build({
 	entryPoints: ['./App.velvet'],

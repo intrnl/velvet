@@ -1,8 +1,7 @@
-import { defineConfig } from 'rollup';
 import * as esbuild from 'esbuild';
+import { defineConfig } from 'rollup';
 
 import pkg from './package.json' assert { type: 'json' };
-
 
 export default defineConfig({
 	input: './src/index.js',

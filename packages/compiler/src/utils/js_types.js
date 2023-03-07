@@ -14,7 +14,6 @@ function clone_if_node_or_array (obj, deep, loc) {
 	return clone_if_node(obj, deep, loc);
 }
 
-
 export function clone (node, deep = true, loc = false) {
 	let clone = { type: node.type };
 

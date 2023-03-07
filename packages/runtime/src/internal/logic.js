@@ -1,7 +1,6 @@
-import { batch, signal, effect, scope, cleanup, Scope, Signal, eval_scope } from './signals.js';
-import { replace, remove_parts, append } from './dom.js';
+import { append, remove_parts, replace } from './dom.js';
+import { batch, cleanup, effect, eval_scope, Scope, scope, Signal, signal } from './signals.js';
 import { is } from './utils.js';
-
 
 export function text (marker, expression) {
 	let node = document.createTextNode('');
@@ -197,7 +196,7 @@ export function dynamic (marker, block, expression) {
 		current = next;
 		instance.clear();
 
-		replace(host, (host = next ? instance.run(() => block(next)) : marker), false);
+		replace(host, host = next ? instance.run(() => block(next)) : marker, false);
 	});
 }
 
@@ -212,7 +211,6 @@ export function subscribe (store) {
 
 	return ref;
 }
-
 
 function destroy_block (marker, end) {
 	remove_parts(marker.nextSibling, end);
