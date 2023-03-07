@@ -43,11 +43,7 @@ const printServerInfo = ({ host, port }) => {
 	console.log('');
 };
 
-
-const internal = await esbuild.serve({
-	servedir: 'dist/',
-	host: serverOptions.host,
-}, {
+const context = await esbuild.context({
 	minify: false,
 	...config,
 	format: 'esm',
@@ -63,6 +59,11 @@ const internal = await esbuild.serve({
 	plugins: [
 		...config.plugins || [],
 	],
+})
+
+const internal = await context.serve({
+	servedir: 'dist/',
+	host: serverOptions.host,
 });
 
 printServerInfo({ host: internal.host, port: internal.port });
