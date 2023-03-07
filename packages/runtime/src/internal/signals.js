@@ -246,11 +246,13 @@ export class Signal {
 			// dependency list if we're already in it, will be unset during cleanup
 			_this._node = eval_context;
 
-			if (!eval_sources && eval_context._sources[eval_sources_idx] === _this) {
-				eval_sources_idx++;
-			}
-			else if (!eval_sources) {
-				eval_sources = [_this];
+			if (!eval_sources) {
+				if (eval_context._sources[eval_sources_idx] === _this) {
+					eval_sources_idx++;
+				}
+				else {
+					eval_sources = [_this];
+				}
 			}
 			else {
 				eval_sources.push(_this);
