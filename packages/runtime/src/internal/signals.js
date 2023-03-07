@@ -150,7 +150,6 @@ function prune_context_sources () {
 	for (; idx < len; idx++) {
 		let source = sources[idx];
 		source._unsubscribe(eval_context);
-		source._node = undefined;
 	}
 }
 
