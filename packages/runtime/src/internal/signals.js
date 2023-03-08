@@ -354,7 +354,7 @@ export class Computed extends Signal {
 
 			let value = _this._compute();
 
-			if (_this._flags & HAS_ERROR || _this._value !== value || _this._value === 0) {
+			if (_this._flags & HAS_ERROR || _this._value !== value || _this._epoch === -1) {
 				stale = true;
 
 				_this._value = value;
