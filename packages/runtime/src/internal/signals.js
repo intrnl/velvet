@@ -683,6 +683,10 @@ export function computed (compute) {
 	return new Computed(compute);
 }
 
+/**
+ * @param {() => void} compute
+ * @returns {() => void} dispose function
+ */
 export function effect (compute) {
 	// Return a bound function instead of a wrapper like `() => effect._dispose()`,
 	// because bound functions seem to be just as fast and take up a lot less memory.
