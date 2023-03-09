@@ -549,6 +549,9 @@ export class Effect {
 		}
 	}
 
+	/**
+	 * @internal
+	 */
 	_dispose () {
 		let _this = this;
 
