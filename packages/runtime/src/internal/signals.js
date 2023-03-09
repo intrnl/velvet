@@ -267,14 +267,11 @@ export class Signal {
 
 				/* @__INLINE__ */ start_batch();
 
-				try {
-					for (; idx < len; idx++) {
-						targets[idx]._notify();
-					}
+				for (; idx < len; idx++) {
+					targets[idx]._notify();
 				}
-				finally {
-					end_batch();
-				}
+
+				end_batch();
 			}
 		}
 	}
