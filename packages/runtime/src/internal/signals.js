@@ -620,16 +620,28 @@ export class Scope {
 	}
 }
 
+/**
+ * @param {boolean} detached
+ * @returns {Scope}
+ */
 export function scope (detached) {
 	return new Scope(detached);
 }
 
+/**
+ * @param {() => void} callback
+ * @returns {void}
+ */
 export function cleanup (callback) {
 	if (is_function(callback) && eval_scope) {
 		eval_scope.cleanups.push(callback);
 	}
 }
 
+/**
+ * @param {() => void} callback
+ * @returns {void}
+ */
 export function batch (callback) {
 	if (batch_depth > 0) {
 		return callback();
@@ -645,6 +657,11 @@ export function batch (callback) {
 	}
 }
 
+/**
+ * @template T
+ * @param {() => T} callback
+ * @returns {T}
+ */
 export function untrack (callback) {
 	let prev_context = eval_context;
 
@@ -657,6 +674,11 @@ export function untrack (callback) {
 	}
 }
 
+/**
+ * @template T
+ * @param {T | Signal<T>} value
+ * @returns {T}
+ */
 export function peek (value) {
 	if (value instanceof Signal) {
 		return value.peek();
