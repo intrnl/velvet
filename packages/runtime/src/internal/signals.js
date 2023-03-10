@@ -9,6 +9,8 @@ let DISPOSED = 1 << 3;
 let HAS_ERROR = 1 << 4;
 let TRACKING = 1 << 5;
 
+let depth_sort = (a, b) => a._depth - b._depth;
+
 /** @type {Scope | undefined} */
 export let eval_scope;
 
@@ -45,7 +47,7 @@ function end_batch () {
 	let has_error = false;
 
 	while (batched_effects) {
-		let effects = batched_effects.sort((a, b) => a._depth - b._depth);
+		let effects = batched_effects.sort(depth_sort);
 		let idx = 0;
 		let len = effects.length;
 
