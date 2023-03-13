@@ -38,6 +38,6 @@
 		"@intrnl/velvet": "workspace:^0.4.22",
 		"@intrnl/velvet-compiler": "workspace:^0.8.0",
 		"esbuild": "^0.17.11",
-		"rollup": "^3.18.0"
+		"rollup": "^3.19.1"
 	}
 }
