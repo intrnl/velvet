@@ -21,7 +21,8 @@
 		"method.spaceBeforeParentheses": true,
 		"constructor.spaceBeforeParentheses": true,
 		"getAccessor.spaceBeforeParentheses": true,
-		"setAccessor.spaceBeforeParentheses": true
+		"setAccessor.spaceBeforeParentheses": true,
+		"importDeclaration.sortNamedImports": "caseSensitive"
 	},
 	"json": {},
 	"markdown": {},
