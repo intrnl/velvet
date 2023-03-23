@@ -6,7 +6,7 @@
 		"watch": "pnpm run -r --if-present --parallel watch -w"
 	},
 	"devDependencies": {
-		"@changesets/cli": "^2.26.0",
+		"@changesets/cli": "^2.26.1",
 		"dprint": "^0.35.3",
 		"eslint": "^8.36.0"
 	}

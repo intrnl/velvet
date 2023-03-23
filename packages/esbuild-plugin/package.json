@@ -37,7 +37,7 @@
 	"devDependencies": {
 		"@intrnl/velvet": "workspace:^0.4.22",
 		"@intrnl/velvet-compiler": "workspace:^0.8.0",
-		"esbuild": "^0.17.11",
-		"rollup": "^3.19.1"
+		"esbuild": "^0.17.12",
+		"rollup": "^3.20.1"
 	}
 }
