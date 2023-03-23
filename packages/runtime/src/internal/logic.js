@@ -1,5 +1,5 @@
 import { append, remove_parts, replace } from './dom.js';
-import { batch, cleanup, effect, eval_scope, Scope, scope, Signal, signal } from './signals.js';
+import { Scope, Signal, batch, cleanup, effect, eval_scope, scope, signal } from './signals.js';
 import { is } from './utils.js';
 
 export function text (marker, expression) {

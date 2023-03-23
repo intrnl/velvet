@@ -1,6 +1,6 @@
 import { append } from './dom.js';
 import { Object, Symbol } from './globals.js';
-import { cleanup, Computed, computed, effect, scope, Signal, signal } from './signals.js';
+import { Computed, Signal, cleanup, computed, effect, scope, signal } from './signals.js';
 import { assign, hyphenate, is_function } from './utils.js';
 
 let ENABLE_RANDOM_TAGS = false;
