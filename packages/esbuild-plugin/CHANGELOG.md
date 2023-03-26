@@ -1,5 +1,13 @@
 # @intrnl/esbuild-plugin-velvet
 
+## 0.7.0
+
+### Patch Changes
+
+- Updated dependencies [e0cab72]
+- Updated dependencies [ab8293a]
+  - @intrnl/velvet-compiler@0.9.0
+
 ## 0.6.1
 
 ### Patch Changes

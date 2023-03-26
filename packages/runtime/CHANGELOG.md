@@ -1,5 +1,15 @@
 # @intrnl/velvet
 
+## 0.5.0
+
+### Minor Changes
+
+- ab8293a: Store subscriptions now only accepts Signals
+
+### Patch Changes
+
+- 691699f: New new Signal implementation
+
 ## 0.4.22
 
 ### Patch Changes

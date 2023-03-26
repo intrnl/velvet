@@ -1,5 +1,27 @@
 # @intrnl/velvet-compiler
 
+## 0.9.0
+
+### Minor Changes
+
+- ab8293a: Store subscriptions now only accepts Signals
+
+### Patch Changes
+
+- e0cab72: Stricter parsing rules
+
+  The previous solution for stricter rules around weird HTML parsing quirks wasn't
+  adequate, this improves it by adding the checks to include elements that are
+  within a conditional logic block, and adds additional cases that weren't present
+  before.
+
+  This does not constitute a breaking change, as weird HTML like these were
+  already considered invalid in the initial 0.8.0 release.
+
+- Updated dependencies [691699f]
+- Updated dependencies [ab8293a]
+  - @intrnl/velvet@0.5.0
+
 ## 0.8.0
 
 ### Minor Changes
