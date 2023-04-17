@@ -35,9 +35,9 @@
 		"esbuild": "^0.14.8 || ^0.15.0 || ^0.16.0 || ^0.17.0"
 	},
 	"devDependencies": {
-		"@intrnl/velvet": "workspace:^0.5.0",
-		"@intrnl/velvet-compiler": "workspace:^0.9.0",
-		"esbuild": "^0.17.14",
-		"rollup": "^3.20.2"
+		"@intrnl/velvet": "workspace:^",
+		"@intrnl/velvet-compiler": "workspace:^",
+		"esbuild": "^0.17.17",
+		"rollup": "^3.20.3"
 	}
 }
