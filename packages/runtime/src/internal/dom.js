@@ -31,6 +31,16 @@ export function clone (template) {
 	return fragment;
 }
 
+/*#__NO_SIDE_EFFECTS__*/
+export function first_child (node) {
+	return node.firstChild;
+}
+
+/*#__NO_SIDE_EFFECTS__*/
+export function next_sibling (node) {
+	return node.nextSibling;
+}
+
 export function traverse (node, indices) {
 	let ref = node;
 

@@ -1539,21 +1539,21 @@ function get_block_js (block) {
  * @param {Block} block
  * @param {tt.Element | tt.Fragment} parent
  * @param {number} index
- * @returns {import('estree').MemberExpression}
+ * @returns {import('estree').CallExpression}
  */
 function get_traversal_expr (block, parent, index) {
 	if (index === 0) {
 		let parent_ident = block.node_to_ident.get(parent);
 		assert(typeof parent_ident === 'string');
 
-		return t.member_expression_from([parent_ident, 'firstChild']);
+		return t.call_expression(t.identifier('@first_child'), [t.identifier(parent_ident)]);
 	}
 	else {
 		let prev_sibling = parent.children[index - 1];
 		let prev_ident = block.node_to_ident.get(prev_sibling);
 		assert(typeof prev_ident === 'string');
 
-		return t.member_expression_from([prev_ident, 'nextSibling']);
+		return t.call_expression(t.identifier('@next_sibling'), [t.identifier(prev_ident)]);
 	}
 }
 
