@@ -3,13 +3,13 @@ import { decode_character_references } from './html.js';
 /**
  * @typedef {object} Fragment
  * @property {'Fragment'} type
- * @property {Array<Node>} children
+ * @property {Array<ChildNode>} children
  * @property {number} [start]
  * @property {number} [end]
  */
 
 /**
- * @param {Array<Node>} [children]
+ * @param {Array<ChildNode>} [children]
  * @returns {Fragment}
  */
 export function fragment (children = []) {
@@ -29,8 +29,9 @@ export function fragment (children = []) {
  *   LetExpression |
  *   ConditionalStatement |
  *   LoopStatement |
- *   AwaitStatement
- * )} Node
+ *   AwaitStatement |
+ *   KeyedStatement
+ * )} ChildNode
  */
 
 /**
@@ -92,7 +93,7 @@ export function text (value, decoded = decode_character_references(value)) {
  * @property {boolean} component
  * @property {boolean} inline
  * @property {Array<Attribute | AttributeSpread>} attributes
- * @property {Array<Node>} children
+ * @property {Array<ChildNode>} children
  * @property {number} [start]
  * @property {number} [end]
  */
@@ -101,12 +102,12 @@ export function text (value, decoded = decode_character_references(value)) {
  * @param {string} name
  * @param {boolean} self_closing
  * @param {Array<Attribute | AttributeSpread>} [attributes]
- * @param {Array<Node>} [children]
+ * @param {Array<ChildNode>} [children]
  * @returns {Element}
  */
 export function element (name, self_closing, attributes = [], children = []) {
-	let inline = /^[A-Z]|^v:(?:self|component|element)$/.test(name);
-	let component = inline || /^[^-\d].*-.*$/.test(name);
+	let component = /^[^-\d].*-.*$/.test(name);
+	let inline = component || /^[A-Z]|^v:(?:self|component|element)$/.test(name);
 
 	return {
 		type: 'Element',

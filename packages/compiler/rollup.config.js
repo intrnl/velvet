@@ -28,6 +28,7 @@ export default defineConfig({
 					sourcemap: true,
 					define: {
 						'process.env.COMPILER_VERSION': `"v${pkg.version}"`,
+						'process.env.NODE_ENV': `"production"`,
 					},
 				});
 

@@ -1,3 +1,7 @@
+import { assert } from './error.js';
+
+/** @typedef {false | null | undefined} Falsy */
+
 function clone_if_node (obj, deep, loc) {
 	if (obj && obj.type) {
 		return clone(obj, deep, loc);
@@ -14,6 +18,13 @@ function clone_if_node_or_array (obj, deep, loc) {
 	return clone_if_node(obj, deep, loc);
 }
 
+/**
+ * @template {import('estree').Node} T
+ * @param {T} node
+ * @param {boolean} [deep]
+ * @param {boolean} [loc]
+ * @returns {T}
+ */
 export function clone (node, deep = true, loc = false) {
 	let clone = { type: node.type };
 
@@ -156,9 +167,11 @@ export function member_expression (object, property, computed = false, optional 
 
 /**
  * @param {string[]} arr
- * @returns {import('estree').MemberExpression | import('estree').Identifier}
+ * @returns {import('estree').MemberExpression}
  */
 export function member_expression_from (arr) {
+	assert(arr.length >= 2);
+
 	let result = identifier(arr[0]);
 
 	for (let i = 1, l = arr.length; i < l; i++) {
@@ -204,6 +217,20 @@ export function binary_expression (left, right, operator) {
 		left,
 		right,
 		operator,
+	};
+}
+
+/**
+ * @param {import('estree').UnaryOperator} operator
+ * @param {import('estree').Expression} argument
+ * @returns {import('estree').UnaryExpression}
+ */
+export function unary_expression (operator, argument) {
+	return {
+		type: 'UnaryExpression',
+		prefix: true,
+		operator,
+		argument,
 	};
 }
 
@@ -254,7 +281,7 @@ export function conditional_expression (test, consequent, alternate) {
 
 /**
  * @param {import('estree').Expression | import('estree').Super} callee
- * @param {(import('estree').Expression | import('estree').SpreadElement)[]} [args]
+ * @param {(import('estree').Expression | import('estree').SpreadElement | Falsy)[]} [args]
  * @param {boolean} [optional]
  * @returns {import('estree').SimpleCallExpression}
  */
@@ -311,7 +338,7 @@ export function function_declaration (id = null, params, body, async = false, ge
 }
 
 /**
- * @param {import('estree').Pattern[]} params
+ * @param {(import('estree').Pattern | Falsy)[]} params
  * @param {import('estree').BlockStatement | import('estree').Expression} body
  * @param {boolean} [async]
  * @returns {import('estree').ArrowFunctionExpression}
@@ -328,7 +355,7 @@ export function arrow_function_expression (params, body, async = false) {
 }
 
 /**
- * @param {'var' | 'let' | 'cost'} kind
+ * @param {'var' | 'let' | 'const'} kind
  * @param {import('estree').VariableDeclarator[]} declarations
  * @returns {import('estree').VariableDeclaration}
  */

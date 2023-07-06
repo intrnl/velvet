@@ -66,6 +66,10 @@ export function transform_script (program, source, macro_path = '@intrnl/velvet/
 						);
 					}
 
+					if (id.velvet?.transformed) {
+						continue
+					}
+
 					let own_scope = curr_scope.find_owner(name);
 
 					if (own_scope) {
@@ -671,7 +675,7 @@ export function finalize_program (program, mod = '@intrnl/velvet/internal') {
 	/** @type {Map<string, Set<import('estree').Identifier>>} */
 	let import_identifiers = new Map();
 	/** @type {Map<string, Set<import('estree').Identifier>>} */
-	let hoisted_identifiers = new Map();
+	let deconflict_identifiers = new Map();
 
 	/** @type {import('estree').Node[]} */
 	let hoisted_statements = [];
@@ -700,10 +704,10 @@ export function finalize_program (program, mod = '@intrnl/velvet/internal') {
 				else if (name[0] === '%') {
 					name = name.slice(name[1] === '%' ? 2 : 1);
 
-					let set = hoisted_identifiers.get(name);
+					let set = deconflict_identifiers.get(name);
 
 					if (!set) {
-						hoisted_identifiers.set(name, set = new Set());
+						deconflict_identifiers.set(name, set = new Set());
 					}
 
 					set.add(node);
@@ -766,7 +770,7 @@ export function finalize_program (program, mod = '@intrnl/velvet/internal') {
 		program.body = [...hoisted_statements, ...program.body];
 	}
 
-	for (let [name, set] of hoisted_identifiers) {
+	for (let [name, set] of deconflict_identifiers) {
 		let local = _find_unique_identifier(name, identifiers);
 
 		for (let identifier of set) {

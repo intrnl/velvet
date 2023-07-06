@@ -38,7 +38,7 @@ function* _compile (source, options = {}) {
 	let style_value = null;
 
 	for (let i = 0; i < template.children.length; i++) {
-		/** @type {import('./utils/template_types.js').Node} */
+		/** @type {import('./utils/template_types.js').ChildNode} */
 		let node = template.children[i];
 
 		if (node.type !== 'Element') {

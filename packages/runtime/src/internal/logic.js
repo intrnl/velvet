@@ -1,17 +1,11 @@
-import { append, remove_parts, replace } from './dom.js';
+import { remove_parts, replace } from './dom.js';
 import { Scope, Signal, batch, cleanup, effect, eval_scope, scope, signal } from './signals.js';
 import { is } from './utils.js';
 
-export function text (marker, expression) {
+export function text (marker, expression, insert) {
 	let node = document.createTextNode('');
 
-	if (marker.nodeType === 1) {
-		append(marker, node);
-	}
-	else {
-		replace(marker, node, false);
-	}
-
+	insert(marker, node);
 	effect(() => (node.data = expression()));
 }
 

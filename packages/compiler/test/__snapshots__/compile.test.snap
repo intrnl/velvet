@@ -1,11 +1,11 @@
 // node-jestlike-snapshot v1
 
 exports[`attribute > allows duplicate #use attributes 1`] = `
-import {html, clone, traverse, use, append, define} from "@intrnl/velvet/internal";
+import {html, clone, use, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<time></time>");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
-  let child0 = traverse(fragment0, [0]);
+  let child0 = fragment0.firstChild;
   use(child0, relformatter, null);
   use(child0, relformatter, () => ({
     locale: 'en'
@@ -17,13 +17,13 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`attribute > binding checkbox group 1`] = `
-import {signal, html, clone, traverse, effect, on, get_checked_values, append, define} from "@intrnl/velvet/internal";
+import {signal, html, clone, effect, on, get_checked_values, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<input type=checkbox value=Apple><input type=checkbox value=Orange>");
 function setup($$root, $$host) {
   let selected = signal(['Apple']);
   let fragment0 = clone(template0);
-  let child0 = traverse(fragment0, [0]);
-  let child1 = traverse(fragment0, [1]);
+  let child0 = fragment0.firstChild;
+  let child1 = child0.nextSibling;
   effect(() => child0.checked = selected.value.includes(child0.value));
   on(child0, "input", () => selected.value = get_checked_values(selected.value, child0.value, child0.checked));
   effect(() => child1.checked = selected.value.includes(child1.value));
@@ -35,7 +35,7 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`attribute > binding checkbox group nested 1`] = `
-import {signal, html, clone, traverse, effect, on, get_checked_values, append, define} from "@intrnl/velvet/internal";
+import {signal, html, clone, effect, on, get_checked_values, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<input type=checkbox value=Apple><input type=checkbox value=Orange>");
 function setup($$root, $$host) {
   let state = signal({
@@ -45,8 +45,8 @@ function setup($$root, $$host) {
     selected: ['Orange']
   };
   let fragment0 = clone(template0);
-  let child0 = traverse(fragment0, [0]);
-  let child1 = traverse(fragment0, [1]);
+  let child0 = fragment0.firstChild;
+  let child1 = child0.nextSibling;
   effect(() => child0.checked = state.value.selected.includes(child0.value));
   on(child0, "input", () => state.value.selected = get_checked_values(state.value.selected, child0.value, child0.checked));
   effect(() => child1.checked = state.value.selected.includes(child1.value));
@@ -66,19 +66,20 @@ duplicate foo attribute (2:26)
 `;
 
 exports[`conditional logic > consequent 1`] = `
-import {html, clone, traverse, after, show, append, define} from "@intrnl/velvet/internal";
+import {html, clone, after, show, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<div>foo</div>");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
-  let marker0 = traverse(fragment0, [0]);
+  let child2 = fragment0.firstChild;
   let block1 = $$root => {
     let fragment1 = clone(template1);
-    let child0 = traverse(fragment1, [0]);
+    let child0 = fragment1.firstChild;
+    let child1 = child0.firstChild;
     after($$root, fragment1);
     return child0;
   };
-  show(marker0, () => foo ? block1 : null);
+  show(child2, () => foo ? block1 : null);
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
@@ -86,26 +87,28 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`conditional logic > consequent and alternate 1`] = `
-import {html, clone, traverse, after, show, append, define} from "@intrnl/velvet/internal";
+import {html, clone, after, show, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<div>foo</div>");
 let template2 = html("<div>bar</div>");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
-  let marker0 = traverse(fragment0, [0]);
+  let child4 = fragment0.firstChild;
   let block1 = $$root => {
     let fragment1 = clone(template1);
-    let child0 = traverse(fragment1, [0]);
+    let child0 = fragment1.firstChild;
+    let child1 = child0.firstChild;
     after($$root, fragment1);
     return child0;
   };
   let block2 = $$root => {
     let fragment2 = clone(template2);
-    let child1 = traverse(fragment2, [0]);
+    let child2 = fragment2.firstChild;
+    let child3 = child2.firstChild;
     after($$root, fragment2);
-    return child1;
+    return child2;
   };
-  show(marker0, () => foo ? block1 : block2);
+  show(child4, () => foo ? block1 : block2);
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
@@ -119,26 +122,26 @@ exports[`element > throws on improper closing tag 1`] = `
 `;
 
 exports[`let expression > mutated referencing mutated 1`] = `
-import {signal, html, clone, traverse, computed, text, after, show, append, define} from "@intrnl/velvet/internal";
+import {signal, html, clone, computed, text, replace, after, show, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<!><!><!>");
 function setup($$root, $$host) {
   let count = signal(0);
   count.value = 2;
   let fragment0 = clone(template0);
-  let marker3 = traverse(fragment0, [0]);
+  let child3 = fragment0.firstChild;
   let block1 = $$root => {
     let fragment1 = clone(template1);
     let doubled = computed(() => count.value * 2);
-    let marker0 = traverse(fragment1, [0]);
-    let marker1 = traverse(fragment1, [1]);
-    let marker2 = traverse(fragment1, [2]);
-    text(marker0, () => count.value);
-    text(marker1, () => doubled.value = 2);
+    let child0 = fragment1.firstChild;
+    let child1 = child0.nextSibling;
+    let child2 = child1.nextSibling;
+    text(child0, () => count.value, replace);
+    text(child1, () => doubled.value = 2, replace);
     after($$root, fragment1);
-    return marker2;
+    return child2;
   };
-  show(marker3, () => foo ? block1 : null);
+  show(child3, () => foo ? block1 : null);
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
@@ -146,25 +149,25 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`let expression > mutated referencing unmutated 1`] = `
-import {html, clone, traverse, signal, text, after, show, append, define} from "@intrnl/velvet/internal";
+import {html, clone, signal, text, replace, after, show, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<!><!><!>");
 function setup($$root, $$host) {
   let count = 0;
   let fragment0 = clone(template0);
-  let marker3 = traverse(fragment0, [0]);
+  let child3 = fragment0.firstChild;
   let block1 = $$root => {
     let fragment1 = clone(template1);
     let doubled = signal(count * 2);
-    let marker0 = traverse(fragment1, [0]);
-    let marker1 = traverse(fragment1, [1]);
-    let marker2 = traverse(fragment1, [2]);
-    text(marker0, () => count);
-    text(marker1, () => doubled.value = 2);
+    let child0 = fragment1.firstChild;
+    let child1 = child0.nextSibling;
+    let child2 = child1.nextSibling;
+    text(child0, () => count, replace);
+    text(child1, () => doubled.value = 2, replace);
     after($$root, fragment1);
-    return marker2;
+    return child2;
   };
-  show(marker3, () => foo ? block1 : null);
+  show(child3, () => foo ? block1 : null);
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
@@ -172,24 +175,24 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`let expression > referencing for each 1`] = `
-import {html, clone, traverse, computed, text, effect, toggle, attr, after, each, append, define} from "@intrnl/velvet/internal";
+import {html, clone, computed, effect, toggle, attr, text, replace, after, each, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<option><!></option>");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
-  let marker1 = traverse(fragment0, [0]);
+  let child2 = fragment0.firstChild;
   let block1 = ($$root, key) => {
     let fragment1 = clone(template1);
     let item = computed(() => data[key.value]);
-    let marker0 = traverse(fragment1, [0, 0]);
-    let child0 = traverse(fragment1, [0]);
-    text(marker0, () => item.value.name);
+    let child0 = fragment1.firstChild;
+    let child1 = child0.firstChild;
     effect(() => toggle(child0, "disabled", augments.includes(key.value)));
     effect(() => attr(child0, "value", key.value));
+    text(child1, () => item.value.name, replace);
     after($$root, fragment1);
     return child0;
   };
-  each(marker1, block1, () => Object.keys(data));
+  each(child2, block1, () => Object.keys(data));
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
@@ -197,26 +200,26 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`let expression > unmutated referencing mutated 1`] = `
-import {signal, html, clone, traverse, computed, text, after, show, append, define} from "@intrnl/velvet/internal";
+import {signal, html, clone, computed, text, replace, after, show, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<!><!><!>");
 function setup($$root, $$host) {
   let count = signal(0);
   count.value = 2;
   let fragment0 = clone(template0);
-  let marker3 = traverse(fragment0, [0]);
+  let child3 = fragment0.firstChild;
   let block1 = $$root => {
     let fragment1 = clone(template1);
     let doubled = computed(() => count.value * 2);
-    let marker0 = traverse(fragment1, [0]);
-    let marker1 = traverse(fragment1, [1]);
-    let marker2 = traverse(fragment1, [2]);
-    text(marker0, () => count.value);
-    text(marker1, () => doubled.value);
+    let child0 = fragment1.firstChild;
+    let child1 = child0.nextSibling;
+    let child2 = child1.nextSibling;
+    text(child0, () => count.value, replace);
+    text(child1, () => doubled.value, replace);
     after($$root, fragment1);
-    return marker2;
+    return child2;
   };
-  show(marker3, () => foo ? block1 : null);
+  show(child3, () => foo ? block1 : null);
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
@@ -224,25 +227,25 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`let expression > unmutated referencing unmutated 1`] = `
-import {html, clone, traverse, text, after, show, append, define} from "@intrnl/velvet/internal";
+import {html, clone, text, replace, after, show, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<!><!><!>");
 function setup($$root, $$host) {
   let count = 0;
   let fragment0 = clone(template0);
-  let marker3 = traverse(fragment0, [0]);
+  let child3 = fragment0.firstChild;
   let block1 = $$root => {
     let fragment1 = clone(template1);
     let doubled = count * 2;
-    let marker0 = traverse(fragment1, [0]);
-    let marker1 = traverse(fragment1, [1]);
-    let marker2 = traverse(fragment1, [2]);
-    text(marker0, () => count);
-    text(marker1, () => doubled);
+    let child0 = fragment1.firstChild;
+    let child1 = child0.nextSibling;
+    let child2 = child1.nextSibling;
+    text(child0, () => count, replace);
+    text(child1, () => doubled, replace);
     after($$root, fragment1);
-    return marker2;
+    return child2;
   };
-  show(marker3, () => foo ? block1 : null);
+  show(child3, () => foo ? block1 : null);
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
@@ -250,13 +253,14 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`module context > allow top level await 1`] = `
-import {html, clone, traverse, text, append, define} from "@intrnl/velvet/internal";
-let template0 = html("<div>the number is <!></div>");
+import {html, clone, text, after, append, define} from "@intrnl/velvet/internal";
+let template0 = html("<div>the number is </div>");
 let number = await Promise.resolve(420);
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
-  let marker0 = traverse(fragment0, [0, 1]);
-  text(marker0, () => number);
+  let child0 = fragment0.firstChild;
+  let child1 = child0.firstChild;
+  text(child1, () => number, after);
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
@@ -268,6 +272,8 @@ import {html, clone, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<div>hello world!</div>");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
+  let child0 = fragment0.firstChild;
+  let child1 = child0.firstChild;
   append($$root, fragment0);
 }
 export default define("my-greeter", setup, {}, []);
@@ -283,7 +289,7 @@ exports[`options element > throws on non root-level usage 1`] = `
 `;
 
 exports[`peek > allows peeking of @let variables 1`] = `
-import {signal, html, clone, computed, traverse, text, after, show, append, define} from "@intrnl/velvet/internal";
+import {signal, html, clone, computed, text, replace, after, show, append, define} from "@intrnl/velvet/internal";
 import {peek} from '@intrnl/velvet/macro';
 let template0 = html("<!><!><!>");
 let template1 = html("<!><!><!>");
@@ -292,25 +298,25 @@ function setup($$root, $$host) {
   count.value = 3;
   let fragment0 = clone(template0);
   let doubled = computed(() => count.value * 3);
-  let marker0 = traverse(fragment0, [0]);
+  let child0 = fragment0.firstChild;
   let foo = 123;
-  let marker1 = traverse(fragment0, [1]);
-  let marker5 = traverse(fragment0, [2]);
+  let child1 = child0.nextSibling;
+  let child5 = child1.nextSibling;
   let block1 = $$root => {
     let fragment1 = clone(template1);
     let tripled = computed(() => count.value * 4);
-    let marker2 = traverse(fragment1, [0]);
+    let child2 = fragment1.firstChild;
     let bar = 234;
-    let marker3 = traverse(fragment1, [1]);
-    let marker4 = traverse(fragment1, [2]);
-    text(marker2, () => tripled.peek());
-    text(marker3, () => bar);
+    let child3 = child2.nextSibling;
+    let child4 = child3.nextSibling;
+    text(child2, () => tripled.peek(), replace);
+    text(child3, () => bar, replace);
     after($$root, fragment1);
-    return marker4;
+    return child4;
   };
-  text(marker0, () => doubled.peek());
-  text(marker1, () => foo);
-  show(marker5, () => count.value > 2 ? block1 : null);
+  text(child0, () => doubled.peek(), replace);
+  text(child1, () => foo, replace);
+  show(child5, () => count.value > 2 ? block1 : null);
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
@@ -318,16 +324,13 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`props > exporting binding and mutable 1`] = `
-import {prop, html, clone, append, bind, define} from "@intrnl/velvet/internal";
-let template0 = html("");
+import {prop, bind, define} from "@intrnl/velvet/internal";
 function setup($$root, $$host) {
   function greet() {
     alert('hello!');
   }
   const MAGIC_NUMBER = 420;
   let number = prop(0, 1);
-  let fragment0 = clone(template0);
-  append($$root, fragment0);
   bind({
     greet,
     magic: MAGIC_NUMBER
@@ -360,32 +363,31 @@ Acorn error: Cannot use keyword 'await' outside an async function (3:17)
 `;
 
 exports[`store > subscription on await pending and resolve 1`] = `
-import {html, clone, traverse, text, after, promise as promise$1, append, define} from "@intrnl/velvet/internal";
+import {html, clone, text, replace, after, promise as promise$1, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<!><!>");
 let template2 = html("<!><!>");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
-  let marker4 = traverse(fragment0, [0]);
+  let child4 = fragment0.firstChild;
+  let $foo = foo;
   let block1 = $$root => {
     let fragment1 = clone(template1);
-    let marker0 = traverse(fragment1, [0]);
-    let marker1 = traverse(fragment1, [1]);
-    let $foo = foo;
-    text(marker0, () => $foo.value);
+    let child0 = fragment1.firstChild;
+    let child1 = child0.nextSibling;
+    text(child0, () => $foo.value, replace);
     after($$root, fragment1);
-    return marker1;
+    return child1;
   };
-  let block2 = ($$root, foo) => {
+  let block2 = $$root => {
     let fragment2 = clone(template2);
-    let marker2 = traverse(fragment2, [0]);
-    let marker3 = traverse(fragment2, [1]);
-    let $foo = foo.value;
-    text(marker2, () => $foo.value);
+    let child2 = fragment2.firstChild;
+    let child3 = child2.nextSibling;
+    text(child2, () => $foo.value, replace);
     after($$root, fragment2);
-    return marker3;
+    return child3;
   };
-  promise$1(marker4, block1, block2, null, () => promise);
+  promise$1(child4, block1, block2, null, () => promise);
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
@@ -393,22 +395,22 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`store > subscription on await resolve 1`] = `
-import {html, clone, traverse, text, after, promise as promise$1, append, define} from "@intrnl/velvet/internal";
+import {html, clone, text, replace, after, promise as promise$1, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<!><!>");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
-  let marker2 = traverse(fragment0, [0]);
-  let block1 = ($$root, result) => {
+  let child2 = fragment0.firstChild;
+  let block1 = $$root => {
     let fragment1 = clone(template1);
-    let marker0 = traverse(fragment1, [0]);
-    let marker1 = traverse(fragment1, [1]);
-    let $result = result.value;
-    text(marker0, () => $result.value);
+    let child0 = fragment1.firstChild;
+    let child1 = child0.nextSibling;
+    let $result = result;
+    text(child0, () => $result.value, replace);
     after($$root, fragment1);
-    return marker1;
+    return child1;
   };
-  promise$1(marker2, null, block1, null, () => promise);
+  promise$1(child2, null, block1, null, () => promise);
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
@@ -416,22 +418,22 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`store > subscription on conditional 1`] = `
-import {html, clone, traverse, text, after, show, append, define} from "@intrnl/velvet/internal";
+import {html, clone, text, replace, after, show, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<!><!>");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
-  let marker2 = traverse(fragment0, [0]);
+  let child2 = fragment0.firstChild;
   let block1 = $$root => {
     let fragment1 = clone(template1);
-    let marker0 = traverse(fragment1, [0]);
-    let marker1 = traverse(fragment1, [1]);
+    let child0 = fragment1.firstChild;
+    let child1 = child0.nextSibling;
     let $foo = foo;
-    text(marker0, () => $foo.value);
+    text(child0, () => $foo.value, replace);
     after($$root, fragment1);
-    return marker1;
+    return child1;
   };
-  show(marker2, () => foo ? block1 : null);
+  show(child2, () => foo ? block1 : null);
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
@@ -439,31 +441,31 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`store > subscription on conditional and alternate 1`] = `
-import {html, clone, traverse, text, after, show, append, define} from "@intrnl/velvet/internal";
+import {html, clone, text, replace, after, show, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<!><!>");
 let template2 = html("<!><!>");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
-  let marker4 = traverse(fragment0, [0]);
+  let child4 = fragment0.firstChild;
   let $foo = foo;
   let block1 = $$root => {
     let fragment1 = clone(template1);
-    let marker0 = traverse(fragment1, [0]);
-    let marker1 = traverse(fragment1, [1]);
-    text(marker0, () => $foo.value);
+    let child0 = fragment1.firstChild;
+    let child1 = child0.nextSibling;
+    text(child0, () => $foo.value, replace);
     after($$root, fragment1);
-    return marker1;
+    return child1;
   };
   let block2 = $$root => {
     let fragment2 = clone(template2);
-    let marker2 = traverse(fragment2, [0]);
-    let marker3 = traverse(fragment2, [1]);
-    text(marker2, () => $foo.value);
+    let child2 = fragment2.firstChild;
+    let child3 = child2.nextSibling;
+    text(child2, () => $foo.value, replace);
     after($$root, fragment2);
-    return marker3;
+    return child3;
   };
-  show(marker4, () => foo ? block1 : block2);
+  show(child4, () => foo ? block1 : block2);
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
@@ -471,23 +473,23 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`store > subscription on conditional with let 1`] = `
-import {html, clone, traverse, computed, text, after, show, append, define} from "@intrnl/velvet/internal";
+import {html, clone, computed, text, replace, after, show, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<!><!>");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
-  let marker2 = traverse(fragment0, [0]);
+  let child2 = fragment0.firstChild;
   let block1 = $$root => {
     let fragment1 = clone(template1);
     let $favorite = favorite;
     let is_favorited = computed(() => $favorite.value.favorited);
-    let marker0 = traverse(fragment1, [0]);
-    let marker1 = traverse(fragment1, [1]);
-    text(marker0, () => is_favorited.value);
+    let child0 = fragment1.firstChild;
+    let child1 = child0.nextSibling;
+    text(child0, () => is_favorited.value, replace);
     after($$root, fragment1);
-    return marker1;
+    return child1;
   };
-  show(marker2, () => show_favorite ? block1 : null);
+  show(child2, () => show_favorite ? block1 : null);
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
@@ -495,23 +497,23 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`store > subscription on conditional with log 1`] = `
-import {html, clone, traverse, text, effect, after, show, append, define} from "@intrnl/velvet/internal";
+import {html, clone, text, replace, effect, after, show, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<!><!>");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
-  let marker2 = traverse(fragment0, [0]);
+  let child2 = fragment0.firstChild;
   let block1 = $$root => {
     let fragment1 = clone(template1);
-    let marker0 = traverse(fragment1, [0]);
-    let marker1 = traverse(fragment1, [1]);
+    let child0 = fragment1.firstChild;
+    let child1 = child0.nextSibling;
     let $foo = foo;
-    text(marker0, () => $foo.value);
+    text(child0, () => $foo.value, replace);
     effect(() => console.log($foo.value));
     after($$root, fragment1);
-    return marker1;
+    return child1;
   };
-  show(marker2, () => foo ? block1 : null);
+  show(child2, () => foo ? block1 : null);
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
@@ -519,33 +521,33 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`store > subscription on nested conditional 1`] = `
-import {html, clone, traverse, text, after, show, append, define} from "@intrnl/velvet/internal";
+import {html, clone, text, replace, after, show, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 let template1 = html("<!><!><!>");
 let template2 = html("<!><!>");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
-  let marker5 = traverse(fragment0, [0]);
+  let child5 = fragment0.firstChild;
   let block1 = $$root => {
     let fragment1 = clone(template1);
-    let marker0 = traverse(fragment1, [0]);
-    let marker3 = traverse(fragment1, [1]);
-    let marker4 = traverse(fragment1, [2]);
+    let child0 = fragment1.firstChild;
+    let child3 = child0.nextSibling;
+    let child4 = child3.nextSibling;
     let $foo = foo;
     let block2 = $$root => {
       let fragment2 = clone(template2);
-      let marker1 = traverse(fragment2, [0]);
-      let marker2 = traverse(fragment2, [1]);
-      text(marker1, () => $foo.value);
+      let child1 = fragment2.firstChild;
+      let child2 = child1.nextSibling;
+      text(child1, () => $foo.value, replace);
       after($$root, fragment2);
-      return marker2;
+      return child2;
     };
-    text(marker0, () => $foo.value);
-    show(marker3, () => foo ? block2 : null);
+    text(child0, () => $foo.value, replace);
+    show(child3, () => foo ? block2 : null);
     after($$root, fragment1);
-    return marker4;
+    return child4;
   };
-  show(marker5, () => foo ? block1 : null);
+  show(child5, () => foo ? block1 : null);
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
@@ -553,34 +555,33 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`store > subscription on root and await pending and resolve 1`] = `
-import {html, clone, traverse, text, after, promise as promise$1, append, define} from "@intrnl/velvet/internal";
+import {html, clone, text, replace, after, promise as promise$1, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!><!>");
 let template1 = html("<!><!>");
 let template2 = html("<!><!>");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
-  let marker4 = traverse(fragment0, [0]);
-  let marker5 = traverse(fragment0, [1]);
+  let child4 = fragment0.firstChild;
+  let child5 = child4.nextSibling;
   let $foo = foo;
   let block1 = $$root => {
     let fragment1 = clone(template1);
-    let marker0 = traverse(fragment1, [0]);
-    let marker1 = traverse(fragment1, [1]);
-    text(marker0, () => $foo.value);
+    let child0 = fragment1.firstChild;
+    let child1 = child0.nextSibling;
+    text(child0, () => $foo.value, replace);
     after($$root, fragment1);
-    return marker1;
+    return child1;
   };
-  let block2 = ($$root, foo) => {
+  let block2 = $$root => {
     let fragment2 = clone(template2);
-    let marker2 = traverse(fragment2, [0]);
-    let marker3 = traverse(fragment2, [1]);
-    let $foo = foo.value;
-    text(marker2, () => $foo.value);
+    let child2 = fragment2.firstChild;
+    let child3 = child2.nextSibling;
+    text(child2, () => $foo.value, replace);
     after($$root, fragment2);
-    return marker3;
+    return child3;
   };
-  promise$1(marker4, block1, block2, null, () => promise);
-  text(marker5, () => $foo.value);
+  promise$1(child4, block1, block2, null, () => promise);
+  text(child5, () => $foo.value, replace);
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
@@ -588,24 +589,24 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`store > subscription on root and conditional 1`] = `
-import {html, clone, traverse, text, after, show, append, define} from "@intrnl/velvet/internal";
+import {html, clone, text, replace, after, show, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!><!>");
 let template1 = html("<!><!>");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
-  let marker0 = traverse(fragment0, [0]);
-  let marker3 = traverse(fragment0, [1]);
+  let child0 = fragment0.firstChild;
+  let child3 = child0.nextSibling;
   let $foo = foo;
   let block1 = $$root => {
     let fragment1 = clone(template1);
-    let marker1 = traverse(fragment1, [0]);
-    let marker2 = traverse(fragment1, [1]);
-    text(marker1, () => $foo.value);
+    let child1 = fragment1.firstChild;
+    let child2 = child1.nextSibling;
+    text(child1, () => $foo.value, replace);
     after($$root, fragment1);
-    return marker2;
+    return child2;
   };
-  text(marker0, () => $foo.value);
-  show(marker3, () => foo ? block1 : null);
+  text(child0, () => $foo.value, replace);
+  show(child3, () => foo ? block1 : null);
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
@@ -613,14 +614,14 @@ export default define(null, setup, {}, []);
 `;
 
 exports[`store > subscription on script and root 1`] = `
-import {html, clone, traverse, text, append, define} from "@intrnl/velvet/internal";
+import {html, clone, text, replace, append, define} from "@intrnl/velvet/internal";
 let template0 = html("<!>");
 function setup($$root, $$host) {
   let $foo = foo;
   console.log($foo.value);
   let fragment0 = clone(template0);
-  let marker0 = traverse(fragment0, [0]);
-  text(marker0, () => $foo.value);
+  let child0 = fragment0.firstChild;
+  text(child0, () => $foo.value, replace);
   append($$root, fragment0);
 }
 export default define(null, setup, {}, []);
@@ -644,6 +645,8 @@ let template0 = html("<div class=foo>Hello</div>");
 let style1 = css(".foo { color: blue }");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
+  let child0 = fragment0.firstChild;
+  let child1 = child0.firstChild;
   append($$root, fragment0);
 }
 export default define(null, setup, {}, [style0, style1]);
@@ -656,6 +659,8 @@ let template0 = html("<div class=foo>Hello</div>");
 let style0 = css(".foo { color: red; }");
 function setup($$root, $$host) {
   let fragment0 = clone(template0);
+  let child0 = fragment0.firstChild;
+  let child1 = child0.firstChild;
   append($$root, fragment0);
 }
 export default define(null, setup, {}, [style0]);

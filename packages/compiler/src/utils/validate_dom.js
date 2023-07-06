@@ -1,5 +1,7 @@
 // https://github.com/facebook/react/blob/de7d1c90718ea8f4844a2219991f7115ef2bd2c5/packages/react-dom-bindings/src/client/validateDOMNesting.js
 
+import { assert } from './error.js';
+
 // This validation code was written based on the HTML5 parsing spec:
 // https://html.spec.whatwg.org/multipage/syntax.html#has-an-element-in-scope
 //
@@ -447,20 +449,16 @@ export function validate_dom_nesting (child_tag, child_text, ancestor_info = EMP
 	let parent_info = ancestor_info.current;
 	let parent_tag = parent_info && parent_info.tag;
 
-	if (child_text != null) {
-		// if (child_tag != null) {
-		// 	console.error(
-		// 		'validateDOMNesting: when childText is passed, childTag should be null',
-		// 	);
-		// }
+	if (child_tag !== null) {
+		assert(child_text === null, `expected child_text to be null when child_tag is present`);
+	}
+	else if (child_text !== null) {
+		assert(child_tag === null, `expected child_tag to be null when child_text is present`);
 		child_tag = '#text';
 	}
-	// else if (child_tag == null) {
-	// 	console.error(
-	// 		'validateDOMNesting: when childText or childTag must be provided',
-	// 	);
-	// 	return;
-	// }
+	else {
+		assert(false, `expected child_tag to be present`);
+	}
 
 	let invalid_parent = is_tag_valid_with_parent(child_tag, parent_tag)
 		? null

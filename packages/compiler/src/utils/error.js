@@ -32,6 +32,30 @@ export function create_error (message, source, start = 0, end = start) {
 	return error;
 }
 
+/**
+ * @param {any} condition
+ * @param {string} [message]
+ * @returns {asserts condition}
+ */
+export function assert (condition, message) {
+	if (process.env.NODE_ENV !== 'production' && !condition) {
+		throw new Error(message || 'assertion failed');
+	}
+}
+
+/**
+ * @template T
+ * @param {T} value
+ * @returns {T extends undefined | null ? never : T}
+ */
+export function defined (value) {
+	if (process.env.NODE_ENV !== 'production' && value == null) {
+		throw new Error(`expected value to be defined`);
+	}
+
+	return value;
+}
+
 export function get_line_col (source, target) {
 	let line = 1;
 	let column = 0;
