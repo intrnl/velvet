@@ -1,4 +1,3 @@
-import { append } from './dom.js';
 import { Object, Symbol } from './globals.js';
 import { Computed, Signal, cleanup, computed, effect, scope, signal } from './signals.js';
 import { assign, hyphenate, is_function } from './utils.js';
@@ -59,11 +58,10 @@ export class VelvetComponent extends HTMLElement {
 			let hooks = host.$h;
 
 			let root = host.shadowRoot;
-			let init_ccss = false;
 
 			if (!root) {
 				root = host.attachShadow({ mode: 'open' });
-				init_ccss = true;
+				root.adoptedStyleSheets = styles;
 			}
 
 			let prev_host = curr_host;
@@ -71,17 +69,6 @@ export class VelvetComponent extends HTMLElement {
 			try {
 				curr_host = host;
 				instance.run(() => setup(root, host));
-
-				if (document.adoptedStyleSheets) {
-					if (init_ccss) {
-						root.adoptedStyleSheets = styles;
-					}
-				}
-				else {
-					for (let style of styles) {
-						append(root, style.cloneNode(true));
-					}
-				}
 
 				for (let hook of hooks) {
 					let ret = hook();
@@ -168,13 +155,6 @@ export function define (tag, setup, definition, styles) {
 }
 
 export function css (text) {
-	if (!document.adoptedStyleSheets) {
-		const style = document.createElement('style');
-		style.textContent = text;
-
-		return style;
-	}
-
 	const style = new CSSStyleSheet();
 	style.replaceSync(text);
 
