@@ -8,8 +8,8 @@ export function hyphenate (str) {
 	return str.replace(RE_HYPHENATE, '-$1').toLowerCase();
 }
 
-export let is = /*@__PURE__*/ Object.is;
-export let assign = /*@__PURE__*/ Object.assign;
+export let is = /*#__PURE__*/ Object.is.bind(Object);
+export let assign = /*#__PURE__*/ Object.assign.bind(Object);
 
 /**
  * @param {any} x
