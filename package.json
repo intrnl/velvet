@@ -1,6 +1,6 @@
 {
 	"private": true,
-	"packageManager": "pnpm@8.1.0",
+	"packageManager": "pnpm@8.6.9",
 	"scripts": {
 		"lint": "eslint --fix --cache packages/",
 		"watch": "pnpm run -r --if-present --parallel watch -w"
