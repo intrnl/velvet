@@ -1,6 +1,8 @@
 import * as esbuild from 'esbuild';
 import { defineConfig } from 'rollup';
 
+import nodeResolve from '@rollup/plugin-node-resolve';
+
 import pkg from './package.json' assert { type: 'json' };
 
 export default defineConfig({
@@ -21,6 +23,7 @@ export default defineConfig({
 	],
 	external: ['acorn', 'astring', 'gensync'],
 	plugins: [
+		nodeResolve(),
 		{
 			name: 'esbuild',
 			transform (code) {

@@ -13,8 +13,8 @@
 	],
 	"exports": {
 		".": {
-			"require": "./dist/cjs/index.js",
-			"import": "./dist/esm/index.js"
+			"require": "./dist/cjs/compiler/src/index.js",
+			"import": "./dist/esm/compiler/src/index.js"
 		}
 	},
 	"scripts": {
@@ -33,6 +33,7 @@
 	"devDependencies": {
 		"@intrnl/js-printer": "workspace:^",
 		"@intrnl/velvet": "workspace:^",
+		"@rollup/plugin-node-resolve": "^15.1.0",
 		"@types/estree": "^1.0.1",
 		"esbuild": "^0.18.11",
 		"mocha": "^10.2.0",
