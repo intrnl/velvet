@@ -1,4 +1,6 @@
 packages:
+  # Internal packages
+  - packages/js-printer
   # Main packages
   - packages/compiler
   - packages/runtime

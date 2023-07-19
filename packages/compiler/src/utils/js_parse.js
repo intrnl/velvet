@@ -1,7 +1,64 @@
+import { print as generate } from '@intrnl/js-printer';
 import * as acorn from 'acorn';
-import { generate } from 'astring';
 
 import { walk } from './walker.js';
+
+function get_comment_handlers (comments, raw) {
+	return {
+		// pass to acorn options
+		/**
+		 * @param {boolean} block
+		 * @param {string} value
+		 * @param {number} start
+		 * @param {number} end
+		 */
+		handle (block, value, start, end) {
+			if (block && /\n/.test(value)) {
+				let a = start;
+				while (a > 0 && raw[a - 1] !== '\n') {
+					a -= 1;
+				}
+
+				let b = a;
+				while (/[ \t]/.test(raw[b])) {
+					b += 1;
+				}
+
+				const indentation = raw.slice(a, b);
+				value = value.replace(new RegExp(`^${indentation}`, 'gm'), '');
+			}
+
+			comments.push({ type: block ? 'Block' : 'Line', value, start, end });
+		},
+
+		// pass to estree-walker options
+		/** @param {NodeWithLocation} node */
+		enter (node) {
+			let comment;
+
+			while (comments[0] && comments[0].start < node.start) {
+				comment = comments.shift();
+
+				const next = comments[0] || node;
+				comment.has_trailing_newline = comment.type === 'Line' ||
+					/\n/.test(raw.slice(comment.end, next.start));
+
+				(node.leadingComments || (node.leadingComments = [])).push(comment);
+			}
+		},
+
+		/** @param {NodeWithLocation} node */
+		leave (node) {
+			if (comments[0]) {
+				const slice = raw.slice(node.end, comments[0].start);
+
+				if (/^[,) \t]*$/.test(slice)) {
+					node.trailingComments = [comments.shift()];
+				}
+			}
+		},
+	};
+}
 
 /**
  * @param {string} source
@@ -10,17 +67,18 @@ import { walk } from './walker.js';
 export function parse (source, options) {
 	/** @type {import('estree').Comment[]} */
 	let comments = [];
+	let comment_handler = get_comment_handlers(comments, source);
 
 	let program = acorn.parse(
 		source,
 		Object.assign({
-			onComment: comments,
+			onComment: comment_handler.handle,
 			ecmaVersion: 12,
 			sourceType: 'module',
 		}, options),
 	);
 
-	reattach_comments(program, comments, source);
+	walk(program, comment_handler);
 	fix_positions(program, options?.start);
 	return program;
 }
@@ -28,18 +86,19 @@ export function parse (source, options) {
 export function parse_expression (source, position = 0, options) {
 	/** @type {import('estree').Comment[]} */
 	let comments = [];
+	let comment_handler = get_comment_handlers(comments, source);
 
 	let node = acorn.parseExpressionAt(
 		source,
 		position,
 		Object.assign({
-			onComment: comments,
+			onComment: comment_handler.handle,
 			ecmaVersion: 12,
 			sourceType: 'module',
 		}, options),
 	);
 
-	reattach_comments(node, comments, source);
+	walk(node, comment_handler);
 	return node;
 }
 
@@ -49,10 +108,9 @@ export function parse_expression (source, position = 0, options) {
  * @returns {string}
  */
 export function print (ast, map) {
-	return generate(ast, {
-		comments: true,
-		sourceMap: map,
-	});
+	const result = generate(ast, {});
+
+	return result.code;
 }
 
 function reattach_comments (ast, comments, source) {

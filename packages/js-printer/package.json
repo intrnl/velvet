@@ -1,0 +1,13 @@
+{
+	"private": true,
+	"type": "module",
+	"name": "@intrnl/js-printer",
+	"version": "0.1.0",
+	"main": "./index.js",
+	"dependencies": {
+		"@jridgewell/sourcemap-codec": "^1.4.15"
+	},
+	"devDependencies": {
+		"@types/estree": "^1.0.1"
+	}
+}
