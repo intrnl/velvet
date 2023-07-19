@@ -949,12 +949,16 @@ export function transform_template (template, source) {
 					curr_block.html = `<${wrapper}>` + curr_block.html;
 				}
 
+				let clone_expr = t.call_expression(t.identifier('@clone'), [t.identifier(template_ident)]);
+
 				let fragment_def = t.variable_declaration('let', [
 					t.variable_declarator(
 						t.identifier(fragment_ident),
-						t.call_expression(t.identifier('@clone'), [t.identifier(template_ident)]),
+						clone_expr,
 					),
 				]);
+
+				clone_expr.leadingComments = [{ type: 'Block', value: '#__PURE__' }];
 
 				if (parent) {
 					// reuse the last child as end marker if it's viable
@@ -1011,16 +1015,20 @@ export function transform_template (template, source) {
 					curr_block.js_expressions.push(append_expr);
 				}
 
+				let html_expr = t.call_expression(t.identifier('@html'), [
+					t.literal(curr_block.html),
+					wrapper && t.literal(!!wrapper),
+				]);
+
 				let template_def = t.variable_declaration('let', [
 					t.variable_declarator(
 						// template def has to be hoisted
 						t.identifier('%' + template_ident),
-						t.call_expression(t.identifier('@html'), [
-							t.literal(curr_block.html),
-							wrapper && t.literal(!!wrapper),
-						]),
+						html_expr,
 					),
 				]);
+
+				html_expr.leadingComments = [{ type: 'Block', value: '#__PURE__' }];
 
 				curr_block.js_definitions.push(template_def, fragment_def);
 
@@ -1074,12 +1082,12 @@ export function transform_template (template, source) {
 					block.js_traversals.push(instantiate_def);
 
 					if (block.html) {
+						let html_expr = t.call_expression(t.identifier('@html'), [t.literal(block.html)]);
+
 						let template_def = t.variable_declaration('let', [
 							t.variable_declarator(
 								t.identifier('%' + template_ident),
-								t.call_expression(t.identifier('@html'), [
-									t.literal(block.html),
-								]),
+								html_expr,
 							),
 						]);
 
@@ -1098,6 +1106,8 @@ export function transform_template (template, source) {
 								t.identifier(fragment_ident),
 							]),
 						);
+
+						html_expr.leadingComments = [{ type: 'Block', value: '#__PURE__' }];
 
 						block.js_definitions.push(template_def, fragment_def);
 						block.js_expressions.push(append_expr);
@@ -1546,14 +1556,20 @@ function get_traversal_expr (block, parent, index) {
 		let parent_ident = block.node_to_ident.get(parent);
 		assert(typeof parent_ident === 'string');
 
-		return t.call_expression(t.identifier('@first_child'), [t.identifier(parent_ident)]);
+		let node = t.call_expression(t.identifier('@first_child'), [t.identifier(parent_ident)]);
+		node.leadingComments = [{ type: 'Block', value: '#__PURE__' }];
+
+		return node;
 	}
 	else {
 		let prev_sibling = parent.children[index - 1];
 		let prev_ident = block.node_to_ident.get(prev_sibling);
 		assert(typeof prev_ident === 'string');
 
-		return t.call_expression(t.identifier('@next_sibling'), [t.identifier(prev_ident)]);
+		let node = t.call_expression(t.identifier('@next_sibling'), [t.identifier(prev_ident)]);
+		node.leadingComments = [{ type: 'Block', value: '#__PURE__' }];
+
+		return node;
 	}
 }
 

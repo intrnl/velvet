@@ -10,11 +10,11 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<time></time>");
+let template0 = /*#__PURE__*/ html("<time></time>");
 
 function setup($$root, $$host) {
-	let fragment0 = clone(template0);
-	let child0 = first_child(fragment0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child0 = /*#__PURE__*/ first_child(fragment0);
 	use(child0, relformatter, null);
 	use(child0, relformatter, () => ({ locale: 'en' }));
 	append($$root, fragment0);
@@ -37,13 +37,13 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<input type=checkbox value=Apple><input type=checkbox value=Orange>");
+let template0 = /*#__PURE__*/ html("<input type=checkbox value=Apple><input type=checkbox value=Orange>");
 
 function setup($$root, $$host) {
 	let selected = signal(['Apple']);
-	let fragment0 = clone(template0);
-	let child0 = first_child(fragment0);
-	let child1 = next_sibling(child0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child0 = /*#__PURE__*/ first_child(fragment0);
+	let child1 = /*#__PURE__*/ next_sibling(child0);
 	effect(() => child0.checked = selected.value.includes(child0.value));
 	on(child0, "input", () => selected.value = get_checked_values(selected.value, child0.value, child0.checked));
 	effect(() => child1.checked = selected.value.includes(child1.value));
@@ -68,14 +68,14 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<input type=checkbox value=Apple><input type=checkbox value=Orange>");
+let template0 = /*#__PURE__*/ html("<input type=checkbox value=Apple><input type=checkbox value=Orange>");
 
 function setup($$root, $$host) {
 	let state = signal({ selected: ['Apple'] });
 	state.value = { selected: ['Orange'] };
-	let fragment0 = clone(template0);
-	let child0 = first_child(fragment0);
-	let child1 = next_sibling(child0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child0 = /*#__PURE__*/ first_child(fragment0);
+	let child1 = /*#__PURE__*/ next_sibling(child0);
 	effect(() => child0.checked = state.value.selected.includes(child0.value));
 	on(child0, "input", () => state.value.selected = get_checked_values(state.value.selected, child0.value, child0.checked));
 	effect(() => child1.checked = state.value.selected.includes(child1.value));
@@ -105,17 +105,17 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<!>");
-let template1 = html("<div>foo</div>");
+let template0 = /*#__PURE__*/ html("<!>");
+let template1 = /*#__PURE__*/ html("<div>foo</div>");
 
 function setup($$root, $$host) {
-	let fragment0 = clone(template0);
-	let child2 = first_child(fragment0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child2 = /*#__PURE__*/ first_child(fragment0);
 
 	let block1 = $$root => {
-		let fragment1 = clone(template1);
-		let child0 = first_child(fragment1);
-		let child1 = first_child(child0);
+		let fragment1 = /*#__PURE__*/ clone(template1);
+		let child0 = /*#__PURE__*/ first_child(fragment1);
+		let child1 = /*#__PURE__*/ first_child(child0);
 		after($$root, fragment1);
 		return child0;
 	};
@@ -138,26 +138,26 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<!>");
-let template1 = html("<div>foo</div>");
-let template2 = html("<div>bar</div>");
+let template0 = /*#__PURE__*/ html("<!>");
+let template1 = /*#__PURE__*/ html("<div>foo</div>");
+let template2 = /*#__PURE__*/ html("<div>bar</div>");
 
 function setup($$root, $$host) {
-	let fragment0 = clone(template0);
-	let child4 = first_child(fragment0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child4 = /*#__PURE__*/ first_child(fragment0);
 
 	let block1 = $$root => {
-		let fragment1 = clone(template1);
-		let child0 = first_child(fragment1);
-		let child1 = first_child(child0);
+		let fragment1 = /*#__PURE__*/ clone(template1);
+		let child0 = /*#__PURE__*/ first_child(fragment1);
+		let child1 = /*#__PURE__*/ first_child(child0);
 		after($$root, fragment1);
 		return child0;
 	};
 
 	let block2 = $$root => {
-		let fragment2 = clone(template2);
-		let child2 = first_child(fragment2);
-		let child3 = first_child(child2);
+		let fragment2 = /*#__PURE__*/ clone(template2);
+		let child2 = /*#__PURE__*/ first_child(fragment2);
+		let child3 = /*#__PURE__*/ first_child(child2);
 		after($$root, fragment2);
 		return child2;
 	};
@@ -191,21 +191,21 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<!>");
-let template1 = html("<!><!><!>");
+let template0 = /*#__PURE__*/ html("<!>");
+let template1 = /*#__PURE__*/ html("<!><!><!>");
 
 function setup($$root, $$host) {
 	let count = signal(0);
 	count.value = 2;
-	let fragment0 = clone(template0);
-	let child3 = first_child(fragment0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child3 = /*#__PURE__*/ first_child(fragment0);
 
 	let block1 = $$root => {
-		let fragment1 = clone(template1);
+		let fragment1 = /*#__PURE__*/ clone(template1);
 		let doubled = computed(() => count.value * 2);
-		let child0 = first_child(fragment1);
-		let child1 = next_sibling(child0);
-		let child2 = next_sibling(child1);
+		let child0 = /*#__PURE__*/ first_child(fragment1);
+		let child1 = /*#__PURE__*/ next_sibling(child0);
+		let child2 = /*#__PURE__*/ next_sibling(child1);
 		text(child0, () => count.value, replace);
 		text(child1, () => doubled.value = 2, replace);
 		after($$root, fragment1);
@@ -234,20 +234,20 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<!>");
-let template1 = html("<!><!><!>");
+let template0 = /*#__PURE__*/ html("<!>");
+let template1 = /*#__PURE__*/ html("<!><!><!>");
 
 function setup($$root, $$host) {
 	let count = 0;
-	let fragment0 = clone(template0);
-	let child3 = first_child(fragment0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child3 = /*#__PURE__*/ first_child(fragment0);
 
 	let block1 = $$root => {
-		let fragment1 = clone(template1);
+		let fragment1 = /*#__PURE__*/ clone(template1);
 		let doubled = signal(count * 2);
-		let child0 = first_child(fragment1);
-		let child1 = next_sibling(child0);
-		let child2 = next_sibling(child1);
+		let child0 = /*#__PURE__*/ first_child(fragment1);
+		let child1 = /*#__PURE__*/ next_sibling(child0);
+		let child2 = /*#__PURE__*/ next_sibling(child1);
 		text(child0, () => count, replace);
 		text(child1, () => doubled.value = 2, replace);
 		after($$root, fragment1);
@@ -278,18 +278,18 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<!>");
-let template1 = html("<option><!></option>");
+let template0 = /*#__PURE__*/ html("<!>");
+let template1 = /*#__PURE__*/ html("<option><!></option>");
 
 function setup($$root, $$host) {
-	let fragment0 = clone(template0);
-	let child2 = first_child(fragment0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child2 = /*#__PURE__*/ first_child(fragment0);
 
 	let block1 = ($$root, key) => {
-		let fragment1 = clone(template1);
+		let fragment1 = /*#__PURE__*/ clone(template1);
 		let item = computed(() => data[key.value]);
-		let child0 = first_child(fragment1);
-		let child1 = first_child(child0);
+		let child0 = /*#__PURE__*/ first_child(fragment1);
+		let child1 = /*#__PURE__*/ first_child(child0);
 		effect(() => toggle(child0, "disabled", augments.includes(key.value)));
 		effect(() => attr(child0, "value", key.value));
 		text(child1, () => item.value.name, replace);
@@ -320,21 +320,21 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<!>");
-let template1 = html("<!><!><!>");
+let template0 = /*#__PURE__*/ html("<!>");
+let template1 = /*#__PURE__*/ html("<!><!><!>");
 
 function setup($$root, $$host) {
 	let count = signal(0);
 	count.value = 2;
-	let fragment0 = clone(template0);
-	let child3 = first_child(fragment0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child3 = /*#__PURE__*/ first_child(fragment0);
 
 	let block1 = $$root => {
-		let fragment1 = clone(template1);
+		let fragment1 = /*#__PURE__*/ clone(template1);
 		let doubled = computed(() => count.value * 2);
-		let child0 = first_child(fragment1);
-		let child1 = next_sibling(child0);
-		let child2 = next_sibling(child1);
+		let child0 = /*#__PURE__*/ first_child(fragment1);
+		let child1 = /*#__PURE__*/ next_sibling(child0);
+		let child2 = /*#__PURE__*/ next_sibling(child1);
 		text(child0, () => count.value, replace);
 		text(child1, () => doubled.value, replace);
 		after($$root, fragment1);
@@ -362,20 +362,20 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<!>");
-let template1 = html("<!><!><!>");
+let template0 = /*#__PURE__*/ html("<!>");
+let template1 = /*#__PURE__*/ html("<!><!><!>");
 
 function setup($$root, $$host) {
 	let count = 0;
-	let fragment0 = clone(template0);
-	let child3 = first_child(fragment0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child3 = /*#__PURE__*/ first_child(fragment0);
 
 	let block1 = $$root => {
-		let fragment1 = clone(template1);
+		let fragment1 = /*#__PURE__*/ clone(template1);
 		let doubled = count * 2;
-		let child0 = first_child(fragment1);
-		let child1 = next_sibling(child0);
-		let child2 = next_sibling(child1);
+		let child0 = /*#__PURE__*/ first_child(fragment1);
+		let child1 = /*#__PURE__*/ next_sibling(child0);
+		let child2 = /*#__PURE__*/ next_sibling(child1);
 		text(child0, () => count, replace);
 		text(child1, () => doubled, replace);
 		after($$root, fragment1);
@@ -400,13 +400,13 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<div>the number is </div>");
+let template0 = /*#__PURE__*/ html("<div>the number is </div>");
 let number = await Promise.resolve(420);
 
 function setup($$root, $$host) {
-	let fragment0 = clone(template0);
-	let child0 = first_child(fragment0);
-	let child1 = first_child(child0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child0 = /*#__PURE__*/ first_child(fragment0);
+	let child1 = /*#__PURE__*/ first_child(child0);
 	text(child1, () => number, after);
 	append($$root, fragment0);
 }
@@ -416,12 +416,12 @@ export default define(null, setup, {}, []);
 
 exports[`options element > allows for changing element name 1`] = `
 import { html, clone, first_child, append, define } from "@intrnl/velvet/internal";
-let template0 = html("<div>hello world!</div>");
+let template0 = /*#__PURE__*/ html("<div>hello world!</div>");
 
 function setup($$root, $$host) {
-	let fragment0 = clone(template0);
-	let child0 = first_child(fragment0);
-	let child1 = first_child(child0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child0 = /*#__PURE__*/ first_child(fragment0);
+	let child1 = /*#__PURE__*/ first_child(child0);
 	append($$root, fragment0);
 }
 
@@ -453,26 +453,26 @@ import {
 } from "@intrnl/velvet/internal";
 
 import { peek } from '@intrnl/velvet/macro';
-let template0 = html("<!><!><!>");
-let template1 = html("<!><!><!>");
+let template0 = /*#__PURE__*/ html("<!><!><!>");
+let template1 = /*#__PURE__*/ html("<!><!><!>");
 
 function setup($$root, $$host) {
 	let count = signal(2);
 	count.value = 3;
-	let fragment0 = clone(template0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
 	let doubled = computed(() => count.value * 3);
-	let child0 = first_child(fragment0);
+	let child0 = /*#__PURE__*/ first_child(fragment0);
 	let foo = 123;
-	let child1 = next_sibling(child0);
-	let child5 = next_sibling(child1);
+	let child1 = /*#__PURE__*/ next_sibling(child0);
+	let child5 = /*#__PURE__*/ next_sibling(child1);
 
 	let block1 = $$root => {
-		let fragment1 = clone(template1);
+		let fragment1 = /*#__PURE__*/ clone(template1);
 		let tripled = computed(() => count.value * 4);
-		let child2 = first_child(fragment1);
+		let child2 = /*#__PURE__*/ first_child(fragment1);
 		let bar = 234;
-		let child3 = next_sibling(child2);
-		let child4 = next_sibling(child3);
+		let child3 = /*#__PURE__*/ next_sibling(child2);
+		let child4 = /*#__PURE__*/ next_sibling(child3);
 		text(child2, () => tripled.peek(), replace);
 		text(child3, () => bar, replace);
 		after($$root, fragment1);
@@ -538,28 +538,28 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<!>");
-let template1 = html("<!><!>");
-let template2 = html("<!><!>");
+let template0 = /*#__PURE__*/ html("<!>");
+let template1 = /*#__PURE__*/ html("<!><!>");
+let template2 = /*#__PURE__*/ html("<!><!>");
 
 function setup($$root, $$host) {
-	let fragment0 = clone(template0);
-	let child4 = first_child(fragment0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child4 = /*#__PURE__*/ first_child(fragment0);
 	let $foo = foo;
 
 	let block1 = $$root => {
-		let fragment1 = clone(template1);
-		let child0 = first_child(fragment1);
-		let child1 = next_sibling(child0);
+		let fragment1 = /*#__PURE__*/ clone(template1);
+		let child0 = /*#__PURE__*/ first_child(fragment1);
+		let child1 = /*#__PURE__*/ next_sibling(child0);
 		text(child0, () => $foo.value, replace);
 		after($$root, fragment1);
 		return child1;
 	};
 
 	let block2 = $$root => {
-		let fragment2 = clone(template2);
-		let child2 = first_child(fragment2);
-		let child3 = next_sibling(child2);
+		let fragment2 = /*#__PURE__*/ clone(template2);
+		let child2 = /*#__PURE__*/ first_child(fragment2);
+		let child3 = /*#__PURE__*/ next_sibling(child2);
 		text(child2, () => $foo.value, replace);
 		after($$root, fragment2);
 		return child3;
@@ -586,17 +586,17 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<!>");
-let template1 = html("<!><!>");
+let template0 = /*#__PURE__*/ html("<!>");
+let template1 = /*#__PURE__*/ html("<!><!>");
 
 function setup($$root, $$host) {
-	let fragment0 = clone(template0);
-	let child2 = first_child(fragment0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child2 = /*#__PURE__*/ first_child(fragment0);
 
 	let block1 = $$root => {
-		let fragment1 = clone(template1);
-		let child0 = first_child(fragment1);
-		let child1 = next_sibling(child0);
+		let fragment1 = /*#__PURE__*/ clone(template1);
+		let child0 = /*#__PURE__*/ first_child(fragment1);
+		let child1 = /*#__PURE__*/ next_sibling(child0);
 		let $result = result;
 		text(child0, () => $result.value, replace);
 		after($$root, fragment1);
@@ -624,17 +624,17 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<!>");
-let template1 = html("<!><!>");
+let template0 = /*#__PURE__*/ html("<!>");
+let template1 = /*#__PURE__*/ html("<!><!>");
 
 function setup($$root, $$host) {
-	let fragment0 = clone(template0);
-	let child2 = first_child(fragment0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child2 = /*#__PURE__*/ first_child(fragment0);
 
 	let block1 = $$root => {
-		let fragment1 = clone(template1);
-		let child0 = first_child(fragment1);
-		let child1 = next_sibling(child0);
+		let fragment1 = /*#__PURE__*/ clone(template1);
+		let child0 = /*#__PURE__*/ first_child(fragment1);
+		let child1 = /*#__PURE__*/ next_sibling(child0);
 		let $foo = foo;
 		text(child0, () => $foo.value, replace);
 		after($$root, fragment1);
@@ -662,28 +662,28 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<!>");
-let template1 = html("<!><!>");
-let template2 = html("<!><!>");
+let template0 = /*#__PURE__*/ html("<!>");
+let template1 = /*#__PURE__*/ html("<!><!>");
+let template2 = /*#__PURE__*/ html("<!><!>");
 
 function setup($$root, $$host) {
-	let fragment0 = clone(template0);
-	let child4 = first_child(fragment0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child4 = /*#__PURE__*/ first_child(fragment0);
 	let $foo = foo;
 
 	let block1 = $$root => {
-		let fragment1 = clone(template1);
-		let child0 = first_child(fragment1);
-		let child1 = next_sibling(child0);
+		let fragment1 = /*#__PURE__*/ clone(template1);
+		let child0 = /*#__PURE__*/ first_child(fragment1);
+		let child1 = /*#__PURE__*/ next_sibling(child0);
 		text(child0, () => $foo.value, replace);
 		after($$root, fragment1);
 		return child1;
 	};
 
 	let block2 = $$root => {
-		let fragment2 = clone(template2);
-		let child2 = first_child(fragment2);
-		let child3 = next_sibling(child2);
+		let fragment2 = /*#__PURE__*/ clone(template2);
+		let child2 = /*#__PURE__*/ first_child(fragment2);
+		let child3 = /*#__PURE__*/ next_sibling(child2);
 		text(child2, () => $foo.value, replace);
 		after($$root, fragment2);
 		return child3;
@@ -711,19 +711,19 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<!>");
-let template1 = html("<!><!>");
+let template0 = /*#__PURE__*/ html("<!>");
+let template1 = /*#__PURE__*/ html("<!><!>");
 
 function setup($$root, $$host) {
-	let fragment0 = clone(template0);
-	let child2 = first_child(fragment0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child2 = /*#__PURE__*/ first_child(fragment0);
 
 	let block1 = $$root => {
-		let fragment1 = clone(template1);
+		let fragment1 = /*#__PURE__*/ clone(template1);
 		let $favorite = favorite;
 		let is_favorited = computed(() => $favorite.value.favorited);
-		let child0 = first_child(fragment1);
-		let child1 = next_sibling(child0);
+		let child0 = /*#__PURE__*/ first_child(fragment1);
+		let child1 = /*#__PURE__*/ next_sibling(child0);
 		text(child0, () => is_favorited.value, replace);
 		after($$root, fragment1);
 		return child1;
@@ -751,17 +751,17 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<!>");
-let template1 = html("<!><!>");
+let template0 = /*#__PURE__*/ html("<!>");
+let template1 = /*#__PURE__*/ html("<!><!>");
 
 function setup($$root, $$host) {
-	let fragment0 = clone(template0);
-	let child2 = first_child(fragment0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child2 = /*#__PURE__*/ first_child(fragment0);
 
 	let block1 = $$root => {
-		let fragment1 = clone(template1);
-		let child0 = first_child(fragment1);
-		let child1 = next_sibling(child0);
+		let fragment1 = /*#__PURE__*/ clone(template1);
+		let child0 = /*#__PURE__*/ first_child(fragment1);
+		let child1 = /*#__PURE__*/ next_sibling(child0);
 		let $foo = foo;
 		text(child0, () => $foo.value, replace);
 		effect(() => console.log($foo.value));
@@ -790,25 +790,25 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<!>");
-let template1 = html("<!><!><!>");
-let template2 = html("<!><!>");
+let template0 = /*#__PURE__*/ html("<!>");
+let template1 = /*#__PURE__*/ html("<!><!><!>");
+let template2 = /*#__PURE__*/ html("<!><!>");
 
 function setup($$root, $$host) {
-	let fragment0 = clone(template0);
-	let child5 = first_child(fragment0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child5 = /*#__PURE__*/ first_child(fragment0);
 
 	let block1 = $$root => {
-		let fragment1 = clone(template1);
-		let child0 = first_child(fragment1);
-		let child3 = next_sibling(child0);
-		let child4 = next_sibling(child3);
+		let fragment1 = /*#__PURE__*/ clone(template1);
+		let child0 = /*#__PURE__*/ first_child(fragment1);
+		let child3 = /*#__PURE__*/ next_sibling(child0);
+		let child4 = /*#__PURE__*/ next_sibling(child3);
 		let $foo = foo;
 
 		let block2 = $$root => {
-			let fragment2 = clone(template2);
-			let child1 = first_child(fragment2);
-			let child2 = next_sibling(child1);
+			let fragment2 = /*#__PURE__*/ clone(template2);
+			let child1 = /*#__PURE__*/ first_child(fragment2);
+			let child2 = /*#__PURE__*/ next_sibling(child1);
 			text(child1, () => $foo.value, replace);
 			after($$root, fragment2);
 			return child2;
@@ -841,29 +841,29 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<!><!>");
-let template1 = html("<!><!>");
-let template2 = html("<!><!>");
+let template0 = /*#__PURE__*/ html("<!><!>");
+let template1 = /*#__PURE__*/ html("<!><!>");
+let template2 = /*#__PURE__*/ html("<!><!>");
 
 function setup($$root, $$host) {
-	let fragment0 = clone(template0);
-	let child4 = first_child(fragment0);
-	let child5 = next_sibling(child4);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child4 = /*#__PURE__*/ first_child(fragment0);
+	let child5 = /*#__PURE__*/ next_sibling(child4);
 	let $foo = foo;
 
 	let block1 = $$root => {
-		let fragment1 = clone(template1);
-		let child0 = first_child(fragment1);
-		let child1 = next_sibling(child0);
+		let fragment1 = /*#__PURE__*/ clone(template1);
+		let child0 = /*#__PURE__*/ first_child(fragment1);
+		let child1 = /*#__PURE__*/ next_sibling(child0);
 		text(child0, () => $foo.value, replace);
 		after($$root, fragment1);
 		return child1;
 	};
 
 	let block2 = $$root => {
-		let fragment2 = clone(template2);
-		let child2 = first_child(fragment2);
-		let child3 = next_sibling(child2);
+		let fragment2 = /*#__PURE__*/ clone(template2);
+		let child2 = /*#__PURE__*/ first_child(fragment2);
+		let child3 = /*#__PURE__*/ next_sibling(child2);
 		text(child2, () => $foo.value, replace);
 		after($$root, fragment2);
 		return child3;
@@ -891,19 +891,19 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<!><!>");
-let template1 = html("<!><!>");
+let template0 = /*#__PURE__*/ html("<!><!>");
+let template1 = /*#__PURE__*/ html("<!><!>");
 
 function setup($$root, $$host) {
-	let fragment0 = clone(template0);
-	let child0 = first_child(fragment0);
-	let child3 = next_sibling(child0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child0 = /*#__PURE__*/ first_child(fragment0);
+	let child3 = /*#__PURE__*/ next_sibling(child0);
 	let $foo = foo;
 
 	let block1 = $$root => {
-		let fragment1 = clone(template1);
-		let child1 = first_child(fragment1);
-		let child2 = next_sibling(child1);
+		let fragment1 = /*#__PURE__*/ clone(template1);
+		let child1 = /*#__PURE__*/ first_child(fragment1);
+		let child2 = /*#__PURE__*/ next_sibling(child1);
 		text(child1, () => $foo.value, replace);
 		after($$root, fragment1);
 		return child2;
@@ -928,13 +928,13 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<!>");
+let template0 = /*#__PURE__*/ html("<!>");
 
 function setup($$root, $$host) {
 	let $foo = foo;
 	console.log($foo.value);
-	let fragment0 = clone(template0);
-	let child0 = first_child(fragment0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child0 = /*#__PURE__*/ first_child(fragment0);
 	text(child0, () => $foo.value, replace);
 	append($$root, fragment0);
 }
@@ -963,13 +963,13 @@ import {
 } from "@intrnl/velvet/internal";
 
 import style0 from "./reset.css";
-let template0 = html("<div class=foo>Hello</div>");
+let template0 = /*#__PURE__*/ html("<div class=foo>Hello</div>");
 let style1 = css(".foo { color: blue }");
 
 function setup($$root, $$host) {
-	let fragment0 = clone(template0);
-	let child0 = first_child(fragment0);
-	let child1 = first_child(child0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child0 = /*#__PURE__*/ first_child(fragment0);
+	let child1 = /*#__PURE__*/ first_child(child0);
 	append($$root, fragment0);
 }
 
@@ -986,13 +986,13 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = html("<div class=foo>Hello</div>");
+let template0 = /*#__PURE__*/ html("<div class=foo>Hello</div>");
 let style0 = css(".foo { color: red; }");
 
 function setup($$root, $$host) {
-	let fragment0 = clone(template0);
-	let child0 = first_child(fragment0);
-	let child1 = first_child(child0);
+	let fragment0 = /*#__PURE__*/ clone(template0);
+	let child0 = /*#__PURE__*/ first_child(fragment0);
+	let child1 = /*#__PURE__*/ first_child(child0);
 	append($$root, fragment0);
 }
 
