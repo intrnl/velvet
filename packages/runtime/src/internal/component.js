@@ -89,12 +89,14 @@ export class VelvetComponent extends HTMLElement {
 	disconnectedCallback () {
 		let host = this;
 
-		if (host.$m) {
-			host.$c.clear();
-			host.shadowRoot.innerHTML = '';
+		Promise.resolve().then(() => {
+			if (!host.isConnected && host.$m) {
+				host.$c.clear();
+				host.shadowRoot.innerHTML = '';
 
-			host.$m = false;
-		}
+				host.$m = false;
+			}
+		});
 	}
 
 	attributeChangedCallback (attr, prev, next) {
