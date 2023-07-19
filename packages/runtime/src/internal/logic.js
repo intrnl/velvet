@@ -99,46 +99,53 @@ export function promise (marker, pending, resolved, rejected, expression) {
 	// 2 = resolved
 	// 3 = rejected
 
-	let status = signal();
-	let result = signal();
-	let error = signal();
-	let curr;
+	let status = signal(0);
+	let result = signal(null);
+
+	let curr_key;
+	let curr_promise;
 
 	let resolved_block = resolved && ((marker) => resolved(marker, result));
-	let rejected_block = rejected && ((marker) => rejected(marker, error));
+	let rejected_block = rejected && ((marker) => rejected(marker, result));
 
 	effect(() => {
-		let key = curr = {};
-
-		status.value = 1;
-		result.value = null;
-		error.value = null;
-
 		try {
-			let promise = Promise.resolve(expression());
+			let next = expression();
+			let promisified = next instanceof Promise ? next : Promise.resolve(next);
 
-			promise.then(
+			if (curr_promise === promisified) {
+				return;
+			}
+
+			let key = curr_key = {};
+
+			curr_promise = promisified;
+
+			result.value = null;
+			status.value = 1;
+
+			promisified.then(
 				(val) => {
-					if (curr === key) {
+					if (curr_key === key) {
 						batch(() => {
-							status.value = 2;
 							result.value = val;
+							status.value = 2;
 						});
 					}
 				},
 				(err) => {
-					if (curr === key) {
+					if (curr_key === key) {
 						batch(() => {
+							result.value = err;
 							status.value = 3;
-							error.value = err;
 						});
 					}
 				},
 			);
 		}
 		catch (err) {
+			result.value = err;
 			status.value = 3;
-			error.value = err;
 		}
 	});
 
