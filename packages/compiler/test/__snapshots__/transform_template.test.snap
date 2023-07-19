@@ -3,7 +3,7 @@
 exports[`attribute > action expression 1`] = `
 let %%template0 = @html("<input>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 @use(%child0, action, null);
 @append($$root, %fragment0);
 
@@ -12,7 +12,7 @@ let %child0 = %fragment0.firstChild;
 exports[`attribute > action expression array 1`] = `
 let %%template0 = @html("<time></time>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 @use(%child0, relformatter, null);
 @append($$root, %fragment0);
 
@@ -21,7 +21,7 @@ let %child0 = %fragment0.firstChild;
 exports[`attribute > action expression array with options 1`] = `
 let %%template0 = @html("<time></time>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 @use(%child0, relformatter, () => ({
   value: Date.now()
 }));
@@ -32,7 +32,7 @@ let %child0 = %fragment0.firstChild;
 exports[`attribute > attribute expression 1`] = `
 let %%template0 = @html("<div></div>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 $: @attr(%child0, "class", className);
 @append($$root, %fragment0);
 
@@ -41,7 +41,7 @@ $: @attr(%child0, "class", className);
 exports[`attribute > attribute none 1`] = `
 let %%template0 = @html("<textarea readonly></textarea>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 @append($$root, %fragment0);
 
 `;
@@ -49,7 +49,7 @@ let %child0 = %fragment0.firstChild;
 exports[`attribute > attribute quotations 1`] = `
 let %%template0 = @html("<div a='foo bar'sq=\\"'\\"dq='\\"'></div>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 @append($$root, %fragment0);
 
 `;
@@ -57,7 +57,7 @@ let %child0 = %fragment0.firstChild;
 exports[`attribute > attribute quoted 1`] = `
 let %%template0 = @html("<div class=foo></div>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 @append($$root, %fragment0);
 
 `;
@@ -65,7 +65,7 @@ let %child0 = %fragment0.firstChild;
 exports[`attribute > attribute unquoted 1`] = `
 let %%template0 = @html("<div class=foo></div>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 @append($$root, %fragment0);
 
 `;
@@ -73,7 +73,7 @@ let %child0 = %fragment0.firstChild;
 exports[`attribute > binding checkbox expression 1`] = `
 let %%template0 = @html("<input type=checkbox>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 $: %child0["checked"] = value;
 @on(%child0, "input", () => value = %child0.checked);
 @append($$root, %fragment0);
@@ -83,7 +83,7 @@ $: %child0["checked"] = value;
 exports[`attribute > binding checkbox group 1`] = `
 let %%template0 = @html("<input type=checkbox>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 $: %child0.checked = selected.includes(%child0.value);
 @on(%child0, "input", () => selected = @get_checked_values(selected, %child0.value, %child0.checked));
 @append($$root, %fragment0);
@@ -93,7 +93,7 @@ $: %child0.checked = selected.includes(%child0.value);
 exports[`attribute > binding component expression 1`] = `
 let %%template0 = @html("<x></x>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 let %child1 = new Component();
 $: %child1["foo"] = value;
 @on(%child1, "update:foo", %event => value = %event.detail);
@@ -105,7 +105,7 @@ $: %child1["foo"] = value;
 exports[`attribute > binding expression 1`] = `
 let %%template0 = @html("<input>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 $: %child0["value"] = value;
 @on(%child0, "input", () => value = %child0.value);
 @append($$root, %fragment0);
@@ -115,7 +115,7 @@ $: %child0["value"] = value;
 exports[`attribute > binding input number 1`] = `
 let %%template0 = @html("<input type=number>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 $: %child0["value"] = value;
 @on(%child0, "input", () => value = @to_number(%child0.value));
 @append($$root, %fragment0);
@@ -125,7 +125,7 @@ $: %child0["value"] = value;
 exports[`attribute > binding member expression 1`] = `
 let %%template0 = @html("<input>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 $: %child0["value"] = foo.bar;
 @on(%child0, "input", () => foo.bar = %child0.value);
 @append($$root, %fragment0);
@@ -135,7 +135,7 @@ $: %child0["value"] = foo.bar;
 exports[`attribute > binding radio group 1`] = `
 let %%template0 = @html("<input type=radio>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 $: %child0.checked = picked === %child0.value;
 @on(%child0, "input", () => picked = %child0.value);
 @append($$root, %fragment0);
@@ -145,7 +145,7 @@ $: %child0.checked = picked === %child0.value;
 exports[`attribute > binding select value 1`] = `
 let %%template0 = @html("<select multiple></select>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 $: @set_select_values(%child0, value);
 @on(%child0, "input", () => value = @get_select_values(%child0));
 @append($$root, %fragment0);
@@ -155,7 +155,7 @@ $: @set_select_values(%child0, value);
 exports[`attribute > binding textarea value 1`] = `
 let %%template0 = @html("<textarea></textarea>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 $: %child0["value"] = content;
 @on(%child0, "input", () => content = %child0.value);
 @append($$root, %fragment0);
@@ -165,7 +165,7 @@ $: %child0["value"] = content;
 exports[`attribute > boolean expression 1`] = `
 let %%template0 = @html("<textarea></textarea>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 $: @toggle(%child0, "readonly", is_readonly);
 @append($$root, %fragment0);
 
@@ -174,7 +174,7 @@ $: @toggle(%child0, "readonly", is_readonly);
 exports[`attribute > boolean none 1`] = `
 let %%template0 = @html("<textarea ?readonly></textarea>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 @append($$root, %fragment0);
 
 `;
@@ -182,7 +182,7 @@ let %child0 = %fragment0.firstChild;
 exports[`attribute > class object expression 1`] = `
 let %%template0 = @html("<div class=foo></div>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 $: @class_toggle(%child0, "baz", baz);
 $: @class_toggle(%child0, computed, true);
 @append($$root, %fragment0);
@@ -192,15 +192,15 @@ $: @class_toggle(%child0, computed, true);
 exports[`attribute > class object expression 2 1`] = `
 let %%template0 = @html("<li><a href=#/>All</a></li><li><a href=#/active>Active</a></li><li><a href=#/completed>Completed</a></li>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child1 = %child0.firstChild;
-let %child2 = %child1.firstChild;
-let %child3 = %child0.nextSibling;
-let %child4 = %child3.firstChild;
-let %child5 = %child4.firstChild;
-let %child6 = %child3.nextSibling;
-let %child7 = %child6.firstChild;
-let %child8 = %child7.firstChild;
+let %child0 = @first_child(%fragment0);
+let %child1 = @first_child(%child0);
+let %child2 = @first_child(%child1);
+let %child3 = @next_sibling(%child0);
+let %child4 = @first_child(%child3);
+let %child5 = @first_child(%child4);
+let %child6 = @next_sibling(%child3);
+let %child7 = @first_child(%child6);
+let %child8 = @first_child(%child7);
 $: @class_toggle(%child1, "selected", visibility === 'all');
 $: @class_toggle(%child4, "selected", visibility === 'active');
 $: @class_toggle(%child7, "selected", visibility === 'completed');
@@ -211,7 +211,7 @@ $: @class_toggle(%child7, "selected", visibility === 'completed');
 exports[`attribute > event expression 1`] = `
 let %%template0 = @html("<button></button>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 @on(%child0, "click", handle_click);
 @append($$root, %fragment0);
 
@@ -244,7 +244,7 @@ expected :value to contain an identifier or a member expression (1:15)
 exports[`attribute > handles attribute expression with parenthesis 1`] = `
 let %%template0 = @html("<div></div>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 $: @attr(%child0, "class", foo.bar);
 @append($$root, %fragment0);
 
@@ -253,7 +253,7 @@ $: @attr(%child0, "class", foo.bar);
 exports[`attribute > ifdef attributes 1`] = `
 let %%template0 = @html("<a></a>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 $: @attr_ifdef(%child0, "target", target);
 @append($$root, %fragment0);
 
@@ -262,7 +262,7 @@ $: @attr_ifdef(%child0, "target", target);
 exports[`attribute > property checkbox group 1`] = `
 let %%template0 = @html("<input type=checkbox>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 $: %child0.checked = selected.includes(%child0.value);
 @append($$root, %fragment0);
 
@@ -271,7 +271,7 @@ $: %child0.checked = selected.includes(%child0.value);
 exports[`attribute > property expression 1`] = `
 let %%template0 = @html("<input>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 $: %child0["value"] = value;
 @append($$root, %fragment0);
 
@@ -280,7 +280,7 @@ $: %child0["value"] = value;
 exports[`attribute > property none 1`] = `
 let %%template0 = @html("<input>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 $: %child0["value"] = true;
 @append($$root, %fragment0);
 
@@ -289,7 +289,7 @@ $: %child0["value"] = true;
 exports[`attribute > property select value 1`] = `
 let %%template0 = @html("<select multiple></select>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 $: @set_select_values(%child0, value);
 @append($$root, %fragment0);
 
@@ -298,7 +298,7 @@ $: @set_select_values(%child0, value);
 exports[`attribute > ref expression 1`] = `
 let %%template0 = @html("<input>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 input = %child0;
 @append($$root, %fragment0);
 
@@ -307,7 +307,7 @@ input = %child0;
 exports[`attribute > spread expression 1`] = `
 let %%template0 = @html("<input>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 $: @assign(%child0, props);
 @append($$root, %fragment0);
 
@@ -316,7 +316,7 @@ $: @assign(%child0, props);
 exports[`attribute > style object expression 1`] = `
 let %%template0 = @html("<div style=color:red></div>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 $: @style_set(%child0, "background", bg);
 $: @style_set(%child0, '--baz', baz);
 $: @style_set(%child0, computed, false);
@@ -339,19 +339,19 @@ expected #use to have not more than 2 argument, 3 were passed (1:19)
 exports[`await logic > await after static 1`] = `
 let %%template0 = @html("<div></div>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("<div>pending</div>");
   let %fragment1 = @clone(%template1);
-  let %child1 = %fragment1.firstChild;
-  let %child2 = %child1.firstChild;
+  let %child1 = @first_child(%fragment1);
+  let %child2 = @first_child(%child1);
   @after($$root, %fragment1);
   return %child1;
 };
 let %block2 = $$root => {
   let %%template2 = @html("<div></div>");
   let %fragment2 = @clone(%template2);
-  let %child3 = %fragment2.firstChild;
+  let %child3 = @first_child(%fragment2);
   @text(%child3, () => person.name, @append);
   @after($$root, %fragment2);
   return %child3;
@@ -364,20 +364,20 @@ let %block2 = $$root => {
 exports[`await logic > await between static sandwich 1`] = `
 let %%template0 = @html("<div></div><div></div>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child4 = %child0.nextSibling;
+let %child0 = @first_child(%fragment0);
+let %child4 = @next_sibling(%child0);
 let %block1 = $$root => {
   let %%template1 = @html("<div>pending</div>");
   let %fragment1 = @clone(%template1);
-  let %child1 = %fragment1.firstChild;
-  let %child2 = %child1.firstChild;
+  let %child1 = @first_child(%fragment1);
+  let %child2 = @first_child(%child1);
   @after($$root, %fragment1);
   return %child1;
 };
 let %block2 = $$root => {
   let %%template2 = @html("<div></div>");
   let %fragment2 = @clone(%template2);
-  let %child3 = %fragment2.firstChild;
+  let %child3 = @first_child(%fragment2);
   @text(%child3, () => person.name, @append);
   @after($$root, %fragment2);
   return %child3;
@@ -391,11 +391,11 @@ let %block2 = $$root => {
 exports[`await logic > pending 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child1 = %fragment0.firstChild;
+let %child1 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("pending");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
+  let %child0 = @first_child(%fragment1);
   @after($$root, %fragment1);
   return %child0;
 };
@@ -407,18 +407,18 @@ let %block1 = $$root => {
 exports[`await logic > pending and rejected 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child2 = %fragment0.firstChild;
+let %child2 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("pending");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
+  let %child0 = @first_child(%fragment1);
   @after($$root, %fragment1);
   return %child0;
 };
 let %block2 = $$root => {
   let %%template2 = @html("rejected");
   let %fragment2 = @clone(%template2);
-  let %child1 = %fragment2.firstChild;
+  let %child1 = @first_child(%fragment2);
   @after($$root, %fragment2);
   return %child1;
 };
@@ -430,19 +430,19 @@ let %block2 = $$root => {
 exports[`await logic > pending and rejected with local 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child3 = %fragment0.firstChild;
+let %child3 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("pending");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
+  let %child0 = @first_child(%fragment1);
   @after($$root, %fragment1);
   return %child0;
 };
 let %block2 = $$root => {
   let %%template2 = @html("uh, oh! <pre></pre>");
   let %fragment2 = @clone(%template2);
-  let %child1 = %fragment2.firstChild;
-  let %child2 = %child1.nextSibling;
+  let %child1 = @first_child(%fragment2);
+  let %child2 = @next_sibling(%child1);
   @text(%child2, () => error.message, @append);
   @after($$root, %fragment2);
   return %child2;
@@ -455,18 +455,18 @@ let %block2 = $$root => {
 exports[`await logic > pending and resolved 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child2 = %fragment0.firstChild;
+let %child2 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("pending");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
+  let %child0 = @first_child(%fragment1);
   @after($$root, %fragment1);
   return %child0;
 };
 let %block2 = $$root => {
   let %%template2 = @html("resolved");
   let %fragment2 = @clone(%template2);
-  let %child1 = %fragment2.firstChild;
+  let %child1 = @first_child(%fragment2);
   @after($$root, %fragment2);
   return %child1;
 };
@@ -478,20 +478,20 @@ let %block2 = $$root => {
 exports[`await logic > pending and resolved with local 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child4 = %fragment0.firstChild;
+let %child4 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("pending");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
+  let %child0 = @first_child(%fragment1);
   @after($$root, %fragment1);
   return %child0;
 };
 let %block2 = $$root => {
   let %%template2 = @html("hello, <!>!");
   let %fragment2 = @clone(%template2);
-  let %child1 = %fragment2.firstChild;
-  let %child2 = %child1.nextSibling;
-  let %child3 = %child2.nextSibling;
+  let %child1 = @first_child(%fragment2);
+  let %child2 = @next_sibling(%child1);
+  let %child3 = @next_sibling(%child2);
   @text(%child2, () => name, @replace);
   @after($$root, %fragment2);
   return %child3;
@@ -504,11 +504,11 @@ let %block2 = $$root => {
 exports[`await logic > rejected 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child1 = %fragment0.firstChild;
+let %child1 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("rejected");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
+  let %child0 = @first_child(%fragment1);
   @after($$root, %fragment1);
   return %child0;
 };
@@ -520,12 +520,12 @@ let %block1 = $$root => {
 exports[`await logic > rejected with local 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child2 = %fragment0.firstChild;
+let %child2 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("error: <!>");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
-  let %child1 = %child0.nextSibling;
+  let %child0 = @first_child(%fragment1);
+  let %child1 = @next_sibling(%child0);
   @text(%child0, () => error.message, @after);
   @after($$root, %fragment1);
   return %child1;
@@ -538,11 +538,11 @@ let %block1 = $$root => {
 exports[`await logic > resolved 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child1 = %fragment0.firstChild;
+let %child1 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("resolved");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
+  let %child0 = @first_child(%fragment1);
   @after($$root, %fragment1);
   return %child0;
 };
@@ -554,12 +554,12 @@ let %block1 = $$root => {
 exports[`await logic > resolved with local 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child2 = %fragment0.firstChild;
+let %child2 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("the number is <!>");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
-  let %child1 = %child0.nextSibling;
+  let %child0 = @first_child(%fragment1);
+  let %child1 = @next_sibling(%child0);
   @text(%child0, () => result.value, @after);
   @after($$root, %fragment1);
   return %child1;
@@ -572,7 +572,7 @@ let %block1 = $$root => {
 exports[`comment > comment inbetween text 1`] = `
 let %%template0 = @html("foo bar baz buzzbazz");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 @append($$root, %fragment0);
 
 `;
@@ -580,11 +580,11 @@ let %child0 = %fragment0.firstChild;
 exports[`component > multiple component 1`] = `
 let %%template0 = @html("<x>Button</x><x>Link Button</x>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child2 = %child0.firstChild;
+let %child0 = @first_child(%fragment0);
+let %child2 = @first_child(%child0);
 let %child1 = new Button();
-let %child3 = %child0.nextSibling;
-let %child5 = %child3.firstChild;
+let %child3 = @next_sibling(%child0);
+let %child5 = @first_child(%child3);
 let %child4 = new Button();
 @replace(%child0, %child0 = %child1, true);
 $: @attr(%child4, "href", "/");
@@ -596,12 +596,12 @@ $: @attr(%child4, "href", "/");
 exports[`component > multiple v:component 1`] = `
 let %%template0 = @html("<!><!>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child3 = %child0.nextSibling;
+let %child0 = @first_child(%fragment0);
+let %child3 = @next_sibling(%child0);
 let %block1 = %component => {
   let %%template1 = @html("Button 1");
   let %fragment1 = @clone(%template1);
-  let %child2 = %child1.firstChild;
+  let %child2 = @first_child(%child1);
   let %child1 = new %component();
   @append(%child1, %fragment1);
   return %child0;
@@ -609,7 +609,7 @@ let %block1 = %component => {
 let %block2 = %component => {
   let %%template2 = @html("Button 2");
   let %fragment2 = @clone(%template2);
-  let %child5 = %child4.firstChild;
+  let %child5 = @first_child(%child4);
   let %child4 = new %component();
   @append(%child4, %fragment2);
   return %child3;
@@ -623,7 +623,7 @@ let %block2 = %component => {
 exports[`component > v:component 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 let %block1 = %component => {
   let %child1 = new %component();
   return %child0;
@@ -636,13 +636,13 @@ let %block1 = %component => {
 exports[`component > v:component with children 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 let %block1 = %component => {
   let %%template1 = @html("Hello <!>!");
   let %fragment1 = @clone(%template1);
-  let %child2 = %child1.firstChild;
-  let %child3 = %child2.nextSibling;
-  let %child4 = %child3.nextSibling;
+  let %child2 = @first_child(%child1);
+  let %child3 = @next_sibling(%child2);
+  let %child4 = @next_sibling(%child3);
   let %child1 = new %component();
   @text(%child3, () => name, @replace);
   @append(%child1, %fragment1);
@@ -656,9 +656,9 @@ let %block1 = %component => {
 exports[`component > v:self on a custom element 1`] = `
 let %%template0 = @html("<x><x>hello world!</x></x>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child2 = %child0.firstChild;
-let %child4 = %child2.firstChild;
+let %child0 = @first_child(%fragment0);
+let %child2 = @first_child(%child0);
+let %child4 = @first_child(%child2);
 let %child3 = new $$host.constructor();
 let %child1 = new x-app();
 @replace(%child2, %child2 = %child3, true);
@@ -670,12 +670,12 @@ let %child1 = new x-app();
 exports[`conditional logic > conditional after static 1`] = `
 let %%template0 = @html("<div></div>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("<div>hello </div>");
   let %fragment1 = @clone(%template1);
-  let %child1 = %fragment1.firstChild;
-  let %child2 = %child1.firstChild;
+  let %child1 = @first_child(%fragment1);
+  let %child2 = @first_child(%child1);
   @text(%child2, () => person.name, @after);
   @after($$root, %fragment1);
   return %child1;
@@ -688,15 +688,15 @@ let %block1 = $$root => {
 exports[`conditional logic > conditional before expression 1`] = `
 let %%template0 = @html("<!><div>Hello, <!>!</div>");
 let %fragment0 = @clone(%template0);
-let %child1 = %fragment0.firstChild;
-let %child2 = %child1.nextSibling;
-let %child3 = %child2.firstChild;
-let %child4 = %child3.nextSibling;
-let %child5 = %child4.nextSibling;
+let %child1 = @first_child(%fragment0);
+let %child2 = @next_sibling(%child1);
+let %child3 = @first_child(%child2);
+let %child4 = @next_sibling(%child3);
+let %child5 = @next_sibling(%child4);
 let %block1 = $$root => {
   let %%template1 = @html("Loading!");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
+  let %child0 = @first_child(%fragment1);
   @after($$root, %fragment1);
   return %child0;
 };
@@ -709,13 +709,13 @@ let %block1 = $$root => {
 exports[`conditional logic > conditional between static sandwich 1`] = `
 let %%template0 = @html("<div></div><div></div>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child3 = %child0.nextSibling;
+let %child0 = @first_child(%fragment0);
+let %child3 = @next_sibling(%child0);
 let %block1 = $$root => {
   let %%template1 = @html("<div>hello </div>");
   let %fragment1 = @clone(%template1);
-  let %child1 = %fragment1.firstChild;
-  let %child2 = %child1.firstChild;
+  let %child1 = @first_child(%fragment1);
+  let %child2 = @first_child(%child1);
   @text(%child2, () => person.name, @after);
   @after($$root, %fragment1);
   return %child1;
@@ -729,12 +729,12 @@ let %block1 = $$root => {
 exports[`conditional logic > conditional containing component 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child3 = %fragment0.firstChild;
+let %child3 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("<x>Greet, </x>");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
-  let %child2 = %child0.firstChild;
+  let %child0 = @first_child(%fragment1);
+  let %child2 = @first_child(%child0);
   let %child1 = new Button();
   @text(%child2, () => person.name, @after);
   @replace(%child0, %child0 = %child1, true);
@@ -749,12 +749,12 @@ let %block1 = $$root => {
 exports[`conditional logic > conditional containing expression 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child2 = %fragment0.firstChild;
+let %child2 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("<!><!>");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
-  let %child1 = %child0.nextSibling;
+  let %child0 = @first_child(%fragment1);
+  let %child1 = @next_sibling(%child0);
   @text(%child0, () => person.name, @replace);
   @after($$root, %fragment1);
   return %child1;
@@ -767,12 +767,12 @@ let %block1 = $$root => {
 exports[`conditional logic > conditional containing two elements 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child2 = %fragment0.firstChild;
+let %child2 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("<div></div><div></div>");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
-  let %child1 = %child0.nextSibling;
+  let %child0 = @first_child(%fragment1);
+  let %child1 = @next_sibling(%child0);
   @text(%child0, () => person.first_name, @append);
   @text(%child1, () => person.last_name, @append);
   @after($$root, %fragment1);
@@ -786,13 +786,13 @@ let %block1 = $$root => {
 exports[`conditional logic > conditional containing two expressions 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child3 = %fragment0.firstChild;
+let %child3 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("<!><!><!>");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
-  let %child1 = %child0.nextSibling;
-  let %child2 = %child1.nextSibling;
+  let %child0 = @first_child(%fragment1);
+  let %child1 = @next_sibling(%child0);
+  let %child2 = @next_sibling(%child1);
   @text(%child0, () => person.first_name, @replace);
   @text(%child1, () => person.last_name, @replace);
   @after($$root, %fragment1);
@@ -806,16 +806,16 @@ let %block1 = $$root => {
 exports[`conditional logic > conditional containing v:component 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child4 = %fragment0.firstChild;
+let %child4 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("<!><!>");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
-  let %child3 = %child0.nextSibling;
+  let %child0 = @first_child(%fragment1);
+  let %child3 = @next_sibling(%child0);
   let %block2 = %component => {
     let %%template2 = @html("Greet, ");
     let %fragment2 = @clone(%template2);
-    let %child2 = %child1.firstChild;
+    let %child2 = @first_child(%child1);
     let %child1 = new %component();
     @text(%child2, () => person.name, @after);
     @append(%child1, %fragment2);
@@ -833,16 +833,16 @@ let %block1 = $$root => {
 exports[`conditional logic > conditional containing v:element 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child4 = %fragment0.firstChild;
+let %child4 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("<!><!>");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
-  let %child3 = %child0.nextSibling;
+  let %child0 = @first_child(%fragment1);
+  let %child3 = @next_sibling(%child0);
   let %block2 = %component => {
     let %%template2 = @html("Greet, ");
     let %fragment2 = @clone(%template2);
-    let %child2 = %child1.firstChild;
+    let %child2 = @first_child(%child1);
     let %child1 = @create(%component);
     @text(%child2, () => person.name, @after);
     @append(%child1, %fragment2);
@@ -860,14 +860,14 @@ let %block1 = $$root => {
 exports[`conditional logic > conditional containing v:self 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child5 = %fragment0.firstChild;
+let %child5 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("<x>Greetings, <!>!</x>");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
-  let %child2 = %child0.firstChild;
-  let %child3 = %child2.nextSibling;
-  let %child4 = %child3.nextSibling;
+  let %child0 = @first_child(%fragment1);
+  let %child2 = @first_child(%child0);
+  let %child3 = @next_sibling(%child2);
+  let %child4 = @next_sibling(%child3);
   let %child1 = new $$host.constructor();
   @text(%child3, () => person.name, @replace);
   @replace(%child0, %child0 = %child1, true);
@@ -882,12 +882,12 @@ let %block1 = $$root => {
 exports[`conditional logic > consequent 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child2 = %fragment0.firstChild;
+let %child2 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("<div>foo!</div>");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
-  let %child1 = %child0.firstChild;
+  let %child0 = @first_child(%fragment1);
+  let %child1 = @first_child(%child0);
   @after($$root, %fragment1);
   return %child0;
 };
@@ -899,20 +899,20 @@ let %block1 = $$root => {
 exports[`conditional logic > consequent and alternate 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child4 = %fragment0.firstChild;
+let %child4 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("<div>foo!</div>");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
-  let %child1 = %child0.firstChild;
+  let %child0 = @first_child(%fragment1);
+  let %child1 = @first_child(%child0);
   @after($$root, %fragment1);
   return %child0;
 };
 let %block2 = $$root => {
   let %%template2 = @html("<div>bar!</div>");
   let %fragment2 = @clone(%template2);
-  let %child2 = %fragment2.firstChild;
-  let %child3 = %child2.firstChild;
+  let %child2 = @first_child(%fragment2);
+  let %child3 = @first_child(%child2);
   @after($$root, %fragment2);
   return %child2;
 };
@@ -924,20 +924,20 @@ let %block2 = $$root => {
 exports[`conditional logic > consequent and alternate test 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child4 = %fragment0.firstChild;
+let %child4 = @first_child(%fragment0);
 let %block2 = $$root => {
   let %%template2 = @html("<div>bar!</div>");
   let %fragment2 = @clone(%template2);
-  let %child2 = %fragment2.firstChild;
-  let %child3 = %child2.firstChild;
+  let %child2 = @first_child(%fragment2);
+  let %child3 = @first_child(%child2);
   @after($$root, %fragment2);
   return %child2;
 };
 let %block1 = $$root => {
   let %%template1 = @html("<div>foo!</div>");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
-  let %child1 = %child0.firstChild;
+  let %child0 = @first_child(%fragment1);
+  let %child1 = @first_child(%child0);
   @after($$root, %fragment1);
   return %child0;
 };
@@ -949,18 +949,18 @@ let %block1 = $$root => {
 exports[`conditional logic > nested consequent 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child5 = %fragment0.firstChild;
+let %child5 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("<div>foo!</div><!>");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
-  let %child1 = %child0.firstChild;
-  let %child4 = %child0.nextSibling;
+  let %child0 = @first_child(%fragment1);
+  let %child1 = @first_child(%child0);
+  let %child4 = @next_sibling(%child0);
   let %block2 = $$root => {
     let %%template2 = @html("<div>bar!</div>");
     let %fragment2 = @clone(%template2);
-    let %child2 = %fragment2.firstChild;
-    let %child3 = %child2.firstChild;
+    let %child2 = @first_child(%fragment2);
+    let %child3 = @first_child(%child2);
     @after($$root, %fragment2);
     return %child2;
   };
@@ -976,21 +976,21 @@ let %block1 = $$root => {
 exports[`conditional logic > wraps svg elements properly 1`] = `
 let %%template0 = @html("<svg><!><foreignObject><!></foreignObject></svg>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child2 = %child0.firstChild;
-let %child3 = %child2.nextSibling;
-let %child5 = %child3.firstChild;
+let %child0 = @first_child(%fragment0);
+let %child2 = @first_child(%child0);
+let %child3 = @next_sibling(%child2);
+let %child5 = @first_child(%child3);
 let %block1 = $$root => {
   let %%template1 = @html("<svg><rect></rect>", true);
   let %fragment1 = @clone(%template1);
-  let %child1 = %fragment1.firstChild;
+  let %child1 = @first_child(%fragment1);
   @after($$root, %fragment1);
   return %child1;
 };
 let %block2 = $$root => {
   let %%template2 = @html("<div></div>");
   let %fragment2 = @clone(%template2);
-  let %child4 = %fragment2.firstChild;
+  let %child4 = @first_child(%fragment2);
   @after($$root, %fragment2);
   return %child4;
 };
@@ -1003,12 +1003,12 @@ let %block2 = $$root => {
 exports[`element > multiple v:element 1`] = `
 let %%template0 = @html("<!><!>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child3 = %child0.nextSibling;
+let %child0 = @first_child(%fragment0);
+let %child3 = @next_sibling(%child0);
 let %block1 = %component => {
   let %%template1 = @html("Foo!");
   let %fragment1 = @clone(%template1);
-  let %child2 = %child1.firstChild;
+  let %child2 = @first_child(%child1);
   let %child1 = @create(%component);
   @append(%child1, %fragment1);
   return %child0;
@@ -1016,7 +1016,7 @@ let %block1 = %component => {
 let %block2 = %component => {
   let %%template2 = @html("Bar!");
   let %fragment2 = @clone(%template2);
-  let %child5 = %child4.firstChild;
+  let %child5 = @first_child(%child4);
   let %child4 = @create(%component);
   @append(%child4, %fragment2);
   return %child3;
@@ -1030,7 +1030,7 @@ let %block2 = %component => {
 exports[`element > selfclosing on a non-void element 1`] = `
 let %%template0 = @html("<button></button>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 @append($$root, %fragment0);
 
 `;
@@ -1050,7 +1050,7 @@ expected script closing tag (1:41)
 exports[`element > v:element 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 let %block1 = %component => {
   let %child1 = @create(%component);
   return %child0;
@@ -1063,13 +1063,13 @@ let %block1 = %component => {
 exports[`element > v:element with children 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 let %block1 = %component => {
   let %%template1 = @html("Hello <!>!");
   let %fragment1 = @clone(%template1);
-  let %child2 = %child1.firstChild;
-  let %child3 = %child2.nextSibling;
-  let %child4 = %child3.nextSibling;
+  let %child2 = @first_child(%child1);
+  let %child3 = @next_sibling(%child2);
+  let %child4 = @next_sibling(%child3);
   let %child1 = @create(%component);
   @text(%child3, () => name, @replace);
   @append(%child1, %fragment1);
@@ -1083,8 +1083,8 @@ let %block1 = %component => {
 exports[`element > whitespace on closing tag 1`] = `
 let %%template0 = @html("<button>Hello</button>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child1 = %child0.firstChild;
+let %child0 = @first_child(%fragment0);
+let %child1 = @first_child(%child0);
 @append($$root, %fragment0);
 
 `;
@@ -1092,10 +1092,10 @@ let %child1 = %child0.firstChild;
 exports[`expression > component 1`] = `
 let %%template0 = @html("<x>hello <!>!</x>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child2 = %child0.firstChild;
-let %child3 = %child2.nextSibling;
-let %child4 = %child3.nextSibling;
+let %child0 = @first_child(%fragment0);
+let %child2 = @first_child(%child0);
+let %child3 = @next_sibling(%child2);
+let %child4 = @next_sibling(%child3);
 let %child1 = new Main();
 @text(%child3, () => name, @replace);
 @replace(%child0, %child0 = %child1, true);
@@ -1106,10 +1106,10 @@ let %child1 = new Main();
 exports[`expression > custom element 1`] = `
 let %%template0 = @html("<x>hello <!>!</x>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child2 = %child0.firstChild;
-let %child3 = %child2.nextSibling;
-let %child4 = %child3.nextSibling;
+let %child0 = @first_child(%fragment0);
+let %child2 = @first_child(%child0);
+let %child3 = @next_sibling(%child2);
+let %child4 = @next_sibling(%child3);
 let %child1 = new x-app();
 @text(%child3, () => name, @replace);
 @replace(%child0, %child0 = %child1, true);
@@ -1126,10 +1126,10 @@ Acorn error: Unexpected token (1:12)
 exports[`expression > handles parenthesis 1`] = `
 let %%template0 = @html("<div>hello <!>!</div>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child1 = %child0.firstChild;
-let %child2 = %child1.nextSibling;
-let %child3 = %child2.nextSibling;
+let %child0 = @first_child(%fragment0);
+let %child1 = @first_child(%child0);
+let %child2 = @next_sibling(%child1);
+let %child3 = @next_sibling(%child2);
 @text(%child2, () => name, @replace);
 @append($$root, %fragment0);
 
@@ -1138,11 +1138,11 @@ let %child3 = %child2.nextSibling;
 exports[`expression > multiple expressions 1`] = `
 let %%template0 = @html("<div>hello, <!><!>!</div>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child1 = %child0.firstChild;
-let %child2 = %child1.nextSibling;
-let %child3 = %child2.nextSibling;
-let %child4 = %child3.nextSibling;
+let %child0 = @first_child(%fragment0);
+let %child1 = @first_child(%child0);
+let %child2 = @next_sibling(%child1);
+let %child3 = @next_sibling(%child2);
+let %child4 = @next_sibling(%child3);
 @text(%child2, () => first_name, @replace);
 @text(%child3, () => last_name, @replace);
 @append($$root, %fragment0);
@@ -1152,11 +1152,11 @@ let %child4 = %child3.nextSibling;
 exports[`keyed logic > keyed 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child1 = %fragment0.firstChild;
+let %child1 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("<img>");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
+  let %child0 = @first_child(%fragment1);
   $: @attr(%child0, "src", src);
   @after($$root, %fragment1);
   return %child0;
@@ -1169,11 +1169,11 @@ let %block1 = $$root => {
 exports[`keyed logic > keyed after static 1`] = `
 let %%template0 = @html("<div></div>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("<img>");
   let %fragment1 = @clone(%template1);
-  let %child1 = %fragment1.firstChild;
+  let %child1 = @first_child(%fragment1);
   $: @attr(%child1, "src", src);
   @after($$root, %fragment1);
   return %child1;
@@ -1186,12 +1186,12 @@ let %block1 = $$root => {
 exports[`keyed logic > keyed between static sandwich 1`] = `
 let %%template0 = @html("<div></div><div></div>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child2 = %child0.nextSibling;
+let %child0 = @first_child(%fragment0);
+let %child2 = @next_sibling(%child0);
 let %block1 = $$root => {
   let %%template1 = @html("<img>");
   let %fragment1 = @clone(%template1);
-  let %child1 = %fragment1.firstChild;
+  let %child1 = @first_child(%fragment1);
   $: @attr(%child1, "src", src);
   @after($$root, %fragment1);
   return %child1;
@@ -1228,7 +1228,7 @@ expected {@let foo ...} to contain an initializer (1:9)
 exports[`log expression > in conditional 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 @show(%child0, () => foo ? null : null);
 @append($$root, %fragment0);
 
@@ -1237,11 +1237,11 @@ let %child0 = %fragment0.firstChild;
 exports[`log expression > in conditional with text 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child1 = %fragment0.firstChild;
+let %child1 = @first_child(%fragment0);
 let %block1 = $$root => {
   let %%template1 = @html("Hello!");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
+  let %child0 = @first_child(%fragment1);
   $: console.log($$root, foo);
   @after($$root, %fragment1);
   return %child0;
@@ -1274,13 +1274,13 @@ $: console.log([foo, bar, baz]);
 exports[`loop logic > index 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child3 = %fragment0.firstChild;
+let %child3 = @first_child(%fragment0);
 let %block1 = ($$root, person, index) => {
   let %%template1 = @html("<div><!> - </div>");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
-  let %child1 = %child0.firstChild;
-  let %child2 = %child1.nextSibling;
+  let %child0 = @first_child(%fragment1);
+  let %child1 = @first_child(%child0);
+  let %child2 = @next_sibling(%child1);
   @text(%child1, () => index, @replace);
   @text(%child2, () => person.name, @after);
   @after($$root, %fragment1);
@@ -1294,13 +1294,13 @@ let %block1 = ($$root, person, index) => {
 exports[`loop logic > iteration 1`] = `
 let %%template0 = @html("<!>");
 let %fragment0 = @clone(%template0);
-let %child3 = %fragment0.firstChild;
+let %child3 = @first_child(%fragment0);
 let %block1 = ($$root, person) => {
   let %%template1 = @html("<div><!> - </div>");
   let %fragment1 = @clone(%template1);
-  let %child0 = %fragment1.firstChild;
-  let %child1 = %child0.firstChild;
-  let %child2 = %child1.nextSibling;
+  let %child0 = @first_child(%fragment1);
+  let %child1 = @first_child(%child0);
+  let %child2 = @next_sibling(%child1);
   @text(%child1, () => person.first, @replace);
   @text(%child2, () => person.last, @after);
   @after($$root, %fragment1);
@@ -1314,11 +1314,11 @@ let %block1 = ($$root, person) => {
 exports[`loop logic > loop after static 1`] = `
 let %%template0 = @html("<div></div>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 let %block1 = ($$root, person) => {
   let %%template1 = @html("<div></div>");
   let %fragment1 = @clone(%template1);
-  let %child1 = %fragment1.firstChild;
+  let %child1 = @first_child(%fragment1);
   @text(%child1, () => person.name, @append);
   @after($$root, %fragment1);
   return %child1;
@@ -1331,12 +1331,12 @@ let %block1 = ($$root, person) => {
 exports[`loop logic > loop between static sandwich 1`] = `
 let %%template0 = @html("<div></div><div></div>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child2 = %child0.nextSibling;
+let %child0 = @first_child(%fragment0);
+let %child2 = @next_sibling(%child0);
 let %block1 = ($$root, person) => {
   let %%template1 = @html("<div></div>");
   let %fragment1 = @clone(%template1);
-  let %child1 = %fragment1.firstChild;
+  let %child1 = @first_child(%fragment1);
   @text(%child1, () => person.name, @append);
   @after($$root, %fragment1);
   return %child1;
@@ -1377,8 +1377,8 @@ expected a local identifier (2:19)
 exports[`miscellaneous > handles html minification 1`] = `
 let %%template0 = @html("<div></div><div></div>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child1 = %child0.nextSibling;
+let %child0 = @first_child(%fragment0);
+let %child1 = @next_sibling(%child0);
 @append($$root, %fragment0);
 
 `;
@@ -1386,8 +1386,8 @@ let %child1 = %child0.nextSibling;
 exports[`miscellaneous > handles html minification 2`] = `
 let %%template0 = @html("<p>The quick brown fox jumps over the lazy dog.</p>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child1 = %child0.firstChild;
+let %child0 = @first_child(%fragment0);
+let %child1 = @first_child(%child0);
 @append($$root, %fragment0);
 
 `;
@@ -1395,13 +1395,13 @@ let %child1 = %child0.firstChild;
 exports[`miscellaneous > handles html minification 3`] = `
 let %%template0 = @html("<ul><li>A</li><li>B</li><li>C</li></ul>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child1 = %child0.firstChild;
-let %child2 = %child1.firstChild;
-let %child3 = %child1.nextSibling;
-let %child4 = %child3.firstChild;
-let %child5 = %child3.nextSibling;
-let %child6 = %child5.firstChild;
+let %child0 = @first_child(%fragment0);
+let %child1 = @first_child(%child0);
+let %child2 = @first_child(%child1);
+let %child3 = @next_sibling(%child1);
+let %child4 = @first_child(%child3);
+let %child5 = @next_sibling(%child3);
+let %child6 = @first_child(%child5);
 @append($$root, %fragment0);
 
 `;
@@ -1409,16 +1409,16 @@ let %child6 = %child5.firstChild;
 exports[`miscellaneous > handles html minification 4`] = `
 let %%template0 = @html("<p>Hey, I <em>just</em> found out about this <strong>cool</strong> website! <sup>[1]</sup></p>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child1 = %child0.firstChild;
-let %child2 = %child1.nextSibling;
-let %child3 = %child2.firstChild;
-let %child4 = %child2.nextSibling;
-let %child5 = %child4.nextSibling;
-let %child6 = %child5.firstChild;
-let %child7 = %child5.nextSibling;
-let %child8 = %child7.nextSibling;
-let %child9 = %child8.firstChild;
+let %child0 = @first_child(%fragment0);
+let %child1 = @first_child(%child0);
+let %child2 = @next_sibling(%child1);
+let %child3 = @first_child(%child2);
+let %child4 = @next_sibling(%child2);
+let %child5 = @next_sibling(%child4);
+let %child6 = @first_child(%child5);
+let %child7 = @next_sibling(%child5);
+let %child8 = @next_sibling(%child7);
+let %child9 = @first_child(%child8);
 @append($$root, %fragment0);
 
 `;
@@ -1426,12 +1426,12 @@ let %child9 = %child8.firstChild;
 exports[`miscellaneous > handles html minification 5`] = `
 let %%template0 = @html("<div>x x <div></div> x x <div></div> x x</div>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child1 = %child0.firstChild;
-let %child2 = %child1.nextSibling;
-let %child3 = %child2.nextSibling;
-let %child4 = %child3.nextSibling;
-let %child5 = %child4.nextSibling;
+let %child0 = @first_child(%fragment0);
+let %child1 = @first_child(%child0);
+let %child2 = @next_sibling(%child1);
+let %child3 = @next_sibling(%child2);
+let %child4 = @next_sibling(%child3);
+let %child5 = @next_sibling(%child4);
 @append($$root, %fragment0);
 
 `;
@@ -1439,9 +1439,9 @@ let %child5 = %child4.nextSibling;
 exports[`miscellaneous > handles html minification 6`] = `
 let %%template0 = @html("<svg><symbol id=icon viewBox='0 0 20 20'fill=currentColor><path d=></symbol></svg>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child1 = %child0.firstChild;
-let %child2 = %child1.firstChild;
+let %child0 = @first_child(%fragment0);
+let %child1 = @first_child(%child0);
+let %child2 = @first_child(%child1);
 @append($$root, %fragment0);
 
 `;
@@ -1449,7 +1449,7 @@ let %child2 = %child1.firstChild;
 exports[`miscellaneous > handles html minification 7`] = `
 let %%template0 = @html("<input a='foo bar'b c>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 @append($$root, %fragment0);
 
 `;
@@ -1457,8 +1457,8 @@ let %child0 = %fragment0.firstChild;
 exports[`miscellaneous > handles html minification 8`] = `
 let %%template0 = @html("<svg><use href=icons.svg#refresh></svg>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
-let %child1 = %child0.firstChild;
+let %child0 = @first_child(%fragment0);
+let %child1 = @first_child(%child0);
 @append($$root, %fragment0);
 
 `;
@@ -1490,7 +1490,7 @@ exports[`miscellaneous > handles parsing quirks 4`] = `
 exports[`miscellaneous > handles spacing between attributes 1`] = `
 let %%template0 = @html("<button style='display: none;'class=window title=Greet></button>");
 let %fragment0 = @clone(%template0);
-let %child0 = %fragment0.firstChild;
+let %child0 = @first_child(%fragment0);
 @append($$root, %fragment0);
 
 `;
