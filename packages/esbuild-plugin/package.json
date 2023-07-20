@@ -14,12 +14,10 @@
 	],
 	"exports": {
 		".": {
-			"require": "./dist/cjs/plugin.js",
-			"import": "./dist/esm/plugin.js"
+			"import": "./dist/plugin.js"
 		},
 		"./ccss": {
-			"require": "./dist/cjs/ccss_plugin.js",
-			"import": "./dist/esm/ccss_plugin.js"
+			"import": "./dist/ccss_plugin.js"
 		}
 	},
 	"scripts": {

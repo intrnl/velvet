@@ -13,8 +13,7 @@
 	],
 	"exports": {
 		".": {
-			"require": "./dist/cjs/compiler/src/index.js",
-			"import": "./dist/esm/compiler/src/index.js"
+			"import": "./dist/compiler/src/index.js"
 		}
 	},
 	"scripts": {

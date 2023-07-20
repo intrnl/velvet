@@ -10,13 +10,7 @@ export default defineConfig({
 	output: [
 		{
 			format: 'esm',
-			dir: './dist/esm',
-			preserveModules: true,
-			generatedCode: 'es2015',
-		},
-		{
-			format: 'cjs',
-			dir: './dist/cjs',
+			dir: './dist',
 			preserveModules: true,
 			generatedCode: 'es2015',
 		},

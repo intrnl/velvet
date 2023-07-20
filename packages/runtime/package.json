@@ -14,16 +14,13 @@
 	],
 	"exports": {
 		".": {
-			"import": "./dist/esm/public.js",
-			"require": "./dist/cjs/public.js"
+			"import": "./dist/public.js"
 		},
 		"./internal": {
-			"import": "./dist/esm/internal.js",
-			"require": "./dist/cjs/internal.js"
+			"import": "./dist/internal.js"
 		},
 		"./macro": {
-			"import": "./dist/esm/macro.js",
-			"require": "./dist/cjs/macro.js"
+			"import": "./dist/macro.js"
 		}
 	},
 	"scripts": {
