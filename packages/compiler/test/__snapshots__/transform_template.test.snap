@@ -304,7 +304,7 @@ expected #use to have not more than 2 argument, 3 were passed (1:19)
 `;
 
 exports[`await logic > await after static 1`] = `
-let %%template0 = /*#__PURE__*/ @html("<div></div>");
+let %template0 = %template2;
 let %fragment0 = /*#__PURE__*/ @clone(%template0);
 let %child0 = /*#__PURE__*/ @first_child(%fragment0);
 
@@ -1310,7 +1310,7 @@ let %block1 = ($$root, person) => {
 `;
 
 exports[`loop logic > loop after static 1`] = `
-let %%template0 = /*#__PURE__*/ @html("<div></div>");
+let %template0 = %template1;
 let %fragment0 = /*#__PURE__*/ @clone(%template0);
 let %child0 = /*#__PURE__*/ @first_child(%fragment0);
 

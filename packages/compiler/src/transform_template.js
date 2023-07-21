@@ -56,8 +56,8 @@ export function transform_template (template, source) {
 	/** @type {Map<tt.Element, string>} */
 	let inline_to_ident = new Map();
 
-	/** @type {(tt.ChildNode | tt.Fragment)[]} */
-	let node_stack = [];
+	/** @type {Map<string, string>}  */
+	let html_to_template_map = new Map();
 
 	walk(template, {
 		/**
@@ -1015,20 +1015,42 @@ export function transform_template (template, source) {
 					curr_block.js_expressions.push(append_expr);
 				}
 
-				let html_expr = t.call_expression(t.identifier('@html'), [
-					t.literal(curr_block.html),
-					wrapper && t.literal(!!wrapper),
-				]);
+				let html = curr_block.html;
 
-				let template_def = t.variable_declaration('let', [
-					t.variable_declarator(
-						// template def has to be hoisted
-						t.identifier('%' + template_ident),
-						html_expr,
-					),
-				]);
+				/** @type {import('estree').VariableDeclaration} */
+				let template_def;
 
-				html_expr.leadingComments = [{ type: 'Block', value: '#__PURE__' }];
+				if (html_to_template_map.has(html)) {
+					let ident = html_to_template_map.get(html);
+					assert(typeof ident === 'string');
+
+					template_def = t.variable_declaration('let', [
+						t.variable_declarator(
+							// don't hoist this template_ident because we could be reusing
+							// the template of a child fragment and this would be placed
+							// above it
+							t.identifier(template_ident),
+							t.identifier(ident),
+						),
+					]);
+				}
+				else {
+					let html_expr = t.call_expression(t.identifier('@html'), [
+						t.literal(curr_block.html),
+						wrapper && t.literal(!!wrapper),
+					]);
+
+					template_def = t.variable_declaration('let', [
+						t.variable_declarator(
+							// template def has to be hoisted
+							t.identifier('%' + template_ident),
+							html_expr,
+						),
+					]);
+
+					html_expr.leadingComments = [{ type: 'Block', value: '#__PURE__' }];
+					html_to_template_map.set(html, template_ident);
+				}
 
 				curr_block.js_definitions.push(template_def, fragment_def);
 
@@ -1079,17 +1101,43 @@ export function transform_template (template, source) {
 						),
 					]);
 
+					let html = block.html;
+
+					/** @type {import('estree').VariableDeclaration} */
+					let template_def;
+
 					block.js_traversals.push(instantiate_def);
 
-					if (block.html) {
-						let html_expr = t.call_expression(t.identifier('@html'), [t.literal(block.html)]);
+					if (html) {
+						if (html_to_template_map.has(html)) {
+							let ident = html_to_template_map.get(html);
+							assert(typeof ident === 'string');
 
-						let template_def = t.variable_declaration('let', [
-							t.variable_declarator(
-								t.identifier('%' + template_ident),
-								html_expr,
-							),
-						]);
+							template_def = t.variable_declaration('let', [
+								t.variable_declarator(
+									// don't hoist this template_ident because we could be reusing
+									// the template of a child fragment and this would be placed
+									// above it
+									t.identifier(template_ident),
+									t.identifier(ident),
+								),
+							]);
+						}
+						else {
+							let html_expr = t.call_expression(t.identifier('@html'), [
+								t.literal(html),
+							]);
+
+							template_def = t.variable_declaration('let', [
+								t.variable_declarator(
+									t.identifier('%' + template_ident),
+									html_expr,
+								),
+							]);
+
+							html_expr.leadingComments = [{ type: 'Block', value: '#__PURE__' }];
+							html_to_template_map.set(html, template_ident);
+						}
 
 						let fragment_def = t.variable_declaration('let', [
 							t.variable_declarator(
@@ -1106,8 +1154,6 @@ export function transform_template (template, source) {
 								t.identifier(fragment_ident),
 							]),
 						);
-
-						html_expr.leadingComments = [{ type: 'Block', value: '#__PURE__' }];
 
 						block.js_definitions.push(template_def, fragment_def);
 						block.js_expressions.push(append_expr);

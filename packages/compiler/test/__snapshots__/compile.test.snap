@@ -439,11 +439,11 @@ exports[`options element > throws on non root-level usage 1`] = `
 exports[`peek > allows peeking of @let variables 1`] = `
 import {
 	signal,
-	html,
 	clone,
 	computed,
 	first_child,
 	next_sibling,
+	html,
 	text,
 	replace,
 	after,
@@ -453,12 +453,12 @@ import {
 } from "@intrnl/velvet/internal";
 
 import { peek } from '@intrnl/velvet/macro';
-let template0 = /*#__PURE__*/ html("<!><!><!>");
 let template1 = /*#__PURE__*/ html("<!><!><!>");
 
 function setup($$root, $$host) {
 	let count = signal(2);
 	count.value = 3;
+	let template0 = template1;
 	let fragment0 = /*#__PURE__*/ clone(template0);
 	let doubled = computed(() => count.value * 3);
 	let child0 = /*#__PURE__*/ first_child(fragment0);
@@ -540,7 +540,6 @@ import {
 
 let template0 = /*#__PURE__*/ html("<!>");
 let template1 = /*#__PURE__*/ html("<!><!>");
-let template2 = /*#__PURE__*/ html("<!><!>");
 
 function setup($$root, $$host) {
 	let fragment0 = /*#__PURE__*/ clone(template0);
@@ -557,6 +556,7 @@ function setup($$root, $$host) {
 	};
 
 	let block2 = $$root => {
+		let template2 = template1;
 		let fragment2 = /*#__PURE__*/ clone(template2);
 		let child2 = /*#__PURE__*/ first_child(fragment2);
 		let child3 = /*#__PURE__*/ next_sibling(child2);
@@ -664,7 +664,6 @@ import {
 
 let template0 = /*#__PURE__*/ html("<!>");
 let template1 = /*#__PURE__*/ html("<!><!>");
-let template2 = /*#__PURE__*/ html("<!><!>");
 
 function setup($$root, $$host) {
 	let fragment0 = /*#__PURE__*/ clone(template0);
@@ -681,6 +680,7 @@ function setup($$root, $$host) {
 	};
 
 	let block2 = $$root => {
+		let template2 = template1;
 		let fragment2 = /*#__PURE__*/ clone(template2);
 		let child2 = /*#__PURE__*/ first_child(fragment2);
 		let child3 = /*#__PURE__*/ next_sibling(child2);
@@ -829,10 +829,10 @@ export default define(null, setup, {}, []);
 
 exports[`store > subscription on root and await pending and resolve 1`] = `
 import {
-	html,
 	clone,
 	first_child,
 	next_sibling,
+	html,
 	text,
 	replace,
 	after,
@@ -841,11 +841,10 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = /*#__PURE__*/ html("<!><!>");
 let template1 = /*#__PURE__*/ html("<!><!>");
-let template2 = /*#__PURE__*/ html("<!><!>");
 
 function setup($$root, $$host) {
+	let template0 = template1;
 	let fragment0 = /*#__PURE__*/ clone(template0);
 	let child4 = /*#__PURE__*/ first_child(fragment0);
 	let child5 = /*#__PURE__*/ next_sibling(child4);
@@ -861,6 +860,7 @@ function setup($$root, $$host) {
 	};
 
 	let block2 = $$root => {
+		let template2 = template1;
 		let fragment2 = /*#__PURE__*/ clone(template2);
 		let child2 = /*#__PURE__*/ first_child(fragment2);
 		let child3 = /*#__PURE__*/ next_sibling(child2);
@@ -879,10 +879,10 @@ export default define(null, setup, {}, []);
 
 exports[`store > subscription on root and conditional 1`] = `
 import {
-	html,
 	clone,
 	first_child,
 	next_sibling,
+	html,
 	text,
 	replace,
 	after,
@@ -891,10 +891,10 @@ import {
 	define
 } from "@intrnl/velvet/internal";
 
-let template0 = /*#__PURE__*/ html("<!><!>");
 let template1 = /*#__PURE__*/ html("<!><!>");
 
 function setup($$root, $$host) {
+	let template0 = template1;
 	let fragment0 = /*#__PURE__*/ clone(template0);
 	let child0 = /*#__PURE__*/ first_child(fragment0);
 	let child3 = /*#__PURE__*/ next_sibling(child0);
