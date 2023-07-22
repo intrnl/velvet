@@ -6,8 +6,8 @@
 		"node": ">=16.0.0"
 	},
 	"scripts": {
-		"dev": "NODE_ENV=development node ./scripts/dev.js",
-		"build": "NODE_ENV=production node ./scripts/build.js",
+		"dev": "NODE_ENV=development bun run ./scripts/dev.js",
+		"build": "NODE_ENV=production bun run ./scripts/build.js",
 		"publish": "rm -r dist/_assets; bun run build; scripts/publish.sh"
 	},
 	"dependencies": {
