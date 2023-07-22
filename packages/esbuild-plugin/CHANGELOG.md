@@ -1,5 +1,11 @@
 # @intrnl/esbuild-plugin-velvet
 
+## 1.0.1
+
+### Patch Changes
+
+- 6ec6961: Support esbuild 0.18.0
+
 ## 1.0.0
 
 ### Minor Changes
