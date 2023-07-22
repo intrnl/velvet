@@ -2,6 +2,6 @@
   "version": 3,
   "sources": ["../../../src/spiral/style.css"],
   "sourcesContent": ["x-cursor, x-spiral {\n\tdisplay: contents;\n}\n\nhtml, body {\n  height: 100%;\n  margin: 0;\n  background: #eee;\n  font: 400 16px/1.3 \"Helvetica Neue\", helvetica, sans-serif;\n  text-rendering: optimizeSpeed;\n  color: #444;\n\toverflow: hidden;\n}\n\n.cursor {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 8px;\n  height: 8px;\n  margin: -5px 0 0 -5px;\n  border: 2px solid #F00;\n  border-radius: 50%;\n  transform-origin: 50% 50%;\n  pointer-events: none;\n  overflow: hidden;\n  font-size: 9px;\n  line-height: 25px;\n  text-indent: 15px;\n  white-space: nowrap;\n}\n.cursor:not(.label) {\n  contain: strict;\n}\n.cursor.label {\n  overflow: visible;\n}\n.cursor .label {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\n"],
-  "mappings": "AAAA,kBACC,iBAGD,UACE,YALF,SAOE,gBACA,sDACA,6BACA,WACD,gBAGD,QACE,kBACA,OACA,MACA,UACA,WAnBF,qBAqBE,sBArBF,kBAuBE,yBACA,oBACA,gBACA,cACA,iBACA,iBACA,mBAEF,oBACE,eAEF,cACE,iBAEF,eACE,kBACA,OACA",
+  "mappings": "AAAA,SAAU,SACT,QAAS,QACV,CAEA,KAAM,KACJ,OAAQ,KALV,OAMU,EACR,WAAY,KACZ,KAAM,IAAI,IAAI,CAAC,IAAI,cAAgB,CAAE,SAAS,CAAE,WAChD,eAAgB,cAChB,MAAO,KACR,SAAU,MACX,CAEA,CAAC,OACC,SAAU,SACV,KAAM,EACN,IAAK,EACL,MAAO,IACP,OAAQ,IAnBV,OAoBU,KAAK,EAAE,EAAE,KACjB,OAAQ,IAAI,MAAM,KArBpB,cAsBiB,IACf,iBAAkB,IAAI,IACtB,eAAgB,KAChB,SAAU,OACV,UAAW,IACX,YAAa,KACb,YAAa,KACb,YAAa,MACf,CACA,CAAC,MAAM,KAAK,CAAC,OACX,QAAS,MACX,CACA,CAAC,MAAM,CAAC,MACN,SAAU,OACZ,CACA,CAAC,OAAO,CAAC,MACP,SAAU,SACV,KAAM,EACN,IAAK,CACP",
   "names": []
 }
