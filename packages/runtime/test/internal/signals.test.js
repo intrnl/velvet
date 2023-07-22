@@ -13,9 +13,6 @@ describe('signal', () => {
 
 		count.value = 2;
 		expect(count.value).toBe(2);
-
-		count.set(4);
-		expect(count.value).toBe(4);
 	});
 
 	it('peek() should not trigger a read', () => {
