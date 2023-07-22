@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha';
-import * as assert from 'node:assert/strict';
+import { describe, expect, it } from 'bun:test';
 
 import { spy } from 'nanospy';
 import { assertSpy } from '../utils.js';
@@ -10,13 +9,13 @@ describe('signal', () => {
 	it('creates a signal', () => {
 		let count = signal(0);
 
-		assert.equal(count.value, 0);
+		expect(count.value).toBe(0);
 
 		count.value = 2;
-		assert.equal(count.value, 2);
+		expect(count.value).toBe(2);
 
 		count.set(4);
-		assert.equal(count.value, 4);
+		expect(count.value).toBe(4);
 	});
 
 	it('peek() should not trigger a read', () => {
@@ -41,19 +40,19 @@ describe('computed', () => {
 
 		assertSpy(fn, 0);
 
-		assert.equal(double.value, 0);
+		expect(double.value).toBe(0);
 		assertSpy(fn, 1);
 
 		count.value = 2;
-		assert.equal(double.value, 4);
+		expect(double.value).toBe(4);
 		assertSpy(fn, 2);
 
 		count.value = 2;
-		assert.equal(double.value, 4);
+		expect(double.value).toBe(4);
 		assertSpy(fn, 2);
 
 		count.value = 3;
-		assert.equal(double.value, 6);
+		expect(double.value).toBe(6);
 		assertSpy(fn, 3);
 	});
 
@@ -61,10 +60,10 @@ describe('computed', () => {
 		let count = signal(1);
 		let doubled = computed(() => count.value * 2);
 
-		assert.equal(doubled.value, 2);
+		expect(doubled.value).toBe(2);
 
 		doubled.value = 7;
-		assert.equal(doubled.value, 7);
+		expect(doubled.value).toBe(7);
 	});
 });
 
@@ -100,10 +99,10 @@ describe('effect', () => {
 			count.value += 1;
 		});
 
-		assert.equal(count.value, 2);
+		expect(count.value).toBe(2);
 
 		count.value = 6;
-		assert.equal(count.value, 7);
+		expect(count.value).toBe(7);
 
 		unsubscribe();
 	});

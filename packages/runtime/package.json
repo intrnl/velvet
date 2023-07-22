@@ -26,12 +26,10 @@
 	"scripts": {
 		"prepublishOnly": "bun run build",
 		"build": "rm -r dist; rollup -c",
-		"watch": "rollup -cw",
-		"test": "mocha --recursive"
+		"watch": "rollup -cw"
 	},
 	"devDependencies": {
 		"esbuild": "^0.18.11",
-		"mocha": "^10.2.0",
 		"nanospy": "^1.0.0",
 		"rollup": "^3.26.1"
 	}

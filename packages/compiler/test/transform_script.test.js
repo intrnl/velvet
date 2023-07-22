@@ -1,7 +1,4 @@
-import { describe, it } from 'mocha';
-import * as assert from 'node:assert/strict';
-
-import { assertSnapshot } from './_utils/snapshot.js';
+import { describe, expect, it } from 'bun:test';
 
 import { finalize_program, finalize_template, transform_script } from '../src/transform_script.js';
 import { parse, print } from '../src/utils/js_parse.js';
@@ -16,7 +13,8 @@ describe('ref', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('variables with no mutation', () => {
@@ -39,7 +37,8 @@ describe('ref', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('variables with mutation', () => {
@@ -69,7 +68,8 @@ describe('ref', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('unmutated variable referencing mutated variable', () => {
@@ -84,7 +84,7 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('mutated variable, referencing unmutated variable', () => {
@@ -99,7 +99,7 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('variable mutation with logical assignment operators', () => {
@@ -114,7 +114,7 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('unmutated variable accessing member property', () => {
@@ -129,7 +129,7 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('mutated variable accessing member property', () => {
@@ -150,7 +150,7 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('unmutated variable mutating member property', () => {
@@ -163,7 +163,7 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('mutated variable mutating member property', () => {
@@ -177,7 +177,7 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('unmutated variable calling', () => {
@@ -190,7 +190,7 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('mutated variable calling', () => {
@@ -204,7 +204,7 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('prefix', () => {
@@ -227,7 +227,7 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('postfix', () => {
@@ -250,7 +250,7 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('mutated variable calling member property', () => {
@@ -266,7 +266,7 @@ describe('ref', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('two variables on one declaration, one mutated', () => {
@@ -278,7 +278,8 @@ describe('ref', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('two variables on one declaration, two mutated', () => {
@@ -291,7 +292,8 @@ describe('ref', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('variable mutated with spread', () => {
@@ -307,7 +309,8 @@ describe('ref', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('handles optional chaining', () => {
@@ -318,7 +321,8 @@ describe('ref', () => {
 		`);
 
 		transform_script(program);
-		assertSnapshot(print(program));
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 });
 
@@ -332,7 +336,8 @@ describe('prop', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('variables with no mutation', () => {
@@ -353,7 +358,8 @@ describe('prop', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('variables with mutation', () => {
@@ -383,7 +389,8 @@ describe('prop', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('variable referencing unmutated ref', () => {
@@ -398,7 +405,7 @@ describe('prop', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('variable referencing mutated ref', () => {
@@ -416,7 +423,7 @@ describe('prop', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('handles separate export specifier', () => {
@@ -430,7 +437,7 @@ describe('prop', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('throws on exporting default', () => {
@@ -440,13 +447,19 @@ describe('prop', () => {
 
 		let program = parse(source);
 
+		let has_error = false;
+		let err;
+
 		try {
 			transform_script(program, source);
-			assert.fail();
 		}
 		catch (error) {
-			assertSnapshot(error.toString());
+			has_error = true;
+			err = error;
 		}
+
+		expect(has_error).toBe(true);
+		expect(err.toString()).toMatchSnapshot();
 	});
 
 	it('throws on one variable exported twice', () => {
@@ -458,13 +471,19 @@ describe('prop', () => {
 
 		let program = parse(source);
 
+		let has_error = false;
+		let err;
+
 		try {
 			transform_script(program, source);
-			assert.fail();
 		}
 		catch (error) {
-			assertSnapshot(error.toString());
+			has_error = true;
+			err = error;
 		}
+
+		expect(has_error).toBe(true);
+		expect(err.toString()).toMatchSnapshot();
 	});
 });
 
@@ -480,7 +499,7 @@ describe('computed', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('mutated variables', () => {
@@ -499,7 +518,7 @@ describe('computed', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('variable referencing unmutated ref', () => {
@@ -518,7 +537,7 @@ describe('computed', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('variable referencing mutated ref', () => {
@@ -540,7 +559,7 @@ describe('computed', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('mutating variable referencing unmutated ref', () => {
@@ -559,7 +578,7 @@ describe('computed', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('unmutated variable referencing unmutated ref member property', () => {
@@ -575,7 +594,7 @@ describe('computed', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('mutated variable referencing unmutated ref member property', () => {
@@ -594,7 +613,7 @@ describe('computed', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('unmutated variable referencing mutated ref member property', () => {
@@ -612,7 +631,7 @@ describe('computed', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('mutated variable referencing mutated ref member property', () => {
@@ -632,7 +651,7 @@ describe('computed', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('object spread from a store', () => {
@@ -644,7 +663,7 @@ describe('computed', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 });
 
@@ -684,7 +703,7 @@ describe('effect', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('references mutated refs', () => {
@@ -720,7 +739,7 @@ describe('effect', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('only transform root scope', () => {
@@ -738,7 +757,7 @@ describe('effect', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('handles direct statements', () => {
@@ -756,7 +775,7 @@ describe('effect', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 });
 
@@ -768,7 +787,8 @@ describe('store', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('multiple getter references', () => {
@@ -782,7 +802,8 @@ describe('store', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('setter', () => {
@@ -796,7 +817,8 @@ describe('store', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('logical setter', () => {
@@ -806,7 +828,8 @@ describe('store', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('binary setter', () => {
@@ -816,7 +839,8 @@ describe('store', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('multiple setter references', () => {
@@ -830,7 +854,8 @@ describe('store', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('subscribing to a ref', () => {
@@ -843,7 +868,8 @@ describe('store', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('retrieving member property', () => {
@@ -853,7 +879,8 @@ describe('store', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('mutating member property', () => {
@@ -863,7 +890,8 @@ describe('store', () => {
 
 		transform_script(program);
 
-		assertSnapshot(print(program));
+		let result = print(program);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('throws on lone $', () => {
@@ -873,13 +901,19 @@ describe('store', () => {
 
 		let program = parse(source);
 
+		let has_error = false;
+		let err;
+
 		try {
 			transform_script(program, source);
-			assert.fail();
 		}
 		catch (error) {
-			assertSnapshot(error.toString());
+			has_error = true;
+			err = error;
 		}
+
+		expect(has_error).toBe(true);
+		expect(err.toString()).toMatchSnapshot();
 	});
 
 	it('throws on declaring $ variables', () => {
@@ -889,13 +923,19 @@ describe('store', () => {
 
 		let program = parse(source);
 
+		let has_error = false;
+		let err;
+
 		try {
 			transform_script(program, source);
-			assert.fail();
 		}
 		catch (error) {
-			assertSnapshot(error.toString());
+			has_error = true;
+			err = error;
 		}
+
+		expect(has_error).toBe(true);
+		expect(err.toString()).toMatchSnapshot();
 	});
 
 	it('only alter single $', () => {
@@ -906,7 +946,7 @@ describe('store', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('no affecting inner scope', () => {
@@ -922,7 +962,7 @@ describe('store', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('reference store twice', () => {
@@ -933,7 +973,7 @@ describe('store', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('getter within computed', () => {
@@ -944,7 +984,7 @@ describe('store', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('lone block statement', () => {
@@ -955,7 +995,7 @@ describe('store', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 });
 
@@ -974,7 +1014,7 @@ describe('bind', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('separate export specifier', () => {
@@ -993,7 +1033,7 @@ describe('bind', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('handles explicit undefined initializer', () => {
@@ -1006,7 +1046,7 @@ describe('bind', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('handles props initialized by another var', () => {
@@ -1019,7 +1059,7 @@ describe('bind', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('only one specifier for a bind', () => {
@@ -1031,13 +1071,19 @@ describe('bind', () => {
 
 		let program = parse(source);
 
+		let has_error = false;
+		let err;
+
 		try {
 			transform_script(program, source);
-			assert.fail();
 		}
 		catch (error) {
-			assertSnapshot(error.toString());
+			has_error = true;
+			err = error;
 		}
+
+		expect(has_error).toBe(true);
+		expect(err.toString()).toMatchSnapshot();
 	});
 });
 
@@ -1049,13 +1095,19 @@ describe('reserved', () => {
 
 		let program = parse(source);
 
+		let has_error = false;
+		let err;
+
 		try {
 			transform_script(program, source);
-			assert.fail();
 		}
 		catch (error) {
-			assertSnapshot(error.toString());
+			has_error = true;
+			err = error;
 		}
+
+		expect(has_error).toBe(true);
+		expect(err.toString()).toMatchSnapshot();
 	});
 
 	it('throws on reassigning $$', () => {
@@ -1065,13 +1117,19 @@ describe('reserved', () => {
 
 		let program = parse(source);
 
+		let has_error = false;
+		let err;
+
 		try {
 			transform_script(program, source);
-			assert.fail();
 		}
 		catch (error) {
-			assertSnapshot(error.toString());
+			has_error = true;
+			err = error;
 		}
+
+		expect(has_error).toBe(true);
+		expect(err.toString()).toMatchSnapshot();
 	});
 
 	it('can declare $$$ variables', () => {
@@ -1080,10 +1138,23 @@ describe('reserved', () => {
 			let $$$bar = 333;
 		`);
 
-		assert.doesNotThrow(() => transform_script(program));
+		let has_error = false;
+		let err;
+
+		try {
+			transform_script(program);
+		}
+		catch (error) {
+			has_error = true;
+			err = error;
+		}
+
+		if (has_error) {
+			throw new Error(err);
+		}
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 });
 
@@ -1099,7 +1170,7 @@ describe('peek', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('transforms peek call on mutated variables', () => {
@@ -1114,7 +1185,7 @@ describe('peek', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('ignores variables on non-valid scopes', () => {
@@ -1131,7 +1202,7 @@ describe('peek', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('transforms peek call on computed mutated variables', () => {
@@ -1148,7 +1219,7 @@ describe('peek', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('removes peek call on computed unmutated variables', () => {
@@ -1164,7 +1235,7 @@ describe('peek', () => {
 		transform_script(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 });
 
@@ -1181,7 +1252,7 @@ describe('program finalizer', () => {
 		finalize_program(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('hoists imports', () => {
@@ -1197,6 +1268,6 @@ describe('program finalizer', () => {
 		finalize_program(program);
 
 		let result = print(program);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 });

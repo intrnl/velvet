@@ -1,9 +1,6 @@
-import { describe, it } from 'mocha';
-import * as assert from 'node:assert/strict';
-
-import { assertSnapshot } from './_utils/snapshot.js';
-
+import { describe, expect, it } from 'bun:test';
 import { parse_template } from '../src/parse_template.js';
+
 import { transform_template } from '../src/transform_template.js';
 import { print } from '../src/utils/js_parse.js';
 
@@ -813,7 +810,7 @@ function snap (template) {
 	let fragment = parse_template(template);
 	let program = transform_template(fragment, template);
 
-	assertSnapshot(print(program));
+	expect(print(program)).toMatchSnapshot();
 }
 
 function snap_parse_error (template) {
@@ -828,8 +825,8 @@ function snap_parse_error (template) {
 		error = err;
 	}
 
-	assert.ok(has_error, `expected template parse to fail`);
-	assertSnapshot(error.toString());
+	expect(has_error).toBe(true);
+	expect(error.toString()).toMatchSnapshot();
 }
 
 function snap_transform_error (template) {
@@ -846,6 +843,6 @@ function snap_transform_error (template) {
 		error = err;
 	}
 
-	assert.ok(has_error, `expected template transform to fail`);
-	assertSnapshot(error.toString());
+	expect(has_error).toBe(true);
+	expect(error.toString).toMatchSnapshot();
 }

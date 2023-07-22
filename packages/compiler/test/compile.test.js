@@ -1,7 +1,4 @@
-import { describe, it } from 'mocha';
-import * as assert from 'node:assert/strict';
-
-import { assertSnapshot } from './_utils/snapshot.js';
+import { describe, expect, it } from 'bun:test';
 
 import { compileSync, componentize } from '../src/compile.js';
 
@@ -16,7 +13,7 @@ describe('module context', () => {
 		`;
 
 		let result = compileSync(source);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 });
 
@@ -30,13 +27,19 @@ describe('script context', () => {
 			<div>the number is {number}</div>
 		`;
 
+		let has_error = false;
+		let err;
+
 		try {
 			compileSync(source);
-			assert.fail();
 		}
 		catch (error) {
-			assertSnapshot(error.toString());
+			has_error = true;
+			err = error;
 		}
+
+		expect(has_error).toBe(true);
+		expect(err.toString()).toMatchSnapshot();
 	});
 });
 
@@ -48,7 +51,7 @@ describe('options element', () => {
 		`;
 
 		let result = compileSync(source);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('throws on non root-level usage', () => {
@@ -56,13 +59,19 @@ describe('options element', () => {
 			<div><v:options name='foo' /></div>
 		`;
 
+		let has_error = false;
+		let err;
+
 		try {
 			compileSync(source);
-			assert.fail();
 		}
 		catch (error) {
-			assertSnapshot(error.toString());
+			has_error = true;
+			err = error;
 		}
+
+		expect(has_error).toBe(true);
+		expect(err.toString()).toMatchSnapshot();
 	});
 });
 
@@ -77,13 +86,19 @@ describe('props', () => {
 			</script>
 		`;
 
+		let has_error = false;
+		let err;
+
 		try {
 			compileSync(source);
-			assert.fail();
 		}
 		catch (error) {
-			assertSnapshot(error.toString());
+			has_error = true;
+			err = error;
 		}
+
+		expect(has_error).toBe(true);
+		expect(err.toString()).toMatchSnapshot();
 	});
 
 	it('exporting binding and mutable', () => {
@@ -101,7 +116,7 @@ describe('props', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 });
 
@@ -117,7 +132,7 @@ describe('attribute', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('binding checkbox group nested', () => {
@@ -137,7 +152,7 @@ describe('attribute', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('throws on duplicate attributes', () => {
@@ -145,13 +160,19 @@ describe('attribute', () => {
 			<hello-world foo={123} foo={234}></hello-world>
 		`;
 
+		let has_error = false;
+		let err;
+
 		try {
 			compileSync(template);
-			assert.fail();
 		}
 		catch (error) {
-			assertSnapshot(error.toString());
+			has_error = true;
+			err = error;
 		}
+
+		expect(has_error).toBe(true);
+		expect(err.toString()).toMatchSnapshot();
 	});
 
 	it('allows duplicate #use attributes', () => {
@@ -160,7 +181,7 @@ describe('attribute', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 });
 
@@ -172,13 +193,19 @@ describe('store', () => {
 			</script>
 		`;
 
+		let has_error = false;
+		let err;
+
 		try {
 			compileSync(source);
-			assert.fail();
 		}
 		catch (error) {
-			assertSnapshot(error.toString());
+			has_error = true;
+			err = error;
 		}
+
+		expect(has_error).toBe(true);
+		expect(err.toString()).toMatchSnapshot();
 	});
 
 	it('subscription on script and root', () => {
@@ -191,7 +218,7 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('subscription on root and conditional', () => {
@@ -203,7 +230,7 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('subscription on conditional', () => {
@@ -214,7 +241,7 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('subscription on conditional with log', () => {
@@ -226,7 +253,7 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('subscription on conditional and alternate', () => {
@@ -239,7 +266,7 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('subscription on nested conditional', () => {
@@ -253,7 +280,7 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('subscription on await resolve', () => {
@@ -264,7 +291,7 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('subscription on await pending and resolve', () => {
@@ -277,7 +304,7 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('subscription on root and await pending and resolve', () => {
@@ -292,7 +319,7 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('subscription on conditional with let', () => {
@@ -304,7 +331,7 @@ describe('store', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 });
 
@@ -312,13 +339,19 @@ describe('element', () => {
 	it('throws on improper closing tag', () => {
 		let template = `<legend>Title</button>`;
 
+		let has_error = false;
+		let err;
+
 		try {
 			compileSync(template);
-			assert.fail();
 		}
 		catch (error) {
-			assertSnapshot(error.toString());
+			has_error = true;
+			err = error;
 		}
+
+		expect(has_error).toBe(true);
+		expect(err.toString()).toMatchSnapshot();
 	});
 });
 
@@ -336,7 +369,7 @@ describe('let expression', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('unmutated referencing mutated', () => {
@@ -353,7 +386,7 @@ describe('let expression', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('mutated referencing unmutated', () => {
@@ -369,7 +402,7 @@ describe('let expression', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('mutated referencing mutated', () => {
@@ -386,7 +419,7 @@ describe('let expression', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('referencing for each', () => {
@@ -400,7 +433,7 @@ describe('let expression', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 });
 
@@ -413,7 +446,7 @@ describe('conditional logic', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('consequent and alternate', () => {
@@ -426,7 +459,7 @@ describe('conditional logic', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 });
 
@@ -438,7 +471,7 @@ describe('style', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('imports', () => {
@@ -456,7 +489,7 @@ describe('style', () => {
 			},
 		});
 
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 });
 
@@ -486,12 +519,12 @@ describe('peek', () => {
 		`;
 
 		let result = compileSync(template);
-		assertSnapshot(result);
+		expect(result).toMatchSnapshot();
 	});
 });
 
 it('componentize', () => {
-	assert.equal(componentize('foo.js', 'x'), 'x-foo');
-	assert.equal(componentize('HomePage.js', 'x'), 'x-home-page');
-	assert.equal(componentize('button group.js', 'x'), 'x-button-group');
+	expect(componentize('foo.js', 'x')).toBe('x-foo');
+	expect(componentize('HomePage.js', 'x')).toBe('x-home-page');
+	expect(componentize('button group.js', 'x')).toBe('x-button-group');
 });

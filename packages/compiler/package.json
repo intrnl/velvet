@@ -19,8 +19,7 @@
 	"scripts": {
 		"prepublishOnly": "bun run build",
 		"build": "rm -r dist; rollup -c",
-		"watch": "rollup -cw",
-		"test": "mocha --recursive"
+		"watch": "rollup -cw"
 	},
 	"peerDependencies": {
 		"@intrnl/velvet": "^1.0.0"
@@ -35,7 +34,6 @@
 		"@rollup/plugin-node-resolve": "^15.1.0",
 		"@types/estree": "^1.0.1",
 		"esbuild": "^0.18.11",
-		"mocha": "^10.2.0",
 		"rollup": "^3.26.1"
 	}
 }
