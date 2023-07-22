@@ -51,34 +51,34 @@ export function print (node, opts = {}) {
 
 		code += chunk.content;
 
-	// 	if (chunk.loc) {
-	// 		current_line.push([
-	// 			current_column,
-	// 			0, // source index is always zero
-	// 			chunk.loc.start.line - 1,
-	// 			chunk.loc.start.column,
-	// 		]);
-	// 	}
+		// 	if (chunk.loc) {
+		// 		current_line.push([
+		// 			current_column,
+		// 			0, // source index is always zero
+		// 			chunk.loc.start.line - 1,
+		// 			chunk.loc.start.column,
+		// 		]);
+		// 	}
 
-	// 	for (let i = 0; i < chunk.content.length; i += 1) {
-	// 		if (chunk.content[i] === '\n') {
-	// 			mappings.push(current_line);
-	// 			current_line = [];
-	// 			current_column = 0;
-	// 		}
-	// 		else {
-	// 			current_column += 1;
-	// 		}
-	// 	}
+		// 	for (let i = 0; i < chunk.content.length; i += 1) {
+		// 		if (chunk.content[i] === '\n') {
+		// 			mappings.push(current_line);
+		// 			current_line = [];
+		// 			current_column = 0;
+		// 		}
+		// 		else {
+		// 			current_column += 1;
+		// 		}
+		// 	}
 
-	// 	if (chunk.loc) {
-	// 		current_line.push([
-	// 			current_column,
-	// 			0, // source index is always zero
-	// 			chunk.loc.end.line - 1,
-	// 			chunk.loc.end.column,
-	// 		]);
-	// 	}
+		// 	if (chunk.loc) {
+		// 		current_line.push([
+		// 			current_column,
+		// 			0, // source index is always zero
+		// 			chunk.loc.end.line - 1,
+		// 			chunk.loc.end.column,
+		// 		]);
+		// 	}
 	}
 
 	// mappings.push(current_line);

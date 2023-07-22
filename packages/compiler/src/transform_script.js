@@ -67,7 +67,7 @@ export function transform_script (program, source, macro_path = '@intrnl/velvet/
 					}
 
 					if (id.velvet?.transformed) {
-						continue
+						continue;
 					}
 
 					let own_scope = curr_scope.find_owner(name);
