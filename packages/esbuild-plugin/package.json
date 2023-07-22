@@ -21,7 +21,7 @@
 		}
 	},
 	"scripts": {
-		"prepublishOnly": "pnpm run build",
+		"prepublishOnly": "bun run build",
 		"watch": "rollup -cw",
 		"build": "rm -r dist; rollup -c"
 	},

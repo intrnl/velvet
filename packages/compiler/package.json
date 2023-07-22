@@ -17,7 +17,7 @@
 		}
 	},
 	"scripts": {
-		"prepublishOnly": "pnpm run build",
+		"prepublishOnly": "bun run build",
 		"build": "rm -r dist; rollup -c",
 		"watch": "rollup -cw",
 		"test": "mocha --recursive"

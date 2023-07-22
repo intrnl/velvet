@@ -8,7 +8,7 @@
 	"scripts": {
 		"dev": "NODE_ENV=development node ./scripts/dev.js",
 		"build": "NODE_ENV=production node ./scripts/build.js",
-		"publish": "rm -r dist/_assets; pnpm run build; scripts/publish.sh"
+		"publish": "rm -r dist/_assets; bun run build; scripts/publish.sh"
 	},
 	"dependencies": {
 		"@intrnl/velvet": "workspace:*",
