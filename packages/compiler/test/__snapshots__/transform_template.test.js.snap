@@ -212,11 +212,23 @@ $: %child0["value"] = content;
 @append($$root, %fragment0);"
 `;
 
-exports[`attribute fails on binding with no value 1`] = `[Function: toString]`;
+exports[`attribute fails on binding with no value 1`] = `
+"expected :value to contain an identifier or a member expression (1:0)
+1: <input :value>
+   ^"
+`;
 
-exports[`attribute fails on binding with invalid expression 1`] = `[Function: toString]`;
+exports[`attribute fails on binding with invalid expression 1`] = `
+"expected :value to contain an identifier or a member expression (1:17)
+1: <input :value={  foo()  }>
+                    ^"
+`;
 
-exports[`attribute fails on binding with optional member expression 1`] = `[Function: toString]`;
+exports[`attribute fails on binding with optional member expression 1`] = `
+"expected :value to contain an identifier or a member expression (1:15)
+1: <input :value={foo?.bar}>
+                  ^"
+`;
 
 exports[`attribute ref expression 1`] = `
 "let %%template0 = /*#__PURE__*/ @html("<input>");
@@ -250,9 +262,17 @@ let %child0 = /*#__PURE__*/ @first_child(%fragment0);
 @append($$root, %fragment0);"
 `;
 
-exports[`attribute throws on action expression array with nothing 1`] = `[Function: toString]`;
+exports[`attribute throws on action expression array with nothing 1`] = `
+"expected #use to have at least 1 argument, but only 0 were passed (1:12)
+1: <time #use={[]}></time>
+               ^"
+`;
 
-exports[`attribute throws on action expression array with too many options 1`] = `[Function: toString]`;
+exports[`attribute throws on action expression array with too many options 1`] = `
+"expected #use to have not more than 2 argument, 3 were passed (1:19)
+1: <time #use={[a, b, c]}></time>
+                      ^"
+`;
 
 exports[`attribute spread expression 1`] = `
 "let %%template0 = /*#__PURE__*/ @html("<input>");
@@ -546,7 +566,11 @@ let %child4 = /*#__PURE__*/ @next_sibling(%child3);
 @append($$root, %fragment0);"
 `;
 
-exports[`named expression unknown named expression 1`] = `[Function: toString]`;
+exports[`named expression unknown named expression 1`] = `
+"unknown named expression: @xyz (1:2)
+1: {@xyz foo}
+     ^"
+`;
 
 exports[`log expression single 1`] = `"$: console.log(foo);"`;
 
@@ -1468,10 +1492,26 @@ let %child1 = /*#__PURE__*/ @first_child(%child0);
 @append($$root, %fragment0);"
 `;
 
-exports[`miscellaneous handles parsing quirks 1`] = `[Function: toString]`;
+exports[`miscellaneous handles parsing quirks 1`] = `
+"<tr> cannot appear as a child of <table> (1:7)
+1: <table><tr></tr></table>
+          ^"
+`;
 
-exports[`miscellaneous handles parsing quirks 2`] = `[Function: toString]`;
+exports[`miscellaneous handles parsing quirks 2`] = `
+"<div> cannot appear as a child of <table> (1:7)
+1: <table><div></div></table>
+          ^"
+`;
 
-exports[`miscellaneous handles parsing quirks 3`] = `[Function: toString]`;
+exports[`miscellaneous handles parsing quirks 3`] = `
+"<div> cannot appear as a child of <select> (1:8)
+1: <select><div>abc<div>efg</div></div></select>
+           ^"
+`;
 
-exports[`miscellaneous handles parsing quirks 4`] = `[Function: toString]`;
+exports[`miscellaneous handles parsing quirks 4`] = `
+"<div> cannot appear as a descendant of <p> (1:3)
+1: <p><div></div></p>
+      ^"
+`;

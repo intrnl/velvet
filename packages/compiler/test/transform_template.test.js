@@ -844,5 +844,5 @@ function snap_transform_error (template) {
 	}
 
 	expect(has_error).toBe(true);
-	expect(error.toString).toMatchSnapshot();
+	expect(error.toString()).toMatchSnapshot();
 }
