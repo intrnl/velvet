@@ -1,6 +1,5 @@
 {
 	"private": true,
-	"packageManager": "pnpm@8.6.9",
 	"workspaces": ["packages/*/", "playground/"],
 	"scripts": {
 		"lint": "eslint --fix --cache packages/",
