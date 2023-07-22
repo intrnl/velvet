@@ -2,5 +2,6 @@
 	"editor.defaultFormatter": "dprint.dprint",
 	"files.associations": {
 		"*.snap": "javascript"
-	}
+	},
+	"dprint.path": "node_modules/.bin/dprint"
 }
