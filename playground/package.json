@@ -11,12 +11,12 @@
 		"publish": "rm -r dist/_assets; bun run build; scripts/publish.sh"
 	},
 	"dependencies": {
-		"@intrnl/velvet": "workspace:*",
+		"@intrnl/velvet": "*",
 		"perf-monitor": "^0.4.1"
 	},
 	"devDependencies": {
-		"@intrnl/esbuild-plugin-velvet": "workspace:*",
-		"@intrnl/velvet-compiler": "workspace:*",
+		"@intrnl/esbuild-plugin-velvet": "*",
+		"@intrnl/velvet-compiler": "*",
 		"esbuild": "^0.18.11"
 	}
 }
