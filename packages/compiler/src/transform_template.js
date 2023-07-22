@@ -460,68 +460,57 @@ export function transform_template (template, source) {
 					if (is_prop || is_binding) {
 						let prop_name = attr_name.slice(1);
 
+						/** @type {import('estree').Statement} */
+						let prop_expr;
+
 						// handle special checkbox group binding
 						if (is_input && input_type === 'checkbox' && prop_name === 'group') {
-							let prop_expr = t.labeled_statement(
-								t.identifier('$'),
-								t.expression_statement(
-									t.assignment_expression(
-										t.member_expression_from([node_ident, 'checked']),
-										t.call_expression(
-											t.member_expression(value_expr, t.identifier('includes')),
-											[t.member_expression_from([node_ident, 'value'])],
-										),
+							prop_expr = t.expression_statement(
+								t.assignment_expression(
+									t.member_expression_from([node_ident, 'checked']),
+									t.call_expression(
+										t.member_expression(value_expr, t.identifier('includes')),
+										[t.member_expression_from([node_ident, 'value'])],
 									),
 								),
 							);
-
-							curr_block.js_expressions.push(prop_expr);
 						}
 						// handle special radio group binding
 						else if (is_input && input_type === 'radio' && prop_name === 'group') {
-							let prop_expr = t.labeled_statement(
-								t.identifier('$'),
-								t.expression_statement(
-									t.assignment_expression(
-										t.member_expression_from([node_ident, 'checked']),
-										t.binary_expression(
-											value_expr,
-											t.member_expression_from([node_ident, 'value']),
-											'===',
-										),
+							prop_expr = t.expression_statement(
+								t.assignment_expression(
+									t.member_expression_from([node_ident, 'checked']),
+									t.binary_expression(
+										value_expr,
+										t.member_expression_from([node_ident, 'value']),
+										'===',
 									),
 								),
 							);
-
-							curr_block.js_expressions.push(prop_expr);
 						}
 						// handle special select value binding
 						else if (is_select && prop_name === 'value') {
-							let prop_expr = t.labeled_statement(
-								t.identifier('$'),
-								t.expression_statement(
-									t.call_expression(t.identifier('@set_select_values'), [
-										t.identifier(node_ident),
-										value_expr,
-									]),
-								),
+							prop_expr = t.expression_statement(
+								t.call_expression(t.identifier('@set_select_values'), [
+									t.identifier(node_ident),
+									value_expr,
+								]),
 							);
-
-							curr_block.js_expressions.push(prop_expr);
 						}
 						else {
-							let prop_expr = t.labeled_statement(
-								t.identifier('$'),
-								t.expression_statement(
-									t.assignment_expression(
-										t.member_expression(t.identifier(node_ident), t.literal(prop_name), true),
-										value_expr,
-									),
+							prop_expr = t.expression_statement(
+								t.assignment_expression(
+									t.member_expression(t.identifier(node_ident), t.literal(prop_name), true),
+									value_expr,
 								),
 							);
-
-							curr_block.js_expressions.push(prop_expr);
 						}
+
+						if (is_binding || !is_expression_static(value_expr)) {
+							prop_expr = t.labeled_statement(t.identifier('$'), prop_expr);
+						}
+
+						curr_block.js_expressions.push(prop_expr);
 
 						if (is_binding) {
 							let event_name = `update:${prop_name}`;
@@ -668,16 +657,18 @@ export function transform_template (template, source) {
 						if (is_inline || attr_value) {
 							let toggle_name = is_toggle ? attr_name.slice(1) : attr_name;
 
-							let toggle_expr = t.labeled_statement(
-								t.identifier('$'),
-								t.expression_statement(
-									t.call_expression(t.identifier('@toggle'), [
-										t.identifier(node_ident),
-										t.literal(toggle_name),
-										value_expr,
-									]),
-								),
+							/** @type {import('estree').Statement} */
+							let toggle_expr = t.expression_statement(
+								t.call_expression(t.identifier('@toggle'), [
+									t.identifier(node_ident),
+									t.literal(toggle_name),
+									value_expr,
+								]),
 							);
+
+							if (!is_expression_static(value_expr)) {
+								toggle_expr = t.labeled_statement(t.identifier('$'), toggle_expr);
+							}
 
 							curr_block.js_expressions.push(toggle_expr);
 						}
@@ -707,16 +698,18 @@ export function transform_template (template, source) {
 
 					// handle attribute ifdef
 					if (attr_name[attr_name.length - 1] === '?') {
-						let attr_expr = t.labeled_statement(
-							t.identifier('$'),
-							t.expression_statement(
-								t.call_expression(t.identifier('@attr_ifdef'), [
-									t.identifier(node_ident),
-									t.literal(attr_name.slice(0, -1)),
-									value_expr,
-								]),
-							),
+						/** @type {import('estree').Statement} */
+						let attr_expr = t.expression_statement(
+							t.call_expression(t.identifier('@attr_ifdef'), [
+								t.identifier(node_ident),
+								t.literal(attr_name.slice(0, -1)),
+								value_expr,
+							]),
 						);
+
+						if (!is_expression_static(value_expr)) {
+							attr_expr = t.labeled_statement(t.identifier('$'), attr_expr);
+						}
 
 						curr_block.js_expressions.push(attr_expr);
 						continue;
@@ -773,17 +766,20 @@ export function transform_template (template, source) {
 									continue;
 								}
 
-								let class_toggle_expr = t.labeled_statement(
-									t.identifier('$'),
-									t.expression_statement(
-										t.call_expression(t.identifier(attr_name === 'class' ? '@class_toggle' : '@style_set'), [
-											t.identifier(node_ident),
-											key,
-											// @ts-expect-error
-											value,
-										]),
-									),
+								/** @type {import('estree').Statement} */
+								let class_toggle_expr = t.expression_statement(
+									t.call_expression(t.identifier(attr_name === 'class' ? '@class_toggle' : '@style_set'), [
+										t.identifier(node_ident),
+										key,
+										// @ts-expect-error
+										value,
+									]),
 								);
+
+								// @ts-expect-error
+								if (!is_expression_static(value)) {
+									class_toggle_expr = t.labeled_statement(t.identifier('$'), class_toggle_expr);
+								}
 
 								curr_block.js_expressions.push(class_toggle_expr);
 							}
@@ -800,16 +796,18 @@ export function transform_template (template, source) {
 					}
 
 					if (is_inline || (attr_value && attr_value.type === 'Expression')) {
-						let attr_expr = t.labeled_statement(
-							t.identifier('$'),
-							t.expression_statement(
-								t.call_expression(t.identifier('@attr'), [
-									t.identifier(node_ident),
-									t.literal(attr_name),
-									value_expr,
-								]),
-							),
+						/** @type {import('estree').Statement} */
+						let attr_expr = t.expression_statement(
+							t.call_expression(t.identifier('@attr'), [
+								t.identifier(node_ident),
+								t.literal(attr_name),
+								value_expr,
+							]),
 						);
+
+						if (!is_expression_static(value_expr)) {
+							attr_expr = t.labeled_statement(t.identifier('$'), attr_expr);
+						}
 
 						curr_block.js_expressions.push(attr_expr);
 						continue;
@@ -1780,4 +1778,21 @@ function create_ref_ident (id) {
  */
 function get_current (arr, cursor = 0) {
 	return arr[arr.length - 1 - cursor];
+}
+
+/**
+ * @param {import('estree').Expression} node
+ * @returns {boolean}
+ */
+function is_expression_static (node) {
+	let leading_comments = node.leadingComments;
+
+	if (leading_comments && leading_comments.length > 0) {
+		let comment = leading_comments[0];
+		let value = comment.value.trim();
+
+		return value === '@once';
+	}
+
+	return false;
 }

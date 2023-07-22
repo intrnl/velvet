@@ -29,8 +29,8 @@ describe('attribute', () => {
 		snap(template);
 	});
 
-	it.skip('attribute expression pure', () => {
-		let template = `<div class={/* @static */ className}></div>`;
+	it('attribute expression pure', () => {
+		let template = `<div class={/* @once */ className}></div>`;
 
 		snap(template);
 	});
@@ -59,8 +59,8 @@ describe('attribute', () => {
 		snap(template);
 	});
 
-	it.skip('boolean expression pure', () => {
-		let template = `<textarea ?readonly={/* @static */ is_readonly}></textarea>`;
+	it('boolean expression pure', () => {
+		let template = `<textarea ?readonly={/* @once */ is_readonly}></textarea>`;
 
 		snap(template);
 	});
@@ -77,8 +77,8 @@ describe('attribute', () => {
 		snap(template);
 	});
 
-	it.skip('property expression pure', () => {
-		let template = `<input .value={/* @static */ value}>`;
+	it('property expression pure', () => {
+		let template = `<input .value={/* @once */ value}>`;
 
 		snap(template);
 	});

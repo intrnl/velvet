@@ -29,6 +29,14 @@ $: @attr(%child0, "class", className);
 @append($$root, %fragment0);"
 `;
 
+exports[`attribute attribute expression pure 1`] = `
+"let %%template0 = /*#__PURE__*/ @html("<div></div>");
+let %fragment0 = /*#__PURE__*/ @clone(%template0);
+let %child0 = /*#__PURE__*/ @first_child(%fragment0);
+@attr(%child0, "class", /* @once */ className);
+@append($$root, %fragment0);"
+`;
+
 exports[`attribute attribute none 1`] = `
 "let %%template0 = /*#__PURE__*/ @html("<textarea readonly></textarea>");
 let %fragment0 = /*#__PURE__*/ @clone(%template0);
@@ -58,6 +66,14 @@ $: @toggle(%child0, "readonly", is_readonly);
 @append($$root, %fragment0);"
 `;
 
+exports[`attribute boolean expression pure 1`] = `
+"let %%template0 = /*#__PURE__*/ @html("<textarea></textarea>");
+let %fragment0 = /*#__PURE__*/ @clone(%template0);
+let %child0 = /*#__PURE__*/ @first_child(%fragment0);
+@toggle(%child0, "readonly", /* @once */ is_readonly);
+@append($$root, %fragment0);"
+`;
+
 exports[`attribute boolean none 1`] = `
 "let %%template0 = /*#__PURE__*/ @html("<textarea ?readonly></textarea>");
 let %fragment0 = /*#__PURE__*/ @clone(%template0);
@@ -70,6 +86,14 @@ exports[`attribute property expression 1`] = `
 let %fragment0 = /*#__PURE__*/ @clone(%template0);
 let %child0 = /*#__PURE__*/ @first_child(%fragment0);
 $: %child0["value"] = value;
+@append($$root, %fragment0);"
+`;
+
+exports[`attribute property expression pure 1`] = `
+"let %%template0 = /*#__PURE__*/ @html("<input>");
+let %fragment0 = /*#__PURE__*/ @clone(%template0);
+let %child0 = /*#__PURE__*/ @first_child(%fragment0);
+%child0["value"] = /* @once */ value;
 @append($$root, %fragment0);"
 `;
 
