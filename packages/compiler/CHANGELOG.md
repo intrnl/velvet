@@ -1,5 +1,33 @@
 # @intrnl/velvet-compiler
 
+## 1.0.0
+
+### Minor Changes
+
+- 90770a4: Remove CommonJS distribution
+- 49611dd: Template compiler rewrite
+
+### Patch Changes
+
+- e8078fc: Upgrade dependencies
+- 8b79a9a: Introduce firstChild and nextSibling helper functions
+
+  These function calls takes less of a hit on the component source size, and we
+  can mark the calls as pure without splattering pure comments (not that it would
+  work, Terser does not support explicitly marking one getter as pure.)
+
+- ebbce04: Mark some calls as pure
+- 5be2a8d: New JS printer
+- 84f72e1: Deduplicate templates
+- Updated dependencies [e335c2d]
+- Updated dependencies [e8078fc]
+- Updated dependencies [337f068]
+- Updated dependencies [8b79a9a]
+- Updated dependencies [90770a4]
+- Updated dependencies [09a3722]
+- Updated dependencies [49611dd]
+  - @intrnl/velvet@0.6.0
+
 ## 0.9.0
 
 ### Minor Changes

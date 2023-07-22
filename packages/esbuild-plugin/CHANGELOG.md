@@ -1,5 +1,24 @@
 # @intrnl/esbuild-plugin-velvet
 
+## 1.0.0
+
+### Minor Changes
+
+- 90770a4: Remove CommonJS distribution
+
+### Patch Changes
+
+- e8078fc: Upgrade dependencies
+- ee464c0: esbuild plugin supports esbuild 0.17.0
+- Updated dependencies [e8078fc]
+- Updated dependencies [8b79a9a]
+- Updated dependencies [ebbce04]
+- Updated dependencies [90770a4]
+- Updated dependencies [5be2a8d]
+- Updated dependencies [84f72e1]
+- Updated dependencies [49611dd]
+  - @intrnl/velvet-compiler@1.0.0
+
 ## 0.7.0
 
 ### Patch Changes

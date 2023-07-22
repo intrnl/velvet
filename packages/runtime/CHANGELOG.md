@@ -1,5 +1,25 @@
 # @intrnl/velvet
 
+## 1.0.0
+
+### Minor Changes
+
+- 337f068: Remove adoptedStylesheets fallback
+- 90770a4: Remove CommonJS distribution
+- 49611dd: Template compiler rewrite
+
+### Patch Changes
+
+- e335c2d: Properly mark some utils as pure
+- e8078fc: Upgrade dependencies
+- 8b79a9a: Introduce firstChild and nextSibling helper functions
+
+  These function calls takes less of a hit on the component source size, and we
+  can mark the calls as pure without splattering pure comments (not that it would
+  work, Terser does not support explicitly marking one getter as pure.)
+
+- 09a3722: Improve await logic
+
 ## 0.5.0
 
 ### Minor Changes
