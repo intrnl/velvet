@@ -33,6 +33,8 @@ let batch_iteration = 0;
 // the clock against a source's last recorded value of the clock.
 let clock = 0;
 
+let effect_clock = 0;
+
 function start_batch () {
 	batch_depth++;
 }
@@ -308,9 +310,7 @@ export class Computed extends Signal {
 	 */
 	_refresh () {
 		let _this = this;
-		let flags = _this._flags;
-
-		_this._flags &= ~NOTIFIED;
+		let flags = _this._flags &= ~NOTIFIED;
 
 		// If we are tracking, we can use the OUTDATED flag to bail out, but if not,
 		// we can keep a separate epoch to know the world outside of this computed value,
@@ -319,12 +319,10 @@ export class Computed extends Signal {
 			return false;
 		}
 
+		// Set RUNNING flag so that we can notice cyclical dependencies when
+		// checking for our dependencies
+		_this._flags = flags | RUNNING & ~OUTDATED;
 		_this._world_epoch = clock;
-		_this._flags &= ~OUTDATED;
-
-		// Mark this computed signal running before checking the dependencies for value
-		// changes, so that the RUNNING flag can be used to notice cyclical dependencies.
-		_this._flags |= RUNNING;
 
 		if (_this._epoch > -1 && !need_recompute(_this)) {
 			_this._flags &= ~RUNNING;
