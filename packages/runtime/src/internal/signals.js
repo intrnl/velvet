@@ -308,29 +308,19 @@ export class Computed extends Signal {
 	 */
 	_refresh () {
 		let _this = this;
+		let flags = _this._flags;
 
 		_this._flags &= ~NOTIFIED;
 
-		if (_this._flags & RUNNING) {
-			return false;
-		}
-
-		// If this computed signal has subscribed to updates from its dependencies
-		// (TRACKING flag set) and none of them have notified about changes (OUTDATED
-		// flag not set), then the computed value can't have changed.
-		if ((_this._flags & (OUTDATED | TRACKING)) === TRACKING) {
-			return false;
-		}
-
-		_this._flags &= ~OUTDATED;
-
-		// If nothing in the world has been changed, then it's not possible for this
-		// computed value to change.
-		if (_this._world_epoch === clock) {
+		// If we are tracking, we can use the OUTDATED flag to bail out, but if not,
+		// we can keep a separate epoch to know the world outside of this computed value,
+		// this allows for quickly bailing out when nothing in the world has changed.
+		if (flags & RUNNING || (flags & TRACKING ? !(flags & OUTDATED) : _this._world_epoch === clock)) {
 			return false;
 		}
 
 		_this._world_epoch = clock;
+		_this._flags &= ~OUTDATED;
 
 		// Mark this computed signal running before checking the dependencies for value
 		// changes, so that the RUNNING flag can be used to notice cyclical dependencies.
@@ -353,7 +343,7 @@ export class Computed extends Signal {
 
 			let value = _this._compute();
 
-			if (_this._flags & HAS_ERROR || _this._value !== value || _this._epoch === -1) {
+			if (flags & HAS_ERROR || _this._value !== value || _this._epoch === -1) {
 				stale = true;
 
 				_this._value = value;
