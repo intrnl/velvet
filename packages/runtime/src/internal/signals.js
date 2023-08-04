@@ -484,15 +484,15 @@ export class Effect {
 	 */
 	_callback () {
 		let _this = this;
+		let flags = _this._flags;
 
-		if (_this._flags & RUNNING) {
+		if (flags & RUNNING) {
 			return;
 		}
 
 		_this._epoch = clock;
 
-		_this._flags |= RUNNING;
-		_this._flags &= ~OUTDATED;
+		_this._flags = flags | RUNNING & ~OUTDATED;
 
 		let prev_context = eval_context;
 		let prev_sources = eval_sources;
