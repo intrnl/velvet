@@ -1,20 +1,9 @@
-import * as fs from 'node:fs';
-
 import * as esbuild from 'esbuild';
 import { defineConfig } from 'rollup';
 
 import pkg from './package.json' assert { type: 'json' };
 
-let mangleFile = './mangle.json';
 let mangleCache = {};
-
-try {
-	let source = fs.readFileSync(mangleFile, 'utf8');
-	mangleCache = JSON.parse(source);
-}
-catch {}
-
-let originalMangleCache = mangleCache;
 
 export default defineConfig({
 	input: {
@@ -32,8 +21,8 @@ export default defineConfig({
 	plugins: [
 		{
 			name: 'esbuild',
-			transform (code) {
-				let result = esbuild.transformSync(code, {
+			async renderChunk (code) {
+				let result = await esbuild.transform(code, {
 					sourcemap: true,
 					mangleProps: /^_/,
 					mangleCache: mangleCache,
@@ -49,28 +38,6 @@ export default defineConfig({
 					map: result.map,
 				};
 			},
-			closeBundle () {
-				if (isObjectInequal(originalMangleCache, mangleCache)) {
-					console.log('writing new mangle cache');
-					fs.writeFileSync(mangleFile, JSON.stringify(mangleCache, null, '\t') + '\n');
-				}
-			},
 		},
 	],
 });
-
-function isObjectInequal (a, b) {
-	for (let key in a) {
-		if (!(key in b)) {
-			return true;
-		}
-	}
-
-	for (let key in b) {
-		if (a[key] !== b[key]) {
-			return true;
-		}
-	}
-
-	return false;
-}
