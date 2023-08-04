@@ -319,7 +319,7 @@ export class Computed extends Signal {
 
 		// Set RUNNING flag so that we can notice cyclical dependencies when
 		// checking for our dependencies
-		_this._flags = flags | RUNNING & ~OUTDATED;
+		_this._flags = flags & ~OUTDATED | RUNNING;
 		_this._world_epoch = clock;
 
 		if (_this._epoch > -1 && !need_recompute(_this)) {
@@ -492,7 +492,7 @@ export class Effect {
 
 		_this._epoch = clock;
 
-		_this._flags = flags | RUNNING & ~OUTDATED;
+		_this._flags = flags & ~OUTDATED | RUNNING;
 
 		let prev_context = eval_context;
 		let prev_sources = eval_sources;
