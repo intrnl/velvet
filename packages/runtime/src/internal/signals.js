@@ -33,8 +33,6 @@ let batch_iteration = 0;
 // the clock against a source's last recorded value of the clock.
 let clock = 0;
 
-let effect_clock = 0;
-
 function start_batch () {
 	batch_depth++;
 }
@@ -334,12 +332,14 @@ export class Computed extends Signal {
 		let prev_sources = eval_sources;
 		let prev_sources_idx = eval_sources_idx;
 
+		let value;
+
 		try {
 			eval_context = _this;
 			eval_sources = undefined;
 			eval_sources_idx = 0;
 
-			let value = _this._compute();
+			value = _this._compute();
 
 			if (flags & HAS_ERROR || _this._value !== value || _this._epoch === -1) {
 				stale = true;
