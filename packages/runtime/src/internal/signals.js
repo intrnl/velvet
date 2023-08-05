@@ -32,7 +32,16 @@ let batch_iteration = 0;
 // we can check if a target is stale by comparing its last recorded value of
 // the clock against a source's last recorded value of the clock.
 let clock = 0;
+
+// This clock is ticked forwards when an effect is running, we can then check
+// if a source hasn't been added as a dependency by checking whether it's behind
+// the current time.
 let access_clock = 0;
+
+// Oversubscription can generally happen if a source is being read by an effect
+// before and after it creates an effect, but when it happens it's generally a
+// non-issue because the notify() sets a NOTIFIED flag that ignores any further
+// calls until it's unset again
 
 function start_batch () {
 	batch_depth++;
