@@ -33,9 +33,9 @@ let batch_iteration = 0;
 // the clock against a source's last recorded value of the clock.
 let clock = 0;
 
-// This clock is ticked forwards when an effect is running, we can then check
-// if a source hasn't been added as a dependency by checking whether it's behind
-// the current time.
+// This is less of a clock than it is a unique counter, we use this to know
+// whether we have added a source as a dependency or not, by having sources
+// record the last epoch it had seen.
 let access_clock = 0;
 
 // Oversubscription can generally happen if a source is being read by an effect
@@ -239,8 +239,8 @@ export class Signal {
 	get value () {
 		let _this = this;
 
-		if (eval_context && access_clock > _this._access_epoch) {
-			_this._access_epoch = access_clock;
+		if (eval_context && eval_context._access_epoch !== _this._access_epoch) {
+			_this._access_epoch = eval_context._access_epoch;
 
 			if (!eval_sources) {
 				if (eval_context._sources[eval_sources_idx] === _this) {
@@ -473,6 +473,8 @@ export class Effect {
 		_this._compute = compute;
 		/** @internal @type {number} */
 		_this._epoch = 0;
+		/** @internal @type {number} */
+		_this._access_epoch = 0;
 		/** @internal @type {Array<Signal>} */
 		_this._sources = [];
 		/** @internal @type {number} */
@@ -492,8 +494,8 @@ export class Effect {
 			return;
 		}
 
-		access_clock++;
 		_this._epoch = clock;
+		_this._access_epoch = access_clock++;
 		_this._flags = flags & ~OUTDATED | RUNNING;
 
 		let prev_context = eval_context;
