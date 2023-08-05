@@ -70,7 +70,7 @@ function end_batch () {
 
 			if (!(effect._flags & DISPOSED) && need_recompute(effect)) {
 				try {
-					effect._callback();
+					effect._refresh();
 				}
 				catch (err) {
 					if (!has_error) {
@@ -486,7 +486,7 @@ export class Effect {
 	/**
 	 * @internal
 	 */
-	_callback () {
+	_refresh () {
 		let _this = this;
 		let flags = _this._flags;
 
@@ -710,7 +710,7 @@ export function effect (compute) {
 	let dispose = effect._dispose.bind(effect);
 
 	try {
-		effect._callback();
+		effect._refresh();
 	}
 	catch (error) {
 		dispose();
