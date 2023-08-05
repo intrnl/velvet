@@ -32,6 +32,7 @@ let batch_iteration = 0;
 // we can check if a target is stale by comparing its last recorded value of
 // the clock against a source's last recorded value of the clock.
 let clock = 0;
+let access_clock = 0;
 
 function start_batch () {
 	batch_depth++;
@@ -128,7 +129,6 @@ function cleanup_context () {
 
 		for (; idx < len; idx++) {
 			let source = sources[idx];
-			source._node = undefined;
 
 			if (eval_context._flags & TRACKING) {
 				source._subscribe(eval_context);
@@ -138,11 +138,6 @@ function cleanup_context () {
 	else if (eval_sources_idx < eval_context._sources.length) {
 		prune_context_sources();
 		sources.length = eval_sources_idx;
-	}
-
-	while (eval_sources_idx--) {
-		let source = sources[eval_sources_idx];
-		source._node = undefined;
 	}
 }
 
@@ -187,10 +182,10 @@ export class Signal {
 		_this._value = value;
 		/** @internal @type {number} */
 		_this._epoch = -1;
+		/** @internal @type {number} */
+		_this._access_epoch = -1;
 		/** @internal @type {Array<Computed | Effect>} */
 		_this._targets = [];
-		/** @internal @type {Computed | Effect | undefined} */
-		_this._node = undefined;
 	}
 
 	/**
@@ -235,10 +230,8 @@ export class Signal {
 	get value () {
 		let _this = this;
 
-		if (eval_context && _this._node !== eval_context) {
-			// Mark the current context, there's no need to add ourselves again to the
-			// dependency list if we're already in it, will be unset during cleanup
-			_this._node = eval_context;
+		if (eval_context && access_clock > _this._access_epoch) {
+			_this._access_epoch = access_clock;
 
 			if (!eval_sources) {
 				if (eval_context._sources[eval_sources_idx] === _this) {
@@ -490,8 +483,8 @@ export class Effect {
 			return;
 		}
 
+		access_clock++;
 		_this._epoch = clock;
-
 		_this._flags = flags & ~OUTDATED | RUNNING;
 
 		let prev_context = eval_context;
