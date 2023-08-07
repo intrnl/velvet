@@ -110,8 +110,9 @@ export function promise (marker, pending, resolved, rejected, expression) {
 
 	effect(() => {
 		try {
+			/** @type {Promise<unknown> | PromiseLike<unknown>} */
 			let next = expression();
-			let promisified = next instanceof Promise ? next : Promise.resolve(next);
+			let promisified = next instanceof Promise || 'then' in next ? next : Promise.resolve(next);
 
 			if (curr_promise === promisified) {
 				return;
