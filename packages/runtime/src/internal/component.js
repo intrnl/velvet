@@ -70,7 +70,8 @@ export class VelvetComponent extends HTMLElement {
 				curr_host = host;
 				instance.run(() => setup(root, host));
 
-				for (let hook of hooks) {
+				for (let idx = 0, len = hooks.length; idx < len; idx++) {
+					let hook = hooks[idx];
 					let ret = hook();
 
 					if (is_function(ret)) {
