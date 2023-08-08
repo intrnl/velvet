@@ -181,6 +181,16 @@ function dispose_effect (effect) {
  * @template T
  */
 export class Signal {
+	/** @internal @type {number} */
+	_epoch = -1;
+	/** @internal @type {number} */
+	_access_epoch = -1;
+	/** @internal @type {Array<Computed | Effect>} */
+	_targets = [];
+
+	/** @internal @type {T} */
+	_value;
+
 	/**
 	 * @param {T} value
 	 */
@@ -189,12 +199,6 @@ export class Signal {
 
 		/** @internal @type {T} */
 		_this._value = value;
-		/** @internal @type {number} */
-		_this._epoch = -1;
-		/** @internal @type {number} */
-		_this._access_epoch = -1;
-		/** @internal @type {Array<Computed | Effect>} */
-		_this._targets = [];
 	}
 
 	/**
@@ -286,6 +290,16 @@ export class Signal {
  * @extends {Signal<T>}
  */
 export class Computed extends Signal {
+	/** @internal @type {Array<Signal>} */
+	_sources = [];
+	/** @internal @type {number} */
+	_flags = OUTDATED;
+	/** @internal @type {number} */
+	_world_epoch = -1;
+
+	/** @internal @type {() => T} */
+	_compute;
+
 	/**
 	 * @param {() => T} compute
 	 */
@@ -296,12 +310,6 @@ export class Computed extends Signal {
 
 		/** @internal @type {() => T} */
 		_this._compute = compute;
-		/** @internal @type {Array<Signal>} */
-		_this._sources = [];
-		/** @internal @type {number} */
-		_this._flags = OUTDATED;
-		/** @internal @type {number} */
-		_this._world_epoch = -1;
 	}
 
 	/**
@@ -463,6 +471,20 @@ export class Computed extends Signal {
 }
 
 export class Effect {
+	/** @internal @type {number} */
+	_epoch = 0;
+	/** @internal @type {number} */
+	_access_epoch = 0;
+	/** @internal @type {Array<Signal>} */
+	_sources = [];
+	/** @internal @type {number} */
+	_flags = TRACKING;
+	/** @internal @type {number} */
+	_depth = 0;
+
+	/** @internal @type {() => void} */
+	_compute;
+
 	/**
 	 * @param {() => void} compute
 	 */
@@ -471,16 +493,6 @@ export class Effect {
 
 		/** @internal @type {() => void} */
 		_this._compute = compute;
-		/** @internal @type {number} */
-		_this._epoch = 0;
-		/** @internal @type {number} */
-		_this._access_epoch = 0;
-		/** @internal @type {Array<Signal>} */
-		_this._sources = [];
-		/** @internal @type {number} */
-		_this._flags = TRACKING;
-		/** @internal @type {number} */
-		_this._depth = 0;
 	}
 
 	/**
