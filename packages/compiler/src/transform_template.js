@@ -1359,15 +1359,62 @@ export function transform_template (template, source) {
 
 				curr_block.node_to_ident.set(node, node_ident);
 
-				let block = fragment_to_block.get(node.body);
+				let alternate = node.alternate;
 
-				if (!block) {
-					let effect_expr = t.labeled_statement(t.identifier('$'), t.expression_statement(node.expression));
-					curr_block.js_expressions.push(effect_expr);
+				let main_block = fragment_to_block.get(node.body);
+
+				/** @type {string | undefined} */
+				let alternate_ident;
+				let alternate_block = alternate && fragment_to_block.get(alternate);
+
+				if (alternate_block) {
+					alternate_ident = create_block_ident(alternate_block.id);
+
+					let alternate_block_decl = t.variable_declaration('let', [
+						t.variable_declarator(
+							t.identifier(alternate_ident),
+							t.arrow_function_expression(
+								[t.identifier('$$root')],
+								t.block_statement(get_block_js(alternate_block)),
+							),
+						),
+					]);
+
+					curr_block.js_block_defs.push(alternate_block_decl);
+				}
+
+				if (!main_block) {
+					if (alternate_ident) {
+						let show_expr = t.expression_statement(
+							t.call_expression(t.identifier('@show'), [
+								t.identifier(node_ident),
+								t.arrow_function_expression(
+									[],
+									t.conditional_expression(
+										t.binary_expression(
+											t.member_expression(node.expression, t.identifier('length')),
+											t.literal(1),
+											'<',
+										),
+										t.identifier(alternate_ident),
+										t.literal(null),
+									),
+								),
+							]),
+						);
+
+						curr_block.js_expressions.push(show_expr);
+					}
+					else {
+						let effect_expr = t.labeled_statement(t.identifier('$'), t.expression_statement(node.expression));
+
+						curr_block.js_expressions.push(effect_expr);
+					}
+
 					return;
 				}
 
-				let block_ident = create_block_ident(block.id);
+				let block_ident = create_block_ident(main_block.id);
 
 				let local = node.local;
 				let local_index = node.index;
@@ -1380,7 +1427,7 @@ export function transform_template (template, source) {
 						t.identifier(block_ident),
 						t.arrow_function_expression(
 							[t.identifier('$$root'), local, local_index],
-							t.block_statement(get_block_js(block)),
+							t.block_statement(get_block_js(main_block)),
 						),
 					),
 				]);
@@ -1390,6 +1437,7 @@ export function transform_template (template, source) {
 						t.identifier(node_ident),
 						t.identifier(block_ident),
 						t.arrow_function_expression([], node.expression),
+						alternate_ident ? t.identifier(alternate_ident) : null,
 					]),
 				);
 

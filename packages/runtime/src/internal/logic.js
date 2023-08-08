@@ -37,7 +37,7 @@ export function show (marker, expression) {
 	});
 }
 
-export function each (marker, block, expression) {
+export function each (marker, block, expression, fallback_block) {
 	// we can't make the scope instances ahead of time, a cleanup hook is required
 	// to clean up these detached scopes.
 
@@ -45,12 +45,25 @@ export function each (marker, block, expression) {
 	let parts = [];
 	let depth = eval_scope._depth + 1;
 
+	/** @type {?[instance: Scope, marker: Comment]} */
+	let fallback_part = null;
+
 	effect(() => {
 		let items = expression();
 		let index = 0;
 
 		let items_len = items.length;
 		let parts_len = parts.length;
+
+		if (fallback_block && fallback_part && items_len > 0) {
+			let instance = fallback_part[0];
+			let end = fallback_part[1];
+
+			instance.clear();
+			destroy_block(marker, end);
+
+			fallback_part = null;
+		}
 
 		for (; index < items_len; index++) {
 			if (parts[index]) {
@@ -81,6 +94,13 @@ export function each (marker, block, expression) {
 
 			destroy_block(start, end);
 			parts.length = items_len;
+		}
+
+		if (fallback_block && !fallback_part && items_len < 1) {
+			let instance = scope(true);
+			instance._depth = depth;
+
+			fallback_part = [instance, instance.run(() => fallback_block(marker))];
 		}
 	});
 

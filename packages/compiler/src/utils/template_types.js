@@ -257,6 +257,7 @@ export function conditional_statement (test, consequent, alternate = null) {
  * @property {import('estree').Identifier} [index]
  * @property {import('estree').Expression} [keyed]
  * @property {Fragment} body
+ * @property {Fragment} [alternate]
  * @property {number} [start]
  * @property {number} [end]
  */
@@ -267,9 +268,10 @@ export function conditional_statement (test, consequent, alternate = null) {
  * @param {import('estree').Identifier} [index]
  * @param {import('estree').Expression} [keyed]
  * @param {Fragment} body
+ * @param {Fragment} [alternate]
  * @returns {LoopStatement}
  */
-export function loop_statement (expression, local, index, keyed, body) {
+export function loop_statement (expression, local, index, keyed, body, alternate) {
 	return {
 		type: 'LoopStatement',
 		expression,
@@ -277,6 +279,7 @@ export function loop_statement (expression, local, index, keyed, body) {
 		index,
 		keyed,
 		body,
+		alternate,
 	};
 }
 

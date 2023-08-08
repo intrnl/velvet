@@ -1064,6 +1064,59 @@ let %block1 = ($$root, person) => {
 @append($$root, %fragment0);"
 `;
 
+exports[`loop logic allows for fallback 1`] = `
+"let %%template0 = /*#__PURE__*/ @html("<!>");
+let %fragment0 = /*#__PURE__*/ @clone(%template0);
+let %child3 = /*#__PURE__*/ @first_child(%fragment0);
+
+let %block2 = $$root => {
+	let %%template2 = /*#__PURE__*/ @html("<div>No person found!</div>");
+	let %fragment2 = /*#__PURE__*/ @clone(%template2);
+	let %child1 = /*#__PURE__*/ @first_child(%fragment2);
+	let %child2 = /*#__PURE__*/ @first_child(%child1);
+	@after($$root, %fragment2);
+	return %child1;
+};
+
+let %block1 = ($$root, person) => {
+	let %%template1 = /*#__PURE__*/ @html("<div></div>");
+	let %fragment1 = /*#__PURE__*/ @clone(%template1);
+	let %child0 = /*#__PURE__*/ @first_child(%fragment1);
+	@text(%child0, () => person.name, @append);
+	@after($$root, %fragment1);
+	return %child0;
+};
+
+@each(%child3, %block1, () => array, %block2);
+@append($$root, %fragment0);"
+`;
+
+exports[`loop logic handles empty loops 1`] = `
+"let %%template0 = /*#__PURE__*/ @html("<!>");
+let %fragment0 = /*#__PURE__*/ @clone(%template0);
+let %child0 = /*#__PURE__*/ @first_child(%fragment0);
+$: array;
+@append($$root, %fragment0);"
+`;
+
+exports[`loop logic handles empty loops with fallback 1`] = `
+"let %%template0 = /*#__PURE__*/ @html("<!>");
+let %fragment0 = /*#__PURE__*/ @clone(%template0);
+let %child2 = /*#__PURE__*/ @first_child(%fragment0);
+
+let %block2 = $$root => {
+	let %%template2 = /*#__PURE__*/ @html("<div>No person found!</div>");
+	let %fragment2 = /*#__PURE__*/ @clone(%template2);
+	let %child0 = /*#__PURE__*/ @first_child(%fragment2);
+	let %child1 = /*#__PURE__*/ @first_child(%child0);
+	@after($$root, %fragment2);
+	return %child0;
+};
+
+@show(%child2, () => array.length < 1 ? %block2 : null);
+@append($$root, %fragment0);"
+`;
+
 exports[`loop logic throw on more than two expression 1`] = `
 "expected closing #each bracket (2:32)
 1: 

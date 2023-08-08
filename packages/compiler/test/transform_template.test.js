@@ -609,6 +609,38 @@ describe('loop logic', () => {
 		snap(template);
 	});
 
+	it('allows for fallback', () => {
+		let template = `
+			{#each array as person}
+				<div>{person.name}</div>
+			{:else}
+				<div>No person found!</div>
+			{/each}
+		`;
+
+		snap(template);
+	});
+
+	it('handles empty loops', () => {
+		let template = `
+			{#each array as person}{/each}
+		`;
+
+		snap(template);
+	});
+
+	it('handles empty loops with fallback', () => {
+		let template = `
+			{#each array as person}
+
+			{:else}
+				<div>No person found!</div>
+			{/each}
+		`;
+
+		snap(template);
+	});
+
 	it('throw on more than two expression', () => {
 		let template1 = `
 			{#each array as person, index, foo}
