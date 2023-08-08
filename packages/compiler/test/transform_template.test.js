@@ -609,12 +609,34 @@ describe('loop logic', () => {
 		snap(template);
 	});
 
+	it('allows for keyed', () => {
+		let template = `
+			{#each array as person, idx (person.id)}
+				<div>{idx} - {person.name}</div>
+			{/each}
+		`;
+
+		snap(template);
+	});
+
 	it('allows for fallback', () => {
 		let template = `
 			{#each array as person}
 				<div>{person.name}</div>
 			{:else}
 				<div>No person found!</div>
+			{/each}
+		`;
+
+		snap(template);
+	});
+
+	it('allows for keyed fallback', () => {
+		let template = `
+			{#each array as person, idx (person.id)}
+				<div>{idx} - {person.name}</div>
+			{:else}
+				<div>No people found!</div>
 			{/each}
 		`;
 

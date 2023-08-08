@@ -1341,6 +1341,15 @@ export function transform_template (template, source) {
 			if (node.type === 'LoopStatement') {
 				assert(parent.type === 'Element' || parent.type === 'Fragment');
 
+				let keyed = node.keyed;
+				let alternate = node.alternate;
+
+				let main_block = fragment_to_block.get(node.body);
+
+				/** @type {string | undefined} */
+				let alternate_ident;
+				let alternate_block = alternate && fragment_to_block.get(alternate);
+
 				let node_ident = is_sibling_markerable(curr_block, parent, index);
 
 				if (!node_ident) {
@@ -1358,14 +1367,6 @@ export function transform_template (template, source) {
 				}
 
 				curr_block.node_to_ident.set(node, node_ident);
-
-				let alternate = node.alternate;
-
-				let main_block = fragment_to_block.get(node.body);
-
-				/** @type {string | undefined} */
-				let alternate_ident;
-				let alternate_block = alternate && fragment_to_block.get(alternate);
 
 				if (alternate_block) {
 					alternate_ident = create_block_ident(alternate_block.id);
@@ -1422,6 +1423,11 @@ export function transform_template (template, source) {
 				// @ts-expect-error indicate to script transformer that this is a ref
 				local.velvet = { ref: true };
 
+				if (local_index && keyed) {
+					// @ts-expect-error indicate to script transformer that this is a ref
+					local_index.velvet = { ref: true };
+				}
+
 				let block_decl = t.variable_declaration('let', [
 					t.variable_declarator(
 						t.identifier(block_ident),
@@ -1433,10 +1439,11 @@ export function transform_template (template, source) {
 				]);
 
 				let each_expr = t.expression_statement(
-					t.call_expression(t.identifier('@each'), [
+					t.call_expression(t.identifier(!keyed ? '@each' : '@keyed_each'), [
 						t.identifier(node_ident),
 						t.identifier(block_ident),
 						t.arrow_function_expression([], node.expression),
+						keyed ? t.arrow_function_expression([t.identifier(local.name)], keyed) : null,
 						alternate_ident ? t.identifier(alternate_ident) : null,
 					]),
 				);

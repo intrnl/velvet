@@ -1064,6 +1064,27 @@ let %block1 = ($$root, person) => {
 @append($$root, %fragment0);"
 `;
 
+exports[`loop logic allows for keyed 1`] = `
+"let %%template0 = /*#__PURE__*/ @html("<!>");
+let %fragment0 = /*#__PURE__*/ @clone(%template0);
+let %child3 = /*#__PURE__*/ @first_child(%fragment0);
+
+let %block1 = ($$root, person, idx) => {
+	let %%template1 = /*#__PURE__*/ @html("<div><!> - </div>");
+	let %fragment1 = /*#__PURE__*/ @clone(%template1);
+	let %child0 = /*#__PURE__*/ @first_child(%fragment1);
+	let %child1 = /*#__PURE__*/ @first_child(%child0);
+	let %child2 = /*#__PURE__*/ @next_sibling(%child1);
+	@text(%child1, () => idx, @replace);
+	@text(%child2, () => person.name, @after);
+	@after($$root, %fragment1);
+	return %child0;
+};
+
+@keyed_each(%child3, %block1, () => array, person => person.id);
+@append($$root, %fragment0);"
+`;
+
 exports[`loop logic allows for fallback 1`] = `
 "let %%template0 = /*#__PURE__*/ @html("<!>");
 let %fragment0 = /*#__PURE__*/ @clone(%template0);
@@ -1088,6 +1109,36 @@ let %block1 = ($$root, person) => {
 };
 
 @each(%child3, %block1, () => array, %block2);
+@append($$root, %fragment0);"
+`;
+
+exports[`loop logic allows for keyed fallback 1`] = `
+"let %%template0 = /*#__PURE__*/ @html("<!>");
+let %fragment0 = /*#__PURE__*/ @clone(%template0);
+let %child5 = /*#__PURE__*/ @first_child(%fragment0);
+
+let %block2 = $$root => {
+	let %%template2 = /*#__PURE__*/ @html("<div>No people found!</div>");
+	let %fragment2 = /*#__PURE__*/ @clone(%template2);
+	let %child3 = /*#__PURE__*/ @first_child(%fragment2);
+	let %child4 = /*#__PURE__*/ @first_child(%child3);
+	@after($$root, %fragment2);
+	return %child3;
+};
+
+let %block1 = ($$root, person, idx) => {
+	let %%template1 = /*#__PURE__*/ @html("<div><!> - </div>");
+	let %fragment1 = /*#__PURE__*/ @clone(%template1);
+	let %child0 = /*#__PURE__*/ @first_child(%fragment1);
+	let %child1 = /*#__PURE__*/ @first_child(%child0);
+	let %child2 = /*#__PURE__*/ @next_sibling(%child1);
+	@text(%child1, () => idx, @replace);
+	@text(%child2, () => person.name, @after);
+	@after($$root, %fragment1);
+	return %child0;
+};
+
+@keyed_each(%child5, %block1, () => array, person => person.id, %block2);
 @append($$root, %fragment0);"
 `;
 
